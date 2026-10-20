@@ -249,112 +249,55 @@
       transform: translate(-50%, -6px);
     }
 
-    /* INDICADOR FLOTANTE 3D SOBRE EL PROBLEMA EN LA LOSA (OBJETIVO DE ARRASTRE) */
-    .problem-3d-target {
-      position: absolute;
-      transform: translate(-50%, -100%);
-      display: none;
-      align-items: center;
-      gap: 6px;
-      pointer-events: auto;
-      z-index: 28;
-      cursor: pointer;
-      transition: transform 0.2s ease, opacity 0.2s ease;
-    }
-    .problem-3d-target .target-chip {
-      background: rgba(2, 48, 71, 0.95);
-      border: 1.5px solid var(--bolivar-yellow);
-      border-radius: 20px;
-      padding: 4px 10px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      color: #FFF;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.3px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
-      transition: all 0.2s ease;
-    }
-    .problem-3d-target .target-icon {
-      color: var(--bolivar-yellow);
-      display: flex;
-      align-items: center;
-      animation: targetPulse 1.2s infinite alternate;
-    }
-    @keyframes targetPulse {
-      0% { transform: scale(0.9); opacity: 0.7; }
-      100% { transform: scale(1.15); opacity: 1; }
-    }
-    .problem-3d-target.active-drop-hover .target-chip {
-      background: rgba(255, 183, 3, 0.95);
-      color: var(--bolivar-blue-dark);
-      border-color: #FFF;
-      transform: scale(1.1);
-      box-shadow: 0 0 25px rgba(255, 183, 3, 0.9);
-    }
-    .problem-3d-target.active-drop-hover .target-icon {
-      color: var(--bolivar-blue-dark);
-    }
-
-    /* 3. CONSOLA INFERIOR UNIFICADA (RESPONSIVA, VISIBILIDAD TOTAL DE OPCIONES) */
+    /* 3. CONSOLA INFERIOR DE DECISIÓN (COMPACTA, DIRECTA Y SIN OBSTRUCCIONES) */
     .decision-deck {
       position: absolute;
       bottom: 0;
       left: 0;
       width: 100%;
-      padding: 6px 14px max(8px, env(safe-area-inset-bottom, 8px)) 14px;
-      background: linear-gradient(180deg, rgba(3, 10, 18, 0) 0%, rgba(3, 10, 18, 0.94) 15%, rgba(3, 10, 18, 0.98) 100%);
-      display: grid;
-      grid-template-columns: 1.15fr 1fr;
-      gap: 10px;
-      align-items: stretch;
-      z-index: 30;
-      pointer-events: auto;
-    }
-
-    @media (max-width: 768px) {
-      .decision-deck {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-        padding: 4px 8px max(6px, env(safe-area-inset-bottom, 6px)) 8px;
-      }
-    }
-
-    /* TARJETA UNIFICADA DE SITUACIÓN Y PREGUNTA */
-    .situation-card {
-      background: rgba(2, 48, 71, 0.95);
-      border: 1.5px solid var(--bolivar-yellow);
-      border-radius: 12px;
-      padding: 6px 10px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+      padding: 6px 10px max(8px, env(safe-area-inset-bottom, 8px)) 10px;
+      background: linear-gradient(180deg, rgba(2, 48, 71, 0) 0%, rgba(2, 48, 71, 0.94) 14%, rgba(1, 26, 40, 0.98) 100%);
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 5px;
+      z-index: 30;
+      pointer-events: auto;
+      box-sizing: border-box;
+    }
+
+    /* TARJETA COMPACTA DE SITUACIÓN Y PREGUNTA */
+    .situation-card {
+      background: rgba(2, 48, 71, 0.92);
+      border: 1.5px solid var(--bolivar-yellow);
+      border-radius: 12px;
+      padding: 6px 9px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
     }
 
     .situation-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
+      gap: 6px;
     }
 
     .round-badge {
       background: var(--bolivar-yellow);
       color: var(--bolivar-blue-dark);
-      font-size: 10px;
+      font-size: 9.5px;
       font-weight: 900;
       padding: 2px 7px;
       border-radius: 5px;
-      letter-spacing: 0.4px;
+      letter-spacing: 0.3px;
       text-transform: uppercase;
       flex-shrink: 0;
     }
 
     .speaker-label {
-      font-size: 10.5px;
+      font-size: 10px;
       font-weight: 800;
       color: #94A3B8;
       text-transform: uppercase;
@@ -365,84 +308,30 @@
     }
 
     .situation-dialogue {
-      font-size: 11.5px;
+      font-size: 11px;
       font-weight: 600;
       color: #F8FAFC;
-      line-height: 1.26;
+      line-height: 1.25;
       font-style: italic;
       margin: 0;
     }
 
     .situation-question {
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 800;
       color: var(--bolivar-yellow);
-      line-height: 1.24;
+      line-height: 1.25;
       margin: 0;
     }
 
-    /* ZONA DE RECEPCIÓN DEL PROBLEMA (DROP ZONE) */
-    .situation-drop-zone {
-      width: 100%;
-      min-height: 34px;
-      background: rgba(2, 30, 48, 0.85);
-      border: 1.5px dashed rgba(255, 183, 3, 0.7);
-      border-radius: 9px;
-      padding: 5px 9px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 7px;
-      color: var(--bolivar-yellow);
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.3px;
-      text-transform: uppercase;
-      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.4);
-      transition: all 0.2s ease;
-      position: relative;
-      cursor: pointer;
-    }
-    .situation-drop-zone.drag-active {
-      border-color: #FFB703;
-      background: rgba(255, 183, 3, 0.2);
-      transform: scale(1.01);
-      box-shadow: 0 0 14px rgba(255, 183, 3, 0.5);
-    }
-    .situation-drop-zone.drag-over {
-      border-color: #10B981;
-      background: rgba(16, 185, 129, 0.28);
-      color: #6EE7B7;
-      transform: scale(1.02);
-      box-shadow: 0 0 18px rgba(16, 185, 129, 0.6);
-    }
-    .situation-drop-zone.accepted-correct {
-      border: 1.5px solid #10B981;
-      background: rgba(16, 185, 129, 0.35);
-      color: #FFF;
-    }
-    .situation-drop-zone.accepted-wrong {
-      border: 1.5px solid #EF4444;
-      background: rgba(230, 57, 70, 0.35);
-      color: #FFF;
-    }
-    .drop-zone-icon {
-      display: flex;
-      align-items: center;
-      animation: dropBounce 1.4s infinite ease-in-out;
-    }
-    @keyframes dropBounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-2px); }
-    }
-
     .situation-feedback-inline {
-      font-size: 11.5px;
+      font-size: 11px;
       font-weight: 700;
-      padding: 4px 7px;
+      padding: 3px 6px;
       border-radius: 6px;
       display: none;
       line-height: 1.22;
+      margin-top: 2px;
     }
     .situation-feedback-inline.active.success {
       display: block;
@@ -457,65 +346,51 @@
       border-left: 3px solid #EF4444;
     }
 
-    /* BOTONES / FICHAS DE DECISIÓN ARRASTRABLES */
+    /* LISTA DE LAS 3 OPCIONES DE DECISIÓN (DIRECTAMENTE ACCIONABLES) */
     .choices-list {
       display: flex;
       flex-direction: column;
       gap: 4px;
+      width: 100%;
     }
 
     .choice-card-btn {
       width: 100%;
-      min-height: 36px;
+      min-height: 35px;
       border-radius: 9px;
-      padding: 5px 8px;
+      padding: 5px 9px;
       display: flex;
       align-items: center;
-      gap: 7px;
-      cursor: grab;
+      gap: 8px;
+      cursor: pointer;
       text-align: left;
-      background: rgba(13, 34, 50, 0.95);
-      border: 1.5px solid rgba(255, 255, 255, 0.18);
+      background: rgba(2, 38, 58, 0.92);
+      border: 1px solid rgba(255, 183, 3, 0.45);
       color: #FFF;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-      transition: transform 0.12s ease, border-color 0.15s ease, background 0.15s ease, opacity 0.15s ease;
-      touch-action: none;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+      touch-action: manipulation;
       user-select: none;
       -webkit-user-select: none;
     }
     .choice-card-btn:hover {
+      background: rgba(2, 54, 82, 0.98);
       border-color: var(--bolivar-yellow);
-      background: rgba(20, 48, 70, 0.95);
+      transform: translateY(-1px);
     }
     .choice-card-btn:active {
-      cursor: grabbing;
-    }
-    .choice-card-btn.is-dragging {
-      opacity: 0.35;
-      transform: scale(0.96);
+      transform: scale(0.98);
+      background: rgba(255, 183, 3, 0.2);
     }
 
     .choice-card-btn.correct-state {
-      background: rgba(42, 157, 143, 0.95) !important;
+      background: rgba(42, 157, 143, 0.92) !important;
       border-color: #6EE7B7 !important;
-      box-shadow: 0 0 14px rgba(42, 157, 143, 0.5) !important;
     }
 
     .choice-card-btn.wrong-state {
-      background: rgba(230, 57, 70, 0.95) !important;
+      background: rgba(230, 57, 70, 0.92) !important;
       border-color: #FCA5A5 !important;
-      box-shadow: 0 0 14px rgba(230, 57, 70, 0.5) !important;
-    }
-
-    .drag-grip-icon {
-      color: #64748B;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-    .choice-card-btn:hover .drag-grip-icon {
-      color: var(--bolivar-yellow);
     }
 
     .choice-letter-badge {
@@ -523,9 +398,8 @@
       height: 22px;
       min-width: 22px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.12);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      color: #FFF;
+      background: var(--bolivar-yellow);
+      color: var(--bolivar-blue-dark);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -537,50 +411,9 @@
     .choice-text-label {
       font-size: 11.5px;
       font-weight: 700;
-      line-height: 1.24;
+      line-height: 1.25;
       color: #FFFFFF;
       flex: 1;
-    }
-
-    /* FANTASMA FLOTANTE DE ARRASTRE (DRAG GHOST) */
-    .drag-ghost {
-      position: fixed;
-      pointer-events: none;
-      z-index: 1000;
-      background: rgba(2, 48, 71, 0.98);
-      border: 2px solid var(--bolivar-yellow);
-      border-radius: 10px;
-      padding: 6px 12px;
-      color: #FFF;
-      font-size: 12px;
-      font-weight: 800;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 18px rgba(255, 183, 3, 0.5);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      max-width: 320px;
-      transform: translate(-50%, -50%) rotate(2.5deg) scale(1.05);
-      transition: transform 0.05s ease;
-      touch-action: none;
-    }
-    .drag-ghost .ghost-letter {
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: var(--bolivar-yellow);
-      color: var(--bolivar-blue-dark);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 900;
-      font-size: 11.5px;
-      flex-shrink: 0;
-    }
-    .drag-ghost .ghost-text {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      color: #FFF;
     }
 
     /* 5. MODAL FORMATIVO (DRAWER INFERIOR) */
@@ -908,23 +741,9 @@
       <span>Pulgar para rotar la obra en 3D</span>
     </div>
 
-    <!-- Indicador 3D flotante sobre el problema en la losa (Objetivo de arrastre) -->
-    <div class="problem-3d-target" id="problem3DTarget">
-      <div class="target-chip">
-        <div class="target-icon">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="8" x2="12" y2="12"></line>
-            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-          </svg>
-        </div>
-        <span class="target-label" id="problem3DLabel">PROBLEMA: ARRASTRA AQUÍ</span>
-      </div>
-    </div>
-
-    <!-- 4. CONSOLA INFERIOR UNIFICADA (UNA SOLA TARJETA ELEGANTE, 0 CAJAS ANIDADAS) -->
+    <!-- 4. CONSOLA INFERIOR DE DECISIÓN (COMPACTA, DIRECTA Y SIN ARRASTRE) -->
     <footer class="decision-deck" id="decisionDeck">
-      <!-- Tarjeta unificada de situación y pregunta (UNA SOLA TARJETA) -->
+      <!-- Tarjeta compacta de situación y pregunta -->
       <div class="situation-card" id="situationCard">
         <div class="situation-header">
           <span class="round-badge" id="stepChip">RONDA 1 DE 4</span>
@@ -936,23 +755,10 @@
         <p class="situation-question" id="questionText">
           ¿Cómo debe actuar el líder para resolver la contradicción de órdenes y cuidar a la cuadrilla?
         </p>
-
-        <!-- Zona de Recepción del Problema (Drop Zone) -->
-        <div class="situation-drop-zone" id="situationDropZone">
-          <div class="drop-zone-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="12" y1="8" x2="12" y2="16"></line>
-              <polyline points="8 12 12 16 16 12"></polyline>
-            </svg>
-          </div>
-          <span class="drop-target-label" id="dropZonePrompt">ZONA DEL PROBLEMA • ARRASTRA AQUÍ TU DECISIÓN</span>
-        </div>
-
         <div class="situation-feedback-inline" id="situationFeedbackInline"></div>
       </div>
 
-      <!-- Lista de opciones de decisión arrastrables -->
+      <!-- Lista de las 3 opciones de decisión directa (A, B, C) -->
       <div class="choices-list" id="choicesList">
         <!-- Renderizadas dinámicamente -->
       </div>
@@ -2266,17 +2072,12 @@
             });
           }
 
-          // 7. Animación del indicador 3D y proyección de la zona del problema
+          // 7. Animación del haz de luz y foco 3D en el frente activo
           if (this.activeBeacon && this.activeBeacon.visible && GameApp.currentRound) {
             var bTarget = this.frontTargets[GameApp.currentRound - 1];
             if (bTarget && bTarget.speakerPos) {
               this.activeBeacon.position.y = bTarget.speakerPos.y + 0.95 + Math.sin(time * 3.8) * 0.12;
               this.activeBeacon.rotation.y += 0.025;
-
-              var target3DEl = document.getElementById('problem3DTarget');
-              if (target3DEl && GameApp.roundActive) {
-                this.project3DToScreen(bTarget.speakerPos, target3DEl);
-              }
             }
           }
 
@@ -2448,9 +2249,7 @@
             bannerSpeakerText: document.getElementById('bannerSpeakerText'),
             bannerDialogueText: document.getElementById('bannerDialogueText'),
             situationFeedbackInline: document.getElementById('situationFeedbackInline'),
-            situationDropZone: document.getElementById('situationDropZone'),
-            problem3DTarget: document.getElementById('problem3DTarget'),
-            problem3DLabel: document.getElementById('problem3DLabel'),
+            situationCard: document.getElementById('situationCard'),
             decisionDeck: document.getElementById('decisionDeck'),
             questionText: document.getElementById('questionText'),
             choicesList: document.getElementById('choicesList'),
@@ -2477,8 +2276,6 @@
 
         bindEvents: function () {
           var self = this;
-
-          this.bindDragAndDrop();
 
           this.dom.startBtn.addEventListener('click', function () {
             SoundEngine.init();
@@ -2551,28 +2348,6 @@
           var wrap = this.dom.choicesList;
           wrap.innerHTML = '';
 
-          // Resetear la zona de recepción del problema
-          var dropZone = document.getElementById('situationDropZone');
-          if (dropZone) {
-            dropZone.className = 'situation-drop-zone';
-            dropZone.innerHTML = [
-              '<div class="drop-zone-icon">',
-              '  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">',
-              '    <circle cx="12" cy="12" r="10"></circle>',
-              '    <line x1="12" y1="8" x2="12" y2="16"></line>',
-              '    <polyline points="8 12 12 16 16 12"></polyline>',
-              '  </svg>',
-              '</div>',
-              '<span class="drop-target-label">ZONA DEL PROBLEMA • ARRASTRA AQUÍ TU DECISIÓN</span>'
-            ].join('');
-          }
-
-          var label3D = document.getElementById('problem3DLabel');
-          if (label3D) {
-            var frontNames = ['COLUMNA NORTE', 'GRÚA TORRE', 'BORDE EXTERIOR', 'PASILLO CENTRAL'];
-            label3D.textContent = (frontNames[data.frontIndex - 1] || 'PROBLEMA') + ': ARRASTRA AQUÍ';
-          }
-
           data.choices.forEach(function (c, idx) {
             var btn = document.createElement('div');
             btn.className = 'choice-card-btn';
@@ -2580,200 +2355,17 @@
             btn.setAttribute('role', 'button');
             btn.setAttribute('tabindex', '0');
             btn.innerHTML = [
-              '<div class="drag-grip-icon" title="Arrastrar al problema">',
-              '  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">',
-              '    <circle cx="9" cy="6" r="1.5"></circle>',
-              '    <circle cx="15" cy="6" r="1.5"></circle>',
-              '    <circle cx="9" cy="12" r="1.5"></circle>',
-              '    <circle cx="15" cy="12" r="1.5"></circle>',
-              '    <circle cx="9" cy="18" r="1.5"></circle>',
-              '    <circle cx="15" cy="18" r="1.5"></circle>',
-              '  </svg>',
-              '</div>',
               '<div class="choice-letter-badge">' + c.letter + '</div>',
               '<span class="choice-text-label">' + c.title + '</span>'
             ].join('');
 
+            btn.addEventListener('click', function () {
+              if (!self.roundActive) return;
+              self.handleChoice(c, data, btn);
+            });
+
             wrap.appendChild(btn);
           });
-        },
-
-        bindDragAndDrop: function () {
-          var self = this;
-          var activeGhost = null;
-          var draggedChoice = null;
-          var draggedBtn = null;
-          var isDraggingNow = false;
-          var startX = 0, startY = 0;
-
-          var dropZone = document.getElementById('situationDropZone');
-          var target3D = document.getElementById('problem3DTarget');
-
-          var onPointerDown = function (e) {
-            if (!self.roundActive) return;
-            var btn = e.target.closest('.choice-card-btn');
-            if (!btn) return;
-
-            var choiceIndex = parseInt(btn.getAttribute('data-choice-index'), 10);
-            var roundData = self.roundsData[self.currentRound - 1];
-            if (!roundData || !roundData.choices[choiceIndex]) return;
-
-            draggedChoice = roundData.choices[choiceIndex];
-            draggedBtn = btn;
-            startX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
-            startY = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
-            isDraggingNow = false;
-
-            if (e.pointerId && btn.setPointerCapture) {
-              try { btn.setPointerCapture(e.pointerId); } catch (err) {}
-            }
-          };
-
-          var onPointerMove = function (e) {
-            if (!draggedChoice || !draggedBtn) return;
-            var currentX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
-            var currentY = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
-
-            var dist = Math.hypot(currentX - startX, currentY - startY);
-            if (dist > 7 && !isDraggingNow) {
-              isDraggingNow = true;
-              draggedBtn.classList.add('is-dragging');
-
-              activeGhost = document.createElement('div');
-              activeGhost.className = 'drag-ghost';
-              activeGhost.innerHTML = [
-                '<div class="ghost-letter">' + draggedChoice.letter + '</div>',
-                '<span class="ghost-text">' + draggedChoice.title + '</span>'
-              ].join('');
-              document.body.appendChild(activeGhost);
-
-              if (dropZone) dropZone.classList.add('drag-active');
-              if (target3D) target3D.classList.add('active-drop-hover');
-            }
-
-            if (isDraggingNow && activeGhost) {
-              activeGhost.style.left = currentX + 'px';
-              activeGhost.style.top = currentY + 'px';
-
-              var isOverDropZone = false;
-              if (dropZone) {
-                var rZone = dropZone.getBoundingClientRect();
-                if (currentX >= rZone.left - 20 && currentX <= rZone.right + 20 &&
-                    currentY >= rZone.top - 20 && currentY <= rZone.bottom + 20) {
-                  isOverDropZone = true;
-                }
-              }
-
-              var isOver3D = false;
-              if (target3D && target3D.style.display !== 'none') {
-                var r3D = target3D.getBoundingClientRect();
-                if (currentX >= r3D.left - 30 && currentX <= r3D.right + 30 &&
-                    currentY >= r3D.top - 30 && currentY <= r3D.bottom + 30) {
-                  isOver3D = true;
-                }
-              }
-
-              var deckEl = document.getElementById('decisionDeck');
-              var isOver3DScene = false;
-              if (deckEl) {
-                var rDeck = deckEl.getBoundingClientRect();
-                if (currentY < rDeck.top + 30) {
-                  isOver3DScene = true;
-                }
-              }
-
-              var isTargetHovered = isOverDropZone || isOver3D || isOver3DScene;
-              if (dropZone) {
-                if (isTargetHovered) {
-                  dropZone.classList.add('drag-over');
-                } else {
-                  dropZone.classList.remove('drag-over');
-                }
-              }
-              if (target3D) {
-                if (isTargetHovered) {
-                  target3D.classList.add('active-drop-hover');
-                } else {
-                  target3D.classList.remove('active-drop-hover');
-                }
-              }
-            }
-          };
-
-          var onPointerUp = function (e) {
-            if (!draggedChoice || !draggedBtn) return;
-            var currentX = e.clientX || (e.changedTouches && e.changedTouches[0] ? e.changedTouches[0].clientX : startX);
-            var currentY = e.clientY || (e.changedTouches && e.changedTouches[0] ? e.changedTouches[0].clientY : startY);
-
-            var roundData = self.roundsData[self.currentRound - 1];
-
-            if (isDraggingNow) {
-              var isOverDropZone = false;
-              if (dropZone) {
-                var rZone = dropZone.getBoundingClientRect();
-                if (currentX >= rZone.left - 30 && currentX <= rZone.right + 30 &&
-                    currentY >= rZone.top - 30 && currentY <= rZone.bottom + 30) {
-                  isOverDropZone = true;
-                }
-              }
-
-              var isOver3D = false;
-              if (target3D && target3D.style.display !== 'none') {
-                var r3D = target3D.getBoundingClientRect();
-                if (currentX >= r3D.left - 40 && currentX <= r3D.right + 40 &&
-                    currentY >= r3D.top - 40 && currentY <= r3D.bottom + 40) {
-                  isOver3D = true;
-                }
-              }
-
-              var deckEl = document.getElementById('decisionDeck');
-              var isOver3DScene = false;
-              if (deckEl) {
-                var rDeck = deckEl.getBoundingClientRect();
-                if (currentY < rDeck.top + 50) {
-                  isOver3DScene = true;
-                }
-              }
-
-              var isDroppedOnProblem = isOverDropZone || isOver3D || isOver3DScene;
-
-              if (isDroppedOnProblem && self.roundActive) {
-                self.handleChoice(draggedChoice, roundData, draggedBtn);
-              } else {
-                draggedBtn.classList.remove('is-dragging');
-              }
-            } else {
-              // Tap/clic simple: ejecuta la decisión directamente (accesibilidad total)
-              if (self.roundActive) {
-                self.handleChoice(draggedChoice, roundData, draggedBtn);
-              }
-            }
-
-            if (activeGhost && activeGhost.parentNode) {
-              activeGhost.parentNode.removeChild(activeGhost);
-            }
-            activeGhost = null;
-            if (dropZone) {
-              dropZone.classList.remove('drag-active', 'drag-over');
-            }
-            if (target3D) {
-              target3D.classList.remove('active-drop-hover');
-            }
-            if (draggedBtn) {
-              draggedBtn.classList.remove('is-dragging');
-            }
-            draggedChoice = null;
-            draggedBtn = null;
-            isDraggingNow = false;
-          };
-
-          var wrap = document.getElementById('choicesList');
-          if (wrap) {
-            wrap.addEventListener('pointerdown', onPointerDown, { passive: false });
-            window.addEventListener('pointermove', onPointerMove, { passive: true });
-            window.addEventListener('pointerup', onPointerUp, { passive: true });
-            window.addEventListener('pointercancel', onPointerUp, { passive: true });
-          }
         },
 
         handleChoice: function (choice, data, buttonEl) {
@@ -2787,16 +2379,6 @@
           });
 
           var isCorrect = choice.correct;
-
-          // Actualizar la zona del problema con la decisión aplicada
-          var dropZone = document.getElementById('situationDropZone');
-          if (dropZone) {
-            dropZone.className = 'situation-drop-zone ' + (isCorrect ? 'accepted-correct' : 'accepted-wrong');
-            dropZone.innerHTML = [
-              '<div class="drop-zone-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>',
-              '<span>' + (isCorrect ? '¡ACCIÓN APLICADA: ' : '¡ACCIÓN RIESGOSA: ') + choice.title + '!</span>'
-            ].join('');
-          }
 
           if (isCorrect) {
             this.score += 25;
