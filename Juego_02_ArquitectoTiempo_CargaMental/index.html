@@ -296,19 +296,29 @@
       color: var(--bolivar-blue-dark);
     }
 
-    /* 3. CONSOLA INFERIOR UNIFICADA (UNA SOLA TARJETA ELEGANTE, 0 CAJAS ANIDADAS) */
+    /* 3. CONSOLA INFERIOR UNIFICADA (RESPONSIVA, VISIBILIDAD TOTAL DE OPCIONES) */
     .decision-deck {
       position: absolute;
       bottom: 0;
       left: 0;
       width: 100%;
-      padding: 4px 10px max(8px, env(safe-area-inset-bottom, 8px)) 10px;
-      background: linear-gradient(180deg, rgba(3, 10, 18, 0) 0%, rgba(3, 10, 18, 0.92) 15%, rgba(3, 10, 18, 0.98) 100%);
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
+      padding: 6px 14px max(8px, env(safe-area-inset-bottom, 8px)) 14px;
+      background: linear-gradient(180deg, rgba(3, 10, 18, 0) 0%, rgba(3, 10, 18, 0.94) 15%, rgba(3, 10, 18, 0.98) 100%);
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 10px;
+      align-items: stretch;
       z-index: 30;
       pointer-events: auto;
+    }
+
+    @media (max-width: 768px) {
+      .decision-deck {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        padding: 4px 8px max(6px, env(safe-area-inset-bottom, 6px)) 8px;
+      }
     }
 
     /* TARJETA UNIFICADA DE SITUACIÓN Y PREGUNTA */
@@ -2495,13 +2505,6 @@
             self.loadRound(1);
           });
 
-          if (this.dom.deckToggleBtn) {
-            this.dom.deckToggleBtn.addEventListener('click', function () {
-              var isMin = self.dom.decisionDeck.classList.toggle('minimized');
-              self.dom.deckToggleLabel.textContent = isMin ? 'Mostrar opciones de decisión' : 'Ocultar opciones para ver obra';
-            });
-          }
-
           this.dom.soundToggleBtn.addEventListener('click', function () {
             var muted = SoundEngine.toggleMute();
             self.dom.soundIconOn.style.display = muted ? 'none' : 'block';
@@ -2545,17 +2548,13 @@
           this.roundActive = true;
           var data = this.roundsData[roundNum - 1];
 
-          this.dom.roundTag.textContent = 'RONDA ' + roundNum + ' DE 4';
-          this.dom.questionStepBadge.textContent = 'RONDA ' + roundNum + ': PRIORIZAR';
-          this.dom.questionLocationLabel.textContent = data.zone;
-          this.dom.questionText.textContent = data.promptText;
+          if (this.dom.roundTag) this.dom.roundTag.textContent = 'RONDA ' + roundNum + ' DE 4';
+          if (this.dom.stepChip) this.dom.stepChip.textContent = 'RONDA ' + roundNum + ' DE 4';
+          if (this.dom.questionText) this.dom.questionText.textContent = data.promptText;
 
           // Actualizar diálogo integrado en la consola (sin tapar el 3D)
-          this.dom.bannerSpeakerText.textContent = data.speaker;
-          this.dom.bannerDialogueText.textContent = data.dialogue;
-          this.dom.dialogueQuoteBox.className = 'dialogue-quote-box';
-          this.dom.decisionDeck.classList.remove('minimized');
-          this.dom.deckToggleLabel.textContent = 'Ocultar opciones para ver obra';
+          if (this.dom.bannerSpeakerText) this.dom.bannerSpeakerText.textContent = data.speaker;
+          if (this.dom.bannerDialogueText) this.dom.bannerDialogueText.textContent = data.dialogue;
 
           // Enfocar cámara y spotlight en el frente de obra correspondiente
           Isometric3DEngine.focusActiveFront(data.frontIndex);

@@ -8,6 +8,11 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Canal Limpio: Aventura 3D en Piso 5 | Seguros Bolívar ARL</title>
 
+  <!-- Google Fonts: Plus Jakarta Sans (Minimalista) & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <!-- Three.js CDN r128 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
@@ -28,8 +33,8 @@
       --gray-concrete: #8D99AE;
       --gray-light: #F8FAFC;
       --gray-dark: #1E293B;
-      --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      --font-mono: "Consolas", "Courier New", monospace;
+      --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', "Consolas", monospace;
     }
 
     *, *::before, *::after {
@@ -827,6 +832,76 @@
       border-color: var(--bolivar-green);
       color: var(--bolivar-green);
     }
+    .screen-badge-circle.tragic {
+      background: rgba(239, 68, 68, 0.18);
+      border-color: #EF4444;
+      color: #EF4444;
+      box-shadow: 0 0 25px rgba(239, 68, 68, 0.55);
+    }
+
+    /* REJILLA DE CONSECUENCIAS REALES (FINAL TRÁGICO) */
+    .consequence-cards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+      text-align: left;
+    }
+    @media (max-width: 480px) {
+      .consequence-cards-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .consequence-card {
+      background: rgba(230, 57, 70, 0.12);
+      border: 1.2px solid rgba(239, 68, 68, 0.4);
+      border-radius: 12px;
+      padding: 10px 12px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      backdrop-filter: blur(8px);
+    }
+    .consequence-icon-box {
+      width: 28px;
+      height: 28px;
+      min-width: 28px;
+      border-radius: 8px;
+      background: rgba(239, 68, 68, 0.28);
+      color: #F87171;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .consequence-content h4 {
+      font-size: 12px;
+      font-weight: 800;
+      color: #FCA5A5;
+      margin-bottom: 3px;
+      line-height: 1.25;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .consequence-content p {
+      font-size: 11px;
+      color: #E2E8F0;
+      line-height: 1.35;
+      margin: 0;
+    }
+
+    /* ANIMACIÓN DE SACUDIDA DE PANTALLA ANTE PELIGRO/ERROR */
+    @keyframes screenShakeHazard {
+      0%, 100% { transform: translate3d(0, 0, 0); }
+      15% { transform: translate3d(-7px, 3px, 0); }
+      30% { transform: translate3d(6px, -4px, 0); }
+      45% { transform: translate3d(-5px, 2px, 0); }
+      60% { transform: translate3d(4px, -2px, 0); }
+      75% { transform: translate3d(-2px, 1px, 0); }
+    }
+    .shake-hazard-active {
+      animation: screenShakeHazard 0.45s cubic-bezier(.36,.07,.19,.97) both;
+    }
 
     .screen-title {
       font-size: 21px;
@@ -1318,8 +1393,8 @@
           <div style="font-size:12.5px;color:#A7F3D0;text-transform:uppercase;font-weight:800;letter-spacing:0.5px;margin-top:6px;" id="finalStatusVal">ESTADO SCORM: APROBADO (≥ 80%)</div>
         </div>
 
-        <!-- Los 4 Pilares de Salud Mental en Obra -->
-        <div class="summary-pillars-grid">
+        <!-- CONTENEDOR 1: LOS 4 PILARES DE EXCELENCIA (FINAL BUENO >= 80%) -->
+        <div class="summary-pillars-grid" id="finalPillarsContainer">
           <div class="pillar-card">
             <div class="pillar-icon-box">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
@@ -1358,7 +1433,47 @@
           </div>
         </div>
 
-        <div class="teaching-norm-box" style="text-align:left;background:rgba(0,0,0,0.35);border-color:rgba(255,255,255,0.2);color:#E2E8F0;margin-bottom:12px;">
+        <!-- CONTENEDOR 2: LAS 4 CONSECUENCIAS REALES (FINAL TRÁGICO < 80%) -->
+        <div class="consequence-cards-grid" id="finalTragicContainer" style="display: none;">
+          <div class="consequence-card">
+            <div class="consequence-icon-box">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            </div>
+            <div class="consequence-content">
+              <h4>1. Accidente Grave con Lesión</h4>
+              <p>El ayudante forzado bajo carga o el operario fatigado colapsó en la labor, requiriendo traslado médico de urgencia.</p>
+            </div>
+          </div>
+          <div class="consequence-card">
+            <div class="consequence-icon-box">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            </div>
+            <div class="consequence-content">
+              <h4>2. Investigación Ley 1010</h4>
+              <p>Denuncia penal y laboral por acoso y coacción directiva. Apertura de proceso sancionatorio por el Ministerio del Trabajo.</p>
+            </div>
+          </div>
+          <div class="consequence-card">
+            <div class="consequence-icon-box">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 2 22 22 22 12 2"></polygon><line x1="12" y1="9" x2="12" y2="15"></line></svg>
+            </div>
+            <div class="consequence-content">
+              <h4>3. Demolición y Pérdidas</h4>
+              <p>El vaciado sin bitácora y la probeta alterada forzaron la demolición de la columna con sobrecostos de más de $40M.</p>
+            </div>
+          </div>
+          <div class="consequence-card">
+            <div class="consequence-icon-box">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+            </div>
+            <div class="consequence-content">
+              <h4>4. Paro de Cuadrilla y Cierre</h4>
+              <p>La hostilidad por radio y la falta de concertación detonaron la huelga del personal y el sellamiento temporal de la obra.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="teaching-norm-box" id="finalNormBox" style="text-align:left;background:rgba(0,0,0,0.35);border-color:rgba(255,255,255,0.2);color:#E2E8F0;margin-bottom:12px;">
           <span class="teaching-norm-tag" style="color:var(--bolivar-yellow);">Compromiso ARL Bolívar:</span>
           El trato respetuoso y la comunicación oportuna salvan tantas vidas como los equipos de protección física.
         </div>
@@ -1630,6 +1745,58 @@
             g.gain.setValueAtTime(0.12, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.45);
             osc.connect(g); g.connect(self.ctx.destination);
             osc.start(t); osc.stop(t + 0.45);
+          });
+        },
+        playHazard: function () {
+          if (this.muted) return; this.init(); if (!this.ctx) return;
+          var t = this.ctx.currentTime;
+          var osc1 = this.ctx.createOscillator(), osc2 = this.ctx.createOscillator(), g = this.ctx.createGain();
+          osc1.type = 'sawtooth';
+          osc2.type = 'square';
+          osc1.frequency.setValueAtTime(140, t);
+          osc1.frequency.exponentialRampToValueAtTime(55, t + 0.45);
+          osc2.frequency.setValueAtTime(147, t);
+          osc2.frequency.exponentialRampToValueAtTime(58, t + 0.45);
+          g.gain.setValueAtTime(0.22, t);
+          g.gain.exponentialRampToValueAtTime(0.001, t + 0.45);
+          osc1.connect(g);
+          osc2.connect(g);
+          g.connect(this.ctx.destination);
+          osc1.start(t); osc1.stop(t + 0.45);
+          osc2.start(t); osc2.stop(t + 0.45);
+        },
+        playEmergencyAlarm: function () {
+          if (this.muted) return; this.init(); if (!this.ctx) return;
+          var self = this;
+          var notes = [880, 587.33, 880, 587.33, 880];
+          notes.forEach(function (f, i) {
+            var t = self.ctx.currentTime + (i * 0.14);
+            var osc = self.ctx.createOscillator(), g = self.ctx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(f, t);
+            g.gain.setValueAtTime(0.18, t);
+            g.gain.exponentialRampToValueAtTime(0.001, t + 0.13);
+            osc.connect(g);
+            g.connect(self.ctx.destination);
+            osc.start(t);
+            osc.stop(t + 0.13);
+          });
+        },
+        playVictory: function () {
+          if (this.muted) return; this.init(); if (!this.ctx) return;
+          var self = this;
+          var notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+          notes.forEach(function (f, i) {
+            var t = self.ctx.currentTime + (i * 0.1);
+            var osc = self.ctx.createOscillator(), g = self.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(f, t);
+            g.gain.setValueAtTime(0.15, t);
+            g.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+            osc.connect(g);
+            g.connect(self.ctx.destination);
+            osc.start(t);
+            osc.stop(t + 0.4);
           });
         }
       };
@@ -1959,21 +2126,39 @@
           // 1. Luz hemisférica natural (cielo azul diurno arriba, rebote cálido de concreto abajo)
           var hemi = new THREE.HemisphereLight(0xdff0ff, 0x8a7a68, 0.75);
           this.scene.add(hemi);
+          this.hemiLight = hemi;
 
           // 2. Luz solar principal directa
           var sun = new THREE.DirectionalLight(0xfffaea, 1.15);
           sun.position.set(18, 36, 14);
           sun.castShadow = true;
           this.scene.add(sun);
+          this.sunLight = sun;
 
           // 3. Luz de relleno lateral para resaltar rostros y detalles
           var fillLight = new THREE.DirectionalLight(0xaad4f5, 0.55);
           fillLight.position.set(-16, 20, 20);
           this.scene.add(fillLight);
+          this.fillLight = fillLight;
 
           // 4. Luz ambiental suave de soporte
           var ambient = new THREE.AmbientLight(0xffffff, 0.45);
           this.scene.add(ambient);
+          this.ambientLight = ambient;
+
+          // 5. Luces rotativas de emergencia (activadas en final trágico o fallo grave)
+          var emergGroup = new THREE.Group();
+          emergGroup.position.set(2.0, 3.5, -3.0);
+          var redLight = new THREE.PointLight(0xFF0000, 0, 25);
+          redLight.position.set(-1.2, 0, 0);
+          var blueLight = new THREE.PointLight(0x2563EB, 0, 25);
+          blueLight.position.set(1.2, 0, 0);
+          emergGroup.add(redLight);
+          emergGroup.add(blueLight);
+          this.scene.add(emergGroup);
+          this.emergencyLightsGroup = emergGroup;
+          this.redLight = redLight;
+          this.blueLight = blueLight;
         },
 
         createConcreteTexture: function () {
@@ -3053,7 +3238,86 @@
             w.position.y = yBase + Math.sin(time * 1.5 + idx) * 0.015;
           });
 
+          // 5. EFECTO VISUAL DE SIRENAS Y ALERTA EN JORNADA TRÁGICA
+          if (this.isEmergency && this.emergencyLightsGroup) {
+            this.emergencyLightsGroup.rotation.y += 0.08;
+            if (this.redLight) this.redLight.intensity = 3.5 + Math.sin(now * 0.012) * 2.2;
+            if (this.blueLight) this.blueLight.intensity = 3.5 - Math.sin(now * 0.012) * 2.2;
+          }
+
           this.renderer.render(this.scene, this.camera);
+        },
+
+        setEmergencyState: function (active) {
+          this.isEmergency = !!active;
+          this.isCelebration = false;
+          if (active) {
+            this.scene.background = new THREE.Color(0x3B0707);
+            if (this.scene.fog) {
+              this.scene.fog.color.setHex(0x3B0707);
+              this.scene.fog.near = 15;
+              this.scene.fog.far = 60;
+            }
+            if (this.redLight) this.redLight.intensity = 4.0;
+            if (this.blueLight) this.blueLight.intensity = 4.0;
+            if (this.hemiLight) this.hemiLight.color.setHex(0x991B1B);
+            if (this.ambientLight) this.ambientLight.color.setHex(0x7F1D1D);
+          }
+        },
+
+        setCelebrationState: function (active) {
+          this.isCelebration = !!active;
+          this.isEmergency = false;
+          if (active) {
+            this.scene.background = new THREE.Color(0xF59E0B);
+            if (this.scene.fog) {
+              this.scene.fog.color.setHex(0xF59E0B);
+              this.scene.fog.near = 25;
+              this.scene.fog.far = 90;
+            }
+            if (this.redLight) this.redLight.intensity = 0;
+            if (this.blueLight) this.blueLight.intensity = 0;
+            if (this.sunLight) this.sunLight.color.setHex(0xFFF3C4);
+            if (this.ambientLight) this.ambientLight.color.setHex(0xFEF3C7);
+            if (this.hemiLight) this.hemiLight.color.setHex(0xFDE68A);
+          }
+        },
+
+        resetSceneState: function () {
+          this.isEmergency = false;
+          this.isCelebration = false;
+          this.craneWobble = false;
+          this.scene.background = new THREE.Color(0x6aa6db);
+          if (this.scene.fog) {
+            this.scene.fog.color.setHex(0x8cbbe6);
+            this.scene.fog.near = 26;
+            this.scene.fog.far = 95;
+          }
+          if (this.redLight) this.redLight.intensity = 0;
+          if (this.blueLight) this.blueLight.intensity = 0;
+          if (this.hemiLight) this.hemiLight.color.setHex(0xdff0ff);
+          if (this.ambientLight) this.ambientLight.color.setHex(0xffffff);
+          if (this.sunLight) this.sunLight.color.setHex(0xfffaea);
+
+          if (this.station1Paper) this.station1Paper.material.color.setHex(0xFFFFFF);
+          if (this.residentWorker) this.residentWorker.rotation.y = 0;
+          if (this.capatazWorker) this.capatazWorker.rotation.y = 0;
+          if (this.railingPost) this.railingPost.rotation.z = 0;
+          if (this.railingBar) {
+            this.railingBar.rotation.z = 0;
+            this.railingBar.position.y = 1.0;
+          }
+          if (this.scaffoldPlank) {
+            this.scaffoldPlank.rotation.z = 0;
+            this.scaffoldPlank.position.set(0, 0, 0);
+          }
+          if (this.electricSparkGroup) this.electricSparkGroup.visible = false;
+          if (this.panicWorker) {
+            this.panicWorker.rotation.z = 0;
+            this.panicWorker.userData.yBase = 0;
+          }
+          if (this.hydraulicLeakMesh) this.hydraulicLeakMesh.visible = false;
+          if (this.columnCrackMesh) this.columnCrackMesh.visible = false;
         },
 
                 // TRANSFORMACIÓN REAL DEL ENTORNO 3D ANTE CADA DECISIÓN
@@ -3082,7 +3346,7 @@
                 this.station1Paper.material.color.setHex(0xEF4444);
               }
               if (this.residentWorker) {
-                this.residentWorker.rotation.y = -0.35;
+                this.residentWorker.rotation.y = -0.75;
               }
             }
           } else if (stationId === 2) {
@@ -3105,12 +3369,16 @@
             } else {
               if (led3D) led3D.material.color.setHex(0xEF4444);
               if (this.capatazWorker) {
-                this.capatazWorker.rotation.y = -0.45;
+                this.capatazWorker.rotation.y = -0.85;
+              }
+              if (this.radioSignalWave) {
+                this.radioSignalWave.material.color.setHex(0xEF4444);
               }
             }
           } else if (stationId === 3) {
             if (isCorrect) {
               this.craneTargetY = 0.35;
+              this.craneWobble = false;
               if (this.craneDangerZone) {
                 this.craneDangerZone.material.color.setHex(0x10B981);
               }
@@ -3132,8 +3400,14 @@
               }
             } else {
               this.craneWobble = true;
+              this.craneTargetY = 0.85;
               if (this.craneDangerZone) {
                 this.craneDangerZone.material.color.setHex(0xFF0000);
+              }
+              if (this.craneCrew && this.craneCrew.length) {
+                this.craneCrew[0].position.set(-0.8, 0, -6.8);
+                this.craneCrew[1].position.set(2.0, 0, -12.5);
+                this.craneCrew[2].position.set(4.5, 0, -7.0);
               }
             }
           } else if (stationId === 4) {
@@ -3145,6 +3419,7 @@
               if (this.railingBar) {
                 this.railingBar.rotation.x = 0;
                 this.railingBar.rotation.z = 0;
+                this.railingBar.position.y = 1.0;
                 this.railingBar.material.color.setHex(0xF59E0B);
               }
               if (this.hazardOrb) {
@@ -3163,24 +3438,32 @@
                 this.hazardWorker.position.x = 14.8;
               }
             } else {
-              if (this.railingPost) this.railingPost.rotation.z = -0.58;
-              if (this.railingBar) this.railingBar.rotation.z = -0.58;
+              if (this.railingPost) this.railingPost.rotation.z = -0.92;
+              if (this.railingBar) {
+                this.railingBar.rotation.z = -0.92;
+                this.railingBar.position.y = 0.55;
+              }
               if (this.hazardOrb) {
+                this.hazardOrb.visible = true;
                 this.hazardOrb.material.color.setHex(0xFF0000);
-                this.hazardOrb.scale.set(1.6, 1.6, 1.6);
+                this.hazardOrb.scale.set(2.4, 2.4, 2.4);
               }
             }
           } else if (stationId === 5) {
             // Estación 5: Andamio voladizo y coacción
             if (isCorrect) {
               if (this.scaffoldTagMesh) this.scaffoldTagMesh.material.color.setHex(0x10B981);
-              if (this.scaffoldPlank) this.scaffoldPlank.material.color.setHex(0x9C6634);
+              if (this.scaffoldPlank) {
+                this.scaffoldPlank.rotation.z = 0;
+                this.scaffoldPlank.position.set(0, 0, 0);
+                this.scaffoldPlank.material.color.setHex(0x9C6634);
+              }
               if (this.scaffoldContractor) this.scaffoldContractor.position.set(-7.5, 0, 1.8);
             } else {
               if (this.scaffoldTagMesh) this.scaffoldTagMesh.material.color.setHex(0xEF4444);
               if (this.scaffoldPlank) {
-                this.scaffoldPlank.rotation.z = -0.32;
-                this.scaffoldPlank.position.y -= 0.18;
+                this.scaffoldPlank.rotation.z = -0.58;
+                this.scaffoldPlank.position.y -= 0.35;
               }
             }
           } else if (stationId === 6) {
@@ -3190,11 +3473,16 @@
               if (this.exhaustedWorker) {
                 this.exhaustedWorker.position.set(-8.0, 0, -6.5);
                 this.exhaustedWorker.rotation.y = 0.5;
+                this.exhaustedWorker.rotation.x = 0;
               }
             } else {
               if (this.electricSparkGroup) {
                 this.electricSparkGroup.visible = true;
-                this.electricSparkGroup.scale.set(1.8, 1.8, 1.8);
+                this.electricSparkGroup.scale.set(2.8, 2.8, 2.8);
+              }
+              if (this.exhaustedWorker) {
+                this.exhaustedWorker.rotation.x = 0.55;
+                this.exhaustedWorker.position.y = -0.15;
               }
             }
           } else if (stationId === 7) {
@@ -3205,14 +3493,18 @@
                 this.panicWorker.position.set(6.2, 0, -15.8);
                 this.panicWorker.userData.yBase = 0;
                 this.panicWorker.rotation.y = Math.PI;
+                this.panicWorker.rotation.z = 0;
               }
             } else {
               if (this.panicWorker) {
-                this.panicWorker.position.y = 0.15;
-                this.panicWorker.userData.yBase = 0.15;
-                this.panicWorker.rotation.z = 0.75;
+                this.panicWorker.position.y = 0.08;
+                this.panicWorker.userData.yBase = 0.08;
+                this.panicWorker.rotation.z = 1.15;
               }
-              if (this.panicAuraRing) this.panicAuraRing.material.color.setHex(0xEF4444);
+              if (this.panicAuraRing) {
+                this.panicAuraRing.material.color.setHex(0xEF4444);
+                this.panicAuraRing.scale.set(1.6, 1.6, 1.6);
+              }
             }
           } else if (stationId === 8) {
             // Estación 8: Taller de corte y sierra circular
@@ -3220,7 +3512,10 @@
               if (this.sawBladeGuard) this.sawBladeGuard.material.color.setHex(0x10B981);
               if (this.sawOperatorWorker) this.sawOperatorWorker.position.set(5.0, 0, 6.0);
             } else {
-              if (this.hydraulicLeakMesh) this.hydraulicLeakMesh.visible = true;
+              if (this.hydraulicLeakMesh) {
+                this.hydraulicLeakMesh.visible = true;
+                this.hydraulicLeakMesh.scale.set(2.2, 2.2, 2.2);
+              }
             }
           } else if (stationId === 9) {
             // Estación 9: Laboratorio y reporte de resistencia
@@ -3228,7 +3523,10 @@
               if (this.shoringJackMesh) this.shoringJackMesh.visible = true;
               if (this.inspectorWorker) this.inspectorWorker.position.set(-1.2, 0, -5.4);
             } else {
-              if (this.columnCrackMesh) this.columnCrackMesh.visible = true;
+              if (this.columnCrackMesh) {
+                this.columnCrackMesh.visible = true;
+                this.columnCrackMesh.scale.set(1.5, 1.5, 1.5);
+              }
             }
           } else if (stationId === 10) {
             // Estación 10: Asamblea general de cuadrilla
@@ -3239,6 +3537,7 @@
             } else {
               this.scene.background = new THREE.Color(0x7F1D1D);
               if (this.scene.fog) this.scene.fog.color.setHex(0x7F1D1D);
+              if (this.voceroWorker) this.voceroWorker.rotation.y = -0.8;
             }
           }
         }
@@ -3252,39 +3551,39 @@
         score: 0,
         dom: {},
 
-                        stationsData: [
+        stationsData: [
           {
             id: 1,
             location: 'ZONA 1: COLUMNA DE RELEVO NORTE',
             speaker: 'RESIDENTE DE OBRA',
-            question: '¿Cuál es la decisión correcta ante la prisa del mixer por descargar el concreto sin haber verificado la bitácora?',
+            question: '¿Cuál es la decisión correcta ante la prisa económica del mixer por descargar el concreto sin haber verificado la bitácora técnica?',
             bubbleText: '¡Atención cuadrilla! Relevo de turno en la columna: completen la bitácora con datos exactos antes de fundir.',
             bubbleStyle: '',
-            summaryText: 'Verificaste y firmaste los datos exactos antes de fundir. La Batería de Riesgo Psicosocial (Res. 2764) demuestra que la claridad de rol y los procedimientos técnicos firmes erradican la sobrecarga mental y los reprocesos costosos.',
+            summaryText: 'Verificaste y firmaste los datos exactos antes de fundir. La Batería de Riesgo Psicosocial (Res. 2764/2022) demuestra que la claridad de rol y los procedimientos técnicos firmes erradican la sobrecarga mental y los reprocesos destructivos.',
             wrongText: 'Fundir con datos ambiguos o postergar el registro por afán comercial dispara el estrés agudo, causa sobrecostos por demolición y deteriora el clima laboral.',
             choices: [
               {
                 letter: 'A',
-                text: 'Dar vía libre a la tolva para no pagar la multa del camión mixer y completar la bitácora de memoria después de almorzar.',
+                text: 'Autorizar el inicio del vaciado de inmediato para evitar la penalización por tiempo de espera del mixer y revisar las especificaciones de resistencia mientras descarga.',
                 correct: false,
                 reactionSpeaker: 'RESIDENTE DE OBRA',
-                reactionText: '"¡Grave error! Fundir de memoria provocó vaciar concreto Tipo 2 en vez de Estructural Tipo 1. Hay que demoler la columna entera."',
+                reactionText: '"¡Grave error! Fundir por afán económico provocó vaciar concreto Tipo 2 en vez de Estructural Tipo 1. La columna quedó sentenciada a demolición obligatoria y sobrecostos millonarios."',
                 wrongText: 'La prisa económica y posponer el registro técnico genera reprocesos destructivos y una inmensa sobrecarga mental en los turnos de relevo.'
               },
               {
                 letter: 'B',
-                text: 'Frenar la descarga 3 minutos, registrar: 50 bultos de Cemento Estructural Tipo 1 en Sector Norte Piso 5 con firma responsable y verificar con el maestro.',
+                text: 'Detener la descarga 3 minutos, verificar remisión con el maestro: 50 bultos de Cemento Estructural Tipo 1 en Sector Norte Piso 5 con firma responsable y verificar el asentamiento de la mezcla.',
                 correct: true,
                 reactionSpeaker: 'RESIDENTE DE OBRA',
-                reactionText: '"¡Impecable! 50 bultos verificados y firmados. Cero dudas técnicas y la cuadrilla sabe exactamente qué fundir sin estrés ni ambigüedad."',
+                reactionText: '"¡Impecable! 50 bultos verificados, asentamiento conforme y bitácora firmada. Cero dudas técnicas y la cuadrilla sabe con certeza qué fundir sin estrés ni reprocesos."',
                 wrongText: ''
               },
               {
                 letter: 'C',
-                text: 'Anotar datos aproximados en una servilleta y esperar que el capataz grite las especificaciones cuando suba a la placa.',
+                text: 'Delegar la firma de la remisión al ayudante del mixer para no frenar la jornada y comenzar el vibrado en las formaletas sin supervisión técnica.',
                 correct: false,
                 reactionSpeaker: 'RESIDENTE DE OBRA',
-                reactionText: '"¡Inadmisible! Las notas informales y los gritos destruyen la trazabilidad y desatan peleas entre cuadrillas."',
+                reactionText: '"¡Inadmisible! La delegación informal destruye la trazabilidad técnica. La mezcla llegó contaminada y el laboratorio rechazó el vaciado entero."',
                 wrongText: 'La falta de claridad en el rol y la informalidad técnica incrementan el agotamiento cognitivo y detonan conflictos laborales.'
               }
             ]
@@ -3293,7 +3592,7 @@
             id: 2,
             location: 'ZONA 2: COMUNICACIÓN POR RADIO (CH-2)',
             speaker: 'CAPATAZ POR RADIO (CH-2)',
-            question: '¿Cómo responder por radio PTT ante la intimidación y la amenaza de despido colectivo?',
+            question: '¿Cómo responder por radio PTT ante la intimidación, gritos y amenaza de despido colectivo del capataz?',
             bubbleText: '¡Suba ligero esos parales a la torre B o los echan a todos! ¡Aquí no vinieron a pasear!',
             bubbleStyle: 'alert-style',
             summaryText: 'Aplicaste la técnica "Repetir para Validar": confirmaste el compromiso operativo y fijaste un límite ético infranqueable frente a la coacción (Ley 1010 de 2006).',
@@ -3301,27 +3600,27 @@
             choices: [
               {
                 letter: 'A',
-                text: '"Copiado: Confirmamos traslado técnico de 20 parales a Torre B en 15 minutos. Le recuerdo que en esta obra nos coordinamos con respeto."',
-                correct: true,
+                text: 'Guardar silencio por radio para evitar confrontación directa, pero apurar a los muchachos por debajo para que corran por las rampas y no despidan a nadie.',
+                correct: false,
                 reactionSpeaker: 'CAPATAZ POR RADIO (CH-2)',
-                reactionText: '"Copiado y entendido: 20 parales en 15 min. Y tiene razón: la prisa del cronograma jamás autoriza el maltrato. Procedan con cuidado."',
-                wrongText: ''
+                reactionText: '"¡Correr a ciegas por pánico provocó un golpe por caída de parales en la rampa! La sumisión pasiva y el afán trasladaron una angustia insoportable a la cuadrilla."',
+                wrongText: 'La sumisión pasiva y el afán desesperado ante la intimidación multiplican los actos inseguros y deterioran la autoestima laboral.'
               },
               {
                 letter: 'B',
-                text: '"¡Venga y súbalos usted si es tan valiente, aquí nadie es su peón para que nos venga a pisotear por radio!"',
+                text: 'Presionar el PTT y responder con insultos: "¡Venga y cárguelos usted si es tan bravo, aquí nadie se va a dejar pisotear ni humillar por radio!"',
                 correct: false,
                 reactionSpeaker: 'CAPATAZ POR RADIO (CH-2)',
-                reactionText: '"¡¿Cómo dice?! La confrontación abierta paralizó el frente de obra, desató una investigación disciplinaria y elevó el estrés de todos."',
+                reactionText: '"¡La contraagresividad paralizó el canal! Se desató un altercado verbal que bloqueó las comunicaciones de emergencia y justificó sanciones disciplinarias."',
                 wrongText: 'La contraagresividad escala el conflicto y justifica sanciones disciplinarias. La técnica \'Repetir para Validar\' pone límites profesionales firmes sin descontrol emocional.'
               },
               {
                 letter: 'C',
-                text: '"Sí jefe, disculpe la demora... ya mismo salimos corriendo a botar los parales como caigan para que no se enoje."',
-                correct: false,
+                text: 'Aplicar \'Repetir para Validar\': "Copiado: Confirmamos traslado técnico de 20 parales a Torre B en 15 minutos con cuadrilla completa. Le recuerdo que en este canal coordinamos con respeto."',
+                correct: true,
                 reactionSpeaker: 'CAPATAZ POR RADIO (CH-2)',
-                reactionText: '"¡Correr a ciegas por pánico provocó un golpe por caída de carga en la rampa! La sumisión cobarde facilitó un accidente."',
-                wrongText: 'La sumisión pasiva y el afán desesperado ante la intimidación multiplican los actos inseguros y deterioran la autoestima laboral.'
+                reactionText: '"¡Copiado con respeto! La técnica \'Repetir para Validar\' fijó un límite ético infranqueable (Ley 1010/2006), calmó la tensión y mantuvo el canal operativo sin humillaciones."',
+                wrongText: ''
               }
             ]
           },
@@ -3329,35 +3628,35 @@
             id: 3,
             location: 'ZONA 3: ÁREA DE IZAJE Y CARGA SUSPENDIDA',
             speaker: 'MAESTRO Y CARPINTERO EN DISPUTA',
-            question: '¿Cuál es la intervención obligatoria cuando una carga pesada oscila y el personal entra en pánico bajo ella?',
+            question: '¿Cuál es la intervención obligatoria cuando una carga pesada oscila por el viento y un ayudante novato queda paralizado en la línea de peligro?',
             bubbleText: '¡Paren todo! La grúa tiene la formaleta suspendida, no veo las señales del aparejador y el ayudante novato no se quita de abajo...',
             bubbleStyle: 'alert-style',
             summaryText: 'Frenaste la maniobra, unificaste la frecuencia de radio y respaldaste al compañero más vulnerable. El apoyo social en momentos de alta tensión (Batería Res. 2764) es el mayor factor protector contra fatalidades.',
-            wrongText: 'Continuar la maniobra a ciegas o abandonar al compañero bajo peligro inminente es complicidad en una tragedia laboral.',
+            wrongText: 'Continuar la maniobra a ciegas o presionar al personal bajo peligro inminente es complicidad en una tragedia laboral.',
             choices: [
               {
                 letter: 'A',
-                text: 'Gritarle al ayudante que corra rápido mientras la grúa sigue bajando la carga para no perder el ciclo de vaciado.',
-                correct: false,
-                reactionSpeaker: 'MAESTRO DE OBRA',
-                reactionText: '"¡Casi lo aplasta la viga! Forzar la maniobra en movimiento por afán de vaciado puso la vida del ayudante al borde de la muerte."',
-                wrongText: 'Presionar a un trabajador novato bajo una carga en movimiento es una negligencia crítica que causa muertes por aplastamiento.'
+                text: '"¡Alto total a la maniobra! Unificamos Canal 3 exclusivo: aparejador dirige con silbato al operador, alejamos al personal a 10 metros y estabilizamos la carga con vientos guía."',
+                correct: true,
+                reactionSpeaker: 'MAESTRO Y GRUISTA',
+                reactionText: '"¡Carga asegurada en suelo y radio unificado! Gracias por frenar a tiempo: la calma del novato y la vida de la cuadrilla van por encima de cualquier afán de izaje."',
+                wrongText: ''
               },
               {
                 letter: 'B',
-                text: 'Retirarse del sector de izaje para no verse involucrado en los reclamos y dejar que el operador resuelva a ciegas.',
+                text: 'Gritarle al ayudante por megáfono que corra rápido mientras la grúa sigue bajando la carga para no perder el ciclo de vaciado del piso 5.',
                 correct: false,
-                reactionSpeaker: 'RESIDENTE SISO',
-                reactionText: '"¡Omisión de socorro laboral! Guardar silencio cuando una maniobra está fuera de control casi provoca un siniestro múltiple."',
-                wrongText: 'La evitación y el silencio ante el peligro inminente es complicidad en el riesgo. Liderar la seguridad psicológica es intervenir de inmediato.'
+                reactionSpeaker: 'MAESTRO DE OBRA',
+                reactionText: '"¡La formaleta osciló y casi aplasta al ayudante al tropezar en el suelo! Presionar a un trabajador novato bajo carga suspendida es una negligencia crítica que causa fatalidades."',
+                wrongText: 'Presionar a un trabajador novato bajo una carga en movimiento es una negligencia crítica que causa muertes por aplastamiento.'
               },
               {
                 letter: 'C',
-                text: '"¡Alto total a la maniobra! Unificamos Canal 3: Maestro asume señales exclusivas al operador, alejamos al ayudante del radio de giro y aseguramos la zona."',
-                correct: true,
-                reactionSpeaker: 'MAESTRO Y GRUISTA',
-                reactionText: '"¡Carga asegurada en suelo y radio unificado! Gracias por frenar a tiempo: la seguridad de la cuadrilla y la calma del novato van primero."',
-                wrongText: ''
+                text: 'Apartarse de la línea de tiro para no asumir responsabilidad y dejar que el operador de grúa resuelva la maniobra a ciegas con el carpintero.',
+                correct: false,
+                reactionSpeaker: 'RESIDENTE SISO',
+                reactionText: '"¡Omisión de socorro laboral! Guardar silencio cuando una maniobra está fuera de control casi provoca un siniestro múltiple con aplastamiento."',
+                wrongText: 'La evitación y el silencio ante el peligro inminente es complicidad en el riesgo. Liderar la seguridad psicológica es intervenir de inmediato.'
               }
             ]
           },
@@ -3365,7 +3664,7 @@
             id: 4,
             location: 'ZONA 4: BORDE PERIMETRAL ESTE (PISO 5)',
             speaker: 'COMPAÑERO EN EL BORDE',
-            question: '¿Qué hacer cuando los propios compañeros piden ocultar un borde desprotegido a 18 metros de altura para evitar retrasos?',
+            question: '¿Qué hacer cuando los propios compañeros piden no reportar una baranda perimetral rota a 18 metros de altura para evitar retrasos y no perder el bono diario?',
             bubbleText: '¡Ojo con esa baranda perimetral suelta! Pero no diga nada por radio para que no nos frenen la jornada y no se enoje el interventor...',
             bubbleStyle: 'alert-style',
             summaryText: 'Reportaste oportunamente a SISO y delimitaste la zona de caída. La seguridad psicológica permite señalar fallas sin miedo a represalias, rompiendo la cultura del silencio que precede a los accidentes mortales.',
@@ -3373,26 +3672,26 @@
             choices: [
               {
                 letter: 'A',
-                text: 'Atar la baranda suelta con un alambre de amarre provisional y esperar a que termine el turno para avisar por escrito.',
+                text: 'Hacer un amarre provisional con alambre recocido a la columna para continuar la labor y prometer que al terminar el turno se soldará el anclaje definitivo.',
                 correct: false,
                 reactionSpeaker: 'SUPERVISOR SISO',
-                reactionText: '"¡El alambre cedió de inmediato al apoyarse otro obrero! Los remiendos improvisados en bordes de losa generan una falsa y peligrosa sensación de seguridad."',
+                reactionText: '"¡El alambre cedió de inmediato al apoyarse otro obrero! Los remiendos improvisados en bordes de losa generan una falsa sensación de seguridad que causa caídas mortales."',
                 wrongText: 'La improvisación técnica para evitar fricciones directivas es una trampa cognitiva mortal. Los bordes desprotegidos exigen cerramiento técnico reglamentario.'
               },
               {
                 letter: 'B',
-                text: 'Activar PTT a SISO: "Alerta preventiva Torre B Piso 5: baranda este desanclada. Pausamos tránsito perimetral y delimitamos a 2 metros con cinta y conos."',
+                text: 'Activar reporte preventivo por radio a SISO: "Alerta preventiva Torre B Piso 5: baranda este desanclada. Pausamos tránsito perimetral y delimitamos a 2 metros con cinta y conos."',
                 correct: true,
                 reactionSpeaker: 'SUPERVISOR SISO',
-                reactionText: '"¡Copiado por radio! Reporte oportuno recibido. Tránsito perimetral suspendido y cuadrilla de mantenimiento asegurando pernos de anclaje."',
+                reactionText: '"¡Reporte preventivo recibido! Tránsito perimetral suspendido y cuadrilla de mantenimiento asegurando pernos de anclaje sin ninguna sanción para el equipo."',
                 wrongText: ''
               },
               {
                 letter: 'C',
-                text: 'Gritarle al compañero que es un cómplice negligente y abandonar la obra indignado sin asegurar el área.',
+                text: 'Suspender de palabra el bono de productividad a toda la cuadrilla por no haber advertido la falla antes y exigirles reparar el anclaje sin elementos de bloqueo.',
                 correct: false,
                 reactionSpeaker: 'RESIDENTE DE OBRA',
-                reactionText: '"El desborde y el abandono del frente dejaron el borde desprotegido para los compañeros que venían subiendo."',
+                reactionText: '"¡El castigo colectivo desató rabia y resentimiento! El equipo aprendió a ocultar peligros futuros por miedo a perder dinero, deteriorando la seguridad psicológica."',
                 wrongText: 'La ira y el juicio punitivo destruyen la confianza del equipo. La seguridad psicológica fomenta la denuncia preventiva estructurada sin ataques personales.'
               }
             ]
@@ -3401,7 +3700,7 @@
             id: 5,
             location: 'ZONA 5: TORRE DE ACCESO Y ANDAMIO VOLADIZO',
             speaker: 'SUBCONTRATISTA DE ESTRUCTURAS',
-            question: '¿Cómo actuar legal y psicológicamente ante una coacción directa que condiciona el empleo a realizar una labor insegura?',
+            question: '¿Cómo actuar legal y psicológicamente ante una coacción directa del contratista que amenaza con despido inmediato por no subir a un voladizo sin arnés?',
             bubbleText: '¡O sube a armar ese voladizo ya mismo sin tanta maricada de arnés, o mañana mismo le liquido el contrato por insubordinación!',
             bubbleStyle: 'alert-style',
             summaryText: 'Invocaste la Ley 1010 de Acoso Laboral y la Res. 4272. Ninguna empresa o contratista puede amenazar con despido por negarse a un peligro grave no controlado; el Comité de Convivencia respalda la dignidad y la vida.',
@@ -3409,26 +3708,26 @@
             choices: [
               {
                 letter: 'A',
-                text: 'Detener la orden con firmeza: "La Ley 1010 de 2006 y la Res. 4272 prohíben subir sin línea de vida certificada. Paro la labor y convoco de inmediato al Inspector SISO y al Comité de Convivencia."',
+                text: 'Subir con precaución sujetándose con una mano para evitar el despido y terminar rápido antes de que pase el inspector SISO.',
+                correct: false,
+                reactionSpeaker: 'OFICIAL EN ANDAMIO',
+                reactionText: '"¡Un tablón cedió al vacío! El trabajador estuvo a un segundo de una caída mortal a 18 metros por ceder a la extorsión laboral. Ningún empleo vale la vida."',
+                wrongText: 'Ceder ante la extorsión patronal por temor al desempleo pone en riesgo inmediato la vida. Ninguna orden directiva está por encima del derecho a la vida blindado por la ley colombiana.'
+              },
+              {
+                letter: 'B',
+                text: 'Detener la orden con firmeza: "La Ley 1010 de Acoso Laboral y la Res. 4272 prohíben subir sin línea de vida certificada. Paro la labor y convoco de inmediato al Inspector SISO y al Comité de Convivencia."',
                 correct: true,
                 reactionSpeaker: 'INSPECTOR SISO',
                 reactionText: '"¡Intervención legal respaldada! Inspector SISO en sitio: labor suspendida al subcontratista y trabajadores protegidos sin ninguna represalia contractual."',
                 wrongText: ''
               },
               {
-                letter: 'B',
-                text: 'Subir al voladizo sin arnés rogando no perder el equilibrio para que no cancelen el contrato ni dejen a la familia sin sustento.',
-                correct: false,
-                reactionSpeaker: 'OFICIAL EN ANDAMIO',
-                reactionText: '"¡Un tablón cedió al vacío! El trabajador estuvo a un segundo de una caída mortal a 18 metros por ceder a la extorsión laboral."',
-                wrongText: 'Ceder ante la extorsión patronal por temor al desempleo pone en riesgo inmediato la vida. Ninguna orden directiva está por encima del derecho a la vida blindado por la ley colombiana.'
-              },
-              {
                 letter: 'C',
-                text: 'Embestir al contratista a empujones en la plataforma para hacer respetar la dignidad del trabajador por la fuerza.',
+                text: 'Enfrentar físicamente al contratista en la plataforma empujándolo para hacer respetar la dignidad del trabajador por la fuerza.',
                 correct: false,
                 reactionSpeaker: 'RESIDENTE DE OBRA',
-                reactionText: '"¡Peligroso altercado en altura! La agresión física deslegitima el reclamo, genera causal de despido inmediato y casi provoca la caída de ambos."',
+                reactionText: '"¡Peligroso altercado en altura! La agresión física deslegitima el reclamo, genera causal de despido con justa causa y casi provoca la caída de ambos al vacío."',
                 wrongText: 'La violencia física destruye el amparo normativo. El acoso laboral se combate con la activación de los canales de SISO, el Comité de Convivencia y el paro de labor.'
               }
             ]
@@ -3437,7 +3736,7 @@
             id: 6,
             location: 'ZONA 6: CASETA DE MEZCLADO ELÉCTRICO (440V)',
             speaker: 'OPERADOR DE MEZCLADORA EXHAUSTO',
-            question: '¿Cuál es la decisión ante un operador en agotamiento físico con riesgo crítico de electrocución o atrapamiento?',
+            question: '¿Cuál es la decisión ante un operador en agotamiento físico tras 14 horas de turno con riesgo crítico de electrocución o atrapamiento en la mezcladora?',
             bubbleText: 'Llevo 14 horas derecho... me tiemblan las manos y veo borroso, pero dicen que si paro el trompo se endurece la mezcla...',
             bubbleStyle: 'alert-style',
             summaryText: 'Bloqueaste con candado LOTO y gestionaste el relevo inmediato. La fatiga extrema de más de 12 horas deteriora los reflejos cognitivos igual que un estado de embriaguez. Gestionar descansos salva vidas (Res. 0312 de 2019).',
@@ -3445,27 +3744,27 @@
             choices: [
               {
                 letter: 'A',
-                text: 'Comprarle una bebida energizante con dos pastillas estimulantes para que termine las dos últimas placas del turno.',
+                text: 'Darle una bebida energizante con dos pastillas estimulantes y pedirle que aguante una hora más para entregar la fundición sin reclamos del residente.',
                 correct: false,
                 reactionSpeaker: 'SUPERVISOR ELÉCTRICO',
-                reactionText: '"¡Chispazo eléctrico en tablero! El operador sufrió un microsueño de 3 segundos mientras manipulaba el cable de 440V. Pudo ser una descarga letal."',
+                reactionText: '"¡Arco eléctrico en tablero! El operador sufrió un microsueño de 3 segundos mientras manipulaba el cable de 440V. Estimular con químicos a un operario agotado multiplica el riesgo de paro o quemaduras mortales."',
                 wrongText: 'Dopar a un colaborador extenuado no restituye sus reflejos ni su capacidad neuromuscular; multiplica el riesgo de paro cardiovascular o electrocución.'
               },
               {
                 letter: 'B',
-                text: 'Burlarse de su debilidad delante de la cuadrilla para presionarlo psicológicamente a que demuestre que sí es capaz.',
-                correct: false,
-                reactionSpeaker: 'MEDICINA LABORAL',
-                reactionText: '"El compañero colapsó por lipotimia sobre los engranajes de la mezcladora. El estigma hacia la fatiga detonó una emergencia médica."',
-                wrongText: 'La burla sobre el agotamiento desincentiva el reporte temprano. Cuidar la salud mental de la cuadrilla implica respetar los límites biológicos humanos.'
+                text: 'Aplicar bloqueo y etiquetado LOTO al interruptor general de 440V, sentar al operador en hidratación y solicitar al residente su relevo inmediato por fatiga crítica.',
+                correct: true,
+                reactionSpeaker: 'RESIDENTE DE OBRA',
+                reactionText: '"¡Candado LOTO instalado y compañero a salvo! Relevo autorizado de inmediato. La vida del operador y el respeto a los límites biológicos (Res. 0312/2019) son prioridad absoluta."',
+                wrongText: ''
               },
               {
                 letter: 'C',
-                text: 'Aplicar bloqueo LOTO al interruptor general, sentar al operador en hidratación y solicitar al residente su relevo inmediato por fatiga crítica.',
-                correct: true,
-                reactionSpeaker: 'RESIDENTE DE OBRA',
-                reactionText: '"¡Candado LOTO instalado y compañero a salvo! Relevo autorizado de inmediato. La vida del operador y la prevención del choque eléctrico son prioritarias."',
-                wrongText: ''
+                text: 'Bajar la velocidad del tambor a la mitad y pedirle que se lave la cara con agua fría para que termine las últimas placas por su cuenta.',
+                correct: false,
+                reactionSpeaker: 'MEDICINA LABORAL',
+                reactionText: '"¡El operador colapsó por fatiga extrema sobre la faja de transmisión! La resistencia física tiene límites neurológicos que no se solucionan con agua fría."',
+                wrongText: 'La burla o minimización sobre el agotamiento desincentiva el reporte temprano. Cuidar la salud mental de la cuadrilla implica respetar los límites biológicos humanos.'
               }
             ]
           },
@@ -3473,7 +3772,7 @@
             id: 7,
             location: 'ZONA 7: VIGA METÁLICA VOLADIZA EXTERIOR',
             speaker: 'FIERRERO EN PARÁLISIS POR PÁNICO',
-            question: '¿Cómo aplicar el protocolo de Primeros Auxilios Psicológicos (PAP) a un compañero en parálisis motriz sobre una viga a 25 metros?',
+            question: '¿Cómo aplicar Primeros Auxilios Psicológicos (PAP) a un compañero en parálisis motriz por pánico sobre una viga metálica a 25 metros de altura?',
             bubbleText: '¡No puedo moverme... se me nubló la vista y siento que me voy a caer al vacío! ¡Auxilio, no siento las piernas!',
             bubbleStyle: 'alert-style',
             summaryText: 'Aplicaste los pasos de PAP: anclaje seguro, contacto sereno, respiración regulada y evacuación técnica. La salud mental en obra incluye saber contener crisis agudas con empatía y firmeza técnica.',
@@ -3481,27 +3780,27 @@
             choices: [
               {
                 letter: 'A',
-                text: 'Gritarle con fuerza desde el pasillo: "¡No sea cobarde, camine rápido para acá que todos lo están mirando y va a atrasar la fundida!"',
+                text: 'Gritarle desde el pasillo: "¡Camine que no le va a pasar nada, no sea flojo que todos lo están mirando y va a atrasar el cronograma de la losa!"',
                 correct: false,
                 reactionSpeaker: 'COMPAÑERO EN CRISIS',
-                reactionText: '"¡El obrero entró en hiperventilación convulsiva y casi resbala de la viga por el choque de angustia provocado por los gritos descalificadores!"',
+                reactionText: '"¡El obrero entró en hiperventilación convulsiva y casi resbala de la viga! Invalidar o humillar el pánico agrava el colapso autonómico y dispara la parálisis motora."',
                 wrongText: 'Invalidar o humillar el pánico agrava el colapso autonómico y dispara la parálisis motora. El protocolo PAP prohíbe terminantemente la descalificación.'
               },
               {
                 letter: 'B',
-                text: 'Asegurar doble eslinga a la línea de vida, hacer contacto visual sereno a su nivel, guiar respiración 4x4 (inhalar 4s, exhalar 4s) y coordinar extracción asistida con brigada SISO.',
-                correct: true,
-                reactionSpeaker: 'BRIGADA DE RESCATE',
-                reactionText: '"¡Compañero estabilizado y guiado a plataforma segura! Su ritmo cardíaco bajó gracias al contacto calmado y la respiración guiada. Excelente aplicación de PAP."',
-                wrongText: ''
-              },
-              {
-                letter: 'C',
                 text: 'Jalonearlo violentamente del arnés hacia atrás de un solo tirón para sacarlo rápido de la viga sin hablarle.',
                 correct: false,
                 reactionSpeaker: 'INSPECTOR DE RESCATE',
-                reactionText: '"¡Peligroso forcejeo al borde del vacío! El movimiento brusco casi desestabiliza a ambos obreros sobre la viga angosta."',
+                reactionText: '"¡Peligroso forcejeo al borde del vacío! El movimiento brusco casi desestabiliza a ambos obreros sobre la viga angosta. Jamás se jalonea a una persona en crisis sin asegurar la línea."',
                 wrongText: 'Jalonear a una persona presa de pánico sin asegurar la línea de vida puede provocar una caída conjunta por reflejo de supervivencia. Primero se fija la línea y se calma la mente.'
+              },
+              {
+                letter: 'C',
+                text: 'Asegurar doble eslinga a la línea de vida, hacer contacto visual sereno a su nivel, guiar respiración diafragmática 4x4 (inhalar 4s, exhalar 4s) y coordinar extracción asistida con la brigada SISO.',
+                correct: true,
+                reactionSpeaker: 'BRIGADA DE RESCATE',
+                reactionText: '"¡Compañero estabilizado y guiado a plataforma segura! Su ritmo cardíaco bajó gracias al contacto calmado y la respiración guiada. Excelente aplicación del protocolo PAP."',
+                wrongText: ''
               }
             ]
           },
@@ -3509,7 +3808,7 @@
             id: 8,
             location: 'ZONA 8: TALLER DE CORTE Y SIERRA CIRCULAR',
             speaker: 'COMPADRE DEL OPERADOR DE SIERRA',
-            question: '¿Cómo intervenir éticamente ante un operario de sierra circular que presenta descoordinación motora o signos de consumo?',
+            question: '¿Cómo intervenir éticamente ante un operario de sierra circular que presenta descoordinación motora o signos de consumo cuando un compañero pide encubrirlo?',
             bubbleText: 'Caliéntelo con café, compadre... no lo sape con SISO que lo echan y tiene tres hijos pequeños. Ayúdelo a cortar callado...',
             bubbleStyle: 'alert-style',
             summaryText: 'Desconectaste la máquina y remitiste a valoración médica. El cuidado colectivo no encubre el riesgo por compadrazgo ni ataca con humillación; interviene con respeto para proteger la vida.',
@@ -3517,27 +3816,27 @@
             choices: [
               {
                 letter: 'A',
-                text: 'Desconectar la sierra, hablar en privado con el compañero para retirarlo de la máquina con respeto y remitirlo a valoración médica preventiva en SST.',
+                text: 'Desconectar la sierra circular, hablar en privado con el compañero con respeto, relevarlo de la labor y remitirlo a valoración médica preventiva en SST.',
                 correct: true,
                 reactionSpeaker: 'MÉDICO LABORAL SST',
-                reactionText: '"¡Sierra desenergizada y trabajador protegido! Se activó la ruta médica preventiva sin exponer al compañero al peligro de mutilación ni al escarnio."',
+                reactionText: '"¡Sierra desenergizada y trabajador protegido! Se activó la ruta médica preventiva de SST sin exponer al compañero al peligro inminente de mutilación ni al escarnio público."',
                 wrongText: ''
               },
               {
                 letter: 'B',
-                text: 'Aceptar el pacto de silencio, pasarle la madera rápido y dejarlo cortar a 3000 RPM esperando que el café le baje el efecto.',
+                text: 'Asignarle un ayudante que sostenga la madera por él para que el operador solo guíe el corte sin manipular directamente la hoja circular.',
                 correct: false,
                 reactionSpeaker: 'OFICIAL DE CORTE',
-                reactionText: '"¡La madera rebotó con violencia cortando la manguera hidráulica! Estuvo a centímetros de una amputación traumática de mano."',
-                wrongText: 'El falso compañerismo que encubre la alteración psicomotora en máquinas de alta revolución es complicidad en una mutilación o muerte.'
+                reactionText: '"¡La madera pateó con violencia reventando la manguera hidráulica y rozando los dedos del ayudante! Delegar el riesgo duplica las potenciales víctimas de amputación."',
+                wrongText: 'Delegar o acompañar labores críticas con personal alterado psicomotoramente multiplica las probabilidades de siniestro fatal.'
               },
               {
                 letter: 'C',
-                text: 'Grabar al compañero con el celular y subir el video al grupo de WhatsApp de la cuadrilla para que todos se burlen y lo despidan.',
+                text: 'Aceptar el pacto de silencio, pasarle café caliente y pedirle que corte despacio para que no lo sapeen con el inspector y no pierda el empleo.',
                 correct: false,
                 reactionSpeaker: 'COMITÉ DE CONVIVENCIA',
-                reactionText: '"La humillación pública causó una crisis depresiva severa y vulneró el derecho a la intimidad y la custodia de datos de salud."',
-                wrongText: 'El escarnio público destruye la salud mental y viola la confidencialidad médica. La intervención debe ser humana, privada y conducida por SST.'
+                reactionText: '"¡Estuvo a milímetros de una amputación traumática de mano! El falso compañerismo que encubre la alteración psicomotora en máquinas de alta velocidad es complicidad en una tragedia."',
+                wrongText: 'El falso compañerismo que encubre la alteración psicomotora en máquinas de alta revolución es complicidad en una mutilación o muerte.'
               }
             ]
           },
@@ -3545,7 +3844,7 @@
             id: 9,
             location: 'ZONA 9: LABORATORIO DE CALIDAD Y ENSAYOS',
             speaker: 'CONTRATISTA DE ESTRUCTURAS',
-            question: '¿Cómo responder ante la orden directiva de falsear ensayos de laboratorio que comprometen la resistencia del edificio?',
+            question: '¿Cómo responder ante la orden directiva de falsear ensayos de laboratorio que ocultan que el concreto de una columna dio solo 18 MPa en vez de 28 MPa?',
             bubbleText: 'La probeta dio resistencia baja en el piso 4. Si reporta eso nos sellan la obra y se pierden 500 empleos. Ponga 28 megapascales en la planilla...',
             bubbleStyle: 'alert-style',
             summaryText: 'Emitiste la No Conformidad e instalaste apuntalamiento. La integridad técnica y ética protege vidas futuras; la presión de plazos o dinero jamás justifica violar las normas sismorresistentes (NSR-10).',
@@ -3553,23 +3852,23 @@
             choices: [
               {
                 letter: 'A',
-                text: 'Firmar la planilla con 28 MPa por miedo a ser el culpable del despido masivo de las 500 familias de la obra.',
+                text: 'Poner 28 MPa en la planilla preliminar para no frenar la fundición del piso superior, asumiendo que el concreto ganará resistencia con el tiempo.',
                 correct: false,
                 reactionSpeaker: 'INTERVENTOR DE ESTRUCTURA',
-                reactionText: '"¡Fisura diagonal crítica en la columna del piso inferior! La sobrecarga estructural no perdona y casi hace colapsar la losa sobre la cuadrilla."',
+                reactionText: '"¡Fisura diagonal crítica en la columna del piso inferior! La sobrecarga estructural no perdona: falsear datos es un delito penal que casi causa el colapso del edificio sobre los trabajadores."',
                 wrongText: 'Ceder al chantaje emocional traslada una responsabilidad penal gravísima al trabajador y pone en peligro a miles de personas.'
               },
               {
                 letter: 'B',
-                text: 'Destruir la probeta defectuosa con un cincel y culpar al laboratorio externo para evadir el conflicto con el contratista.',
+                text: 'Romper la probeta aduciendo defecto de curado y solicitar un ensayo de esclerometría para la próxima semana sin alertar a la interventoría.',
                 correct: false,
                 reactionSpeaker: 'AUDITORÍA TÉCNICA',
-                reactionText: '"Las cámaras registraron la destrucción del espécimen. Proceso penal abierto por fraude y adulteración de control de calidad."',
+                reactionText: '"¡Las cámaras registraron la destrucción del espécimen! Proceso penal abierto por fraude y adulteración de control de calidad bajo la norma sismorresistente NSR-10."',
                 wrongText: 'La destrucción de pruebas es un delito penal que destruye la carrera profesional. Las no conformidades deben ser reportadas legalmente.'
               },
               {
                 letter: 'C',
-                text: 'Rechazar la alteración con rigor técnico: "La ley y mi ética me impiden alterar datos. Registro los 18 MPa reales, emito No Conformidad técnica y ordeno apuntalamiento preventivo de la losa."',
+                text: 'Rechazar la alteración con rigor técnico: "La ley y mi ética me impiden alterar datos. Registro los 18 MPa reales, emito No Conformidad técnica formal y ordeno apuntalamiento preventivo de la losa."',
                 correct: true,
                 reactionSpeaker: 'INGENIERO CALCULISTA',
                 reactionText: '"¡Puntal de soporte instalado a tiempo y columna asegurada! Gracias por su valentía técnica: falsear el dato hubiera provocado el colapso del piso en semanas."',
@@ -3581,7 +3880,7 @@
             id: 10,
             location: 'ZONA 10: ASAMBLEA CENTRAL DE CUADRILLA',
             speaker: 'VOCERO DE LA CUADRILLA INDIGNADA',
-            question: '¿Cuál es el liderazgo requerido para desescalar una protesta violenta inminente y restablecer la concertación?',
+            question: '¿Cuál es el liderazgo requerido para desescalar una protesta violenta inminente por horas extra impagas y maltrato del capataz?',
             bubbleText: '¡Estamos mamados de los abusos! ¡O nos pagan hoy las horas extra y echan al capataz o reventamos los vestieres y quemamos las formaletas!',
             bubbleStyle: 'alert-style',
             summaryText: 'Convocaste mesa de concertación con acta de acuerdos formales. La mediación restaurativa valida las emociones del equipo, desactiva la violencia y reconstruye la cohesión psicosocial en la obra.',
@@ -3589,18 +3888,18 @@
             choices: [
               {
                 letter: 'A',
-                text: 'Amenazar con llamar al escuadrón antimotines de la policía para que los saquen a la fuerza y los veten de todas las obras del país.',
+                text: 'Amenazar con llamar al escuadrón de policía para desalojarlos a la fuerza y redactar cartas de despido con justa causa para todos los manifestantes.',
                 correct: false,
                 reactionSpeaker: 'VOCERO DE LA CUADRILLA',
-                reactionText: '"¡Estalló la batalla campal! Destrucción de instalaciones, heridos en la obra y clausura judicial preventiva de todo el proyecto."',
+                reactionText: '"¡Estalló la batalla campal! Destrucción de instalaciones, heridos en la obra y clausura judicial preventiva de todo el proyecto con pérdidas millonarias."',
                 wrongText: 'La amenaza punitiva y la violencia estatal exacerban la rabia acumulada y transforman una queja legítima en un motín incontrolable.'
               },
               {
                 letter: 'B',
-                text: 'Escuchar la indignación sin juzgar, convocar mesa de concertación inmediata con Gerencia y Comité de Convivencia, y redactar acta de acuerdos verificables.',
+                text: 'Escuchar la indignación sin juzgar, convocar mesa de concertación inmediata con Gerencia y Comité de Convivencia, y firmar acta formal de acuerdos y pagos verificables.',
                 correct: true,
                 reactionSpeaker: 'GERENTE Y CUADRILLA',
-                reactionText: '"¡Acta de acuerdos firmada y jornada restablecida en paz! Se autorizó el pago justo de horas extra y se abrió proceso formal de convivencia."',
+                reactionText: '"¡Acta de acuerdos firmada y jornada restablecida en paz! Se autorizó el pago justo de horas extra y se abrió proceso formal de convivencia bajo la Ley 1010."',
                 wrongText: ''
               },
               {
@@ -3608,7 +3907,7 @@
                 text: 'Encerrarse con llave en la caseta técnica del residente y esperar a que la cuadrilla se canse de gritar y se disperse sola.',
                 correct: false,
                 reactionSpeaker: 'RESIDENTE DE OBRA',
-                reactionText: '"El vacío de liderazgo enfureció aún más a la cuadrilla: tumbaron la puerta y saquearon el almacén de herramientas de precisión."',
+                reactionText: '"¡El vacío de liderazgo enfureció aún más a la cuadrilla! Tumbaron la puerta y saquearon el almacén de herramientas de precisión. La indiferencia directiva escala el caos."',
                 wrongText: 'La indiferencia y la cobardía directiva escalan los conflictos laborales. El liderazgo psicosocial exige presencia serena y escucha restaurativa.'
               }
             ]
@@ -3800,26 +4099,47 @@
 
         onShiftClosureReached: function () {
           this.currentStation = 11;
-          this.dom.locationText.textContent = 'ZONA CENTRAL: CIERRE DE JORNADA PISO 5';
-          if (this.dom.questionStepBadge) this.dom.questionStepBadge.textContent = 'CIERRE';
-          if (this.dom.questionHighlightTitle) this.dom.questionHighlightTitle.textContent = 'BALANCE DE CUADRILLA';
-          if (this.dom.questionPromptText) this.dom.questionPromptText.textContent = '¡Jornada completada con éxito! Consulta tu balance:';
+          var passed = (this.score >= 80);
 
-          // Bocadillo de diálogo proyectado en 3D sobre la cuadrilla
-          this.dom.bubbleSpeaker.textContent = 'RESIDENTE DE OBRA • BALANCE DE CUADRILLA';
-          this.dom.bubbleText.textContent = '"¡Atención toda la cuadrilla! Baranda perimetral asegurada, maniobras coordinadas y bitácora al día. Hoy demostramos que el respeto, la claridad y el apoyo mutuo salvan vidas y cuidan la salud mental de todos. ¡Jornada concluida!"';
-          this.dom.speechBubble.className = 'character-speech-bubble active success-style';
-          this.dom.speechBubble.style.display = 'block';
+          if (passed) {
+            // JORNADA EJEMPLAR (BUENA)
+            this.dom.locationText.textContent = 'ZONA CENTRAL: CIERRE DE JORNADA EJEMPLAR';
+            if (this.dom.questionStepBadge) this.dom.questionStepBadge.textContent = 'ÉXITO';
+            if (this.dom.questionHighlightTitle) this.dom.questionHighlightTitle.textContent = 'CANAL LIMPIO Y CUADRILLA SEGURA';
+            if (this.dom.questionPromptText) this.dom.questionPromptText.textContent = '¡Jornada completada con maestría técnica y psicosocial!';
 
-          SoundEngine.playDebriefChime();
-          SoundEngine.playRogerBeep();
-          setTimeout(function () {
-            VoiceEngine.play('shiftClosure');
-          }, 450);
+            this.dom.bubbleSpeaker.textContent = 'RESIDENTE DE OBRA • BALANCE DE CUADRILLA';
+            this.dom.bubbleText.textContent = '"¡Atención toda la cuadrilla! Baranda perimetral asegurada, maniobras coordinadas, respeto total en radio y bitácora al día. Hoy demostramos que la salud mental y la seguridad salvan vidas. ¡Jornada ejemplar!"';
+            this.dom.speechBubble.className = 'character-speech-bubble active success-style';
+            this.dom.speechBubble.style.display = 'block';
 
-          if (Real3DEngine.handRadioGroup) {
-            var led3D = Real3DEngine.handRadioGroup.getObjectByName('radioLed3D');
-            if (led3D) led3D.material.color.setHex(0x2A9D8F);
+            Real3DEngine.setCelebrationState(true);
+            SoundEngine.playVictory();
+            SoundEngine.playRogerBeep();
+
+            if (Real3DEngine.handRadioGroup) {
+              var led3D = Real3DEngine.handRadioGroup.getObjectByName('radioLed3D');
+              if (led3D) led3D.material.color.setHex(0x10B981);
+            }
+          } else {
+            // JORNADA TRÁGICA (MALA)
+            this.dom.locationText.textContent = 'ZONA CENTRAL: ALERTA CRÍTICA Y ACCIDENTE EN OBRA';
+            if (this.dom.questionStepBadge) this.dom.questionStepBadge.textContent = 'ALERTA';
+            if (this.dom.questionHighlightTitle) this.dom.questionHighlightTitle.textContent = 'COLAPSO PSICOSOCIAL Y SINIESTRO';
+            if (this.dom.questionPromptText) this.dom.questionPromptText.textContent = 'La jornada cerró con incidentes graves. Consulta el reporte:';
+
+            this.dom.bubbleSpeaker.textContent = 'INSPECTOR SISO • COMITÉ DE CRISIS';
+            this.dom.bubbleText.textContent = '"¡Paren todo! La prisa comercial, la hostilidad por radio y la fatiga desatendida causaron un accidente grave y el paro de la cuadrilla. Se ordena investigación judicial y clausura preventiva del frente de obra."';
+            this.dom.speechBubble.className = 'character-speech-bubble active alert-style';
+            this.dom.speechBubble.style.display = 'block';
+
+            Real3DEngine.setEmergencyState(true);
+            SoundEngine.playEmergencyAlarm();
+
+            if (Real3DEngine.handRadioGroup) {
+              var led3D = Real3DEngine.handRadioGroup.getObjectByName('radioLed3D');
+              if (led3D) led3D.material.color.setHex(0xEF4444);
+            }
           }
 
           // Botón en la consola flotante para abrir el balance final y certificación
@@ -3829,12 +4149,16 @@
 
           var debriefBtn = document.createElement('button');
           debriefBtn.className = 'text-response-bubble debrief-action-bubble';
+          if (!passed) {
+            debriefBtn.style.background = 'linear-gradient(135deg, rgba(230,57,70,0.95), rgba(185,28,28,0.95))';
+            debriefBtn.style.borderColor = '#FCA5A5';
+          }
           debriefBtn.innerHTML = [
-            '<div class="bubble-letter-icon" style="background:var(--bolivar-yellow);color:var(--bolivar-blue-dark);font-weight:900;width:34px;height:34px;min-width:34px;">',
+            '<div class="bubble-letter-icon" style="background:' + (passed ? 'var(--bolivar-yellow)' : '#EF4444') + ';color:' + (passed ? 'var(--bolivar-blue-dark)' : '#FFF') + ';font-weight:900;width:34px;height:34px;min-width:34px;">',
             '  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>',
             '</div>',
             '<div class="bubble-message-text" style="font-weight:800;color:#FFF;font-size:14px;line-height:1.4;">',
-            '  VER BALANCE FINAL Y CERTIFICACIÓN ARL BOLÍVAR',
+            passed ? '  VER BALANCE EJEMPLAR Y CERTIFICACIÓN ARL BOLÍVAR' : '  VER REPORTE DE INCIDENTE Y CONSECUENCIAS LEGALES',
             '</div>'
           ].join('');
 
@@ -3947,8 +4271,14 @@
             this.dom.bubbleSpeaker.textContent = choice.reactionSpeaker || 'ACCIÓN CONFIRMADA';
             this.dom.bubbleText.textContent = choice.reactionText || '"Acción correcta confirmada. Clima de cuadrilla fortalecido."';
           } else {
-            SoundEngine.playAlert();
+            SoundEngine.playHazard();
             VoiceEngine.play('alert');
+
+            // Sacudida visual de pantalla ante peligro
+            var app = document.getElementById('adventureApp') || document.body;
+            app.classList.remove('shake-hazard-active');
+            void app.offsetWidth;
+            app.classList.add('shake-hazard-active');
 
             bubbleEl.style.borderColor = '#E63946';
             bubbleEl.style.background = '#FDE8E9';
@@ -3993,28 +4323,49 @@
           ScormAPI.setStatus(passed ? 'passed' : 'failed');
 
           this.dom.finalScoreVal.textContent = this.score + ' / 100 PTS';
+
+          var pillarsContainer = document.getElementById('finalPillarsContainer');
+          var tragicContainer = document.getElementById('finalTragicContainer');
+          var normBox = document.getElementById('finalNormBox');
+
           if (passed) {
             this.dom.finalIcon.className = 'screen-badge-circle passed';
-            this.dom.finalIcon.innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>';
-            this.dom.finalTitle.textContent = '¡Jornada Aprobada con Canal Limpio!';
-            this.dom.finalDesc.textContent = 'Demostraste dominio en comunicación asertiva, apoyo social y seguridad psicológica en la cuadrilla.';
+            this.dom.finalIcon.innerHTML = '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+            this.dom.finalTitle.textContent = '¡Jornada Ejemplar con Canal Limpio!';
+            this.dom.finalDesc.textContent = 'Demostraste maestría técnica y liderazgo psicosocial: la cuadrilla operó con respeto mutuo, comunicación asertiva, apoyo social y cero accidentes.';
             this.dom.finalStatusVal.textContent = 'ESTADO SCORM: APROBADO (≥ 80%)';
             this.dom.finalStatusVal.style.color = '#4ADE80';
+
+            if (pillarsContainer) pillarsContainer.style.display = 'grid';
+            if (tragicContainer) tragicContainer.style.display = 'none';
+            if (normBox) {
+              normBox.innerHTML = '<span class="teaching-norm-tag" style="color:var(--bolivar-yellow);">Compromiso ARL Bolívar:</span> El trato respetuoso y la comunicación oportuna salvan tantas vidas como los equipos de protección física.';
+              normBox.style.borderColor = 'rgba(255,255,255,0.2)';
+            }
+
             this.dom.finishBtn.style.display = 'flex';
             this.dom.replayBtn.style.display = 'flex';
             this.dom.retryBtn.style.display = 'none';
-            SoundEngine.playSuccess();
+            SoundEngine.playVictory();
           } else {
-            this.dom.finalIcon.className = 'screen-badge-circle';
-            this.dom.finalIcon.innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line><circle cx="12" cy="12" r="10"></circle></svg>';
-            this.dom.finalTitle.textContent = 'Jornada con Fricción Psicosocial';
-            this.dom.finalDesc.textContent = 'Algunas decisiones aumentaron la tensión o el riesgo en la cuadrilla. Te invitamos a repasar los protocolos.';
+            this.dom.finalIcon.className = 'screen-badge-circle tragic';
+            this.dom.finalIcon.innerHTML = '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>';
+            this.dom.finalTitle.textContent = 'Jornada Trágica: Colapso Psicosocial y Accidente en Obra';
+            this.dom.finalDesc.textContent = 'Las decisiones basadas en la prisa económica, la intimidación por radio, el silencio cómplice y la fatiga laboral provocaron un accidente grave y el paro de la cuadrilla.';
             this.dom.finalStatusVal.textContent = 'ESTADO SCORM: NO APROBADO (< 80%)';
-            this.dom.finalStatusVal.style.color = '#E63946';
+            this.dom.finalStatusVal.style.color = '#F87171';
+
+            if (pillarsContainer) pillarsContainer.style.display = 'none';
+            if (tragicContainer) tragicContainer.style.display = 'grid';
+            if (normBox) {
+              normBox.innerHTML = '<span class="teaching-norm-tag" style="color:#FCA5A5;">Lección Vital ARL Bolívar:</span> En el sector construcción, el 85% de los accidentes graves están precedidos por fallas psicosociales: órdenes contradictorias, hostilidad verbal y fatiga no relevada. Cuidar la salud mental salva vidas.';
+              normBox.style.borderColor = 'rgba(239,68,68,0.4)';
+            }
+
             this.dom.finishBtn.style.display = 'none';
             this.dom.replayBtn.style.display = 'none';
             this.dom.retryBtn.style.display = 'flex';
-            SoundEngine.playAlert();
+            SoundEngine.playEmergencyAlarm();
           }
 
           this.dom.finalScreen.style.display = 'flex';
@@ -4029,6 +4380,8 @@
           this.dom.finalScreen.style.display = 'none';
           this.dom.closureConfirmation.style.display = 'none';
           this.dom.welcomeScreen.style.display = 'none';
+
+          Real3DEngine.resetSceneState();
 
           if (Real3DEngine.camera && Real3DEngine.waypoints && Real3DEngine.waypoints[0]) {
             Real3DEngine.camera.position.copy(Real3DEngine.waypoints[0].pos);

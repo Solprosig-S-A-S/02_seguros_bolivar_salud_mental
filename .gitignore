@@ -72,3 +72,4 @@ $RECYCLE.BIN/
 *.7z
 # Allow SCORM release zip packages
 !*_SCORM.zip
+
