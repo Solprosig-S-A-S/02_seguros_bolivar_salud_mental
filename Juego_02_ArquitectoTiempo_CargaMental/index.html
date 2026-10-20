@@ -53,6 +53,9 @@
       user-select: none;
       -webkit-user-select: none;
       touch-action: none;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -109,7 +112,9 @@
       left: 0;
       width: 100%;
       padding: max(8px, env(safe-area-inset-top, 8px)) 12px 8px 12px;
-      background: linear-gradient(180deg, rgba(2, 48, 71, 0.98) 0%, rgba(2, 48, 71, 0.88) 85%, transparent 100%);
+      background: linear-gradient(180deg, rgba(2, 48, 71, 0.78) 0%, rgba(2, 48, 71, 0.55) 85%, transparent 100%);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       z-index: 35;
       display: flex;
       align-items: center;
@@ -133,22 +138,22 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 900;
+      font-weight: 700;
       font-size: 13px;
       color: var(--bolivar-blue-dark);
       border: 1.5px solid #FFF;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.25);
     }
 
     .round-tag {
-      background: rgba(255, 255, 255, 0.14);
-      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       padding: 3px 8px;
       border-radius: 8px;
-      font-size: 11px;
-      font-weight: 800;
+      font-size: clamp(10px, 2.2vw, 11px);
+      font-weight: 600;
       color: #FFF;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.2px;
     }
 
     /* SEMÁFORO DE CARGA MENTAL COMPACTO Y ELEGANTE */
@@ -164,15 +169,15 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 9.5px;
-      font-weight: 800;
-      letter-spacing: 0.3px;
+      font-size: clamp(9px, 2vw, 10px);
+      font-weight: 600;
+      letter-spacing: 0.2px;
       color: #94A3B8;
     }
 
     .meter-status-pill {
-      font-size: 10px;
-      font-weight: 800;
+      font-size: clamp(9.5px, 2.1vw, 10px);
+      font-weight: 600;
       color: #4ADE80;
       transition: color 0.3s ease;
     }
@@ -182,10 +187,10 @@
     .meter-track {
       width: 100%;
       height: 6px;
-      background: rgba(10, 30, 45, 0.95);
+      background: rgba(10, 30, 45, 0.65);
       border-radius: 3px;
       overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.18);
     }
 
     .meter-fill {
@@ -207,14 +212,14 @@
       width: 28px;
       height: 28px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.25);
       color: #FFF;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      font-weight: 900;
+      font-weight: 700;
       font-size: 12px;
       touch-action: manipulation;
     }
@@ -229,19 +234,21 @@
       top: max(54px, calc(48px + env(safe-area-inset-top, 8px)));
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(2, 48, 71, 0.90);
-      border: 1px solid rgba(255, 183, 3, 0.5);
+      background: rgba(2, 48, 71, 0.70);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 183, 3, 0.4);
       border-radius: 14px;
       padding: 3px 10px;
-      font-size: 10.5px;
-      font-weight: 700;
+      font-size: clamp(9.5px, 2.1vw, 10.5px);
+      font-weight: 500;
       color: #F8FAFC;
       display: flex;
       align-items: center;
       gap: 5px;
       z-index: 25;
       pointer-events: none;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
       transition: opacity 0.4s ease, transform 0.4s ease;
     }
     .touch-rot-pill.faded {
@@ -256,7 +263,9 @@
       left: 0;
       width: 100%;
       padding: 6px 10px max(8px, env(safe-area-inset-bottom, 8px)) 10px;
-      background: linear-gradient(180deg, rgba(2, 48, 71, 0) 0%, rgba(2, 48, 71, 0.94) 14%, rgba(1, 26, 40, 0.98) 100%);
+      background: linear-gradient(180deg, transparent 0%, rgba(2, 48, 71, 0.65) 20%, rgba(1, 26, 40, 0.82) 100%);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       display: flex;
       flex-direction: column;
       gap: 5px;
@@ -267,14 +276,16 @@
 
     /* TARJETA COMPACTA DE SITUACIÓN Y PREGUNTA */
     .situation-card {
-      background: rgba(2, 48, 71, 0.92);
-      border: 1.5px solid var(--bolivar-yellow);
+      background: rgba(2, 48, 71, 0.70);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 183, 3, 0.35);
       border-radius: 12px;
       padding: 6px 9px;
       display: flex;
       flex-direction: column;
       gap: 3px;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
     }
 
     .situation-header {
@@ -287,50 +298,50 @@
     .round-badge {
       background: var(--bolivar-yellow);
       color: var(--bolivar-blue-dark);
-      font-size: 9.5px;
-      font-weight: 900;
+      font-size: clamp(9px, 2vw, 9.5px);
+      font-weight: 700;
       padding: 2px 7px;
       border-radius: 5px;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.2px;
       text-transform: uppercase;
       flex-shrink: 0;
     }
 
     .speaker-label {
-      font-size: 10px;
-      font-weight: 800;
+      font-size: clamp(9.5px, 2.1vw, 10px);
+      font-weight: 600;
       color: #94A3B8;
       text-transform: uppercase;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.2px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
     .situation-dialogue {
-      font-size: 11px;
-      font-weight: 600;
+      font-size: clamp(10.5px, 2.4vw, 11.5px);
+      font-weight: 500;
       color: #F8FAFC;
-      line-height: 1.25;
+      line-height: 1.35;
       font-style: italic;
       margin: 0;
     }
 
     .situation-question {
-      font-size: 11.5px;
-      font-weight: 800;
+      font-size: clamp(11px, 2.5vw, 12px);
+      font-weight: 600;
       color: var(--bolivar-yellow);
-      line-height: 1.25;
+      line-height: 1.35;
       margin: 0;
     }
 
     .situation-feedback-inline {
-      font-size: 11px;
-      font-weight: 700;
+      font-size: clamp(10px, 2.2vw, 11px);
+      font-weight: 600;
       padding: 3px 6px;
       border-radius: 6px;
       display: none;
-      line-height: 1.22;
+      line-height: 1.25;
       margin-top: 2px;
     }
     .situation-feedback-inline.active.success {
@@ -364,32 +375,34 @@
       gap: 8px;
       cursor: pointer;
       text-align: left;
-      background: rgba(2, 38, 58, 0.92);
-      border: 1px solid rgba(255, 183, 3, 0.45);
+      background: rgba(2, 38, 58, 0.68);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 183, 3, 0.32);
       color: #FFF;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
       transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
       touch-action: manipulation;
       user-select: none;
       -webkit-user-select: none;
     }
     .choice-card-btn:hover {
-      background: rgba(2, 54, 82, 0.98);
-      border-color: var(--bolivar-yellow);
+      background: rgba(2, 54, 82, 0.82);
+      border-color: rgba(255, 183, 3, 0.65);
       transform: translateY(-1px);
     }
     .choice-card-btn:active {
       transform: scale(0.98);
-      background: rgba(255, 183, 3, 0.2);
+      background: rgba(255, 183, 3, 0.25);
     }
 
     .choice-card-btn.correct-state {
-      background: rgba(42, 157, 143, 0.92) !important;
+      background: rgba(42, 157, 143, 0.75) !important;
       border-color: #6EE7B7 !important;
     }
 
     .choice-card-btn.wrong-state {
-      background: rgba(230, 57, 70, 0.92) !important;
+      background: rgba(230, 57, 70, 0.75) !important;
       border-color: #FCA5A5 !important;
     }
 
@@ -403,15 +416,15 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 900;
+      font-weight: 700;
       font-size: 11px;
       flex-shrink: 0;
     }
 
     .choice-text-label {
-      font-size: 11.5px;
-      font-weight: 700;
-      line-height: 1.25;
+      font-size: clamp(11px, 2.5vw, 12px);
+      font-weight: 500;
+      line-height: 1.32;
       color: #FFFFFF;
       flex: 1;
     }
@@ -423,9 +436,9 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(2, 48, 71, 0.88);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+      background: rgba(2, 48, 71, 0.70);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       z-index: 100;
       display: flex;
       align-items: flex-end;
@@ -443,10 +456,12 @@
       width: 100%;
       max-width: 480px;
       margin: 0 auto;
-      background: #FFFFFF;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       border-radius: 22px 22px 0 0;
       padding: 20px 18px max(18px, env(safe-area-inset-bottom, 18px)) 18px;
-      border-top: 6px solid var(--bolivar-green);
+      border-top: 4px solid var(--bolivar-green);
       display: flex;
       flex-direction: column;
       transform: translateY(100%);
@@ -454,7 +469,7 @@
       max-height: 85vh;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
-      box-shadow: 0 -10px 35px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 -10px 35px rgba(0, 0, 0, 0.35);
     }
     .feedback-modal-overlay.active .feedback-drawer {
       transform: translateY(0);
@@ -467,8 +482,8 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      font-size: 12px;
-      font-weight: 800;
+      font-size: 11.5px;
+      font-weight: 600;
       text-transform: uppercase;
       padding: 4px 10px;
       border-radius: 8px;
@@ -484,8 +499,8 @@
 
     /* UN SOLO TEXTO CLARO Y CONCISO */
     .feedback-single-text {
-      font-size: 14.5px;
-      font-weight: 600;
+      font-size: clamp(13px, 2.8vw, 14.5px);
+      font-weight: 500;
       line-height: 1.5;
       color: #0F172A;
       margin-bottom: 18px;
@@ -493,21 +508,21 @@
 
     .feedback-advance-btn {
       width: 100%;
-      height: 50px;
-      min-height: 50px;
+      height: 48px;
+      min-height: 48px;
       background: var(--bolivar-blue);
       color: #FFF;
       border: none;
       border-radius: 12px;
-      font-size: 14px;
-      font-weight: 800;
+      font-size: 13.5px;
+      font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.6px;
+      letter-spacing: 0.5px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 9px;
+      gap: 8px;
       touch-action: manipulation;
     }
     .feedback-advance-btn:active {
@@ -521,9 +536,9 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(2, 48, 71, 0.98);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      background: rgba(2, 48, 71, 0.82);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       z-index: 150;
       display: flex;
       flex-direction: column;
@@ -562,15 +577,17 @@
     }
 
     .screen-title {
-      font-size: 21px;
-      font-weight: 900;
+      font-size: clamp(18px, 4.5vw, 22px);
+      font-weight: 700;
       color: #FFF;
       margin-bottom: 5px;
       line-height: 1.25;
+      letter-spacing: -0.2px;
     }
 
     .screen-desc {
-      font-size: 13.5px;
+      font-size: clamp(12px, 2.7vw, 13.5px);
+      font-weight: 400;
       color: #CBD5E1;
       line-height: 1.45;
       margin-bottom: 12px;
@@ -578,7 +595,7 @@
 
     .briefing-box {
       background: rgba(255, 183, 3, 0.08);
-      border: 1px solid rgba(255, 183, 3, 0.35);
+      border: 1px solid rgba(255, 183, 3, 0.3);
       border-radius: 12px;
       padding: 10px 12px;
       text-align: left;
@@ -590,7 +607,7 @@
       align-items: center;
       gap: 5px;
       font-size: 11px;
-      font-weight: 800;
+      font-weight: 600;
       color: var(--bolivar-yellow);
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -598,7 +615,8 @@
     }
 
     .briefing-text {
-      font-size: 13px;
+      font-size: clamp(12px, 2.6vw, 13px);
+      font-weight: 400;
       color: #F1F5F9;
       line-height: 1.45;
     }
@@ -636,35 +654,36 @@
     .rule-icon.yellow { background: rgba(255, 183, 3, 0.2); color: #FFB703; border: 1px solid rgba(255,183,3,0.5); }
 
     .rule-info h4 {
-      font-size: 12.5px;
-      font-weight: 800;
+      font-size: clamp(11.5px, 2.5vw, 12.5px);
+      font-weight: 600;
       color: #FFF;
       margin-bottom: 1px;
     }
 
     .rule-info p {
-      font-size: 11.5px;
+      font-size: clamp(10.5px, 2.3vw, 11.5px);
+      font-weight: 400;
       color: #CBD5E1;
       line-height: 1.35;
     }
 
     .start-btn {
       width: 100%;
-      height: 50px;
+      height: 48px;
       background: linear-gradient(180deg, var(--bolivar-yellow) 0%, #F59E0B 100%);
-      border: 2px solid #B45309;
+      border: 1.5px solid #D49000;
       border-radius: 12px;
       color: var(--bolivar-blue-dark);
-      font-size: 14px;
-      font-weight: 900;
+      font-size: clamp(13px, 3vw, 14px);
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.8px;
+      letter-spacing: 0.5px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 9px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.5);
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.35);
     }
     .start-btn:active {
       transform: translateY(1px);
@@ -787,8 +806,8 @@
     <div class="screen-overlay" id="welcomeScreen">
       <div class="screen-content-card">
         <div style="margin-bottom: 6px;">
-          <span style="color:var(--bolivar-yellow); font-size:13px; font-weight:800; letter-spacing:1px;">SEGUROS BOLÍVAR • ARL</span><br>
-          <span style="color:#94A3B8; font-size:11px;">SALUD MENTAL Y RIESGO PSICOSOCIAL</span>
+          <span style="color:var(--bolivar-yellow); font-size:12px; font-weight:600; letter-spacing:0.8px;">SEGUROS BOLÍVAR • ARL</span><br>
+          <span style="color:#94A3B8; font-size:11px; font-weight:500;">SALUD MENTAL Y RIESGO PSICOSOCIAL</span>
         </div>
 
         <div class="screen-badge-icon">
@@ -864,8 +883,8 @@
     <div class="screen-overlay" id="finalScreen" style="display: none;">
       <div class="screen-content-card">
         <div style="margin-bottom: 6px;">
-          <span style="color:var(--bolivar-yellow); font-size:13px; font-weight:800; letter-spacing:1px;">SEGUROS BOLÍVAR • ARL</span><br>
-          <span style="color:#94A3B8; font-size:11px;">BALANCE DE CARGA MENTAL</span>
+          <span style="color:var(--bolivar-yellow); font-size:12px; font-weight:600; letter-spacing:0.8px;">SEGUROS BOLÍVAR • ARL</span><br>
+          <span style="color:#94A3B8; font-size:11px; font-weight:500;">BALANCE DE CARGA MENTAL</span>
         </div>
 
         <div class="screen-badge-icon success" id="finalBadgeIcon">
@@ -881,9 +900,9 @@
 
         <!-- Tarjeta de Puntaje SCORM -->
         <div style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.18); border-radius:14px; padding:12px; margin-bottom:14px;">
-          <div style="font-size:11.5px; color:#CBD5E1; text-transform:uppercase; font-weight:700; margin-bottom:2px;">EFECTIVIDAD DE MANDO</div>
-          <div style="font-size:36px; font-weight:900; color:var(--bolivar-yellow); font-family:monospace; line-height:1.1;" id="finalScoreVal">100 / 100 PTS</div>
-          <div style="font-size:12px; color:#A7F3D0; text-transform:uppercase; font-weight:800; letter-spacing:0.5px; margin-top:4px;" id="finalStatusVal">ESTADO SCORM: APROBADO (≥ 80%)</div>
+          <div style="font-size:11.5px; color:#CBD5E1; text-transform:uppercase; font-weight:600; margin-bottom:2px;">EFECTIVIDAD DE MANDO</div>
+          <div style="font-size:clamp(30px, 7vw, 36px); font-weight:700; color:var(--bolivar-yellow); font-family:monospace; line-height:1.1;" id="finalScoreVal">100 / 100 PTS</div>
+          <div style="font-size:11.5px; color:#A7F3D0; text-transform:uppercase; font-weight:600; letter-spacing:0.4px; margin-top:4px;" id="finalStatusVal">ESTADO SCORM: APROBADO (≥ 80%)</div>
         </div>
 
         <button class="start-btn" id="finishScormBtn" style="margin-bottom:8px;">
@@ -911,7 +930,7 @@
           <polyline points="20 6 9 17 4 12"></polyline>
         </svg>
       </div>
-      <h2 style="font-size:20px; font-weight:900; color:var(--bolivar-yellow); margin-bottom:6px;">SESIÓN REGISTRADA EN LMS</h2>
+      <h2 style="font-size:clamp(18px, 4.5vw, 20px); font-weight:700; color:var(--bolivar-yellow); margin-bottom:6px;">SESIÓN REGISTRADA EN LMS</h2>
       <p style="font-size:13px; color:#CBD5E1; max-width:320px; margin-bottom:18px; line-height:1.4;">
         Tu progreso y balance de carga mental han sido transmitidos a la plataforma de aprendizaje.
       </p>

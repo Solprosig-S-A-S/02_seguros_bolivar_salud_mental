@@ -55,6 +55,9 @@
       color: var(--gray-dark);
       user-select: none;
       -webkit-user-select: none;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -120,12 +123,14 @@
       transform: translateX(-50%);
       width: 100%;
       max-width: 430px;
-      background: linear-gradient(180deg, rgba(2, 48, 71, 0.96) 0%, rgba(2, 48, 71, 0.72) 78%, transparent 100%);
-      padding: 12px 16px 16px 16px;
+      background: linear-gradient(180deg, rgba(2, 48, 71, 0.78) 0%, rgba(2, 48, 71, 0.52) 80%, transparent 100%);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 12px 16px 14px 16px;
       z-index: 30;
       display: flex;
       flex-direction: column;
-      gap: 7px;
+      gap: 6px;
       pointer-events: none;
     }
 
@@ -139,22 +144,22 @@
     .brand-badge {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
     .brand-logo-circle {
-      width: 32px;
-      height: 32px;
+      width: 30px;
+      height: 30px;
       border-radius: 50%;
       background: var(--bolivar-yellow);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 900;
-      font-size: 16px;
+      font-weight: 700;
+      font-size: 15px;
       color: var(--bolivar-blue);
-      border: 2px solid #FFF;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+      border: 1.5px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
     }
 
     .brand-titles {
@@ -164,28 +169,27 @@
     }
 
     .brand-title-main {
-      font-size: 13px;
-      font-weight: 800;
-      letter-spacing: 0.6px;
+      font-size: clamp(12px, 2.8vw, 13px);
+      font-weight: 700;
+      letter-spacing: 0.4px;
       color: #FFFFFF;
       text-transform: uppercase;
-      text-shadow: 0 1px 3px rgba(0,0,0,0.6);
     }
 
     .brand-subtitle {
-      font-size: 11px;
-      font-weight: 700;
+      font-size: clamp(10px, 2.4vw, 11px);
+      font-weight: 500;
       color: var(--bolivar-yellow);
-      text-shadow: 0 1px 3px rgba(0,0,0,0.6);
     }
 
     .sound-btn {
-      width: 36px;
-      height: 36px;
+      width: 34px;
+      height: 34px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.18);
-      backdrop-filter: blur(4px);
-      border: 1.5px solid rgba(255, 255, 255, 0.35);
+      background: rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border: 1px solid rgba(255, 255, 255, 0.28);
       color: #FFF;
       display: flex;
       align-items: center;
@@ -209,48 +213,49 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 11px;
-      font-weight: 800;
+      font-size: clamp(10px, 2.4vw, 11px);
+      font-weight: 600;
       color: #F1F5F9;
-      letter-spacing: 0.3px;
-      text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+      letter-spacing: 0.2px;
     }
 
     .progress-track {
       width: 100%;
-      height: 8px;
-      background: rgba(11, 37, 56, 0.85);
-      border-radius: 4px;
+      height: 6px;
+      background: rgba(11, 37, 56, 0.65);
+      border-radius: 3px;
       overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
     .progress-fill {
       width: 0%;
       height: 100%;
       background: linear-gradient(90deg, #E63946 0%, #FFB703 50%, #2A9D8F 100%);
-      border-radius: 4px;
+      border-radius: 3px;
       transition: width 0.4s ease;
     }
 
     /* PÍLDORA DE ZONA / UBICACIÓN */
     .location-pill {
       position: absolute;
-      top: 76px;
-      left: 12px;
-      background: rgba(2, 48, 71, 0.96);
-      backdrop-filter: blur(8px);
-      border: 1.5px solid var(--bolivar-yellow);
+      top: 74px;
+      left: 14px;
+      background: rgba(2, 48, 71, 0.72);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 183, 3, 0.45);
       border-radius: 20px;
-      padding: 5px 13px;
+      padding: 4px 12px;
       display: flex;
       align-items: center;
-      gap: 7px;
+      gap: 6px;
       color: #FFF;
-      font-size: 12px;
-      font-weight: 800;
+      font-size: clamp(11px, 2.5vw, 12px);
+      font-weight: 600;
       text-transform: uppercase;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.5);
+      letter-spacing: 0.3px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.3);
       z-index: 25;
     }
 
@@ -270,20 +275,23 @@
     /* Indicador Visual de Pasos Reales */
     .walking-indicator {
       position: absolute;
-      top: 80px;
+      top: 74px;
       right: 14px;
-      background: rgba(245, 158, 11, 0.98);
-      border: 1.5px solid #FFF;
+      background: rgba(245, 158, 11, 0.85);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
       border-radius: 16px;
-      padding: 5px 11px;
+      padding: 4px 10px;
       color: #023047;
-      font-size: 11px;
-      font-weight: 900;
+      font-size: clamp(10px, 2.3vw, 11px);
+      font-weight: 700;
       text-transform: uppercase;
+      letter-spacing: 0.3px;
       display: none;
       align-items: center;
-      gap: 6px;
-      box-shadow: 0 3px 12px rgba(0,0,0,0.45);
+      gap: 5px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.3);
       z-index: 25;
       animation: walkPulse 0.4s infinite alternate;
     }
@@ -303,22 +311,23 @@
     /* Píldora de sugerencia de rotación táctil 360° (Nueva Movilidad) */
     .touch-look-hint {
       position: absolute;
-      top: 118px;
+      top: 114px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(2, 48, 71, 0.9);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255, 183, 3, 0.7);
+      background: rgba(2, 48, 71, 0.72);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 183, 3, 0.4);
       border-radius: 20px;
-      padding: 6px 14px;
+      padding: 5px 13px;
       display: flex;
       align-items: center;
-      gap: 7px;
+      gap: 6px;
       color: #FFF;
-      font-size: 11.5px;
-      font-weight: 700;
-      letter-spacing: 0.3px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+      font-size: clamp(10.5px, 2.4vw, 11.5px);
+      font-weight: 500;
+      letter-spacing: 0.2px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
       z-index: 25;
       pointer-events: none;
       transition: opacity 0.5s ease;
@@ -340,14 +349,16 @@
     .character-speech-bubble {
       position: absolute;
       transform: translate(-50%, -100%);
-      background: #FFFFFF;
-      border: 2.5px solid var(--bolivar-blue);
-      border-radius: 16px;
-      padding: 10px 13px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1.5px solid rgba(2, 48, 71, 0.65);
+      border-radius: 14px;
+      padding: 9px 12px;
       width: 88%;
       max-width: 340px;
-      min-width: 260px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.48);
+      min-width: 250px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
       pointer-events: auto;
       z-index: 25;
       display: none;
@@ -359,46 +370,46 @@
     }
 
     .character-speech-bubble.alert-style {
-      border-color: var(--bolivar-red);
-      background: #FFF5F5;
+      border-color: rgba(230, 57, 70, 0.75);
+      background: rgba(255, 245, 245, 0.94);
     }
 
     .character-speech-bubble.success-style {
-      border-color: var(--bolivar-green);
-      background: #F0FDF4;
+      border-color: rgba(42, 157, 143, 0.75);
+      background: rgba(240, 253, 244, 0.94);
     }
 
     /* Cola direccional apuntando hacia el personaje */
     .character-speech-bubble::after {
       content: '';
       position: absolute;
-      bottom: -11px;
+      bottom: -10px;
       left: 50%;
       transform: translateX(-50%);
       width: 0;
       height: 0;
-      border-left: 10px solid transparent;
-      border-right: 10px solid transparent;
-      border-top: 11px solid #FFFFFF;
+      border-left: 9px solid transparent;
+      border-right: 9px solid transparent;
+      border-top: 10px solid rgba(255, 255, 255, 0.92);
     }
 
     .character-speech-bubble.alert-style::after {
-      border-top-color: #FFF5F5;
+      border-top-color: rgba(255, 245, 245, 0.94);
     }
     .character-speech-bubble.success-style::after {
-      border-top-color: #F0FDF4;
+      border-top-color: rgba(240, 253, 244, 0.94);
     }
 
     .bubble-speaker-header {
       display: flex;
       align-items: center;
-      gap: 7px;
-      margin-bottom: 6px;
+      gap: 6px;
+      margin-bottom: 5px;
     }
 
     .bubble-speaker-dot {
-      width: 8px;
-      height: 8px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
       background: var(--bolivar-yellow);
       display: inline-block;
@@ -413,11 +424,11 @@
     }
 
     .bubble-speaker-name {
-      font-size: 12px;
-      font-weight: 900;
+      font-size: clamp(11px, 2.5vw, 12px);
+      font-weight: 700;
       color: var(--bolivar-blue);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.4px;
     }
 
     /* Indicador Visual de Onda de Voz Activa */
@@ -452,19 +463,19 @@
     /* Botón Táctil para Repetir Voz */
     .replay-voice-btn {
       margin-left: auto;
-      background: rgba(2, 48, 71, 0.1);
-      border: 1.5px solid rgba(2, 48, 71, 0.25);
-      border-radius: 12px;
-      padding: 3px 9px;
-      font-size: 11px;
-      font-weight: 800;
+      background: rgba(2, 48, 71, 0.08);
+      border: 1px solid rgba(2, 48, 71, 0.2);
+      border-radius: 10px;
+      padding: 3px 8px;
+      font-size: 10.5px;
+      font-weight: 600;
       color: var(--bolivar-blue);
       display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
       cursor: pointer;
       text-transform: uppercase;
-      letter-spacing: 0.4px;
+      letter-spacing: 0.3px;
       transition: all 0.15s ease;
       touch-action: manipulation;
     }
@@ -476,8 +487,8 @@
     }
 
     .bubble-dialogue-text {
-      font-size: 15.5px;
-      font-weight: 700;
+      font-size: clamp(13.5px, 3vw, 15px);
+      font-weight: 500;
       color: #0A192F;
       line-height: 1.45;
     }
@@ -521,66 +532,68 @@
 
     /* BANNER NOTORIO DE PREGUNTA EN PANTALLA MÓVIL */
     .floating-question-banner {
-      background: linear-gradient(135deg, rgba(2, 48, 71, 0.98) 0%, rgba(10, 37, 64, 0.98) 100%);
-      border: 2px solid var(--bolivar-yellow);
+      background: linear-gradient(135deg, rgba(2, 48, 71, 0.78) 0%, rgba(10, 37, 64, 0.72) 100%);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 183, 3, 0.45);
       border-radius: 12px;
       padding: 6px 11px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
       pointer-events: auto;
-      margin-bottom: 1px;
+      margin-bottom: 2px;
     }
 
     .question-header-row {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
       margin-bottom: 2px;
     }
 
     .question-step-badge {
       background: var(--bolivar-yellow);
       color: var(--bolivar-blue-dark);
-      font-size: 10.5px;
-      font-weight: 900;
+      font-size: clamp(9.5px, 2.2vw, 10.5px);
+      font-weight: 700;
       padding: 2px 6px;
       border-radius: 5px;
-      letter-spacing: 0.4px;
+      letter-spacing: 0.3px;
       text-transform: uppercase;
       flex-shrink: 0;
     }
 
     .question-highlight-title {
       color: #FFF;
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 0.5px;
+      font-size: clamp(11px, 2.4vw, 12px);
+      font-weight: 600;
+      letter-spacing: 0.3px;
       text-transform: uppercase;
-      text-shadow: 0 1px 3px rgba(0,0,0,0.6);
     }
 
     .question-prompt-text {
       color: var(--bolivar-yellow);
-      font-size: 13.5px;
-      font-weight: 800;
-      line-height: 1.3;
+      font-size: clamp(12.5px, 2.8vw, 13.5px);
+      font-weight: 600;
+      line-height: 1.35;
       margin: 0;
-      text-shadow: 0 1px 3px rgba(0,0,0,0.6);
     }
 
     /* Burbuja interactiva con forma de mensaje de texto (Chat Bubble) */
     .text-response-bubble {
       position: relative;
-      background: #FFFFFF;
-      border: 2px solid #CBD5E1;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(203, 213, 225, 0.8);
       border-radius: 12px 12px 4px 12px;
-      padding: 7px 10px;
-      min-height: 44px;
+      padding: 7px 11px;
+      min-height: 42px;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 9px;
       cursor: pointer;
       text-align: left;
-      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.22);
       pointer-events: auto;
       transition: all 0.15s ease;
       touch-action: manipulation;
@@ -589,30 +602,30 @@
     .text-response-bubble:active {
       transform: scale(0.98);
       border-color: var(--bolivar-yellow);
-      background: #FFFBEB;
+      background: rgba(255, 251, 235, 0.95);
     }
 
     .bubble-letter-icon {
-      width: 28px;
-      height: 28px;
-      min-width: 28px;
+      width: 26px;
+      height: 26px;
+      min-width: 26px;
       border-radius: 50%;
       background: var(--bolivar-blue);
       color: #FFFFFF;
-      font-size: 13px;
-      font-weight: 900;
+      font-size: 12px;
+      font-weight: 700;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
       flex-shrink: 0;
     }
 
     .bubble-message-text {
-      font-size: 13px;
-      font-weight: 700;
+      font-size: clamp(12px, 2.7vw, 13px);
+      font-weight: 500;
       color: #0F172A;
-      line-height: 1.3;
+      line-height: 1.35;
     }
 
     /* BOTÓN FLOTANTE INFERIOR DE MOVIMIENTO (Oculto mientras se responde para limpieza visual) */
@@ -622,14 +635,14 @@
 
     .walk-step-btn {
       width: 100%;
-      height: 52px;
-      min-height: 52px;
+      height: 48px;
+      min-height: 48px;
       background: linear-gradient(180deg, var(--bolivar-yellow) 0%, #F59E0B 100%);
-      border: 2px solid #B45309;
-      border-radius: 14px;
+      border: 1.5px solid #D49000;
+      border-radius: 12px;
       color: var(--bolivar-blue-dark);
-      font-size: 13px;
-      font-weight: 900;
+      font-size: clamp(12.5px, 2.8vw, 13.5px);
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       display: flex;
@@ -665,8 +678,9 @@
     .teaching-modal-overlay {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(2, 48, 71, 0.85);
-      backdrop-filter: blur(5px);
+      background: rgba(2, 48, 71, 0.70);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       z-index: 100;
       display: flex;
       align-items: flex-end;
@@ -686,16 +700,19 @@
       max-width: 600px;
       margin: 0 auto;
       max-height: 88%;
-      background: #FFFFFF;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border-radius: 22px 22px 0 0;
       padding: 20px 18px 18px 18px;
-      border-top: 5px solid var(--bolivar-green);
+      border-top: 4px solid var(--bolivar-green);
       display: flex;
       flex-direction: column;
       transform: translateY(100%);
       transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
+      box-shadow: 0 -8px 30px rgba(0,0,0,0.3);
     }
 
     .teaching-modal-overlay.active .teaching-drawer {
@@ -711,10 +728,10 @@
       align-items: center;
       gap: 6px;
       font-size: 11px;
-      font-weight: 800;
+      font-weight: 600;
       text-transform: uppercase;
       padding: 4px 10px;
-      border-radius: 12px;
+      border-radius: 10px;
       align-self: flex-start;
       margin-bottom: 8px;
       background: var(--bolivar-green-light);
@@ -727,8 +744,8 @@
 
     /* TEXTO FORMATIVO ÚNICO, CLARO Y CONCISO DE LO QUE SE HIZO */
     .teaching-single-text {
-      font-size: 15.5px;
-      font-weight: 700;
+      font-size: clamp(13.5px, 3vw, 15px);
+      font-weight: 500;
       line-height: 1.5;
       color: #0F172A;
       margin: 4px 0 16px 0;
@@ -736,30 +753,30 @@
 
     .teaching-continue-btn {
       width: 100%;
-      height: 52px;
-      min-height: 52px;
+      height: 48px;
+      min-height: 48px;
       background: var(--bolivar-blue);
       color: #FFF;
       border: none;
       border-radius: 12px;
-      font-size: 14px;
-      font-weight: 800;
+      font-size: 13.5px;
+      font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.6px;
+      letter-spacing: 0.5px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 9px;
+      gap: 8px;
     }
 
     /* PANTALLA INICIAL Y FINAL */
     .welcome-overlay {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(2, 48, 71, 0.98);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+      background: rgba(2, 48, 71, 0.82);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       z-index: 150;
       display: flex;
       flex-direction: column;
@@ -783,9 +800,9 @@
     .final-screen-overlay {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(2, 48, 71, 0.98);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+      background: rgba(2, 48, 71, 0.82);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       z-index: 150;
       display: flex;
       flex-direction: column;
@@ -876,7 +893,7 @@
     }
     .consequence-content h4 {
       font-size: 12px;
-      font-weight: 800;
+      font-weight: 600;
       color: #FCA5A5;
       margin-bottom: 3px;
       line-height: 1.25;
@@ -885,6 +902,7 @@
     }
     .consequence-content p {
       font-size: 11px;
+      font-weight: 400;
       color: #E2E8F0;
       line-height: 1.35;
       margin: 0;
@@ -904,15 +922,17 @@
     }
 
     .screen-title {
-      font-size: 21px;
-      font-weight: 900;
+      font-size: clamp(18px, 4.5vw, 22px);
+      font-weight: 700;
       color: #FFF;
       margin-bottom: 6px;
       line-height: 1.25;
+      letter-spacing: -0.2px;
     }
 
     .screen-desc {
-      font-size: 13.5px;
+      font-size: clamp(12.5px, 2.8vw, 13.5px);
+      font-weight: 400;
       color: #CBD5E1;
       line-height: 1.5;
       margin-bottom: 14px;
@@ -920,8 +940,8 @@
 
     /* TARJETA DE CONTEXTO SITUACIONAL Y MISIONES */
     .briefing-context-card {
-      background: rgba(255, 183, 3, 0.09);
-      border: 1px solid rgba(255, 183, 3, 0.35);
+      background: rgba(255, 183, 3, 0.08);
+      border: 1px solid rgba(255, 183, 3, 0.3);
       border-radius: 14px;
       padding: 12px 14px;
       text-align: left;
@@ -930,24 +950,25 @@
     .briefing-tag {
       display: inline-flex;
       align-items: center;
-      gap: 7px;
-      font-size: 11.5px;
-      font-weight: 800;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
       color: var(--bolivar-yellow);
-      letter-spacing: 0.8px;
+      letter-spacing: 0.6px;
       text-transform: uppercase;
-      margin-bottom: 6px;
+      margin-bottom: 5px;
     }
     .briefing-context-text {
-      font-size: 13px;
+      font-size: clamp(12px, 2.7vw, 13px);
+      font-weight: 400;
       color: #F1F5F9;
-      line-height: 1.5;
+      line-height: 1.45;
     }
 
     .mission-challenges-list {
       display: flex;
       flex-direction: column;
-      gap: 9px;
+      gap: 8px;
       text-align: left;
       margin-bottom: 13px;
     }
@@ -961,11 +982,11 @@
       gap: 10px;
     }
     .challenge-icon-box {
-      width: 30px;
-      height: 30px;
+      width: 28px;
+      height: 28px;
       border-radius: 8px;
       background: rgba(255, 183, 3, 0.16);
-      border: 1px solid rgba(255, 183, 3, 0.45);
+      border: 1px solid rgba(255, 183, 3, 0.4);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -974,51 +995,52 @@
       margin-top: 1px;
     }
     .challenge-content h4 {
-      font-size: 13px;
-      font-weight: 800;
+      font-size: 12.5px;
+      font-weight: 600;
       color: #FFF;
-      margin-bottom: 3px;
+      margin-bottom: 2px;
     }
     .challenge-content p {
-      font-size: 12px;
+      font-size: 11.5px;
+      font-weight: 400;
       color: #CBD5E1;
-      line-height: 1.45;
+      line-height: 1.4;
     }
 
     .scorm-target-pill {
       background: rgba(42, 157, 143, 0.18);
       border: 1px solid rgba(42, 157, 143, 0.45);
       border-radius: 10px;
-      padding: 9px 12px;
-      font-size: 12px;
-      font-weight: 700;
+      padding: 8px 12px;
+      font-size: 11.5px;
+      font-weight: 600;
       color: #A7F3D0;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 7px;
-      margin-bottom: 15px;
+      gap: 6px;
+      margin-bottom: 14px;
     }
 
     .start-big-btn {
       width: 100%;
       max-width: 540px;
       margin: 14px auto 0 auto;
-      height: 54px;
+      height: 50px;
       background: linear-gradient(180deg, var(--bolivar-yellow) 0%, #F59E0B 100%);
-      border: 2px solid #B45309;
-      border-radius: 14px;
+      border: 1.5px solid #D49000;
+      border-radius: 12px;
       color: var(--bolivar-blue-dark);
-      font-size: 14.5px;
-      font-weight: 900;
+      font-size: clamp(13px, 3vw, 14px);
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.8px;
+      letter-spacing: 0.5px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.5);
+      gap: 9px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.35);
       flex-shrink: 0;
     }
     .start-big-btn:active {
@@ -1029,7 +1051,7 @@
     .summary-pillars-grid {
       display: flex;
       flex-direction: column;
-      gap: 9px;
+      gap: 8px;
       margin: 12px 0 16px 0;
       text-align: left;
     }
@@ -1043,8 +1065,8 @@
       gap: 10px;
     }
     .pillar-icon-box {
-      width: 30px;
-      height: 30px;
+      width: 28px;
+      height: 28px;
       border-radius: 8px;
       background: rgba(42, 157, 143, 0.22);
       border: 1px solid #2A9D8F;
@@ -1056,15 +1078,16 @@
       margin-top: 1px;
     }
     .pillar-content h4 {
-      font-size: 13px;
-      font-weight: 800;
+      font-size: 12.5px;
+      font-weight: 600;
       color: #FFF;
-      margin-bottom: 3px;
+      margin-bottom: 2px;
     }
     .pillar-content p {
-      font-size: 12px;
+      font-size: 11.5px;
+      font-weight: 400;
       color: #CBD5E1;
-      line-height: 1.45;
+      line-height: 1.4;
     }
 
     .final-actions-row {
@@ -1078,7 +1101,7 @@
       width: 100%;
       height: 48px;
       background: rgba(255, 255, 255, 0.09);
-      border: 1.5px solid rgba(255, 255, 255, 0.32);
+      border: 1.2px solid rgba(255, 255, 255, 0.28);
       border-radius: 12px;
       color: #FFF;
       font-size: 13px;
@@ -1388,9 +1411,9 @@
 
         <!-- Tarjeta de Puntaje y Clima Laboral -->
         <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);border-radius:14px;padding:14px;margin-bottom:14px;">
-          <div style="font-size:12px;color:#CBD5E1;text-transform:uppercase;font-weight:700;margin-bottom:3px;letter-spacing:0.5px;">CLIMA DE CUADRILLA ALCANZADO</div>
-          <div style="font-size:38px;font-weight:900;color:var(--bolivar-yellow);font-family:var(--font-mono);line-height:1.1;" id="finalScoreVal">100 / 100</div>
-          <div style="font-size:12.5px;color:#A7F3D0;text-transform:uppercase;font-weight:800;letter-spacing:0.5px;margin-top:6px;" id="finalStatusVal">ESTADO SCORM: APROBADO (≥ 80%)</div>
+          <div style="font-size:12px;color:#CBD5E1;text-transform:uppercase;font-weight:600;margin-bottom:3px;letter-spacing:0.5px;">CLIMA DE CUADRILLA ALCANZADO</div>
+          <div style="font-size:clamp(32px, 8vw, 38px);font-weight:700;color:var(--bolivar-yellow);font-family:var(--font-mono);line-height:1.1;" id="finalScoreVal">100 / 100</div>
+          <div style="font-size:12px;color:#A7F3D0;text-transform:uppercase;font-weight:600;letter-spacing:0.4px;margin-top:6px;" id="finalStatusVal">ESTADO SCORM: APROBADO (≥ 80%)</div>
         </div>
 
         <!-- CONTENEDOR 1: LOS 4 PILARES DE EXCELENCIA (FINAL BUENO >= 80%) -->
@@ -1520,26 +1543,26 @@
         <span class="brand-title-main" style="color:var(--bolivar-yellow); font-size:15px; letter-spacing:1px;">SEGUROS BOLÍVAR • ARL</span>
       </div>
 
-      <h2 style="font-size:23px; font-weight:900; color:#FFF; margin-bottom:10px; line-height:1.25;">
+      <h2 style="font-size:clamp(19px, 5vw, 22px); font-weight:700; color:#FFF; margin-bottom:10px; line-height:1.25;">
         ¡Registro Guardado con Éxito!
       </h2>
 
-      <p style="font-size:14px; color:#CBD5E1; line-height:1.6; margin-bottom:20px; max-width:320px;">
-        Tu participación en <strong style="color:#FFF;">"Canal Limpio: Operación Piso 5"</strong> ha sido certificada y sincronizada correctamente en tu plataforma LMS.
+      <p style="font-size:clamp(12.5px, 2.8vw, 13.5px); color:#CBD5E1; line-height:1.6; margin-bottom:20px; max-width:320px;">
+        Tu participación en <strong style="color:#FFF; font-weight:600;">"Canal Limpio: Operación Piso 5"</strong> ha sido certificada y sincronizada correctamente en tu plataforma LMS.
       </p>
 
       <div style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.18); border-radius:14px; padding:14px 18px; width:100%; max-width:320px; margin-bottom:22px; text-align:left;">
         <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-          <span style="font-size:12.5px; color:#94A3B8;">Puntaje Certificado:</span>
-          <span style="font-size:14px; font-weight:900; color:var(--bolivar-yellow); font-family:var(--font-mono);" id="closureScoreDisplay">100 / 100</span>
+          <span style="font-size:12px; color:#94A3B8;">Puntaje Certificado:</span>
+          <span style="font-size:13.5px; font-weight:700; color:var(--bolivar-yellow); font-family:var(--font-mono);" id="closureScoreDisplay">100 / 100</span>
         </div>
         <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-          <span style="font-size:12.5px; color:#94A3B8;">Estado de la Lección:</span>
-          <span style="font-size:12.5px; font-weight:800; color:#4ADE80;" id="closureStatusDisplay">APROBADO (PASSED)</span>
+          <span style="font-size:12px; color:#94A3B8;">Estado de la Lección:</span>
+          <span style="font-size:12px; font-weight:600; color:#4ADE80;" id="closureStatusDisplay">APROBADO (PASSED)</span>
         </div>
         <div style="display:flex; justify-content:space-between;">
-          <span style="font-size:12.5px; color:#94A3B8;">Estándar SCORM:</span>
-          <span style="font-size:12.5px; font-weight:700; color:#E2E8F0;">SCORM 1.2 / 2004</span>
+          <span style="font-size:12px; color:#94A3B8;">Estándar SCORM:</span>
+          <span style="font-size:12px; font-weight:600; color:#E2E8F0;">SCORM 1.2 / 2004</span>
         </div>
       </div>
 
@@ -4150,14 +4173,14 @@
           var debriefBtn = document.createElement('button');
           debriefBtn.className = 'text-response-bubble debrief-action-bubble';
           if (!passed) {
-            debriefBtn.style.background = 'linear-gradient(135deg, rgba(230,57,70,0.95), rgba(185,28,28,0.95))';
-            debriefBtn.style.borderColor = '#FCA5A5';
+            debriefBtn.style.background = 'linear-gradient(135deg, rgba(230,57,70,0.85), rgba(185,28,28,0.85))';
+            debriefBtn.style.borderColor = 'rgba(252,165,165,0.7)';
           }
           debriefBtn.innerHTML = [
-            '<div class="bubble-letter-icon" style="background:' + (passed ? 'var(--bolivar-yellow)' : '#EF4444') + ';color:' + (passed ? 'var(--bolivar-blue-dark)' : '#FFF') + ';font-weight:900;width:34px;height:34px;min-width:34px;">',
-            '  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>',
+            '<div class="bubble-letter-icon" style="background:' + (passed ? 'var(--bolivar-yellow)' : '#EF4444') + ';color:' + (passed ? 'var(--bolivar-blue-dark)' : '#FFF') + ';font-weight:700;width:30px;height:30px;min-width:30px;">',
+            '  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="9 18 15 12 9 6"></polyline></svg>',
             '</div>',
-            '<div class="bubble-message-text" style="font-weight:800;color:#FFF;font-size:14px;line-height:1.4;">',
+            '<div class="bubble-message-text" style="font-weight:600;color:#FFF;font-size:clamp(12.5px, 2.8vw, 13.5px);line-height:1.35;">',
             passed ? '  VER BALANCE EJEMPLAR Y CERTIFICACIÓN ARL BOLÍVAR' : '  VER REPORTE DE INCIDENTE Y CONSECUENCIAS LEGALES',
             '</div>'
           ].join('');
@@ -4265,7 +4288,7 @@
             VoiceEngine.play('correct');
 
             bubbleEl.style.borderColor = '#2A9D8F';
-            bubbleEl.style.background = '#E0F5F2';
+            bubbleEl.style.background = 'rgba(224, 245, 242, 0.92)';
 
             this.dom.speechBubble.className = 'character-speech-bubble active success-style';
             this.dom.bubbleSpeaker.textContent = choice.reactionSpeaker || 'ACCIÓN CONFIRMADA';
@@ -4281,7 +4304,7 @@
             app.classList.add('shake-hazard-active');
 
             bubbleEl.style.borderColor = '#E63946';
-            bubbleEl.style.background = '#FDE8E9';
+            bubbleEl.style.background = 'rgba(253, 232, 233, 0.92)';
 
             this.dom.speechBubble.className = 'character-speech-bubble active alert-style';
             this.dom.bubbleSpeaker.textContent = choice.reactionSpeaker || 'CONSECUENCIA EN OBRA';
