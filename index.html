@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#023047">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Portal de Salud Mental y Riesgo Psicosocial | Seguros Bolívar ARL</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bolivar-yellow: #FFB703;
+      --bolivar-yellow-hover: #FDB813;
+      --bolivar-yellow-light: #FFF4D6;
+      --bolivar-blue: #023047;
+      --bolivar-blue-dark: #011E2D;
+      --bolivar-blue-light: #0A496B;
+      --bolivar-green: #2A9D8F;
+      --bolivar-green-dark: #1F7369;
+      --bolivar-green-light: #E0F5F2;
+      --bolivar-red: #E63946;
+      --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      background-color: #030A12;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(2, 48, 71, 0.75) 0%, transparent 60%),
+        radial-gradient(circle at 10% 80%, rgba(42, 157, 143, 0.15) 0%, transparent 45%),
+        radial-gradient(circle at 90% 70%, rgba(255, 183, 3, 0.1) 0%, transparent 50%);
+      font-family: var(--font-main);
+      color: #F8FAFC;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+      overflow-x: hidden;
+    }
+
+    /* CONTENEDOR PRINCIPAL */
+    .portal-container {
+      width: 100%;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 24px 18px 48px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* HEADER CORPORATIVO */
+    .portal-header {
+      background: rgba(2, 48, 71, 0.75);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 183, 3, 0.35);
+      border-radius: 18px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+    }
+
+    .brand-identity {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo-circle {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--bolivar-yellow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--bolivar-blue);
+      border: 1.5px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      flex-shrink: 0;
+    }
+
+    .brand-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .brand-title {
+      font-size: clamp(14px, 3.2vw, 16px);
+      font-weight: 700;
+      color: #FFFFFF;
+      letter-spacing: 0.3px;
+    }
+
+    .brand-subtitle {
+      font-size: clamp(11px, 2.5vw, 12px);
+      font-weight: 500;
+      color: var(--bolivar-yellow);
+      letter-spacing: 0.2px;
+    }
+
+    .header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(42, 157, 143, 0.2);
+      border: 1px solid rgba(42, 157, 143, 0.45);
+      padding: 5px 11px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #6EE7B7;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      white-space: nowrap;
+    }
+    .header-badge .pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10B981;
+      box-shadow: 0 0 8px #10B981;
+    }
+
+    /* HERO INTRODUCTORIO */
+    .portal-hero {
+      text-align: center;
+      padding: 12px 10px 4px 10px;
+    }
+
+    .portal-hero h1 {
+      font-size: clamp(22px, 5.5vw, 32px);
+      font-weight: 700;
+      color: #FFFFFF;
+      line-height: 1.25;
+      margin-bottom: 8px;
+      letter-spacing: -0.3px;
+    }
+
+    .portal-hero h1 span {
+      color: var(--bolivar-yellow);
+    }
+
+    .portal-hero p {
+      font-size: clamp(13px, 3vw, 15px);
+      font-weight: 400;
+      color: #CBD5E1;
+      max-width: 680px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+
+    /* REJILLA DE JUEGOS */
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+      gap: 20px;
+      width: 100%;
+    }
+
+    /* TARJETA DE JUEGO */
+    .game-card {
+      background: rgba(2, 48, 71, 0.72);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 20px;
+      padding: 22px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .game-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(255, 183, 3, 0.55);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    .game-card-accent-strip {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+    }
+    .game-card.game-1 .game-card-accent-strip {
+      background: linear-gradient(90deg, var(--bolivar-yellow) 0%, #F59E0B 100%);
+    }
+    .game-card.game-2 .game-card-accent-strip {
+      background: linear-gradient(90deg, var(--bolivar-green) 0%, #10B981 100%);
+    }
+
+    .card-top {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .card-tag-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .card-unit-badge {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+    .game-card.game-1 .card-unit-badge {
+      background: var(--bolivar-yellow);
+      color: var(--bolivar-blue-dark);
+    }
+    .game-card.game-2 .card-unit-badge {
+      background: var(--bolivar-green);
+      color: #FFFFFF;
+    }
+
+    .card-3d-badge {
+      font-size: 10px;
+      font-weight: 600;
+      color: #94A3B8;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 2px 7px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .game-title {
+      font-size: clamp(18px, 4vw, 21px);
+      font-weight: 700;
+      color: #FFFFFF;
+      line-height: 1.3;
+    }
+
+    .game-subtitle {
+      font-size: clamp(11.5px, 2.5vw, 12.5px);
+      font-weight: 500;
+      color: var(--bolivar-yellow);
+      line-height: 1.4;
+    }
+
+    .game-desc {
+      font-size: clamp(12.5px, 2.7vw, 13.5px);
+      font-weight: 400;
+      color: #CBD5E1;
+      line-height: 1.5;
+    }
+
+    /* PÍLDORAS DE ENFOQUE TEMÁTICO */
+    .feature-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .chip-item {
+      font-size: 11px;
+      font-weight: 500;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      padding: 3px 8px;
+      border-radius: 8px;
+      color: #E2E8F0;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* BOTONES DE ACCIÓN */
+    .card-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .btn-play-primary {
+      width: 100%;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      font-size: clamp(12.5px, 2.8vw, 13.5px);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: all 0.18s ease;
+    }
+    .game-card.game-1 .btn-play-primary {
+      background: linear-gradient(180deg, var(--bolivar-yellow) 0%, #F59E0B 100%);
+      color: var(--bolivar-blue-dark);
+      border: 1px solid #D49000;
+      box-shadow: 0 4px 14px rgba(255, 183, 3, 0.3);
+    }
+    .game-card.game-1 .btn-play-primary:hover {
+      background: var(--bolivar-yellow-hover);
+      transform: translateY(-1px);
+    }
+
+    .game-card.game-2 .btn-play-primary {
+      background: linear-gradient(180deg, var(--bolivar-green) 0%, #1E7268 100%);
+      color: #FFFFFF;
+      border: 1px solid #10B981;
+      box-shadow: 0 4px 14px rgba(42, 157, 143, 0.3);
+    }
+    .game-card.game-2 .btn-play-primary:hover {
+      background: #23897C;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-sub-action {
+      flex: 1;
+      height: 38px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      color: #CBD5E1;
+      font-size: 11.5px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn-sub-action:hover {
+      background: rgba(255, 255, 255, 0.14);
+      color: #FFFFFF;
+      border-color: rgba(255, 255, 255, 0.35);
+    }
+
+    /* FOOTER INFORMATIVO */
+    .portal-footer {
+      text-align: center;
+      font-size: 11.5px;
+      color: #64748B;
+      padding: 16px 8px 8px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .portal-footer a {
+      color: var(--bolivar-yellow);
+      text-decoration: none;
+    }
+
+    /* MODAL DE JUEGO EMBEBIDO (OPCIONAL) */
+    .modal-game-player {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000000;
+      z-index: 200;
+      display: none;
+      flex-direction: column;
+    }
+    .modal-game-player.active {
+      display: flex;
+    }
+    .modal-game-bar {
+      height: 44px;
+      background: #023047;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      border-bottom: 1px solid rgba(255, 183, 3, 0.3);
+    }
+    .modal-game-bar span {
+      font-size: 12px;
+      font-weight: 600;
+      color: #FFF;
+    }
+    .modal-close-btn {
+      background: rgba(255, 255, 255, 0.15);
+      border: none;
+      color: #FFF;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .modal-iframe {
+      width: 100%;
+      height: calc(100% - 44px);
+      border: none;
+      background: #03080F;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="portal-container">
+
+    <!-- CABECERA DE MARCA -->
+    <header class="portal-header">
+      <div class="brand-identity">
+        <div class="brand-logo-circle" aria-hidden="true">B</div>
+        <div class="brand-meta">
+          <span class="brand-title">Seguros Bolívar</span>
+          <span class="brand-subtitle">ARL • Salud Mental y Riesgo Psicosocial</span>
+        </div>
+      </div>
+      <div class="header-badge">
+        <span class="pulse-dot"></span>
+        <span>Simuladores 3D</span>
+      </div>
+    </header>
+
+    <!-- HERO INTRODUCTORIO -->
+    <section class="portal-hero">
+      <h1>Experiencias Gamificadas en <span>3D</span></h1>
+      <p>
+        Entrenamiento inmersivo para líderes y cuadrillas en obra. Toma decisiones técnicas bajo presión, promueve la comunicación asertiva y previene el agotamiento cognitivo.
+      </p>
+    </section>
+
+    <!-- REJILLA DE AMBOS JUEGOS -->
+    <main class="games-grid">
+
+      <!-- TARJETA JUEGO 1 -->
+      <article class="game-card game-1">
+        <div class="game-card-accent-strip"></div>
+        <div class="card-top">
+          <div class="card-tag-row">
+            <span class="card-unit-badge">Módulo 1</span>
+            <span class="card-3d-badge">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+              1ª Persona 360°
+            </span>
+          </div>
+
+          <h2 class="game-title">Canal Limpio: Operación Piso 5</h2>
+          <span class="game-subtitle">Comunicación Asertiva, Respeto por Radio y Seguridad Psicológica</span>
+          <p class="game-desc">
+            Recorre la losa en 10 estaciones de trabajo realistas. Valida órdenes de vaciado, neutraliza la hostilidad verbal, respalda a compañeros fatigados y desescala rumores.
+          </p>
+
+          <div class="feature-chips">
+            <span class="chip-item">Ley 1010/2006</span>
+            <span class="chip-item">Res. 2764/2022</span>
+            <span class="chip-item">Audio Procedural</span>
+            <span class="chip-item">SCORM 1.2</span>
+          </div>
+        </div>
+
+        <div class="card-actions">
+          <a href="juego1.html" class="btn-play-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            <span>Iniciar Juego 1</span>
+          </a>
+
+          <div class="btn-secondary-row">
+            <button class="btn-sub-action" onclick="openEmbedded('juego1.html', 'Juego 1: Canal Limpio')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+              <span>Jugar Aquí</span>
+            </button>
+            <a href="Juego_01_RadioObra_CanalLimpio/Juego_01_RadioObra_SCORM.zip" class="btn-sub-action" download title="Descargar paquete para plataforma LMS">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              <span>SCORM .zip</span>
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- TARJETA JUEGO 2 -->
+      <article class="game-card game-2">
+        <div class="game-card-accent-strip"></div>
+        <div class="card-top">
+          <div class="card-tag-row">
+            <span class="card-unit-badge">Módulo 2</span>
+            <span class="card-3d-badge">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              Isométrico 3D
+            </span>
+          </div>
+
+          <h2 class="game-title">El Arquitecto del Tiempo</h2>
+          <span class="game-subtitle">Carga Mental, Liderazgo Técnico y Toma de Decisiones</span>
+          <p class="game-desc">
+            Asume el mando del frente de fundición. Enfrenta 4 rondas de alta tensión: órdenes cruzadas, falla en grúa torre con viento, borde sin baranda y afán del relevo.
+          </p>
+
+          <div class="feature-chips">
+            <span class="chip-item">Sobrecarga Cognitiva</span>
+            <span class="chip-item">Semáforo Mental</span>
+            <span class="chip-item">4 Rondas Críticas</span>
+            <span class="chip-item">SCORM 1.2</span>
+          </div>
+        </div>
+
+        <div class="card-actions">
+          <a href="juego2.html" class="btn-play-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            <span>Iniciar Juego 2</span>
+          </a>
+
+          <div class="btn-secondary-row">
+            <button class="btn-sub-action" onclick="openEmbedded('juego2.html', 'Juego 2: El Arquitecto del Tiempo')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+              <span>Jugar Aquí</span>
+            </button>
+            <a href="Juego_02_ArquitectoTiempo_CargaMental/Juego_02_ArquitectoTiempo_SCORM.zip" class="btn-sub-action" download title="Descargar paquete para plataforma LMS">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              <span>SCORM .zip</span>
+            </a>
+          </div>
+        </div>
+      </article>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="portal-footer">
+      <p>© 2026 Seguros Bolívar ARL • Todos los derechos reservados.</p>
+      <p>Resolución 2764 de 2022 y Ley 1010 de 2006 • Entornos compatibles con SCORM 1.2 y Web Estándar.</p>
+    </footer>
+
+  </div>
+
+  <!-- MODAL EMBEBIDO -->
+  <div class="modal-game-player" id="gameModal">
+    <div class="modal-game-bar">
+      <span id="modalGameTitle">Simulador 3D</span>
+      <div style="display: flex; gap: 8px;">
+        <button class="modal-close-btn" id="modalFullscreenBtn">Pantalla Completa</button>
+        <button class="modal-close-btn" onclick="closeEmbedded()">Cerrar ✕</button>
+      </div>
+    </div>
+    <iframe class="modal-iframe" id="gameIframe" src="" allow="autoplay; fullscreen"></iframe>
+  </div>
+
+  <script>
+    var currentUrl = '';
+    function openEmbedded(url, title) {
+      currentUrl = url;
+      document.getElementById('modalGameTitle').textContent = title;
+      document.getElementById('gameIframe').src = url;
+      document.getElementById('gameModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeEmbedded() {
+      document.getElementById('gameIframe').src = '';
+      document.getElementById('gameModal').classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+
+    document.getElementById('modalFullscreenBtn').addEventListener('click', function () {
+      if (currentUrl) {
+        window.location.href = currentUrl;
+      }
+    });
+
+    // Detectar parámetro ?game=1 o ?game=2 en la URL para abrir automáticamente
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var game = params.get('game');
+      if (game === '1') {
+        window.location.href = 'juego1.html';
+      } else if (game === '2') {
+        window.location.href = 'juego2.html';
+      }
+    })();
+  </script>
+
+</body>
+</html>
