@@ -702,7 +702,7 @@
       100% { opacity: 1; transform: translateY(0); }
     }
 
-    /* MODAL DRAWER PEDAGÓGICO DE CIERRE DE ESTACIÓN */
+    /* TRANSICIÓN CINEMÁTICA NATURAL ENTRE ESTACIONES */
     .feedback-modal {
       position: absolute;
       top: 0;
@@ -710,58 +710,140 @@
       width: 100%;
       height: 100%;
       z-index: 120;
-      background: rgba(2, 20, 32, 0.75);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      background: rgba(2, 20, 32, 0.35);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
       display: none;
       align-items: flex-end;
+      justify-content: center;
+      padding: 0 14px max(24px, env(safe-area-inset-bottom, 24px)) 14px;
       opacity: 0;
-      transition: opacity 0.28s ease;
+      transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
     }
     .feedback-modal.active {
       display: flex;
       opacity: 1;
+      pointer-events: auto;
     }
 
     .feedback-drawer {
       width: 100%;
-      max-width: 620px;
-      margin: 0 auto;
-      background: rgba(4, 20, 34, 0.98);
-      border: 1.5px solid var(--bolivar-green);
-      border-bottom: none;
-      border-radius: 20px 20px 0 0;
-      padding: 18px 18px max(18px, env(safe-area-inset-bottom, 18px)) 18px;
-      box-shadow: 0 -12px 36px rgba(0, 0, 0, 0.85);
-      transform: translateY(100%);
-      transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+      max-width: 580px;
+      background: rgba(3, 18, 32, 0.94);
+      border: 1.5px solid rgba(42, 157, 143, 0.6);
+      border-radius: 20px;
+      padding: 16px 18px 14px 18px;
+      box-shadow: 0 16px 45px rgba(0, 0, 0, 0.75), 0 0 25px rgba(42, 157, 143, 0.25);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      transform: translateY(20px) scale(0.96);
+      transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
     }
     .feedback-modal.active .feedback-drawer {
-      transform: translateY(0);
+      transform: translateY(0) scale(1);
     }
 
+    /* Barra de progreso de auto-transición natural */
+    .transition-progress-track {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3.5px;
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .transition-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--bolivar-green), var(--bolivar-cyan), var(--bolivar-yellow));
+      transition: width 4.5s linear;
+    }
+    .transition-progress-fill.animating {
+      width: 100%;
+    }
+
+    .transition-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 2px;
+    }
     .drawer-badge {
       display: inline-flex;
       align-items: center;
-      gap: 7px;
-      padding: 4px 11px;
+      gap: 6px;
+      padding: 3px 10px;
       border-radius: 6px;
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 800;
       letter-spacing: 0.5px;
       text-transform: uppercase;
       background: rgba(42, 157, 143, 0.25);
       border: 1px solid #2A9D8F;
       color: #6EE7B7;
-      width: fit-content;
     }
+    .transition-step-counter {
+      font-size: 11px;
+      font-weight: 700;
+      color: #94A3B8;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+
     .drawer-text {
-      font-size: clamp(14px, 3.2vw, 16px);
-      line-height: 1.5;
+      font-size: clamp(14px, 3.2vw, 15.5px);
+      line-height: 1.48;
       color: #F8FAFC;
+      margin: 0;
+    }
+
+    .transition-actions-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 2px;
+      padding-top: 6px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .transition-auto-hint {
+      font-size: 11px;
+      font-weight: 600;
+      color: #94A3B8;
+      letter-spacing: 0.2px;
+    }
+
+    .transition-continue-btn {
+      background: linear-gradient(180deg, var(--bolivar-yellow) 0%, #D97706 100%);
+      color: var(--bolivar-blue-dark);
+      border: none;
+      border-radius: 10px;
+      padding: 7px 16px;
+      font-size: 12.5px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      box-shadow: 0 3px 12px rgba(255, 183, 3, 0.35);
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .transition-continue-btn:hover {
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+    }
+    .transition-continue-btn:active {
+      transform: scale(0.97);
     }
 
     /* PANTALLAS DE OVERLAY (BIENVENIDA Y FINAL) */
@@ -1125,22 +1207,32 @@
       </div>
     </footer>
 
-    <!-- 4. MODAL DRAWER DE RETROALIMENTACIÓN PEDAGÓGICA -->
+    <!-- 4. TRANSICIÓN CINEMÁTICA ENTRE ESTACIONES -->
     <div class="feedback-modal" id="feedbackModal">
       <div class="feedback-drawer" id="feedbackDrawer">
-        <div class="drawer-badge" id="drawerBadge">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          <span id="drawerBadgeText">RECUPERACIÓN EFECTIVA (+25 PTS)</span>
+        <div class="transition-progress-track">
+          <div class="transition-progress-fill" id="transitionProgressFill"></div>
+        </div>
+
+        <div class="transition-card-header">
+          <div class="drawer-badge" id="drawerBadge">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span id="drawerBadgeText">RECUPERACIÓN EFECTIVA (+25 PTS)</span>
+          </div>
+          <span class="transition-step-counter" id="transitionStepCounter">ESTACIÓN 1 DE 4</span>
         </div>
 
         <p class="drawer-text" id="drawerFeedbackText">
           Las pausas breves de sombra e hidratación restablecen la agudeza visual y eliminan el estrés térmico acumulado.
         </p>
 
-        <button class="start-btn" id="feedbackAdvanceBtn">
-          <span>AVANZAR A LA SIGUIENTE ESTACIÓN</span>
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-        </button>
+        <div class="transition-actions-row">
+          <span class="transition-auto-hint" id="transitionAutoHint">Siguiente estación en breve...</span>
+          <button class="transition-continue-btn" id="feedbackAdvanceBtn">
+            <span>Continuar</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -2752,6 +2844,9 @@
             stationFeedbackInline: document.getElementById('stationFeedbackInline'),
             feedbackModal: document.getElementById('feedbackModal'),
             feedbackDrawer: document.getElementById('feedbackDrawer'),
+            transitionProgressFill: document.getElementById('transitionProgressFill'),
+            transitionStepCounter: document.getElementById('transitionStepCounter'),
+            transitionAutoHint: document.getElementById('transitionAutoHint'),
             drawerBadge: document.getElementById('drawerBadge'),
             drawerBadgeText: document.getElementById('drawerBadgeText'),
             drawerFeedbackText: document.getElementById('drawerFeedbackText'),
@@ -2784,6 +2879,10 @@
           this.dom.startBtn.addEventListener('click', function () {
             SoundEngine.init();
             SoundEngine.playSuccess();
+            if (self.autoAdvanceTimer) {
+              clearTimeout(self.autoAdvanceTimer);
+              self.autoAdvanceTimer = null;
+            }
             self.dom.welcomeScreen.style.display = 'none';
             Santuario3DEngine.resetSceneState();
             self.loadStation(1);
@@ -2796,11 +2895,12 @@
           });
 
           this.dom.feedbackAdvanceBtn.addEventListener('click', function () {
-            self.dom.feedbackModal.classList.remove('active');
-            if (self.currentStation < 4) {
-              self.loadStation(self.currentStation + 1);
-            } else {
-              self.showFinalScreen();
+            self.advanceStation();
+          });
+
+          this.dom.feedbackModal.addEventListener('click', function (e) {
+            if (e.target === self.dom.feedbackModal) {
+              self.advanceStation();
             }
           });
 
@@ -2818,6 +2918,11 @@
           });
 
           this.dom.retryGameBtn.addEventListener('click', function () {
+            if (self.autoAdvanceTimer) {
+              clearTimeout(self.autoAdvanceTimer);
+              self.autoAdvanceTimer = null;
+            }
+            self.dom.feedbackModal.classList.remove('active');
             self.score = 0;
             self.vitalBattery = 15;
             self.updateBatteryMeter();
@@ -3229,6 +3334,7 @@
         },
 
         showFeedback: function (messageText) {
+          var self = this;
           if (this.dom.stationFeedbackInline) {
             this.dom.stationFeedbackInline.className = 'station-feedback-inline';
             this.dom.stationFeedbackInline.textContent = '';
@@ -3236,8 +3342,59 @@
           this.dom.drawerFeedbackText.textContent = messageText;
 
           var isLast = (this.currentStation >= 4);
-          this.dom.feedbackAdvanceBtn.querySelector('span').textContent = isLast ? 'VER BALANCE Y CERTIFICACIÓN' : 'AVANZAR A LA SIGUIENTE ESTACIÓN';
+          var advanceBtnSpan = this.dom.feedbackAdvanceBtn.querySelector('span');
+          if (advanceBtnSpan) {
+            advanceBtnSpan.textContent = isLast ? 'VER INFORME FINAL' : 'CONTINUAR';
+          }
+          if (this.dom.transitionStepCounter) {
+            this.dom.transitionStepCounter.textContent = isLast ? 'ESTACIÓN FINAL (4/4)' : ('ESTACIÓN ' + this.currentStation + ' DE 4');
+          }
+          if (this.dom.transitionAutoHint) {
+            this.dom.transitionAutoHint.textContent = isLast ? 'Transición al informe...' : 'Siguiente estación en breve...';
+          }
+
+          if (this.dom.transitionProgressFill) {
+            this.dom.transitionProgressFill.classList.remove('animating');
+            this.dom.transitionProgressFill.style.width = '0%';
+            void this.dom.transitionProgressFill.offsetWidth;
+            this.dom.transitionProgressFill.classList.add('animating');
+          }
+
           this.dom.feedbackModal.classList.add('active');
+
+          if (this.autoAdvanceTimer) {
+            clearTimeout(this.autoAdvanceTimer);
+            this.autoAdvanceTimer = null;
+          }
+
+          this.autoAdvanceTimer = setTimeout(function () {
+            self.advanceStation();
+          }, 4500);
+        },
+
+        advanceStation: function () {
+          if (this.autoAdvanceTimer) {
+            clearTimeout(this.autoAdvanceTimer);
+            this.autoAdvanceTimer = null;
+          }
+          if (this.dom.transitionProgressFill) {
+            this.dom.transitionProgressFill.classList.remove('animating');
+          }
+          this.dom.feedbackModal.classList.remove('active');
+
+          var flash = document.getElementById('cinematicFlash');
+          if (flash) {
+            flash.className = 'cinematic-flash success';
+            setTimeout(function () {
+              if (flash) flash.className = 'cinematic-flash';
+            }, 1000);
+          }
+
+          if (this.currentStation < 4) {
+            this.loadStation(this.currentStation + 1);
+          } else {
+            this.showFinalScreen();
+          }
         },
 
         showFinalScreen: function () {
