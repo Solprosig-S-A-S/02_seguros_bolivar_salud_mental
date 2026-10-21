@@ -291,8 +291,8 @@
     .situation-header {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 6px;
-      flex-wrap: wrap;
     }
 
     .round-badge {
@@ -307,22 +307,6 @@
       flex-shrink: 0;
     }
 
-    .supervisor-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      background: rgba(42, 157, 143, 0.22);
-      border: 1px solid rgba(42, 157, 143, 0.65);
-      color: #6EE7B7;
-      font-size: clamp(8.5px, 1.9vw, 9.5px);
-      font-weight: 700;
-      padding: 2px 6px;
-      border-radius: 5px;
-      letter-spacing: 0.3px;
-      text-transform: uppercase;
-      flex-shrink: 0;
-    }
-
     .speaker-label {
       font-size: clamp(9px, 2vw, 10px);
       font-weight: 600;
@@ -332,7 +316,6 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      flex: 1;
       text-align: right;
     }
 
@@ -790,20 +773,13 @@
       <div class="situation-card" id="situationCard">
         <div class="situation-header">
           <span class="round-badge" id="stepChip">RONDA 1 DE 4</span>
-          <span class="supervisor-badge">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-              <circle cx="12" cy="7" r="4"></circle>
-            </svg>
-            <span>SUPERVISOR SST</span>
-          </span>
-          <span class="speaker-label" id="bannerSpeakerText">ÓRDENES CONTRADICTORIAS EN VACIADO</span>
+          <span class="speaker-label" id="bannerSpeakerText">FRENTE 1 • VACIADO DE CONCRETO</span>
         </div>
         <p class="situation-dialogue" id="bannerDialogueText">
-          "El Residente te ordena vaciar de inmediato la columna norte, pero el Maestro General te exige la placa sur o se pierde el viaje. La cuadrilla espera tu orden."
+          Residente: "¡Vacíen en la columna norte ya!" — Maestro: "¡No, primero la placa sur o se pierde el viaje!"
         </p>
         <p class="situation-question" id="questionText">
-          ¿Qué harías tú como supervisor ante esta contradicción de órdenes?
+          ¿Qué harías tú?
         </p>
         <div class="situation-feedback-inline" id="situationFeedbackInline"></div>
       </div>
@@ -2238,25 +2214,25 @@
             id: 1,
             frontIndex: 1,
             zone: 'FRENTE 1: VACIADO DE CONCRETO (PISO 5)',
-            speaker: 'DILEMA: ÓRDENES CONTRADICTORIAS EN VACIADO',
-            dialogue: '"El Residente te ordena vaciar ya en la columna norte, pero el Maestro exige la placa sur o se pierde el viaje. La cuadrilla te mira esperando tu decisión."',
-            promptText: '¿Qué harías tú como supervisor ante esta contradicción de órdenes?',
-            summaryText: 'Como supervisor unificaste el mando técnico con calma y rigor. Según la Resolución 2764 de 2022 (Salud Mental en el Trabajo), la ambigüedad y el conflicto de rol son disparadores críticos de sobrecarga cognitiva, reprocesos forzados y desmoralización en obra.',
-            wrongText: 'Ceder al afán o al mando más agresivo genera vaciados en zonas erróneas, demoliciones costosas y estrés agudo en la cuadrilla. Como supervisor, debes pausar y unificar.',
+            speaker: 'FRENTE 1 • VACIADO DE CONCRETO',
+            dialogue: 'Residente: "¡Vacíen en la columna norte ya!" — Maestro: "¡No, primero la placa sur o se pierde el viaje!"',
+            promptText: '¿Qué harías tú?',
+            summaryText: 'Pausaste 3 minutos, revisaste planos técnicos y unificaste el mando con ambos. Según la Resolución 2764 de 2022, las órdenes contradictorias saturan la carga mental del equipo y provocan reprocesos forzados.',
+            wrongText: 'Comenzar a vaciar por afán o ceder al mando más agresivo genera vaciados en zonas erróneas, demoliciones costosas y estrés agudo en la cuadrilla.',
             choices: [
               {
                 letter: 'A',
-                title: 'Descargar en la placa sur para complacer al mando más agresivo',
+                title: 'Descargar en la placa sur para complacer al Maestro',
                 correct: false
               },
               {
                 letter: 'B',
-                title: 'Pausar el mixer 3 minutos, verificar bitácora técnica y unificar una sola directriz oficial',
+                title: 'Pausar el vaciado 3 minutos, revisar planos y unificar una sola orden con ambos',
                 correct: true
               },
               {
                 letter: 'C',
-                title: 'Desentenderte y dejar que el operador del mixer descargue donde mejor le parezca',
+                title: 'Dejar que el operador del mixer decida dónde vaciar',
                 correct: false
               }
             ]
@@ -2265,11 +2241,11 @@
             id: 2,
             frontIndex: 2,
             zone: 'FRENTE 2: GRÚA TORRE Y FORMALETA EN ALTURA',
-            speaker: 'DILEMA: ALERTA DE GRÚA BAJO TORMENTA',
-            dialogue: '"Ráfagas de 45 km/h sacuden la formaleta a 30m y suena la alarma de sobrecarga. Por radio, el capataz te presiona: \'¡Bájala ya o nos atrasamos!\'"',
-            promptText: '¿Qué harías tú como supervisor frente al riesgo inminente de caída de la carga?',
-            summaryText: 'Ejerciste tu autoridad preventiva deteniendo la maniobra y protegiendo vidas. El control de la carga mental en emergencias exige claridad absoluta: la integridad física de la cuadrilla prima siempre sobre cualquier meta de tiempo.',
-            wrongText: 'Forzar un izaje bajo ráfagas de viento y con alarma de cabina activa es causa directa de accidentes mortales por desprendimiento de carga. Tu deber como supervisor es parar y asegurar.',
+            speaker: 'FRENTE 2 • GRÚA EN TORMENTA',
+            dialogue: 'Operador de grúa: "¡Ráfagas de viento sacuden la pluma y la carga oscila!" — Capataz: "¡Bájala ya o nos atrasamos!"',
+            promptText: '¿Qué harías tú?',
+            summaryText: 'Paraste la maniobra de inmediato y aseguraste la formaleta en el suelo. En emergencias con maquinaria y clima adverso, la integridad física de las personas prima siempre sobre cualquier plazo.',
+            wrongText: 'Forzar un izaje con viento fuerte y carga oscilando puede volcar la grúa o soltar la formaleta sobre los trabajadores.',
             choices: [
               {
                 letter: 'A',
@@ -2278,12 +2254,12 @@
               },
               {
                 letter: 'B',
-                title: 'Ordenar a los ayudantes jalar manilas con fuerza para obligar el anclaje contra el viento',
+                title: 'Decirle a los ayudantes que jalen las manilas con fuerza para controlarla',
                 correct: false
               },
               {
                 letter: 'C',
-                title: 'Autorizar continuar el izaje confiando en que el viento bajará rápido',
+                title: 'Continuar con el izaje confiando en que el viento bajará rápido',
                 correct: false
               }
             ]
@@ -2292,11 +2268,11 @@
             id: 3,
             frontIndex: 3,
             zone: 'FRENTE 3: BORDE PERIMETRAL Y PARALES AL CIERRE',
-            speaker: 'DILEMA: AFÁN AL CIERRE Y BORDE A 18M (5:00 PM)',
-            dialogue: '"Son las 5:00 PM, la cuadrilla recoge herramienta con afán para salir y deja el borde a 18m sin protección. El oficial te dice: \'Jefe, nadie se va a asomar de noche, vámonos ya.\'"',
-            promptText: '¿Qué harías tú como supervisor ante el afán de salir y el borde desprotegido?',
-            summaryText: 'Gestionaste el afán de salida con liderazgo y calma técnica. Más del 60% de los accidentes graves en obra ocurren en los últimos 30 minutos de la jornada debido al agotamiento cognitivo y la prisa. Asegurar el borde sin desbordar los ánimos salva vidas.',
-            wrongText: 'Permitir un borde desprotegido al cierre expone al turno nocturno a caídas fatales de altura, mientras que la agresión verbal destruye la confianza del equipo. El supervisor actúa con orden y serenidad.',
+            speaker: 'FRENTE 3 • BORDE A 18M AL CIERRE',
+            dialogue: 'Oficial de cuadrilla: "¡Son las 5:00 PM! Guardemos herramienta y vámonos ya... nadie se va a asomar al borde de noche."',
+            promptText: '¿Qué harías tú?',
+            summaryText: 'Acordonaste el borde a 2 metros con cinta reflectiva antes de salir. Más del 60% de los accidentes graves ocurren al cierre de turno por la prisa desordenada y la fatiga acumulada.',
+            wrongText: 'Dejar un borde a 18m desprotegido por afán de salida expone al turno nocturno a caídas fatales. La seguridad no se negocia por 10 minutos.',
             choices: [
               {
                 letter: 'A',
@@ -2305,12 +2281,12 @@
               },
               {
                 letter: 'B',
-                title: 'Imponer a gritos dos horas extra de castigo forzado a toda la cuadrilla',
+                title: 'Gritarle a la cuadrilla y obligarlos a quedarse dos horas extra de castigo',
                 correct: false
               },
               {
                 letter: 'C',
-                title: 'Reorganizar con calma: balizar a 2 metros con cinta reflectiva y registrar el relevo en bitácora',
+                title: 'Mantener la calma: acordonar el borde a 2 metros con cinta reflectiva y registrar el relevo',
                 correct: true
               }
             ]
@@ -2319,25 +2295,25 @@
             id: 4,
             frontIndex: 4,
             zone: 'FRENTE 4: PASILLO CENTRAL Y ACOPIO DE ESCOMBROS',
-            speaker: 'DILEMA: VÍA DE ESCAPE TAPADA Y CONFLICTO DE RELEVO',
-            dialogue: '"El pasillo principal y vía de evacuación está taponado de escombros. El ayudante saliente se cruza de brazos y dice: \'La noche gana más con recargos... que limpien ellos si quieren pasar.\'"',
-            promptText: '¿Qué harías tú como supervisor para garantizar el paso seguro y el respeto mutuo?',
-            summaryText: 'Lideraste una jornada ágil de aseo colectivo promoviendo la empatía laboral. La Resolución 2764 de 2022 destaca las relaciones sociales en el trabajo como factor protector clave: un entorno limpio y solidario reduce la fatiga visual y previene accidentes de tropiezo.',
-            wrongText: 'Ignorar los escombros o arrojarlos a fosos bloquea salidas de emergencia y fomenta un clima laboral hostil y tóxico. Como supervisor, unes a los turnos a través del orden compartido.',
+            speaker: 'FRENTE 4 • PASILLO Y RELEVO',
+            dialogue: 'Ayudante saliente: "El turno de la noche gana más por recargo... que recojan ellos los escombros si quieren pasar."',
+            promptText: '¿Qué harías tú?',
+            summaryText: 'Organizaste 10 minutos de aseo colectivo promoviendo el respeto entre turnos. Un pasillo despejado evita caídas en la oscuridad y mantiene las rutas de evacuación libres ante cualquier emergencia.',
+            wrongText: 'Bloquear pasillos con escombros obstruye las salidas de emergencia y fomenta un ambiente de trabajo tóxico y conflictivo.',
             choices: [
               {
                 letter: 'A',
-                title: 'Dejar los escombros tirados y radicar un informe disciplinario contra el relevo',
+                title: 'Dejar los escombros ahí y radicarle una queja al turno de la noche',
                 correct: false
               },
               {
                 letter: 'B',
-                title: 'Convocar 10 minutos de orden y aseo colectivo explicando que una vía tapada es peligro mortal para todos',
+                title: 'Convocar 10 minutos de orden y aseo colectivo con respeto antes de salir',
                 correct: true
               },
               {
                 letter: 'C',
-                title: 'Patear los escombros hacia el foso del ascensor para desocupar rápido sin discutir',
+                title: 'Tirar los escombros al foso del ascensor para desocupar rápido',
                 correct: false
               }
             ]
@@ -2501,10 +2477,10 @@
             ScormAPI.setScore(this.score);
             if (buttonEl) buttonEl.classList.add('correct-state');
             var succFeedback = [
-              'Liderazgo unificado: pausaste el vaciado 3 min, revisaste planos y unificaste el mando técnico.',
-              'Decisión vital: parada inmediata de izaje, radio de 10m evacuado y formaleta asentada en tierra.',
-              'Cierre preventivo: balizamiento perimetral instalado a 2m y relevo registrado en bitácora.',
-              'Cultura de equipo: 10 min de aseo colectivo despejaron la vía con respeto y trabajo conjunto.'
+              'Liderazgo unificado: pausaste el vaciado 3 min, revisaste planos y diste una sola orden clara.',
+              'Decisión preventiva: paraste la maniobra a tiempo, aseguraste la carga y protegiste a la cuadrilla.',
+              'Cierre seguro: acordonaste el borde a 2 metros y entregaste el turno sin caer en el afán.',
+              'Trabajo en equipo: 10 minutos de aseo colectivo despejaron la vía con respeto mutuo.'
             ];
             if (this.dom.situationFeedbackInline) {
               this.dom.situationFeedbackInline.textContent = succFeedback[this.currentRound - 1] || 'Decisión acertada.';
@@ -2515,10 +2491,10 @@
             SoundEngine.playAlert();
             if (buttonEl) buttonEl.classList.add('wrong-state');
             var wrongFeedback = [
-              'Conflicto de rol: vaciar sin orden técnica unificada causa demoliciones y estrés crítico en cuadrilla.',
-              'Peligro de muerte: continuar el izaje con ráfagas de viento desestabiliza la grúa y arriesga vidas.',
-              'Peligro de caída a 18m: dejar el borde desprotegido por afán de salida viola normas de seguridad.',
-              'Riesgo de emergencia: el pasillo tapado con escombros bloquea la evacuación y genera hostilidad.'
+              'Conflicto de mando: vaciar sin una orden técnica unificada causa demoliciones y estrés crítico.',
+              'Riesgo mortal: mover cargas con viento fuerte puede volcar la grúa y causar accidentes fatales.',
+              'Peligro de caída: dejar bordes a 18m desprotegidos por el afán de salir expone a la noche a una caída mortal.',
+              'Riesgo de emergencia: un pasillo de evacuación bloqueado con escombros pone en peligro a todos.'
             ];
             if (this.dom.situationFeedbackInline) {
               this.dom.situationFeedbackInline.textContent = wrongFeedback[this.currentRound - 1] || 'Acción riesgosa.';
