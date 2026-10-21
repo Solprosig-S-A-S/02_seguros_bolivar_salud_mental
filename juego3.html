@@ -478,6 +478,37 @@
       line-height: 1.2;
     }
 
+    .breathe-cycles-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      margin: 1px 0;
+    }
+    .breathe-cycle-chip {
+      font-size: 9.5px;
+      font-weight: 800;
+      padding: 1px 6px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #94A3B8;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      transition: all 0.25s ease;
+    }
+    .breathe-cycle-chip.current {
+      background: rgba(56, 189, 248, 0.22);
+      color: #38BDF8;
+      border-color: #38BDF8;
+      box-shadow: 0 0 6px rgba(56, 189, 248, 0.35);
+    }
+    .breathe-cycle-chip.done {
+      background: rgba(16, 185, 129, 0.25);
+      color: #34D399;
+      border-color: #10B981;
+    }
+
     .breathe-circle-wrapper {
       position: relative;
       width: 88px;
@@ -1300,7 +1331,7 @@
 
         <h2 class="screen-title" id="finalTitle">¡Batería Vital al 100%: Energía y Alerta Plena!</h2>
         <p class="screen-desc" id="finalDesc">
-          Dominaste los rituales fisiológicos de hidratación, respiración consciente, desconexión laboral e higiene del sueño reparador.
+          Dominaste los rituales de hidratación, respiración consciente, desconexión laboral y descanso reparador en tu habitación.
         </p>
 
         <!-- Tarjeta de Puntaje SCORM y Batería Vital -->
@@ -1346,7 +1377,7 @@
               <circle cx="12" cy="12" r="10"></circle>
               <path d="M16 12l-4-4-4 4M12 8v8"></path>
             </svg>
-            <span id="toggle3dViewText">Examinar Escenario 3D Completo</span>
+            <span id="toggle3dViewText">Examinar Habitación y Escenario 3D</span>
           </button>
         </div>
       </div>
@@ -2772,10 +2803,10 @@
             id: 2,
             location: 'RESPIRACIÓN GUIADA 4-7-8',
             dialogue: '<div class="didactic-main-text">' +
-                      '<strong>Biopulso 4-7-8:</strong> Mantén presionado el círculo para respirar al ritmo 4-7-8.' +
+                      '<strong>Biopulso 4-7-8:</strong> Mantén presionado el círculo para completar 3 ciclos de respiración (4-7-8).' +
                       '</div>',
             prompt: '',
-            feedback: 'Muy bien. La respiración diafragmática 4-7-8 estimula el nervio vago, disminuye el cortisol y devuelve serenidad y agilidad mental.',
+            feedback: 'Excelente regulación. Los 3 ciclos diafragmáticos 4-7-8 redujeron el cortisol, estabilizaron tu ritmo cardíaco en 68 BPM y devolvieron la calma mental.',
             scoreAdd: 25,
             batteryTarget: 65
           },
@@ -2792,12 +2823,12 @@
           },
           {
             id: 4,
-            location: 'HIGIENE DEL SUEÑO NOCTURNO',
+            location: 'HABITACIÓN Y DESCANSO NOCTURNO',
             dialogue: '<div class="didactic-main-text">' +
-                      '<strong>Higiene del sueño:</strong> Toca cada elemento para apagar celular, cortinas y lámpara.' +
+                      '<strong>Habitación de descanso:</strong> Toca cada elemento para apagar celular, cortinas y lámpara.' +
                       '</div>',
             prompt: '',
-            feedback: 'Santuario listo. Dormir en completa oscuridad y sin pantallas permite alcanzar el sueño profundo (fases Delta y REM), asegurando reflejos al 100% para tu siguiente turno.',
+            feedback: 'Habitación lista. Dormir en completa oscuridad y sin pantallas permite alcanzar el sueño profundo (fases Delta y REM), asegurando reflejos al 100% para tu siguiente turno.',
             scoreAdd: 25,
             batteryTarget: 100
           }
@@ -2889,7 +2920,7 @@
 
           this.dom.toggle3dViewBtn.addEventListener('click', function () {
             var isMin = self.dom.finalScreen.classList.toggle('minimized');
-            self.dom.toggle3dViewText.textContent = isMin ? 'Restaurar Informe de Recarga' : 'Examinar Escenario 3D Completo';
+            self.dom.toggle3dViewText.textContent = isMin ? 'Restaurar Informe' : 'Examinar Habitación y Escenario 3D';
           });
 
           this.dom.finishScormBtn.addEventListener('click', function () {
@@ -2989,7 +3020,7 @@
             zone.appendChild(btn);
           }
           else if (stationNum === 2) {
-            // Estación 2: Biopulso respiratorio guiado 4-7-8 con BOTÓN CIRCULAR
+            // Estación 2: Biopulso respiratorio guiado 4-7-8 (3 CICLOS) con BOTÓN CIRCULAR
             self.onCasetaArrival = null;
 
             var container = document.createElement('div');
@@ -2998,6 +3029,36 @@
             var phaseLabel = document.createElement('div');
             phaseLabel.className = 'breathe-phase-label';
             phaseLabel.textContent = 'MANTÉN PRESIONADO EL CÍRCULO';
+
+            var completedCycles = 0;
+            var targetCycles = 3;
+
+            // Fila de chips de seguimiento de los 3 ciclos
+            var trackerRow = document.createElement('div');
+            trackerRow.className = 'breathe-cycles-row';
+            var chips = [];
+            for (var c = 1; c <= targetCycles; c++) {
+              var chip = document.createElement('span');
+              chip.className = 'breathe-cycle-chip' + (c === 1 ? ' current' : '');
+              chip.textContent = 'Ciclo ' + c + '/3';
+              trackerRow.appendChild(chip);
+              chips.push(chip);
+            }
+
+            var updateCycleChips = function () {
+              for (var i = 0; i < targetCycles; i++) {
+                if (i < completedCycles) {
+                  chips[i].className = 'breathe-cycle-chip done';
+                  chips[i].textContent = 'Ciclo ' + (i + 1) + ' OK';
+                } else if (i === completedCycles) {
+                  chips[i].className = 'breathe-cycle-chip current';
+                  chips[i].textContent = 'Ciclo ' + (i + 1) + '/3';
+                } else {
+                  chips[i].className = 'breathe-cycle-chip';
+                  chips[i].textContent = 'Ciclo ' + (i + 1) + '/3';
+                }
+              }
+            };
 
             var wrapper = document.createElement('div');
             wrapper.className = 'breathe-circle-wrapper';
@@ -3053,7 +3114,7 @@
 
             var subInst = document.createElement('span');
             subInst.className = 'breathe-sub-instruction';
-            subInst.textContent = 'Mantén tu dedo apoyado sin soltarlo';
+            subInst.textContent = 'Mantén tu dedo apoyado para 3 ciclos';
 
             var isHolding = false;
             var breatheTimer = null;
@@ -3074,6 +3135,7 @@
 
               breatheTimer = setInterval(function () {
                 phaseTime += 0.25;
+                var cycleNum = completedCycles + 1;
 
                 if (currentPhase === 0) {
                   // Inhala (4s)
@@ -3083,7 +3145,7 @@
                   circleBtn.className = 'breathe-circle-btn active holding-inhale';
                   titleSpan.textContent = 'INHALA';
                   counterSpan.textContent = Math.ceil(4 - phaseTime) + 's';
-                  phaseLabel.textContent = 'INHALA POR LA NARIZ (' + Math.ceil(4 - phaseTime) + 's)';
+                  phaseLabel.textContent = 'CICLO ' + cycleNum + '/3: INHALA POR LA NARIZ (' + Math.ceil(4 - phaseTime) + 's)';
                   Santuario3DEngine.updateBreathingRing(1.0 + pct * 0.9, 0x38BDF8);
 
                   if (phaseTime >= 4.0) {
@@ -3100,7 +3162,7 @@
                   circleBtn.className = 'breathe-circle-btn active holding-retain';
                   titleSpan.textContent = 'RETÉN';
                   counterSpan.textContent = Math.ceil(7 - phaseTime) + 's';
-                  phaseLabel.textContent = 'RETÉN EL AIRE (' + Math.ceil(7 - phaseTime) + 's)';
+                  phaseLabel.textContent = 'CICLO ' + cycleNum + '/3: RETÉN EL AIRE (' + Math.ceil(7 - phaseTime) + 's)';
                   Santuario3DEngine.updateBreathingRing(1.9, 0xFBBF24);
 
                   if (phaseTime >= 7.0) {
@@ -3117,35 +3179,52 @@
                   circleBtn.className = 'breathe-circle-btn active holding-exhale';
                   titleSpan.textContent = 'EXHALA';
                   counterSpan.textContent = Math.ceil(8 - phaseTime) + 's';
-                  phaseLabel.textContent = 'EXHALA POR LA BOCA (' + Math.ceil(8 - phaseTime) + 's)';
+                  phaseLabel.textContent = 'CICLO ' + cycleNum + '/3: EXHALA POR LA BOCA (' + Math.ceil(8 - phaseTime) + 's)';
                   Santuario3DEngine.updateBreathingRing(1.9 - pct * 0.9, 0x10B981);
 
                   if (phaseTime >= 8.0) {
-                    clearInterval(breatheTimer);
-                    breatheTimer = null;
-                    isHolding = false;
-                    circleBtn.style.pointerEvents = 'none';
-                    self.stationActive = false;
+                    completedCycles++;
+                    updateCycleChips();
 
-                    wrapper.classList.remove('active');
-                    circleBtn.className = 'breathe-circle-btn completed';
-                    circleBar.style.stroke = '#10B981';
-                    circleBar.style.strokeDashoffset = '0';
-                    titleSpan.textContent = '¡COMPLETO!';
-                    counterSpan.textContent = '68 BPM';
+                    if (completedCycles < targetCycles) {
+                      // Fin del ciclo intermedio (1 o 2 de 3)
+                      currentPhase = 0;
+                      phaseTime = 0;
+                      SoundEngine.playSuccess();
+                      if (navigator.vibrate) navigator.vibrate([40, 70, 40]);
+                      circleBar.style.strokeDashoffset = circumference.toString();
+                      titleSpan.textContent = 'CICLO ' + (completedCycles + 1);
+                      counterSpan.textContent = '4-7-8';
+                      phaseLabel.textContent = '¡CICLO ' + completedCycles + ' DE 3 COMPLETADO!';
+                      subInst.textContent = 'Mantén tu pulgar para el ciclo ' + (completedCycles + 1);
+                    } else {
+                      // ¡Los 3 ciclos completados con éxito!
+                      clearInterval(breatheTimer);
+                      breatheTimer = null;
+                      isHolding = false;
+                      circleBtn.style.pointerEvents = 'none';
+                      self.stationActive = false;
 
-                    self.score += data.scoreAdd;
-                    self.vitalBattery = data.batteryTarget;
-                    self.updateBatteryMeter();
-                    ScormAPI.setScore(self.score);
+                      wrapper.classList.remove('active');
+                      circleBtn.className = 'breathe-circle-btn completed';
+                      circleBar.style.stroke = '#10B981';
+                      circleBar.style.strokeDashoffset = '0';
+                      titleSpan.textContent = '¡3 CICLOS!';
+                      counterSpan.textContent = '68 BPM';
 
-                    phaseLabel.textContent = '¡RITMO CARDÍACO REGULADO (68 BPM)!';
-                    subInst.textContent = 'Excelente regulación neurovegetativa';
-                    self.showInlineFeedback('¡Biopulso 4-7-8 exitoso! Tensión arterial y niveles de estrés regulados.');
+                      self.score += data.scoreAdd;
+                      self.vitalBattery = data.batteryTarget;
+                      self.updateBatteryMeter();
+                      ScormAPI.setScore(self.score);
 
-                    setTimeout(function () {
-                      self.showFeedback(data.feedback);
-                    }, 1800);
+                      phaseLabel.textContent = '¡3 CICLOS COMPLETADOS: 68 BPM!';
+                      subInst.textContent = 'Excelente regulación neurovegetativa';
+                      self.showInlineFeedback('¡3 ciclos de respiración completados! Ritmo cardíaco y estrés regulados.');
+
+                      setTimeout(function () {
+                        self.showFeedback(data.feedback);
+                      }, 1800);
+                    }
                   }
                 }
               }, 250);
@@ -3161,8 +3240,13 @@
                 circleBar.style.strokeDashoffset = circumference.toString();
                 titleSpan.textContent = 'MANTÉN';
                 counterSpan.textContent = '4-7-8';
-                phaseLabel.textContent = 'MANTÉN PRESIONADO EL CÍRCULO';
-                subInst.textContent = 'Apoya tu pulgar sin soltarlo';
+                if (completedCycles > 0) {
+                  phaseLabel.textContent = 'CICLO ' + completedCycles + ' DE 3 LISTO • MANTÉN PARA CONTINUAR';
+                  subInst.textContent = 'Apoya tu pulgar para iniciar el ciclo ' + (completedCycles + 1);
+                } else {
+                  phaseLabel.textContent = 'MANTÉN PRESIONADO EL CÍRCULO';
+                  subInst.textContent = 'Apoya tu pulgar sin soltarlo';
+                }
                 Santuario3DEngine.updateBreathingRing(1.0, 0x38BDF8);
               }
             };
@@ -3172,6 +3256,7 @@
             window.addEventListener('pointercancel', stopBreathe);
 
             container.appendChild(phaseLabel);
+            container.appendChild(trackerRow);
             container.appendChild(wrapper);
             container.appendChild(subInst);
             zone.appendChild(container);
@@ -3276,7 +3361,7 @@
                   self.updateBatteryMeter();
                   ScormAPI.setScore(self.score);
 
-                  self.showInlineFeedback('¡Santuario de descanso listo! Ambiente óptimo para el sueño Delta reparador.');
+                  self.showInlineFeedback('¡Habitación de descanso lista! Ambiente óptimo para el sueño Delta reparador.');
 
                   setTimeout(function () {
                     self.showFeedback(data.feedback);
@@ -3395,7 +3480,7 @@
             this.dom.finalBadgeIcon.className = 'screen-badge-icon success';
             this.dom.finalBadgeIcon.innerHTML = '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>';
             this.dom.finalTitle.textContent = '¡Batería Vital al 100%: Energía y Alerta Plena!';
-            this.dom.finalDesc.textContent = 'Dominaste los rituales fisiológicos de hidratación, respiración consciente, desconexión laboral e higiene del sueño reparador.';
+            this.dom.finalDesc.textContent = 'Dominaste los rituales de hidratación, respiración consciente, desconexión laboral y descanso reparador en tu habitación.';
             this.dom.finalStatusVal.textContent = 'APROBADO (≥ 75%)';
             this.dom.finalStatusVal.style.color = '#4ADE80';
             this.dom.finishScormBtn.style.display = 'flex';
@@ -3408,15 +3493,15 @@
               '</div>',
               '<div class="diag-card success">',
               '  <div class="diag-header"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><strong>Regulación Fisiológica (Biopulso 4-7-8):</strong></div>',
-              '  <p>Activaste el sistema nervioso parasimpático estabilizando tu ritmo cardíaco en 68 BPM.</p>',
+              '  <p>Activaste el sistema nervioso parasimpático completando los 3 ciclos y estabilizando tu ritmo cardíaco en 68 BPM.</p>',
               '</div>',
               '<div class="diag-card success">',
               '  <div class="diag-header"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><strong>Desconexión Laboral Activa (Ley 2460/2025):</strong></div>',
               '  <p>Cerraste tu casillero y apagaste alertas de trabajo protegiendo tu espacio familiar.</p>',
               '</div>',
               '<div class="diag-card success">',
-              '  <div class="diag-header"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><strong>Sueño Reparador Clase V:</strong></div>',
-              '  <p>Eliminaste la luz azul y el ruido, garantizando reflejos al 100% para el siguiente turno.</p>',
+              '  <div class="diag-header"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><strong>Habitación y Sueño Reparador:</strong></div>',
+              '  <p>Eliminaste la luz azul y el ruido en tu habitación, garantizando reflejos al 100% para el siguiente turno.</p>',
               '</div>'
             ].join('');
           } else {
