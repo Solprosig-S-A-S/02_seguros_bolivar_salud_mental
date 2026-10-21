@@ -330,27 +330,14 @@
       50% { transform: translateX(-50%) translateY(-3px); border-color: #FBBF24; box-shadow: 0 6px 22px rgba(251, 191, 36, 0.4); }
     }
 
-    /* CONSOLA INFERIOR DE ESTACIÓN Y ACCIÓN DIRECTA */
+    /* CONSOLA INFERIOR DE ESTACIÓN - COMPACTA Y NO INVASIVA PARA DESTACAR EL 3D */
     .station-deck {
       position: absolute;
       bottom: 0;
       left: 0;
       width: 100%;
       z-index: 40;
-      padding: 0 10px max(10px, env(safe-area-inset-bottom, 10px)) 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-      pointer-events: none;
-    }
-
-    .station-deck {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      z-index: 40;
-      padding: 0 12px max(10px, env(safe-area-inset-bottom, 10px)) 12px;
+      padding: 0 10px max(8px, env(safe-area-inset-bottom, 8px)) 10px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -360,17 +347,17 @@
     .station-card {
       pointer-events: auto;
       width: 100%;
-      max-width: 600px;
-      background: rgba(3, 16, 28, 0.94);
-      border: 1.5px solid rgba(56, 189, 248, 0.4);
-      border-radius: 18px;
-      padding: 12px 16px;
-      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      max-width: 520px;
+      background: rgba(3, 16, 28, 0.88);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 14px;
+      padding: 8px 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 6px;
     }
 
     .station-header {
@@ -378,55 +365,53 @@
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      padding-bottom: 6px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 3px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
     .station-badge {
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 800;
       color: var(--bolivar-blue-dark);
       background: var(--bolivar-yellow);
-      padding: 3px 9px;
-      border-radius: 6px;
-      letter-spacing: 0.5px;
+      padding: 2px 7px;
+      border-radius: 5px;
+      letter-spacing: 0.4px;
       text-transform: uppercase;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
     }
     .location-label {
-      font-size: 13.5px;
+      font-size: 11.5px;
       font-weight: 800;
       color: var(--bolivar-cyan);
-      letter-spacing: 0.4px;
+      letter-spacing: 0.35px;
       text-transform: uppercase;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    /* GUÍA DIDÁCTICA DIRECTA Y GRANDE */
+    /* GUÍA DIDÁCTICA CONCISA Y ELEGANTE */
     .station-dialogue {
-      font-size: clamp(14px, 3.4vw, 15.5px);
-      line-height: 1.48;
-      color: #F8FAFC;
-      background: rgba(2, 48, 71, 0.65);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      border-left: 4.5px solid var(--bolivar-yellow);
-      padding: 11px 14px;
-      border-radius: 4px 11px 11px 4px;
-      box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.2);
+      font-size: 12px;
+      line-height: 1.35;
+      color: #F1F5F9;
+      background: rgba(2, 48, 71, 0.45);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      border-left: 3px solid var(--bolivar-yellow);
+      padding: 5px 9px;
+      border-radius: 3px 8px 8px 3px;
     }
     .didactic-main-text {
-      font-size: clamp(14px, 3.4vw, 15.5px);
-      line-height: 1.48;
-      color: #F8FAFC;
+      font-size: 12px;
+      line-height: 1.35;
+      color: #F1F5F9;
     }
     .didactic-main-text strong {
-      color: #FFFFFF;
+      color: var(--bolivar-yellow);
       font-weight: 800;
-      display: block;
-      margin-bottom: 4px;
-      font-size: clamp(14.5px, 3.6vw, 16px);
-      letter-spacing: -0.1px;
+      display: inline;
+      margin-right: 4px;
+      font-size: 12px;
     }
 
     .station-prompt {
@@ -437,38 +422,38 @@
     .station-action-zone {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
     }
 
-    /* BOTÓN PRIMARIO DE ACCIÓN DE ESTACIÓN (GRANDE Y DIRECTO) */
+    /* BOTÓN PRIMARIO DE ACCIÓN DE ESTACIÓN (DIRECTO Y ESTILIZADO) */
     .action-btn-primary {
       width: 100%;
-      min-height: 50px;
+      min-height: 38px;
       background: linear-gradient(180deg, #10B981 0%, #059669 100%);
       border: 1.5px solid #34D399;
-      border-radius: 13px;
+      border-radius: 10px;
       color: #FFFFFF;
-      font-size: 14px;
+      font-size: 12px;
       font-weight: 800;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.4px;
       text-transform: uppercase;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 7px;
       cursor: pointer;
-      box-shadow: 0 4px 18px rgba(16, 185, 129, 0.4);
+      box-shadow: 0 3px 10px rgba(16, 185, 129, 0.35);
       transition: all 0.2s ease;
-      padding: 10px 16px;
+      padding: 6px 12px;
     }
     .action-btn-primary:active {
       transform: scale(0.98);
       filter: brightness(1.1);
     }
     .action-btn-primary span {
-      font-size: 13.5px;
+      font-size: 12px;
       font-weight: 800;
-      line-height: 1.25;
+      line-height: 1.2;
       text-align: center;
     }
 
@@ -478,29 +463,29 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      padding: 2px 0;
+      gap: 3px;
+      padding: 0;
       width: 100%;
     }
     .breathe-phase-label {
-      font-size: 13.5px;
+      font-size: 11px;
       font-weight: 800;
       color: var(--bolivar-cyan);
-      letter-spacing: 0.5px;
+      letter-spacing: 0.35px;
       text-transform: uppercase;
       text-align: center;
-      min-height: 20px;
-      line-height: 1.3;
+      min-height: 15px;
+      line-height: 1.2;
     }
 
     .breathe-circle-wrapper {
       position: relative;
-      width: 124px;
-      height: 124px;
+      width: 88px;
+      height: 88px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 2px auto;
+      margin: 1px auto;
       user-select: none;
       -webkit-user-select: none;
       touch-action: none;
@@ -510,8 +495,8 @@
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 120px;
-      height: 120px;
+      width: 84px;
+      height: 84px;
       border-radius: 50%;
       border: 2px solid rgba(56, 189, 248, 0.45);
       transform: translate(-50%, -50%) scale(1);
@@ -524,15 +509,15 @@
     }
     @keyframes breatheWaveRing {
       0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
-      100% { transform: translate(-50%, -50%) scale(1.35); opacity: 0; }
+      100% { transform: translate(-50%, -50%) scale(1.3); opacity: 0; }
     }
 
     .breathe-progress-svg {
       position: absolute;
-      top: -3px;
-      left: -3px;
-      width: 130px;
-      height: 130px;
+      top: -2px;
+      left: -2px;
+      width: 92px;
+      height: 92px;
       transform: rotate(-90deg);
       pointer-events: none;
       z-index: 3;
@@ -540,25 +525,25 @@
     .breathe-progress-bg {
       stroke: rgba(255, 255, 255, 0.12);
       fill: none;
-      stroke-width: 4px;
+      stroke-width: 3.5px;
     }
     .breathe-progress-bar {
       fill: none;
       stroke: #38BDF8;
-      stroke-width: 4px;
+      stroke-width: 3.5px;
       stroke-linecap: round;
-      stroke-dasharray: 377;
-      stroke-dashoffset: 377;
+      stroke-dasharray: 251;
+      stroke-dashoffset: 251;
       transition: stroke-dashoffset 0.22s linear, stroke 0.3s ease;
     }
 
     .breathe-circle-btn {
-      width: 114px;
-      height: 114px;
+      width: 78px;
+      height: 78px;
       border-radius: 50%;
       background: radial-gradient(circle at 35% 35%, #0284C7 0%, #0369A1 65%, #023047 100%);
-      border: 2.5px solid #38BDF8;
-      box-shadow: 0 0 20px rgba(56, 189, 248, 0.4), inset 0 2px 8px rgba(255, 255, 255, 0.25);
+      border: 2px solid #38BDF8;
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.35), inset 0 2px 6px rgba(255, 255, 255, 0.25);
       color: #FFFFFF;
       display: flex;
       flex-direction: column;
@@ -571,49 +556,51 @@
       position: relative;
       z-index: 2;
       padding: 0;
+      gap: 1px;
     }
     .breathe-circle-btn:active,
     .breathe-circle-btn.active {
-      transform: scale(0.97);
+      transform: scale(0.96);
     }
     .breathe-circle-btn.holding-inhale {
       border-color: #38BDF8;
-      box-shadow: 0 0 28px rgba(56, 189, 248, 0.7), inset 0 2px 10px rgba(255, 255, 255, 0.3);
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.65), inset 0 2px 8px rgba(255, 255, 255, 0.3);
       background: radial-gradient(circle at 35% 35%, #0284C7 0%, #075985 70%, #023047 100%);
     }
     .breathe-circle-btn.holding-retain {
       border-color: #FBBF24;
-      box-shadow: 0 0 32px rgba(251, 191, 36, 0.75), inset 0 2px 10px rgba(255, 255, 255, 0.3);
+      box-shadow: 0 0 24px rgba(251, 191, 36, 0.7), inset 0 2px 8px rgba(255, 255, 255, 0.3);
       background: radial-gradient(circle at 35% 35%, #D97706 0%, #92400E 70%, #023047 100%);
     }
     .breathe-circle-btn.holding-exhale {
       border-color: #10B981;
-      box-shadow: 0 0 28px rgba(16, 185, 129, 0.7), inset 0 2px 10px rgba(255, 255, 255, 0.3);
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.65), inset 0 2px 8px rgba(255, 255, 255, 0.3);
       background: radial-gradient(circle at 35% 35%, #059669 0%, #065F46 70%, #023047 100%);
     }
     .breathe-circle-btn.completed {
       border-color: #34D399;
-      box-shadow: 0 0 32px rgba(52, 211, 153, 0.8);
+      box-shadow: 0 0 24px rgba(52, 211, 153, 0.75);
       background: radial-gradient(circle at 35% 35%, #10B981 0%, #047857 70%, #023047 100%);
     }
 
     .breathe-circle-icon {
-      width: 26px;
-      height: 26px;
-      margin-bottom: 2px;
+      width: 17px;
+      height: 17px;
       color: #FFFFFF;
+      margin-bottom: 1px;
       pointer-events: none;
     }
     .breathe-circle-title {
-      font-size: 13px;
+      font-size: 10px;
       font-weight: 800;
-      letter-spacing: 0.6px;
+      letter-spacing: 0.4px;
       color: #FFFFFF;
       line-height: 1.1;
+      text-transform: uppercase;
       pointer-events: none;
     }
     .breathe-circle-counter {
-      font-size: 18px;
+      font-size: 12px;
       font-weight: 800;
       color: var(--bolivar-yellow);
       margin-top: 1px;
@@ -621,28 +608,29 @@
       pointer-events: none;
     }
     .breathe-sub-instruction {
-      font-size: 12px;
-      font-weight: 700;
+      font-size: 10px;
+      font-weight: 600;
       color: #CBD5E1;
       text-align: center;
       letter-spacing: 0.2px;
+      margin-top: 1px;
     }
 
     /* CHECKLIST INTERACTIVO DE TOQUES (ESTACIONES 3 Y 4) */
     .touch-checklist-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 8px;
+      gap: 6px;
     }
     .touch-step-card {
       background: rgba(255, 255, 255, 0.08);
-      border: 1.5px solid rgba(255, 255, 255, 0.22);
-      border-radius: 12px;
-      padding: 11px 12px;
-      min-height: 48px;
+      border: 1.2px solid rgba(255, 255, 255, 0.18);
+      border-radius: 9px;
+      padding: 6px 9px;
+      min-height: 36px;
       display: flex;
       align-items: center;
-      gap: 9px;
+      gap: 7px;
       cursor: pointer;
       transition: all 0.2s ease;
     }
@@ -655,10 +643,10 @@
       color: #A7F3D0;
     }
     .step-check-dot {
-      width: 22px;
-      height: 22px;
+      width: 17px;
+      height: 17px;
       border-radius: 50%;
-      border: 2px solid #94A3B8;
+      border: 1.5px solid #94A3B8;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -670,9 +658,9 @@
       color: #FFF;
     }
     .step-text-title {
-      font-size: 13px;
-      font-weight: 800;
-      line-height: 1.3;
+      font-size: 11.5px;
+      font-weight: 700;
+      line-height: 1.25;
       color: #FFFFFF;
     }
     .touch-step-card.completed .step-text-title {
@@ -1191,8 +1179,7 @@
 
         <div class="station-dialogue" id="stationDialogue">
           <div class="didactic-main-text">
-            <strong>El calor intenso y el sol agotan tu energía y nublan tu visión.</strong>
-            Camina con tu dedo hacia la caseta o pulsa el botón para tomar agua fresca y restablecer tu enfoque al 100%.
+            <strong>Sombra e hidratación:</strong> Bebe agua en la caseta para reactivar tu agudeza visual.
           </div>
         </div>
 
@@ -2375,10 +2362,10 @@
 
           if (stationId === 1) {
             // Estación 1: Sol del mediodía en la losa, efecto de fatiga visual
-            this.targetLookAt.set(0, 1.2, 0);
-            this.baseTargetRadius = 14.5;
+            this.targetLookAt.set(0, 0.9, 0);
+            this.baseTargetRadius = 14.0;
             this.targetYaw = -0.55;
-            this.targetPitch = 0.42;
+            this.targetPitch = 0.38;
 
             if (this.hemiLight) this.hemiLight.color.setHex(0xFFFBEB);
             if (this.sunLight) {
@@ -2401,11 +2388,11 @@
             if (walkHint) walkHint.classList.remove('faded');
           }
           else if (stationId === 2) {
-            // Estación 2: Primer plano del radio y biopulso respiratorio
-            this.targetLookAt.set(0, 0.4, 0);
-            this.baseTargetRadius = 6.2;
+            // Estación 2: Primer plano del radio y biopulso respiratorio en área superior abierta
+            this.targetLookAt.set(0, -0.65, 0);
+            this.baseTargetRadius = 6.6;
             this.targetYaw = 0.0;
-            this.targetPitch = 0.15;
+            this.targetPitch = 0.10;
 
             if (this.hemiLight) this.hemiLight.color.setHex(0x0E7490);
             if (this.sunLight) {
@@ -2422,10 +2409,10 @@
           }
           else if (stationId === 3) {
             // Estación 3: Vestidores al atardecer dorado (5:30 PM)
-            this.targetLookAt.set(0, 2.0, -1.8);
-            this.baseTargetRadius = 8.5;
+            this.targetLookAt.set(0, 1.4, -1.8);
+            this.baseTargetRadius = 8.6;
             this.targetYaw = -0.45;
-            this.targetPitch = 0.32;
+            this.targetPitch = 0.28;
 
             if (this.hemiLight) this.hemiLight.color.setHex(0xF59E0B);
             if (this.sunLight) {
@@ -2445,10 +2432,10 @@
           }
           else if (stationId === 4) {
             // Estación 4: Habitación nocturna (Higiene del sueño)
-            this.targetLookAt.set(0, 1.5, -1.0);
+            this.targetLookAt.set(0, 1.0, -1.0);
             this.baseTargetRadius = 9.2;
             this.targetYaw = -0.65;
-            this.targetPitch = 0.38;
+            this.targetPitch = 0.32;
 
             if (this.hemiLight) this.hemiLight.color.setHex(0x1E1B4B);
             if (this.sunLight) {
@@ -2774,8 +2761,7 @@
             id: 1,
             location: 'SOMBRA E HIDRATACIÓN',
             dialogue: '<div class="didactic-main-text">' +
-                      '<strong>El calor intenso y el sol agotan tu energía y nublan tu visión.</strong>' +
-                      'Camina con tu dedo hacia la caseta o pulsa el botón para tomar agua fresca y reactivar tu agudeza visual al 100%.' +
+                      '<strong>Sombra e hidratación:</strong> Bebe agua en la caseta para reactivar tu agudeza visual.' +
                       '</div>',
             prompt: '',
             feedback: 'Excelente recuperación. Las pausas de 5 a 10 minutos bajo sombra e hidratación reducen la temperatura corporal, restablecen la agudeza visual y previenen accidentes por fatiga térmica en obra.',
@@ -2786,8 +2772,7 @@
             id: 2,
             location: 'RESPIRACIÓN GUIADA 4-7-8',
             dialogue: '<div class="didactic-main-text">' +
-                      '<strong>Regula tu ritmo cardíaco y libera la sobrecarga del turno.</strong>' +
-                      'Mantén apoyado tu pulgar en el círculo: inhala en 4 segundos, retén el aire 7 segundos y exhala suavemente durante 8 segundos.' +
+                      '<strong>Biopulso 4-7-8:</strong> Mantén presionado el círculo para respirar al ritmo 4-7-8.' +
                       '</div>',
             prompt: '',
             feedback: 'Muy bien. La respiración diafragmática 4-7-8 estimula el nervio vago, disminuye el cortisol y devuelve serenidad y agilidad mental.',
@@ -2798,8 +2783,7 @@
             id: 3,
             location: 'DESCONEXIÓN LABORAL (LEY 2460)',
             dialogue: '<div class="didactic-main-text">' +
-                      '<strong>Tu turno ha terminado: ejerce tu derecho a la desconexión laboral.</strong>' +
-                      'Guarda tu casco y botas en el casillero, silencia las notificaciones del celular y asegura el candado para proteger tu tiempo personal.' +
+                      '<strong>Desconexión laboral:</strong> Toca cada paso para guardar tus cosas y cerrar el casillero.' +
                       '</div>',
             prompt: '',
             feedback: 'Perfecto. La desconexión laboral efectiva (Ley 2460 de 2025) traza un límite saludable: cerrar el casillero resguarda tus herramientas y libera tu mente para tu familia y descanso.',
@@ -2810,8 +2794,7 @@
             id: 4,
             location: 'HIGIENE DEL SUEÑO NOCTURNO',
             dialogue: '<div class="didactic-main-text">' +
-                      '<strong>Acondiciona tu espacio para un descanso nocturno reparador.</strong>' +
-                      'Apaga la luz azul de tu celular, cierra las cortinas para bloquear luz exterior y apaga la lámpara para estimular la melatonina.' +
+                      '<strong>Higiene del sueño:</strong> Toca cada elemento para apagar celular, cortinas y lámpara.' +
                       '</div>',
             prompt: '',
             feedback: 'Santuario listo. Dormir en completa oscuridad y sin pantallas permite alcanzar el sueño profundo (fases Delta y REM), asegurando reflejos al 100% para tu siguiente turno.',
@@ -2977,8 +2960,8 @@
             var btn = document.createElement('button');
             btn.className = 'action-btn-primary';
             btn.innerHTML = [
-              '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>',
-              '<span>ENTRAR A LA CASETA Y TOMAR AGUA FRESCA</span>'
+              '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>',
+              '<span>ENTRAR A LA CASETA Y BEBER AGUA</span>'
             ].join('');
 
             var completeStation1 = function () {
@@ -3014,7 +2997,7 @@
 
             var phaseLabel = document.createElement('div');
             phaseLabel.className = 'breathe-phase-label';
-            phaseLabel.textContent = 'TOCA Y MANTÉN PRESIONADO EL CÍRCULO';
+            phaseLabel.textContent = 'MANTÉN PRESIONADO EL CÍRCULO';
 
             var wrapper = document.createElement('div');
             wrapper.className = 'breathe-circle-wrapper';
@@ -3026,20 +3009,20 @@
             var svgNS = 'http://www.w3.org/2000/svg';
             var svg = document.createElementNS(svgNS, 'svg');
             svg.setAttribute('class', 'breathe-progress-svg');
-            svg.setAttribute('viewBox', '0 0 130 130');
+            svg.setAttribute('viewBox', '0 0 92 92');
 
             var circleBg = document.createElementNS(svgNS, 'circle');
             circleBg.setAttribute('class', 'breathe-progress-bg');
-            circleBg.setAttribute('cx', '65');
-            circleBg.setAttribute('cy', '65');
-            circleBg.setAttribute('r', '60');
+            circleBg.setAttribute('cx', '46');
+            circleBg.setAttribute('cy', '46');
+            circleBg.setAttribute('r', '40');
             svg.appendChild(circleBg);
 
             var circleBar = document.createElementNS(svgNS, 'circle');
             circleBar.setAttribute('class', 'breathe-progress-bar');
-            circleBar.setAttribute('cx', '65');
-            circleBar.setAttribute('cy', '65');
-            circleBar.setAttribute('r', '60');
+            circleBar.setAttribute('cx', '46');
+            circleBar.setAttribute('cy', '46');
+            circleBar.setAttribute('r', '40');
             svg.appendChild(circleBar);
 
             wrapper.appendChild(svg);
@@ -3070,13 +3053,13 @@
 
             var subInst = document.createElement('span');
             subInst.className = 'breathe-sub-instruction';
-            subInst.textContent = 'Mantén tu dedo apoyado en el círculo';
+            subInst.textContent = 'Mantén tu dedo apoyado sin soltarlo';
 
             var isHolding = false;
             var breatheTimer = null;
             var phaseTime = 0;
             var currentPhase = 0; // 0: Inhale (4s), 1: Retain (7s), 2: Exhale (8s)
-            var circumference = 377; // 2 * PI * 60
+            var circumference = 251; // 2 * PI * 40
 
             var startBreathe = function (e) {
               if (e.cancelable) e.preventDefault();
@@ -3100,7 +3083,7 @@
                   circleBtn.className = 'breathe-circle-btn active holding-inhale';
                   titleSpan.textContent = 'INHALA';
                   counterSpan.textContent = Math.ceil(4 - phaseTime) + 's';
-                  phaseLabel.textContent = 'INHALA PROFUNDO POR LA NARIZ (' + Math.ceil(4 - phaseTime) + 's)...';
+                  phaseLabel.textContent = 'INHALA POR LA NARIZ (' + Math.ceil(4 - phaseTime) + 's)';
                   Santuario3DEngine.updateBreathingRing(1.0 + pct * 0.9, 0x38BDF8);
 
                   if (phaseTime >= 4.0) {
@@ -3117,7 +3100,7 @@
                   circleBtn.className = 'breathe-circle-btn active holding-retain';
                   titleSpan.textContent = 'RETÉN';
                   counterSpan.textContent = Math.ceil(7 - phaseTime) + 's';
-                  phaseLabel.textContent = 'RETÉN EL AIRE EN TUS PULMONES (' + Math.ceil(7 - phaseTime) + 's)...';
+                  phaseLabel.textContent = 'RETÉN EL AIRE (' + Math.ceil(7 - phaseTime) + 's)';
                   Santuario3DEngine.updateBreathingRing(1.9, 0xFBBF24);
 
                   if (phaseTime >= 7.0) {
@@ -3134,7 +3117,7 @@
                   circleBtn.className = 'breathe-circle-btn active holding-exhale';
                   titleSpan.textContent = 'EXHALA';
                   counterSpan.textContent = Math.ceil(8 - phaseTime) + 's';
-                  phaseLabel.textContent = 'EXHALA LENTAMENTE POR LA BOCA (' + Math.ceil(8 - phaseTime) + 's)...';
+                  phaseLabel.textContent = 'EXHALA POR LA BOCA (' + Math.ceil(8 - phaseTime) + 's)';
                   Santuario3DEngine.updateBreathingRing(1.9 - pct * 0.9, 0x10B981);
 
                   if (phaseTime >= 8.0) {
@@ -3156,8 +3139,8 @@
                     self.updateBatteryMeter();
                     ScormAPI.setScore(self.score);
 
-                    phaseLabel.textContent = 'FRECUENCIA CARDÍACA: 68 BPM (ESTABILIZADA)';
-                    subInst.textContent = '¡Excelente regulación neurovegetativa!';
+                    phaseLabel.textContent = '¡RITMO CARDÍACO REGULADO (68 BPM)!';
+                    subInst.textContent = 'Excelente regulación neurovegetativa';
                     self.showInlineFeedback('¡Biopulso 4-7-8 exitoso! Tensión arterial y niveles de estrés regulados.');
 
                     setTimeout(function () {
@@ -3178,8 +3161,8 @@
                 circleBar.style.strokeDashoffset = circumference.toString();
                 titleSpan.textContent = 'MANTÉN';
                 counterSpan.textContent = '4-7-8';
-                phaseLabel.textContent = 'CICLO INTERRUMPIDO • MANTÉN PRESIONADO EL CÍRCULO';
-                subInst.textContent = 'Apoya tu pulgar en el círculo sin soltarlo';
+                phaseLabel.textContent = 'MANTÉN PRESIONADO EL CÍRCULO';
+                subInst.textContent = 'Apoya tu pulgar sin soltarlo';
                 Santuario3DEngine.updateBreathingRing(1.0, 0x38BDF8);
               }
             };
