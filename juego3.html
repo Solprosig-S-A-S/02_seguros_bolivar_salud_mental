@@ -299,6 +299,37 @@
       opacity: 0;
     }
 
+    /* PÍLDORA INDICADORA DE MOVIMIENTO CON EL DEDO */
+    .touch-walk-pill {
+      position: absolute;
+      top: 54px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 32;
+      background: rgba(2, 48, 71, 0.94);
+      border: 1.5px solid #38BDF8;
+      border-radius: 20px;
+      padding: 5px 14px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #FFFFFF;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
+      white-space: nowrap;
+      animation: pulseWalkHint 2.5s infinite ease-in-out;
+    }
+    .touch-walk-pill.faded {
+      opacity: 0;
+    }
+    @keyframes pulseWalkHint {
+      0%, 100% { transform: translateX(-50%) translateY(0); border-color: #38BDF8; }
+      50% { transform: translateX(-50%) translateY(-3px); border-color: #FBBF24; box-shadow: 0 6px 22px rgba(251, 191, 36, 0.4); }
+    }
+
     /* CONSOLA INFERIOR DE ESTACIÓN Y ACCIÓN DIRECTA */
     .station-deck {
       position: absolute;
@@ -413,45 +444,160 @@
       filter: brightness(1.1);
     }
 
-    /* BOTÓN INTERACTIVO DE BIOPULSO RESPIRATORIO (ESTACIÓN 2) */
+    /* BOTÓN CIRCULAR DE BIOPULSO RESPIRATORIO (ESTACIÓN 2) */
     .bio-breathe-container {
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
       gap: 6px;
-      padding: 4px 0;
+      padding: 2px 0;
+      width: 100%;
     }
     .breathe-phase-label {
-      font-size: 11.5px;
+      font-size: 11px;
       font-weight: 800;
       color: var(--bolivar-cyan);
       letter-spacing: 0.5px;
       text-transform: uppercase;
+      text-align: center;
+      min-height: 16px;
+      line-height: 1.2;
     }
-    .breathe-press-btn {
-      width: 100%;
-      height: 46px;
-      background: linear-gradient(180deg, #0284C7 0%, #0369A1 100%);
-      border: 1.5px solid #38BDF8;
-      border-radius: 12px;
-      color: #FFFFFF;
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 0.5px;
+
+    .breathe-circle-wrapper {
+      position: relative;
+      width: 124px;
+      height: 124px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      margin: 2px auto;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: none;
+    }
+
+    .breathe-ripple-ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 2px solid rgba(56, 189, 248, 0.45);
+      transform: translate(-50%, -50%) scale(1);
+      pointer-events: none;
+      opacity: 0.4;
+      transition: all 0.3s ease;
+    }
+    .breathe-circle-wrapper.active .breathe-ripple-ring {
+      animation: breatheWaveRing 2.2s infinite ease-out;
+    }
+    @keyframes breatheWaveRing {
+      0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+      100% { transform: translate(-50%, -50%) scale(1.35); opacity: 0; }
+    }
+
+    .breathe-progress-svg {
+      position: absolute;
+      top: -3px;
+      left: -3px;
+      width: 130px;
+      height: 130px;
+      transform: rotate(-90deg);
+      pointer-events: none;
+      z-index: 3;
+    }
+    .breathe-progress-bg {
+      stroke: rgba(255, 255, 255, 0.12);
+      fill: none;
+      stroke-width: 4px;
+    }
+    .breathe-progress-bar {
+      fill: none;
+      stroke: #38BDF8;
+      stroke-width: 4px;
+      stroke-linecap: round;
+      stroke-dasharray: 377;
+      stroke-dashoffset: 377;
+      transition: stroke-dashoffset 0.22s linear, stroke 0.3s ease;
+    }
+
+    .breathe-circle-btn {
+      width: 114px;
+      height: 114px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #0284C7 0%, #0369A1 65%, #023047 100%);
+      border: 2.5px solid #38BDF8;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.4), inset 0 2px 8px rgba(255, 255, 255, 0.25);
+      color: #FFFFFF;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
       touch-action: none;
-      box-shadow: 0 4px 16px rgba(56, 189, 248, 0.35);
-      transition: all 0.2s ease;
+      outline: none;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease, border-color 0.25s ease, background 0.3s ease;
+      position: relative;
+      z-index: 2;
+      padding: 0;
     }
-    .breathe-press-btn.active {
-      background: linear-gradient(180deg, #10B981 0%, #059669 100%);
+    .breathe-circle-btn:active,
+    .breathe-circle-btn.active {
+      transform: scale(0.97);
+    }
+    .breathe-circle-btn.holding-inhale {
+      border-color: #38BDF8;
+      box-shadow: 0 0 28px rgba(56, 189, 248, 0.7), inset 0 2px 10px rgba(255, 255, 255, 0.3);
+      background: radial-gradient(circle at 35% 35%, #0284C7 0%, #075985 70%, #023047 100%);
+    }
+    .breathe-circle-btn.holding-retain {
+      border-color: #FBBF24;
+      box-shadow: 0 0 32px rgba(251, 191, 36, 0.75), inset 0 2px 10px rgba(255, 255, 255, 0.3);
+      background: radial-gradient(circle at 35% 35%, #D97706 0%, #92400E 70%, #023047 100%);
+    }
+    .breathe-circle-btn.holding-exhale {
+      border-color: #10B981;
+      box-shadow: 0 0 28px rgba(16, 185, 129, 0.7), inset 0 2px 10px rgba(255, 255, 255, 0.3);
+      background: radial-gradient(circle at 35% 35%, #059669 0%, #065F46 70%, #023047 100%);
+    }
+    .breathe-circle-btn.completed {
       border-color: #34D399;
-      box-shadow: 0 0 20px rgba(52, 211, 153, 0.6);
-      transform: scale(0.98);
+      box-shadow: 0 0 32px rgba(52, 211, 153, 0.8);
+      background: radial-gradient(circle at 35% 35%, #10B981 0%, #047857 70%, #023047 100%);
+    }
+
+    .breathe-circle-icon {
+      width: 22px;
+      height: 22px;
+      margin-bottom: 2px;
+      color: #FFFFFF;
+      pointer-events: none;
+    }
+    .breathe-circle-title {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: #FFFFFF;
+      line-height: 1.1;
+      pointer-events: none;
+    }
+    .breathe-circle-counter {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--bolivar-yellow);
+      margin-top: 1px;
+      line-height: 1;
+      pointer-events: none;
+    }
+    .breathe-sub-instruction {
+      font-size: 10px;
+      font-weight: 600;
+      color: #94A3B8;
+      text-align: center;
+      letter-spacing: 0.2px;
     }
 
     /* CHECKLIST INTERACTIVO DE TOQUES (ESTACIONES 3 Y 4) */
@@ -900,13 +1046,21 @@
       </div>
     </header>
 
-    <!-- Píldora de sugerencia táctil 3D -->
-    <div class="touch-rot-pill" id="touchRotPill">
+    <!-- Píldoras de sugerencia táctil 3D y movimiento con el dedo -->
+    <div class="touch-walk-pill" id="touchWalkPill">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <circle cx="12" cy="12" r="3"></circle>
+        <path d="M19 12a7 7 0 1 0-14 0"></path>
+        <polyline points="12 19 12 12"></polyline>
+      </svg>
+      <span>Toca el suelo con tu dedo para mover al trabajador</span>
+    </div>
+    <div class="touch-rot-pill" id="touchRotPill" style="display:none;">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <circle cx="12" cy="12" r="10"></circle>
         <path d="M16 12l-4-4-4 4M12 8v8"></path>
       </svg>
-      <span>Arrastra para rotar y examinar el entorno en 3D</span>
+      <span>Arrastra para rotar el entorno</span>
     </div>
 
     <!-- 3. CONSOLA INFERIOR DE ESTACIÓN Y ACCIONES TÁCTILES -->
@@ -1349,6 +1503,20 @@
         station3Group: null,
         station4Group: null,
 
+        // Personaje caminable e interactividad con el dedo
+        playerAvatar: null,
+        playerLeftLeg: null,
+        playerRightLeg: null,
+        playerLeftArm: null,
+        playerRightArm: null,
+        playerTargetPos: new THREE.Vector3(0, 0, 4.2),
+        isPlayerWalking: false,
+        walkCycle: 0,
+        walkSpeed: 3.8,
+        targetMarkerMesh: null,
+        beaconMesh: null,
+        lastFrameTime: 0,
+
         // Elementos interactivos
         waterJugMesh: null,
         waterStreamMesh: null,
@@ -1416,6 +1584,9 @@
           this.buildStation2Radio();
           this.buildStation3LockerRoom();
           this.buildStation4Bedroom();
+          this.buildPlayerCharacter();
+          this.buildTargetMarker();
+          this.buildCasetaBeacon();
           this.buildCelebrationParticles();
 
           this.bindResize();
@@ -1533,19 +1704,11 @@
           tap.position.set(0, 0.85, 0.3);
           coolerGroup.add(tap);
 
-          // Avatar de trabajador reposando en la sombra
-          var worker = new THREE.Group();
-          worker.position.set(-0.8, 0.45, 1.0);
-          var torso = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.55, 0.28), new THREE.MeshStandardMaterial({ color: 0x0284C7 }));
-          torso.position.y = 0.45;
-          worker.add(torso);
-          var head = new THREE.Mesh(new THREE.SphereGeometry(0.18, 12, 12), new THREE.MeshStandardMaterial({ color: 0xFBBF24 }));
-          head.position.y = 0.85;
-          worker.add(head);
-          var hardHat = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.22, 0.12, 12), new THREE.MeshStandardMaterial({ color: 0xFACC15 }));
-          hardHat.position.y = 0.98;
-          worker.add(hardHat);
-          shelter.add(worker);
+          // Vasos térmicos de hidratación en la banca
+          var cupMat = new THREE.MeshStandardMaterial({ color: 0xF8FAFC, roughness: 0.3 });
+          var cup = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.06, 0.16, 12), cupMat);
+          cup.position.set(-0.6, 0.59, 1.0);
+          shelter.add(cup);
 
           shelter.add(coolerGroup);
           grp.add(shelter);
@@ -1752,6 +1915,288 @@
         },
 
         /* ------------------------------------------------------------------
+           PERSONAJE 3D CAMINABLE (INTERACCIÓN TÁCTIL CON EL DEDO)
+           ------------------------------------------------------------------ */
+        buildPlayerCharacter: function () {
+          var avatar = new THREE.Group();
+          avatar.name = 'playerAvatar';
+
+          // Torso con overol azul Bolívar
+          var torsoMat = new THREE.MeshStandardMaterial({ color: 0x0284C7, roughness: 0.5 });
+          var torso = new THREE.Mesh(new THREE.BoxGeometry(0.46, 0.58, 0.28), torsoMat);
+          torso.position.y = 0.74;
+          torso.castShadow = true;
+          avatar.add(torso);
+
+          // Cinta reflectiva amarilla de seguridad (Bolívar)
+          var stripeMat = new THREE.MeshBasicMaterial({ color: 0xFACC15 });
+          var stripe = new THREE.Mesh(new THREE.BoxGeometry(0.47, 0.08, 0.29), stripeMat);
+          stripe.position.y = 0.78;
+          avatar.add(stripe);
+
+          // Cuello y cabeza
+          var skinMat = new THREE.MeshStandardMaterial({ color: 0xFBBF24, roughness: 0.6 });
+          var head = new THREE.Mesh(new THREE.SphereGeometry(0.18, 14, 14), skinMat);
+          head.position.y = 1.16;
+          head.castShadow = true;
+          avatar.add(head);
+
+          // Gafas de protección transparentes
+          var visorMat = new THREE.MeshBasicMaterial({ color: 0x38BDF8 });
+          var visor = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.08, 0.08), visorMat);
+          visor.position.set(0, 1.16, 0.16);
+          avatar.add(visor);
+
+          // Casco de seguridad amarillo institucional
+          var helmetMat = new THREE.MeshStandardMaterial({ color: 0xFACC15, roughness: 0.35 });
+          var hardHat = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.23, 0.14, 16), helmetMat);
+          hardHat.position.y = 1.29;
+          hardHat.castShadow = true;
+          avatar.add(hardHat);
+
+          var rimMat = new THREE.MeshStandardMaterial({ color: 0xEAB308, roughness: 0.35 });
+          var rim = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.03, 16), rimMat);
+          rim.position.set(0, 1.23, 0.04);
+          avatar.add(rim);
+
+          // Piernas articuladas
+          var legMat = new THREE.MeshStandardMaterial({ color: 0x0369A1, roughness: 0.6 });
+          var bootMat = new THREE.MeshStandardMaterial({ color: 0x451A03, roughness: 0.7 });
+
+          // Pierna Izquierda
+          var leftLegGrp = new THREE.Group();
+          leftLegGrp.position.set(-0.14, 0.45, 0);
+          var leftLeg = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.44, 0.18), legMat);
+          leftLeg.position.y = -0.22;
+          leftLeg.castShadow = true;
+          leftLegGrp.add(leftLeg);
+          var leftBoot = new THREE.Mesh(new THREE.BoxGeometry(0.17, 0.12, 0.24), bootMat);
+          leftBoot.position.set(0, -0.4, 0.03);
+          leftBoot.castShadow = true;
+          leftLegGrp.add(leftBoot);
+          avatar.add(leftLegGrp);
+          this.playerLeftLeg = leftLegGrp;
+
+          // Pierna Derecha
+          var rightLegGrp = new THREE.Group();
+          rightLegGrp.position.set(0.14, 0.45, 0);
+          var rightLeg = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.44, 0.18), legMat);
+          rightLeg.position.y = -0.22;
+          rightLeg.castShadow = true;
+          rightLegGrp.add(rightLeg);
+          var rightBoot = new THREE.Mesh(new THREE.BoxGeometry(0.17, 0.12, 0.24), bootMat);
+          rightBoot.position.set(0, -0.4, 0.03);
+          rightBoot.castShadow = true;
+          rightLegGrp.add(rightBoot);
+          avatar.add(rightLegGrp);
+          this.playerRightLeg = rightLegGrp;
+
+          // Brazos articulados
+          var armMat = new THREE.MeshStandardMaterial({ color: 0x0284C7, roughness: 0.5 });
+          var gloveMat = new THREE.MeshStandardMaterial({ color: 0xE2E8F0, roughness: 0.5 });
+
+          // Brazo Izquierdo
+          var leftArmGrp = new THREE.Group();
+          leftArmGrp.position.set(-0.31, 0.94, 0);
+          var leftArm = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.4, 0.14), armMat);
+          leftArm.position.y = -0.18;
+          leftArmGrp.add(leftArm);
+          var leftGlove = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.1, 0.14), gloveMat);
+          leftGlove.position.y = -0.4;
+          leftArmGrp.add(leftGlove);
+          avatar.add(leftArmGrp);
+          this.playerLeftArm = leftArmGrp;
+
+          // Brazo Derecho
+          var rightArmGrp = new THREE.Group();
+          rightArmGrp.position.set(0.31, 0.94, 0);
+          var rightArm = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.4, 0.14), armMat);
+          rightArm.position.y = -0.18;
+          rightArmGrp.add(rightArm);
+          var rightGlove = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.1, 0.14), gloveMat);
+          rightGlove.position.y = -0.4;
+          rightArmGrp.add(rightGlove);
+          avatar.add(rightArmGrp);
+          this.playerRightArm = rightArmGrp;
+
+          // Sombra de contacto en el suelo
+          var shadowDisc = new THREE.Mesh(
+            new THREE.CircleGeometry(0.38, 16),
+            new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.35 })
+          );
+          shadowDisc.rotation.x = -Math.PI / 2;
+          shadowDisc.position.y = 0.02;
+          avatar.add(shadowDisc);
+
+          avatar.position.set(0, 0, 4.2);
+          this.scene.add(avatar);
+          this.playerAvatar = avatar;
+        },
+
+        /* Indicador de destino de toque en el suelo */
+        buildTargetMarker: function () {
+          var grp = new THREE.Group();
+          grp.position.set(0, 0.04, 0);
+
+          var ringMat = new THREE.MeshBasicMaterial({
+            color: 0x38BDF8,
+            side: THREE.DoubleSide,
+            transparent: true,
+            opacity: 0.85
+          });
+          var ring = new THREE.Mesh(new THREE.RingGeometry(0.35, 0.48, 24), ringMat);
+          ring.rotation.x = -Math.PI / 2;
+          grp.add(ring);
+
+          var dotMat = new THREE.MeshBasicMaterial({ color: 0xFBBF24, side: THREE.DoubleSide });
+          var dot = new THREE.Mesh(new THREE.CircleGeometry(0.14, 16), dotMat);
+          dot.rotation.x = -Math.PI / 2;
+          grp.add(dot);
+
+          grp.visible = false;
+          this.scene.add(grp);
+          this.targetMarkerMesh = grp;
+        },
+
+        /* Faro luminoso de la caseta de hidratación */
+        buildCasetaBeacon: function () {
+          var beacon = new THREE.Group();
+          beacon.position.set(0.4, 0.05, 0.6);
+
+          var ringMat = new THREE.MeshBasicMaterial({
+            color: 0x38BDF8,
+            side: THREE.DoubleSide,
+            transparent: true,
+            opacity: 0.75
+          });
+          var ring = new THREE.Mesh(new THREE.RingGeometry(0.55, 0.75, 32), ringMat);
+          ring.rotation.x = -Math.PI / 2;
+          beacon.add(ring);
+
+          var dotMat = new THREE.MeshBasicMaterial({ color: 0xFFB703, side: THREE.DoubleSide });
+          var dot = new THREE.Mesh(new THREE.CircleGeometry(0.2, 16), dotMat);
+          dot.rotation.x = -Math.PI / 2;
+          beacon.add(dot);
+
+          beacon.visible = true;
+          this.scene.add(beacon);
+          this.beaconMesh = beacon;
+        },
+
+        getCurrentWalkBounds: function () {
+          if (this.currentStationId === 1) {
+            return { minX: -6.5, maxX: 6.5, minZ: -4.5, maxZ: 5.5 };
+          }
+          if (this.currentStationId === 3) {
+            return { minX: -4.5, maxX: 4.5, minZ: -1.2, maxZ: 3.5 };
+          }
+          if (this.currentStationId === 4) {
+            return { minX: -4.0, maxX: 4.0, minZ: -1.6, maxZ: 3.5 };
+          }
+          return { minX: -3.0, maxX: 3.0, minZ: -3.0, maxZ: 3.0 };
+        },
+
+        setPlayerDestination: function (x, z, isDragging) {
+          var b = this.getCurrentWalkBounds();
+          var clampedX = Math.max(b.minX, Math.min(b.maxX, x));
+          var clampedZ = Math.max(b.minZ, Math.min(b.maxZ, z));
+
+          this.playerTargetPos.set(clampedX, 0, clampedZ);
+
+          if (this.targetMarkerMesh) {
+            this.targetMarkerMesh.position.set(clampedX, 0.04, clampedZ);
+            this.targetMarkerMesh.visible = true;
+            this.targetMarkerMesh.scale.set(1.2, 1.2, 1.2);
+          }
+
+          if (!isDragging) {
+            SoundEngine.playTone(420, 'sine', 0.05, 0.08);
+          }
+        },
+
+        walkPlayerToCooler: function (callback) {
+          var self = this;
+          if (!this.playerAvatar) {
+            if (callback) callback();
+            return;
+          }
+          this.setPlayerDestination(0.8, -0.2, false);
+          var interval = setInterval(function () {
+            var p = self.playerAvatar.position;
+            var dist = Math.sqrt((p.x - 0.8) * (p.x - 0.8) + (p.z + 0.2) * (p.z + 0.2));
+            if (dist < 0.25 || !self.isPlayerWalking) {
+              clearInterval(interval);
+              if (callback) callback();
+            }
+          }, 100);
+        },
+
+        checkStationProximity: function () {
+          if (this.currentStationId === 1 && GameApp.stationActive) {
+            var p = this.playerAvatar.position;
+            var distToShelter = Math.sqrt(p.x * p.x + (p.z - 0.2) * (p.z - 0.2));
+            var distToCooler = Math.sqrt((p.x - 1.1) * (p.x - 1.1) + (p.z + 0.4) * (p.z + 0.4));
+            if (distToShelter < 1.6 || distToCooler < 1.4) {
+              if (typeof GameApp.onCasetaArrival === 'function') {
+                var cb = GameApp.onCasetaArrival;
+                GameApp.onCasetaArrival = null;
+                cb();
+              }
+            }
+          }
+        },
+
+        updatePlayer: function (delta) {
+          if (!this.playerAvatar || !this.playerAvatar.visible) return;
+
+          var currentPos = this.playerAvatar.position;
+          var targetPos = this.playerTargetPos;
+
+          var dx = targetPos.x - currentPos.x;
+          var dz = targetPos.z - currentPos.z;
+          var dist = Math.sqrt(dx * dx + dz * dz);
+
+          if (dist > 0.08) {
+            this.isPlayerWalking = true;
+            var moveStep = Math.min(dist, this.walkSpeed * delta);
+            var dirX = dx / dist;
+            var dirZ = dz / dist;
+
+            currentPos.x += dirX * moveStep;
+            currentPos.z += dirZ * moveStep;
+
+            var targetYaw = Math.atan2(dirX, dirZ);
+            var curYaw = this.playerAvatar.rotation.y;
+            var diff = targetYaw - curYaw;
+            while (diff < -Math.PI) diff += Math.PI * 2;
+            while (diff > Math.PI) diff -= Math.PI * 2;
+            this.playerAvatar.rotation.y += diff * 0.22;
+
+            this.walkCycle += delta * 11.0;
+            var swing = Math.sin(this.walkCycle) * 0.55;
+            if (this.playerLeftLeg) this.playerLeftLeg.rotation.x = swing;
+            if (this.playerRightLeg) this.playerRightLeg.rotation.x = -swing;
+            if (this.playerLeftArm) this.playerLeftArm.rotation.x = -swing * 0.7;
+            if (this.playerRightArm) this.playerRightArm.rotation.x = swing * 0.7;
+
+            this.playerAvatar.position.y = Math.abs(Math.sin(this.walkCycle)) * 0.05;
+
+            this.checkStationProximity();
+          } else {
+            if (this.isPlayerWalking) {
+              this.isPlayerWalking = false;
+              if (this.targetMarkerMesh) this.targetMarkerMesh.visible = false;
+            }
+            var now = performance.now() * 0.002;
+            if (this.playerLeftLeg) this.playerLeftLeg.rotation.x *= 0.85;
+            if (this.playerRightLeg) this.playerRightLeg.rotation.x *= 0.85;
+            if (this.playerLeftArm) this.playerLeftArm.rotation.x = Math.sin(now) * 0.08;
+            if (this.playerRightArm) this.playerRightArm.rotation.x = -Math.sin(now) * 0.08;
+            this.playerAvatar.position.y = Math.sin(now * 2) * 0.015;
+          }
+        },
+
+        /* ------------------------------------------------------------------
            PARTÍCULAS Y CONFETI CELEBRATORIO (FINALE)
            ------------------------------------------------------------------ */
         buildCelebrationParticles: function () {
@@ -1798,6 +2243,7 @@
           if (this.station4Group) this.station4Group.visible = (stationId === 4);
 
           var fatigueOverlay = document.getElementById('visualFatigueOverlay');
+          var walkHint = document.getElementById('touchWalkPill');
 
           if (stationId === 1) {
             // Estación 1: Sol del mediodía en la losa, efecto de fatiga visual
@@ -1815,6 +2261,16 @@
             this.scene.background.setHex(0x061523);
 
             if (fatigueOverlay) fatigueOverlay.className = 'visual-fatigue-overlay active';
+
+            // Ubicar trabajador en la losa frente a la caseta
+            if (this.playerAvatar) {
+              this.playerAvatar.visible = true;
+              this.playerAvatar.position.set(0, 0, 4.2);
+              this.playerAvatar.rotation.set(0, Math.PI, 0);
+              this.playerTargetPos.set(0, 0, 4.2);
+            }
+            if (this.beaconMesh) this.beaconMesh.visible = true;
+            if (walkHint) walkHint.classList.remove('faded');
           }
           else if (stationId === 2) {
             // Estación 2: Primer plano del radio y biopulso respiratorio
@@ -1829,6 +2285,12 @@
               this.sunLight.intensity = 0.8;
             }
             if (fatigueOverlay) fatigueOverlay.className = 'visual-fatigue-overlay';
+
+            // Ocultar trabajador y baluarte en vista macro de radio
+            if (this.playerAvatar) this.playerAvatar.visible = false;
+            if (this.beaconMesh) this.beaconMesh.visible = false;
+            if (this.targetMarkerMesh) this.targetMarkerMesh.visible = false;
+            if (walkHint) walkHint.classList.add('faded');
           }
           else if (stationId === 3) {
             // Estación 3: Vestidores al atardecer dorado (5:30 PM)
@@ -1843,6 +2305,15 @@
               this.sunLight.intensity = 1.1;
             }
             if (fatigueOverlay) fatigueOverlay.className = 'visual-fatigue-overlay';
+
+            if (this.playerAvatar) {
+              this.playerAvatar.visible = true;
+              this.playerAvatar.position.set(0, 0, 1.8);
+              this.playerAvatar.rotation.set(0, Math.PI, 0);
+              this.playerTargetPos.set(0, 0, 1.8);
+            }
+            if (this.beaconMesh) this.beaconMesh.visible = false;
+            if (walkHint) walkHint.classList.remove('faded');
           }
           else if (stationId === 4) {
             // Estación 4: Habitación nocturna (Higiene del sueño)
@@ -1859,6 +2330,15 @@
             if (this.ambientFog) this.ambientFog.color.setHex(0x020617);
             this.scene.background.setHex(0x020617);
             if (fatigueOverlay) fatigueOverlay.className = 'visual-fatigue-overlay';
+
+            if (this.playerAvatar) {
+              this.playerAvatar.visible = true;
+              this.playerAvatar.position.set(0, 0, 1.5);
+              this.playerAvatar.rotation.set(0, Math.PI, 0);
+              this.playerTargetPos.set(0, 0, 1.5);
+            }
+            if (this.beaconMesh) this.beaconMesh.visible = false;
+            if (walkHint) walkHint.classList.remove('faded');
           }
         },
 
@@ -1870,8 +2350,15 @@
           var fatigueOverlay = document.getElementById('visualFatigueOverlay');
           if (fatigueOverlay) fatigueOverlay.className = 'visual-fatigue-overlay';
 
+          if (this.playerAvatar) {
+            this.playerAvatar.position.set(0.8, 0, -0.2);
+            this.playerAvatar.rotation.y = -Math.PI / 2;
+          }
+          if (this.beaconMesh) this.beaconMesh.visible = false;
+          if (this.targetMarkerMesh) this.targetMarkerMesh.visible = false;
+
           // Animación de cámara volando al dispensador de sombra
-          this.targetLookAt.set(0.6, 1.2, 0.4);
+          this.targetLookAt.set(0.8, 1.1, -0.2);
           this.baseTargetRadius = 7.5;
           this.targetYaw = -0.3;
 
@@ -1928,9 +2415,17 @@
               this.sunLight.color.setHex(0xFDE68A);
               this.sunLight.intensity = 1.45;
             }
-            this.targetLookAt.set(0, 1.5, 0);
-            this.baseTargetRadius = 11.5;
-            this.targetPitch = 0.38;
+            this.targetLookAt.set(0, 1.2, 0);
+            this.baseTargetRadius = 10.5;
+            this.targetPitch = 0.35;
+
+            if (this.playerAvatar) {
+              this.playerAvatar.visible = true;
+              this.playerAvatar.position.set(0, 0, 0);
+              this.playerAvatar.rotation.set(0, 0, 0);
+              if (this.playerLeftArm) this.playerLeftArm.rotation.z = 2.4;
+              if (this.playerRightArm) this.playerRightArm.rotation.z = -2.4;
+            }
           } else {
             // Despertar con fatiga y déficit de sueño
             SoundEngine.playFinaleFailure();
@@ -1938,6 +2433,11 @@
             if (this.sunLight) {
               this.sunLight.color.setHex(0x64748B);
               this.sunLight.intensity = 0.45;
+            }
+            if (this.playerAvatar) {
+              this.playerAvatar.visible = true;
+              this.playerAvatar.position.set(0, 0, 0);
+              this.playerAvatar.rotation.set(0.3, 0, 0);
             }
           }
         },
@@ -1952,6 +2452,8 @@
           if (this.curtainLeftMesh) this.curtainLeftMesh.position.x = -4.1;
           if (this.curtainRightMesh) this.curtainRightMesh.position.x = -1.5;
           if (this.bedsideLampLight) this.bedsideLampLight.intensity = 1.8;
+          if (this.playerLeftArm) this.playerLeftArm.rotation.z = 0;
+          if (this.playerRightArm) this.playerRightArm.rotation.z = 0;
           this.focusStation(1);
         },
 
@@ -1971,47 +2473,94 @@
         bindTouchControls: function () {
           var self = this;
           var appEl = document.getElementById('rechargeApp') || window;
-          var hintEl = document.getElementById('touchRotPill');
+          var walkHintEl = document.getElementById('touchWalkPill');
+
+          var floorPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+          var raycaster = new THREE.Raycaster();
+          var mouse = new THREE.Vector2();
+          var hitPoint = new THREE.Vector3();
+
+          var isMovingPlayer = false;
+          var isOrbiting = false;
+
+          var getFloorHit = function (clientX, clientY) {
+            if (!self.renderer || !self.camera) return null;
+            var rect = self.renderer.domElement.getBoundingClientRect();
+            mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+            mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, self.camera);
+            var hit = raycaster.ray.intersectPlane(floorPlane, hitPoint);
+            return hit ? hitPoint : null;
+          };
 
           var onStart = function (e) {
-            if (e.target && e.target.closest && e.target.closest('button, .station-deck, .feedback-modal, .screen-overlay, .floating-hud')) {
+            if (e.target && e.target.closest && e.target.closest('button, .station-deck, .feedback-modal, .screen-overlay, .floating-hud, .bio-breathe-container, .touch-checklist-grid')) {
               return;
             }
-            self.isDragging = true;
-            self.dragStartX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
-            self.dragStartY = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
 
-            if (!self.hasInteracted) {
-              self.hasInteracted = true;
-              if (hintEl) hintEl.classList.add('faded');
+            var clientX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
+            var clientY = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
+
+            self.dragStartX = clientX;
+            self.dragStartY = clientY;
+
+            // En estaciones 1, 3, 4: toque en el suelo para mover al trabajador con el dedo
+            if (self.currentStationId !== 2 && self.playerAvatar && self.playerAvatar.visible) {
+              var hit = getFloorHit(clientX, clientY);
+              if (hit) {
+                var b = self.getCurrentWalkBounds();
+                if (hit.x >= b.minX - 2.5 && hit.x <= b.maxX + 2.5 && hit.z >= b.minZ - 2.5 && hit.z <= b.maxZ + 2.5) {
+                  isMovingPlayer = true;
+                  self.setPlayerDestination(hit.x, hit.z, false);
+                  if (walkHintEl) walkHintEl.classList.add('faded');
+                  return;
+                }
+              }
             }
+
+            // Si toca fuera del suelo o en el cielo, rota la cámara
+            isOrbiting = true;
+            self.isDragging = true;
           };
 
           var onMove = function (e) {
-            if (!self.isDragging) return;
-            var currentX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
-            var currentY = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
-            var dx = currentX - self.dragStartX;
-            var dy = currentY - self.dragStartY;
-            self.dragStartX = currentX;
-            self.dragStartY = currentY;
+            var clientX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
+            var clientY = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
 
-            self.targetYaw -= dx * 0.006;
-            self.targetPitch = Math.max(0.18, Math.min(0.85, self.targetPitch + dy * 0.005));
+            if (isMovingPlayer) {
+              var hit = getFloorHit(clientX, clientY);
+              if (hit) {
+                self.setPlayerDestination(hit.x, hit.z, true);
+              }
+              return;
+            }
+
+            if (isOrbiting && self.isDragging) {
+              var dx = clientX - self.dragStartX;
+              var dy = clientY - self.dragStartY;
+              self.dragStartX = clientX;
+              self.dragStartY = clientY;
+
+              self.targetYaw -= dx * 0.006;
+              self.targetPitch = Math.max(0.18, Math.min(0.85, self.targetPitch + dy * 0.005));
+            }
           };
 
           var onEnd = function () {
+            isMovingPlayer = false;
+            isOrbiting = false;
             self.isDragging = false;
           };
 
-          appEl.addEventListener('pointerdown', onStart, { passive: true });
-          window.addEventListener('pointermove', onMove, { passive: true });
-          window.addEventListener('pointerup', onEnd, { passive: true });
-          window.addEventListener('pointercancel', onEnd, { passive: true });
+          appEl.addEventListener('pointerdown', onStart);
+          window.addEventListener('pointermove', onMove);
+          window.addEventListener('pointerup', onEnd);
+          window.addEventListener('pointercancel', onEnd);
 
           setTimeout(function () {
-            if (hintEl) hintEl.classList.add('faded');
-          }, 4500);
+            if (walkHintEl) walkHintEl.classList.add('faded');
+          }, 5000);
         },
 
         animate: function () {
@@ -2019,7 +2568,25 @@
           requestAnimationFrame(function () { self.animate(); });
 
           var now = performance.now();
+          if (!this.lastFrameTime) this.lastFrameTime = now;
+          var delta = Math.min((now - this.lastFrameTime) * 0.001, 0.1);
+          this.lastFrameTime = now;
           var time = now * 0.001;
+
+          // Actualizar lógica de movimiento del personaje
+          this.updatePlayer(delta);
+
+          // Pulsar baluarte luminoso de la caseta
+          if (this.beaconMesh && this.beaconMesh.visible) {
+            var bScale = 1.0 + Math.sin(time * 3.5) * 0.12;
+            this.beaconMesh.scale.set(bScale, bScale, bScale);
+          }
+
+          // La cámara sigue suavemente al trabajador en escena
+          if (this.playerAvatar && this.playerAvatar.visible && this.currentStationId !== 2 && !this.finaleMode) {
+            this.targetLookAt.x = this.playerAvatar.position.x * 0.35;
+            this.targetLookAt.z = this.playerAvatar.position.z * 0.35;
+          }
 
           // Órbita cinematográfica continua durante el final
           if (this.finaleMode && !this.isDragging) {
@@ -2162,7 +2729,8 @@
             finishScormBtn: document.getElementById('finishScormBtn'),
             retryGameBtn: document.getElementById('retryGameBtn'),
             closureScreen: document.getElementById('closureScreen'),
-            closeWindowBtn: document.getElementById('closeWindowBtn')
+            closeWindowBtn: document.getElementById('closeWindowBtn'),
+            touchWalkPill: document.getElementById('touchWalkPill')
           };
         },
 
@@ -2255,7 +2823,7 @@
           zone.innerHTML = '';
 
           if (stationNum === 1) {
-            // Estación 1: Botón táctil para entrar a la sombra e hidratarse
+            // Estación 1: Mover al trabajador hacia la caseta con el dedo o botón
             var btn = document.createElement('button');
             btn.className = 'action-btn-primary';
             btn.innerHTML = [
@@ -2263,56 +2831,110 @@
               '<span>ENTRAR A LA CASETA Y TOMAR AGUA FRESCA</span>'
             ].join('');
 
-            btn.addEventListener('click', function () {
+            var completeStation1 = function () {
               if (!self.stationActive) return;
               self.stationActive = false;
               btn.style.pointerEvents = 'none';
 
-              Santuario3DEngine.drinkWaterStation1();
-              self.score += data.scoreAdd;
-              self.vitalBattery = data.batteryTarget;
-              self.updateBatteryMeter();
-              ScormAPI.setScore(self.score);
+              Santuario3DEngine.walkPlayerToCooler(function () {
+                Santuario3DEngine.drinkWaterStation1();
+                self.score += data.scoreAdd;
+                self.vitalBattery = data.batteryTarget;
+                self.updateBatteryMeter();
+                ScormAPI.setScore(self.score);
 
-              self.showInlineFeedback('¡Pausa de hidratación completada! El enfoque visual se ha restablecido al 100%.');
+                self.showInlineFeedback('¡Pausa de hidratación completada! El enfoque visual se ha restablecido al 100%.');
 
-              setTimeout(function () {
-                self.showFeedback(data.feedback);
-              }, 2000);
-            });
+                setTimeout(function () {
+                  self.showFeedback(data.feedback);
+                }, 1800);
+              });
+            };
 
+            btn.addEventListener('click', completeStation1);
+            self.onCasetaArrival = completeStation1; // Se dispara automáticamente al caminar con el dedo hasta la caseta
             zone.appendChild(btn);
           }
           else if (stationNum === 2) {
-            // Estación 2: Biopulso respiratorio guiado 4-7-8
+            // Estación 2: Biopulso respiratorio guiado 4-7-8 con BOTÓN CIRCULAR
+            self.onCasetaArrival = null;
+
             var container = document.createElement('div');
             container.className = 'bio-breathe-container';
 
             var phaseLabel = document.createElement('div');
             phaseLabel.className = 'breathe-phase-label';
-            phaseLabel.textContent = 'TOCA Y MANTÉN PRESIONADO PARA INHALAR';
+            phaseLabel.textContent = 'TOCA Y MANTÉN PRESIONADO EL CÍRCULO';
 
-            var breatheBtn = document.createElement('button');
-            breatheBtn.className = 'breathe-press-btn';
-            breatheBtn.innerHTML = [
-              '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>',
-              '<span>MANTENER PULSADO (BIOPULSO 4-7-8)</span>'
+            var wrapper = document.createElement('div');
+            wrapper.className = 'breathe-circle-wrapper';
+
+            var ripple = document.createElement('div');
+            ripple.className = 'breathe-ripple-ring';
+            wrapper.appendChild(ripple);
+
+            var svgNS = 'http://www.w3.org/2000/svg';
+            var svg = document.createElementNS(svgNS, 'svg');
+            svg.setAttribute('class', 'breathe-progress-svg');
+            svg.setAttribute('viewBox', '0 0 130 130');
+
+            var circleBg = document.createElementNS(svgNS, 'circle');
+            circleBg.setAttribute('class', 'breathe-progress-bg');
+            circleBg.setAttribute('cx', '65');
+            circleBg.setAttribute('cy', '65');
+            circleBg.setAttribute('r', '60');
+            svg.appendChild(circleBg);
+
+            var circleBar = document.createElementNS(svgNS, 'circle');
+            circleBar.setAttribute('class', 'breathe-progress-bar');
+            circleBar.setAttribute('cx', '65');
+            circleBar.setAttribute('cy', '65');
+            circleBar.setAttribute('r', '60');
+            svg.appendChild(circleBar);
+
+            wrapper.appendChild(svg);
+
+            var circleBtn = document.createElement('button');
+            circleBtn.className = 'breathe-circle-btn';
+            circleBtn.type = 'button';
+            circleBtn.setAttribute('aria-label', 'Botón circular de respiración 4-7-8');
+
+            var iconSvg = [
+              '<svg class="breathe-circle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">',
+              '  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>',
+              '</svg>'
             ].join('');
+
+            var titleSpan = document.createElement('span');
+            titleSpan.className = 'breathe-circle-title';
+            titleSpan.textContent = 'MANTÉN';
+
+            var counterSpan = document.createElement('span');
+            counterSpan.className = 'breathe-circle-counter';
+            counterSpan.textContent = '4-7-8';
+
+            circleBtn.innerHTML = iconSvg;
+            circleBtn.appendChild(titleSpan);
+            circleBtn.appendChild(counterSpan);
+            wrapper.appendChild(circleBtn);
+
+            var subInst = document.createElement('span');
+            subInst.className = 'breathe-sub-instruction';
+            subInst.textContent = 'Mantén tu dedo apoyado en el círculo';
 
             var isHolding = false;
             var breatheTimer = null;
             var phaseTime = 0;
-            var currentPhase = 0; // 0: Inhale (4s), 1: Hold (7s), 2: Exhale (8s)
-            var cyclesDone = 0;
+            var currentPhase = 0; // 0: Inhale (4s), 1: Retain (7s), 2: Exhale (8s)
+            var circumference = 377; // 2 * PI * 60
 
             var startBreathe = function (e) {
-              e.preventDefault();
+              if (e.cancelable) e.preventDefault();
               if (!self.stationActive || isHolding) return;
               isHolding = true;
-              breatheBtn.classList.add('active');
+              wrapper.classList.add('active');
               phaseTime = 0;
               currentPhase = 0;
-              cyclesDone = 0;
 
               SoundEngine.playBreatheChime(true);
               if (navigator.vibrate) navigator.vibrate([30]);
@@ -2322,9 +2944,14 @@
 
                 if (currentPhase === 0) {
                   // Inhala (4s)
-                  phaseLabel.textContent = 'INHALA PROFUNDO (' + Math.ceil(4 - phaseTime) + 's)...';
-                  var progress = Math.min(1.0, phaseTime / 4.0);
-                  Santuario3DEngine.updateBreathingRing(1.0 + progress * 0.9, 0x38BDF8);
+                  var pct = Math.min(1.0, phaseTime / 4.0);
+                  circleBar.style.stroke = '#38BDF8';
+                  circleBar.style.strokeDashoffset = (circumference * (1 - pct)).toString();
+                  circleBtn.className = 'breathe-circle-btn active holding-inhale';
+                  titleSpan.textContent = 'INHALA';
+                  counterSpan.textContent = Math.ceil(4 - phaseTime) + 's';
+                  phaseLabel.textContent = 'INHALA PROFUNDO POR LA NARIZ (' + Math.ceil(4 - phaseTime) + 's)...';
+                  Santuario3DEngine.updateBreathingRing(1.0 + pct * 0.9, 0x38BDF8);
 
                   if (phaseTime >= 4.0) {
                     currentPhase = 1;
@@ -2335,7 +2962,12 @@
                 }
                 else if (currentPhase === 1) {
                   // Retén (7s)
-                  phaseLabel.textContent = 'RETÉN EL AIRE (' + Math.ceil(7 - phaseTime) + 's)...';
+                  circleBar.style.stroke = '#FBBF24';
+                  circleBar.style.strokeDashoffset = '0';
+                  circleBtn.className = 'breathe-circle-btn active holding-retain';
+                  titleSpan.textContent = 'RETÉN';
+                  counterSpan.textContent = Math.ceil(7 - phaseTime) + 's';
+                  phaseLabel.textContent = 'RETÉN EL AIRE EN TUS PULMONES (' + Math.ceil(7 - phaseTime) + 's)...';
                   Santuario3DEngine.updateBreathingRing(1.9, 0xFBBF24);
 
                   if (phaseTime >= 7.0) {
@@ -2346,15 +2978,28 @@
                 }
                 else if (currentPhase === 2) {
                   // Exhala (8s)
-                  phaseLabel.textContent = 'EXHALA SUAVE (' + Math.ceil(8 - phaseTime) + 's)...';
-                  var progress = Math.min(1.0, phaseTime / 8.0);
-                  Santuario3DEngine.updateBreathingRing(1.9 - progress * 0.9, 0x10B981);
+                  var pct = Math.min(1.0, phaseTime / 8.0);
+                  circleBar.style.stroke = '#10B981';
+                  circleBar.style.strokeDashoffset = (circumference * pct).toString();
+                  circleBtn.className = 'breathe-circle-btn active holding-exhale';
+                  titleSpan.textContent = 'EXHALA';
+                  counterSpan.textContent = Math.ceil(8 - phaseTime) + 's';
+                  phaseLabel.textContent = 'EXHALA LENTAMENTE POR LA BOCA (' + Math.ceil(8 - phaseTime) + 's)...';
+                  Santuario3DEngine.updateBreathingRing(1.9 - pct * 0.9, 0x10B981);
 
                   if (phaseTime >= 8.0) {
-                    cyclesDone++;
                     clearInterval(breatheTimer);
-                    breatheBtn.style.pointerEvents = 'none';
+                    breatheTimer = null;
+                    isHolding = false;
+                    circleBtn.style.pointerEvents = 'none';
                     self.stationActive = false;
+
+                    wrapper.classList.remove('active');
+                    circleBtn.className = 'breathe-circle-btn completed';
+                    circleBar.style.stroke = '#10B981';
+                    circleBar.style.strokeDashoffset = '0';
+                    titleSpan.textContent = '¡COMPLETO!';
+                    counterSpan.textContent = '68 BPM';
 
                     self.score += data.scoreAdd;
                     self.vitalBattery = data.batteryTarget;
@@ -2362,6 +3007,7 @@
                     ScormAPI.setScore(self.score);
 
                     phaseLabel.textContent = 'FRECUENCIA CARDÍACA: 68 BPM (ESTABILIZADA)';
+                    subInst.textContent = '¡Excelente regulación neurovegetativa!';
                     self.showInlineFeedback('¡Biopulso 4-7-8 exitoso! Tensión arterial y niveles de estrés regulados.');
 
                     setTimeout(function () {
@@ -2375,21 +3021,26 @@
             var stopBreathe = function (e) {
               if (breatheTimer && self.stationActive) {
                 clearInterval(breatheTimer);
+                breatheTimer = null;
                 isHolding = false;
-                breatheBtn.classList.remove('active');
-                if (cyclesDone === 0) {
-                  phaseLabel.textContent = 'CICLO INTERRUMPIDO • VUELVE A PULSAR';
-                  Santuario3DEngine.updateBreathingRing(1.0, 0x38BDF8);
-                }
+                wrapper.classList.remove('active');
+                circleBtn.className = 'breathe-circle-btn';
+                circleBar.style.strokeDashoffset = circumference.toString();
+                titleSpan.textContent = 'MANTÉN';
+                counterSpan.textContent = '4-7-8';
+                phaseLabel.textContent = 'CICLO INTERRUMPIDO • MANTÉN PRESIONADO EL CÍRCULO';
+                subInst.textContent = 'Apoya tu pulgar en el círculo sin soltarlo';
+                Santuario3DEngine.updateBreathingRing(1.0, 0x38BDF8);
               }
             };
 
-            breatheBtn.addEventListener('pointerdown', startBreathe);
+            circleBtn.addEventListener('pointerdown', startBreathe);
             window.addEventListener('pointerup', stopBreathe);
             window.addEventListener('pointercancel', stopBreathe);
 
             container.appendChild(phaseLabel);
-            container.appendChild(breatheBtn);
+            container.appendChild(wrapper);
+            container.appendChild(subInst);
             zone.appendChild(container);
           }
           else if (stationNum === 3) {
