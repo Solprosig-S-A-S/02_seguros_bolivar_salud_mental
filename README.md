@@ -44,7 +44,7 @@ Al habilitar **GitHub Pages** en la rama `main` (directorio `/root`), la platafo
   * **Estación 2 (El Bioseñalizador 3D):** Vista en primer plano a la radio de obra; respiración guiada con ritmo 4-7-8 manteniendo pulsado el botón táctil con retroalimentación sonora armónica.
   * **Estación 3 (El Casillero de Desconexión):** Vestidores al atardecer; checklist interactivo para guardar casco, botas, silenciar notificaciones y asegurar el candado con animación 3D de la puerta.
   * **Estación 4 (Espacio de Descanso Nocturno):** Habitación nocturna; apagado de luz azul en el móvil, cierre de cortinas y apagado de velador para optimizar melatonina.
-  * **Finales y Batería Vital:** 2 desenlaces según el nivel de recarga (Maestría en Recarga con amanecer 3D e inspección orbital libre vs. Déficit de Descanso con plan remedial).
+  * **Finales y Batería Vital:** 2 desenlaces según el nivel de recarga. El final exitoso es una **celebración cinemática**: amanecer 3D con podio dorado, trabajador festejando, batería gigante que se carga, fuegos artificiales, confeti 3D/2D, fanfarria y sellos de logro, seguido del informe de diagnóstico; el final fallido muestra el déficit de descanso con plan remedial.
 * **Paquete SCORM:** `scorm/Juego_03_SantuarioRecarga_SCORM.zip`
 
 ---

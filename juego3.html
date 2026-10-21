@@ -1115,6 +1115,211 @@
       margin-bottom: 5px !important;
     }
 
+    /* ESCENARIO FINAL: OCULTAR CONSOLA DE ESTACIÓN PARA DESPEJAR LA CELEBRACIÓN */
+    .recharge-app.finale-mode .station-deck {
+      display: none;
+    }
+
+    /* CELEBRACIÓN CINEMÁTICA DEL FINAL EXITOSO */
+    .celebration-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 160;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 76px 16px max(22px, env(safe-area-inset-bottom, 22px)) 16px;
+      pointer-events: none;
+      text-align: center;
+    }
+    .celebration-overlay.active {
+      display: flex;
+    }
+    .celebration-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .celebration-banner {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      animation: celebrationBannerIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .celebration-kicker {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      color: #FFFFFF;
+      background: rgba(2, 48, 71, 0.82);
+      padding: 4px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 183, 3, 0.7);
+    }
+    .celebration-title {
+      margin: 4px 0 0 0;
+      font-size: clamp(26px, 7vw, 42px);
+      font-weight: 900;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+      color: #FFFFFF;
+      text-shadow: 0 3px 0 #D97706, 0 0 24px rgba(255, 183, 3, 0.9), 0 6px 22px rgba(0, 0, 0, 0.55);
+      animation: celebrationTitleBeat 1.6s ease-in-out infinite;
+    }
+    .celebration-subtitle {
+      margin: 0;
+      font-size: clamp(15px, 4.2vw, 18px);
+      font-weight: 700;
+      color: #FFFFFF;
+      background: rgba(2, 48, 71, 0.78);
+      padding: 5px 14px;
+      border-radius: 12px;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+    }
+    @keyframes celebrationBannerIn {
+      0% { opacity: 0; transform: translateY(-30px) scale(0.85); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes celebrationTitleBeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .celebration-card {
+      position: relative;
+      z-index: 2;
+      pointer-events: auto;
+      width: 100%;
+      max-width: 520px;
+      background: rgba(3, 16, 28, 0.9);
+      border: 1.5px solid rgba(255, 183, 3, 0.6);
+      border-radius: 18px;
+      padding: 12px 14px 14px 14px;
+      box-shadow: 0 12px 34px rgba(0, 0, 0, 0.7), 0 0 26px rgba(255, 183, 3, 0.25);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      animation: celebrationCardIn 0.7s 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    @keyframes celebrationCardIn {
+      0% { opacity: 0; transform: translateY(40px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .celebration-battery-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .celebration-battery-label {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      color: #CBD5E1;
+    }
+    .celebration-battery-value {
+      font-size: 24px;
+      font-weight: 900;
+      font-family: monospace;
+      color: var(--bolivar-yellow);
+      line-height: 1;
+    }
+    .celebration-battery-track {
+      height: 12px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.12);
+      overflow: hidden;
+    }
+    .celebration-battery-fill {
+      height: 100%;
+      width: 15%;
+      border-radius: 8px;
+      background: linear-gradient(90deg, #E63946, #FFB703 45%, #34D399);
+      transition: width 0.12s linear;
+    }
+    .celebration-overlay.complete .celebration-battery-fill {
+      box-shadow: 0 0 14px rgba(52, 211, 153, 0.9);
+    }
+    .celebration-overlay.complete .celebration-battery-value {
+      color: #34D399;
+      text-shadow: 0 0 12px rgba(52, 211, 153, 0.8);
+    }
+
+    .celebration-seals {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+    }
+    .celebration-seal {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border-radius: 11px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      font-size: 13px;
+      font-weight: 700;
+      color: #64748B;
+      opacity: 0.55;
+      transform: scale(0.94);
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .celebration-seal .seal-dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid #64748B;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: transparent;
+      transition: all 0.4s ease;
+    }
+    .celebration-seal.show {
+      opacity: 1;
+      transform: scale(1);
+      color: #FFFFFF;
+      background: rgba(16, 185, 129, 0.2);
+      border-color: #10B981;
+    }
+    .celebration-seal.show .seal-dot {
+      background: #10B981;
+      border-color: #10B981;
+      color: #FFFFFF;
+    }
+
+    .celebration-report-btn {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(8px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .celebration-overlay.complete .celebration-report-btn {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+      animation: celebrationBtnPulse 1.8s ease-in-out infinite;
+    }
+    @keyframes celebrationBtnPulse {
+      0%, 100% { box-shadow: 0 4px 16px rgba(255, 183, 3, 0.35); }
+      50% { box-shadow: 0 4px 26px rgba(255, 183, 3, 0.85); }
+    }
+
     /* PANTALLA DE CIERRE SCORM */
     .closure-screen-overlay {
       position: absolute;
@@ -1315,6 +1520,51 @@
       </div>
     </div>
 
+    <!-- 5B. CELEBRACIÓN CINEMÁTICA (SOLO FINAL EXITOSO) -->
+    <div class="celebration-overlay" id="celebrationOverlay">
+      <canvas class="celebration-canvas" id="celebrationCanvas"></canvas>
+
+      <div class="celebration-banner">
+        <span class="celebration-kicker">SEGUROS BOLÍVAR • ARL</span>
+        <h2 class="celebration-title">¡FELICITACIONES!</h2>
+        <p class="celebration-subtitle">Recargaste tu Batería Vital al 100%</p>
+      </div>
+
+      <div class="celebration-card">
+        <div class="celebration-battery-row">
+          <span class="celebration-battery-label">BATERÍA VITAL</span>
+          <span class="celebration-battery-value" id="celebrationBatteryText">15%</span>
+        </div>
+        <div class="celebration-battery-track">
+          <div class="celebration-battery-fill" id="celebrationBatteryFill"></div>
+        </div>
+
+        <div class="celebration-seals">
+          <div class="celebration-seal">
+            <span class="seal-dot"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+            <span>Hidratación</span>
+          </div>
+          <div class="celebration-seal">
+            <span class="seal-dot"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+            <span>Respiración</span>
+          </div>
+          <div class="celebration-seal">
+            <span class="seal-dot"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+            <span>Desconexión</span>
+          </div>
+          <div class="celebration-seal">
+            <span class="seal-dot"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+            <span>Descanso</span>
+          </div>
+        </div>
+
+        <button class="start-btn celebration-report-btn" id="celebrationReportBtn" type="button">
+          <span>VER MI INFORME</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+      </div>
+    </div>
+
     <!-- 6. PANTALLA FINAL CON CERTIFICACIÓN Y DOS FINALES -->
     <div class="screen-overlay" id="finalScreen" style="display: none;">
       <div class="screen-content-card finale-card" id="finalCard">
@@ -1377,7 +1627,7 @@
               <circle cx="12" cy="12" r="10"></circle>
               <path d="M16 12l-4-4-4 4M12 8v8"></path>
             </svg>
-            <span id="toggle3dViewText">Examinar Habitación y Escenario 3D</span>
+            <span id="toggle3dViewText">Ver Escenario Final en 3D</span>
           </button>
         </div>
       </div>
@@ -1392,7 +1642,7 @@
       </div>
       <h2 style="font-size:clamp(18px, 4.5vw, 20px); font-weight:700; color:var(--bolivar-yellow); margin-bottom:6px;">SESIÓN REGISTRADA EN LMS</h2>
       <p style="font-size:13px; color:#CBD5E1; max-width:320px; margin-bottom:18px; line-height:1.4;">
-        Tu recarga vital y balance de autocuidado han sido transmitidos a la plataforma institucional de aprendizaje.
+        ¡Misión cumplida! Tu recarga vital y balance de autocuidado han sido transmitidos a la plataforma institucional de aprendizaje.
       </p>
       <button id="closeWindowBtn" class="start-btn" style="max-width:280px;">
         <span>CERRAR VENTANA</span>
@@ -1623,6 +1873,41 @@
           });
         },
 
+        playCelebrationFanfare: function () {
+          var self = this;
+          var seq = [[523.25, 0], [659.25, 140], [783.99, 280], [1046.5, 420], [783.99, 640], [1046.5, 780], [1318.5, 940]];
+          seq.forEach(function (n) {
+            setTimeout(function () {
+              self.playTone(n[0], 'triangle', 0.3, 0.22);
+            }, n[1]);
+          });
+          setTimeout(function () {
+            [523.25, 659.25, 783.99, 1046.5].forEach(function (f) {
+              self.playTone(f, 'sine', 0.9, 0.14);
+            });
+          }, 1150);
+        },
+
+        playFireworkPop: function () {
+          if (this.muted) return;
+          this.init();
+          if (!this.ctx) return;
+          try {
+            var t = this.ctx.currentTime;
+            var osc = this.ctx.createOscillator();
+            var gain = this.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(900 + Math.random() * 500, t);
+            osc.frequency.exponentialRampToValueAtTime(90, t + 0.22);
+            gain.gain.setValueAtTime(0.1, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(t);
+            osc.stop(t + 0.26);
+          } catch (e) {}
+        },
+
         playFinaleFailure: function () {
           var self = this;
           var notes = [330, 293.66, 246.94, 196.00];
@@ -1686,6 +1971,14 @@
         celebrationGroup: null,
         celebrationList: [],
 
+        // Escenario de celebración final
+        finaleGroup: null,
+        finaleStar: null,
+        finaleRays: null,
+        finaleBatterySegs: [],
+        fireworks: [],
+        finaleStartTime: 0,
+
         // Cámara interactiva y órbita
         currentLookAt: new THREE.Vector3(0, 0, 0),
         targetLookAt: new THREE.Vector3(0, 0, 0),
@@ -1734,6 +2027,7 @@
           this.buildTargetMarker();
           this.buildCasetaBeacon();
           this.buildCelebrationParticles();
+          this.buildFinaleScene();
 
           this.bindResize();
           this.bindTouchControls();
@@ -2345,6 +2639,7 @@
 
         updatePlayer: function (delta) {
           if (!this.playerAvatar || !this.playerAvatar.visible) return;
+          if (this.finaleMode) return;
 
           var currentPos = this.playerAvatar.position;
           var targetPos = this.playerTargetPos;
@@ -2398,25 +2693,29 @@
            PARTÍCULAS Y CONFETI CELEBRATORIO (FINALE)
            ------------------------------------------------------------------ */
         buildCelebrationParticles: function () {
-          var count = 35;
+          var count = 120;
           var group = new THREE.Group();
-          var colors = [0xFBBF24, 0x10B981, 0x38BDF8, 0xF59E0B];
+          var colors = [0xFBBF24, 0x10B981, 0x38BDF8, 0xF59E0B, 0xFFFFFF, 0xF472B6];
+          var confettiGeo = new THREE.PlaneGeometry(0.17, 0.1);
           this.celebrationList = [];
           for (var i = 0; i < count; i++) {
             var col = colors[i % colors.length];
-            var pMat = new THREE.MeshBasicMaterial({ color: col });
-            var pMesh = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.14, 0.14), pMat);
+            var pMat = new THREE.MeshBasicMaterial({ color: col, side: THREE.DoubleSide });
+            var pMesh = new THREE.Mesh(confettiGeo, pMat);
+            var ang = Math.random() * Math.PI * 2;
+            var rad = Math.random() * 8;
             pMesh.position.set(
-              (Math.random() - 0.5) * 12,
-              Math.random() * 6 + 0.5,
-              (Math.random() - 0.5) * 12
+              Math.cos(ang) * rad,
+              Math.random() * 9 + 0.3,
+              Math.sin(ang) * rad
             );
+            pMesh.rotation.set(Math.random() * 3, Math.random() * 3, Math.random() * 3);
             group.add(pMesh);
             this.celebrationList.push({
               mesh: pMesh,
-              vy: 0.02 + Math.random() * 0.03,
-              rotX: 0.02 + Math.random() * 0.05,
-              rotY: 0.03 + Math.random() * 0.04,
+              vy: -(0.012 + Math.random() * 0.022),
+              rotX: 0.04 + Math.random() * 0.08,
+              rotY: 0.03 + Math.random() * 0.07,
               baseX: pMesh.position.x,
               seed: Math.random() * 10
             });
@@ -2427,12 +2726,218 @@
         },
 
         /* ------------------------------------------------------------------
+           ESCENARIO DE CELEBRACIÓN FINAL: PODIO, AMANECER, BATERÍA Y FUEGOS ARTIFICIALES
+           ------------------------------------------------------------------ */
+        buildFinaleScene: function () {
+          var grp = new THREE.Group();
+          var self = this;
+
+          // Plataforma circular con borde dorado
+          var plat = new THREE.Mesh(
+            new THREE.CylinderGeometry(5.2, 5.6, 0.5, 48),
+            new THREE.MeshStandardMaterial({ color: 0x1E3A5F, roughness: 0.6 })
+          );
+          plat.position.y = -0.25;
+          plat.receiveShadow = true;
+          grp.add(plat);
+
+          var goldMat = new THREE.MeshStandardMaterial({ color: 0xFBBF24, metalness: 0.6, roughness: 0.3, emissive: 0x5C3D00 });
+          var edge = new THREE.Mesh(new THREE.TorusGeometry(5.3, 0.1, 10, 64), goldMat);
+          edge.rotation.x = Math.PI / 2;
+          edge.position.y = 0.02;
+          grp.add(edge);
+
+          // Podio dorado de dos escalones
+          var step1 = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 1.7, 0.35, 32), goldMat);
+          step1.position.y = 0.175;
+          step1.castShadow = true;
+          grp.add(step1);
+          var step2 = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.25, 0.3, 32), goldMat);
+          step2.position.y = 0.5;
+          step2.castShadow = true;
+          grp.add(step2);
+
+          // Sol naciente con halo y rayos giratorios
+          var sunCenter = new THREE.Group();
+          sunCenter.position.set(0, 3.4, -8);
+          var halo = new THREE.Mesh(
+            new THREE.CircleGeometry(3.8, 48),
+            new THREE.MeshBasicMaterial({ color: 0xFDE68A, transparent: true, opacity: 0.35 })
+          );
+          halo.position.z = -0.1;
+          sunCenter.add(halo);
+          var disc = new THREE.Mesh(new THREE.CircleGeometry(2.4, 48), new THREE.MeshBasicMaterial({ color: 0xFEF3C7 }));
+          sunCenter.add(disc);
+
+          var rays = new THREE.Group();
+          rays.position.z = -0.2;
+          var rayGeo = new THREE.PlaneGeometry(0.28, 6.5);
+          rayGeo.translate(0, 3.6, 0);
+          for (var r = 0; r < 14; r++) {
+            var ray = new THREE.Mesh(rayGeo, new THREE.MeshBasicMaterial({
+              color: 0xFDE68A, transparent: true, opacity: 0.28, side: THREE.DoubleSide
+            }));
+            ray.rotation.z = r * (Math.PI * 2 / 14);
+            rays.add(ray);
+          }
+          sunCenter.add(rays);
+          grp.add(sunCenter);
+          this.finaleRays = rays;
+
+          // Colinas verdes del amanecer
+          var hillMat = new THREE.MeshStandardMaterial({ color: 0x14532D, roughness: 0.9 });
+          [[-8, -3.6, -10, 6.5], [7, -3.2, -11, 6.0], [0, -4.4, -12, 8.0]].forEach(function (h) {
+            var hill = new THREE.Mesh(new THREE.SphereGeometry(h[3], 24, 12), hillMat);
+            hill.position.set(h[0], h[1], h[2]);
+            hill.scale.y = 0.55;
+            grp.add(hill);
+          });
+
+          // Batería vital gigante de 5 segmentos
+          var battery = new THREE.Group();
+          battery.position.set(-2.5, 0, -1.6);
+          battery.rotation.y = 0.4;
+          var shell = new THREE.Mesh(
+            new THREE.BoxGeometry(1.3, 2.8, 0.6),
+            new THREE.MeshStandardMaterial({ color: 0x1E293B, roughness: 0.4, metalness: 0.3 })
+          );
+          shell.position.y = 1.5;
+          shell.castShadow = true;
+          battery.add(shell);
+          var cap = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.18, 0.4), new THREE.MeshStandardMaterial({ color: 0xCBD5E1, metalness: 0.5 }));
+          cap.position.y = 3.0;
+          battery.add(cap);
+          this.finaleBatterySegs = [];
+          for (var s = 0; s < 5; s++) {
+            var segMat = new THREE.MeshBasicMaterial({ color: 0x1F2937 });
+            var seg = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.4, 0.64), segMat);
+            seg.position.y = 0.45 + s * 0.5;
+            battery.add(seg);
+            this.finaleBatterySegs.push(segMat);
+          }
+          grp.add(battery);
+
+          // Estrella dorada flotante sobre el trabajador
+          var starShape = new THREE.Shape();
+          var spikes = 5;
+          for (var p = 0; p < spikes * 2; p++) {
+            var rad = (p % 2 === 0) ? 0.5 : 0.22;
+            var a = (p / (spikes * 2)) * Math.PI * 2 + Math.PI / 2;
+            var px = Math.cos(a) * rad;
+            var py = Math.sin(a) * rad;
+            if (p === 0) starShape.moveTo(px, py); else starShape.lineTo(px, py);
+          }
+          starShape.closePath();
+          var star = new THREE.Mesh(
+            new THREE.ExtrudeGeometry(starShape, { depth: 0.12, bevelEnabled: false }),
+            new THREE.MeshStandardMaterial({ color: 0xFDE047, emissive: 0xCA8A04, metalness: 0.5, roughness: 0.25 })
+          );
+          star.position.set(0, 3.1, 0);
+          grp.add(star);
+          this.finaleStar = star;
+
+          // Luz cálida de celebración
+          var glow = new THREE.PointLight(0xFDE68A, 1.2, 14);
+          glow.position.set(0, 3.2, 2.5);
+          grp.add(glow);
+
+          // Fuegos artificiales (5 ráfagas reutilizables)
+          this.fireworks = [];
+          var fwColors = [0xFBBF24, 0x38BDF8, 0x34D399, 0xF472B6, 0xFFFFFF];
+          for (var f = 0; f < 5; f++) {
+            var burst = { parts: [], age: 0, cycle: 2.6, offset: f * 0.55, origin: new THREE.Vector3(), started: false, soundOn: (f % 2 === 0) };
+            var burstGroup = new THREE.Group();
+            for (var q = 0; q < 28; q++) {
+              var dir = new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize();
+              var mat = new THREE.MeshBasicMaterial({ color: fwColors[f % fwColors.length], transparent: true, opacity: 1 });
+              var m = new THREE.Mesh(new THREE.SphereGeometry(0.075, 6, 6), mat);
+              burstGroup.add(m);
+              burst.parts.push({ mesh: m, dir: dir, speed: 2.2 + Math.random() * 1.6, mat: mat });
+            }
+            grp.add(burstGroup);
+            burst.group = burstGroup;
+            burst.group.visible = false;
+            this.fireworks.push(burst);
+          }
+
+          grp.visible = false;
+          this.scene.add(grp);
+          this.finaleGroup = grp;
+        },
+
+        updateFinaleAnimation: function (time, delta) {
+          var jt = time - this.finaleStartTime;
+          var self = this;
+
+          // Trabajador saltando de alegría sobre el podio
+          if (this.playerAvatar) {
+            var jump = Math.abs(Math.sin(jt * 3.2));
+            this.playerAvatar.position.set(0, 0.65 + jump * 0.55, 0);
+            this.playerAvatar.rotation.set(0, Math.sin(jt * 1.2) * 0.35, 0);
+            var wave = Math.sin(jt * 7);
+            if (this.playerLeftArm) {
+              this.playerLeftArm.rotation.z = -(2.3 + wave * 0.3);
+              this.playerLeftArm.rotation.x = 0;
+            }
+            if (this.playerRightArm) {
+              this.playerRightArm.rotation.z = 2.3 + Math.sin(jt * 7 + 1.2) * 0.3;
+              this.playerRightArm.rotation.x = 0;
+            }
+            if (this.playerLeftLeg) this.playerLeftLeg.rotation.x = Math.sin(jt * 6.4) * 0.22;
+            if (this.playerRightLeg) this.playerRightLeg.rotation.x = -Math.sin(jt * 6.4) * 0.22;
+          }
+
+          // Estrella giratoria y rayos del sol
+          if (this.finaleStar) {
+            this.finaleStar.rotation.y += 0.045;
+            this.finaleStar.position.y = 3.1 + Math.sin(jt * 2) * 0.14;
+          }
+          if (this.finaleRays) this.finaleRays.rotation.z += 0.004;
+
+          // Batería vital cargándose segmento a segmento
+          var lit = Math.min(5, Math.floor(jt / 0.45) + 1);
+          this.finaleBatterySegs.forEach(function (mat, idx) {
+            mat.color.setHex(idx < lit ? 0x34D399 : 0x1F2937);
+          });
+
+          // Fuegos artificiales en bucle
+          this.fireworks.forEach(function (fw) {
+            var t = jt - fw.offset;
+            if (t < 0) return;
+            var age = t % fw.cycle;
+            if (!fw.started || age < fw.age) {
+              fw.started = true;
+              fw.origin.set((Math.random() - 0.5) * 10, 4 + Math.random() * 3, -1 - Math.random() * 5);
+              fw.group.visible = true;
+              if (fw.soundOn) SoundEngine.playFireworkPop();
+            }
+            fw.age = age;
+            var fade = Math.max(0, 1 - age / 1.9);
+            fw.parts.forEach(function (pt) {
+              pt.mesh.position.set(
+                fw.origin.x + pt.dir.x * pt.speed * age,
+                fw.origin.y + pt.dir.y * pt.speed * age - 1.4 * age * age,
+                fw.origin.z + pt.dir.z * pt.speed * age
+              );
+              pt.mat.opacity = fade;
+              var sc = 0.4 + fade * 0.8;
+              pt.mesh.scale.set(sc, sc, sc);
+            });
+          });
+        },
+
+        /* ------------------------------------------------------------------
            CAMBIO FLUIDO DE ESCENARIOS Y LUZ SEGÚN LA ESTACIÓN
            ------------------------------------------------------------------ */
         focusStation: function (stationId) {
           this.currentStationId = stationId;
           this.finaleMode = false;
           if (this.celebrationGroup) this.celebrationGroup.visible = false;
+          if (this.finaleGroup) this.finaleGroup.visible = false;
+          if (this.playerLeftArm) { this.playerLeftArm.rotation.z = 0; this.playerLeftArm.rotation.x = 0; }
+          if (this.playerRightArm) { this.playerRightArm.rotation.z = 0; this.playerRightArm.rotation.x = 0; }
+          if (this.playerLeftLeg) this.playerLeftLeg.rotation.x = 0;
+          if (this.playerRightLeg) this.playerRightLeg.rotation.x = 0;
 
           // Ocultar todos y mostrar el activo
           if (this.station1Group) this.station1Group.visible = (stationId === 1);
@@ -2610,24 +3115,35 @@
           this.finaleType = passed ? 'victory' : 'failure';
 
           if (passed) {
-            // Amanecer radiante 3D (6:00 AM)
-            SoundEngine.playFinaleVictory();
+            // Amanecer radiante 3D (6:00 AM) con podio, fuegos artificiales y confeti
+            SoundEngine.playCelebrationFanfare();
+            this.finaleStartTime = performance.now() * 0.001;
+            if (this.station1Group) this.station1Group.visible = false;
+            if (this.station2Group) this.station2Group.visible = false;
+            if (this.station3Group) this.station3Group.visible = false;
+            if (this.station4Group) this.station4Group.visible = false;
+            if (this.finaleGroup) this.finaleGroup.visible = true;
             if (this.celebrationGroup) this.celebrationGroup.visible = true;
+            if (this.beaconMesh) this.beaconMesh.visible = false;
+            if (this.targetMarkerMesh) this.targetMarkerMesh.visible = false;
+
+            this.scene.background.setHex(0xF4A261);
+            if (this.ambientFog) this.ambientFog.color.setHex(0xF4A261);
             if (this.hemiLight) this.hemiLight.color.setHex(0xFFFBEB);
             if (this.sunLight) {
               this.sunLight.color.setHex(0xFDE68A);
               this.sunLight.intensity = 1.45;
             }
-            this.targetLookAt.set(0, 1.2, 0);
-            this.baseTargetRadius = 10.5;
-            this.targetPitch = 0.35;
+            this.targetLookAt.set(0, 1.7, 0);
+            this.baseTargetRadius = 9.8;
+            this.targetPitch = 0.14;
+            this.targetYaw = 0.0;
 
             if (this.playerAvatar) {
               this.playerAvatar.visible = true;
-              this.playerAvatar.position.set(0, 0, 0);
+              this.playerAvatar.position.set(0, 0.65, 0);
               this.playerAvatar.rotation.set(0, 0, 0);
-              if (this.playerLeftArm) this.playerLeftArm.rotation.z = 2.4;
-              if (this.playerRightArm) this.playerRightArm.rotation.z = -2.4;
+              this.playerTargetPos.set(0, 0, 0);
             }
           } else {
             // Despertar con fatiga y déficit de sueño
@@ -2649,6 +3165,7 @@
           this.finaleMode = false;
           this.finaleType = null;
           if (this.celebrationGroup) this.celebrationGroup.visible = false;
+          if (this.finaleGroup) this.finaleGroup.visible = false;
           if (this.lockerDoorPivot) this.lockerDoorPivot.rotation.y = -1.45;
           if (this.padlockMesh) this.padlockMesh.visible = false;
           if (this.phoneScreenMesh) this.phoneScreenMesh.material.color.setHex(0x38BDF8);
@@ -2709,7 +3226,7 @@
             self.dragStartY = clientY;
 
             // En estaciones 1, 3, 4: toque en el suelo para mover al trabajador con el dedo
-            if (self.currentStationId !== 2 && self.playerAvatar && self.playerAvatar.visible) {
+            if (!self.finaleMode && self.currentStationId !== 2 && self.playerAvatar && self.playerAvatar.visible) {
               var hit = getFloorHit(clientX, clientY);
               if (hit) {
                 var b = self.getCurrentWalkBounds();
@@ -2793,7 +3310,17 @@
 
           // Órbita cinematográfica continua durante el final
           if (this.finaleMode && !this.isDragging) {
-            this.targetYaw += (this.finaleType === 'victory' ? 0.004 : 0.002);
+            if (this.finaleType === 'victory') {
+              // Balanceo suave de cámara para mantener al festejado de frente
+              this.targetYaw = Math.sin(time * 0.35) * 0.6;
+            } else {
+              this.targetYaw += 0.002;
+            }
+          }
+
+          // Animación de la celebración final (salto, fuegos artificiales, batería)
+          if (this.finaleMode && this.finaleType === 'victory') {
+            this.updateFinaleAnimation(time, delta);
           }
 
           // Suavizado dinámico de cámara
@@ -2824,13 +3351,102 @@
               cp.mesh.rotation.x += cp.rotX;
               cp.mesh.rotation.y += cp.rotY;
               cp.mesh.position.x = cp.baseX + Math.sin(time * 2 + cp.seed) * 0.35;
-              if (cp.mesh.position.y > 8.0) {
-                cp.mesh.position.y = 0.3;
+              if (cp.mesh.position.y < 0.1) {
+                cp.mesh.position.y = 9.0;
               }
             });
           }
 
           this.renderer.render(this.scene, this.camera);
+        }
+      };
+
+      /* ------------------------------------------------------------------
+         3B. CONFETI 2D SUPERPUESTO (CAÑONES LATERALES DE CELEBRACIÓN)
+         ------------------------------------------------------------------ */
+      var Confetti2D = {
+        canvas: null,
+        ctx: null,
+        parts: [],
+        raf: 0,
+        running: false,
+        colors: ['#FFB703', '#34D399', '#38BDF8', '#F472B6', '#FFFFFF', '#F59E0B'],
+
+        start: function (canvas) {
+          this.stop();
+          this.canvas = canvas;
+          this.ctx = canvas.getContext('2d');
+          this.resize();
+          this.parts = [];
+          this.running = true;
+          this.burst();
+          this.loop();
+        },
+
+        resize: function () {
+          if (!this.canvas) return;
+          this.canvas.width = this.canvas.clientWidth || window.innerWidth;
+          this.canvas.height = this.canvas.clientHeight || window.innerHeight;
+        },
+
+        burst: function () {
+          if (!this.canvas) return;
+          this.resize();
+          var w = this.canvas.width;
+          var h = this.canvas.height;
+          for (var side = 0; side < 2; side++) {
+            var dir = side === 0 ? 1 : -1;
+            for (var i = 0; i < 55; i++) {
+              this.parts.push({
+                x: side === 0 ? 0 : w,
+                y: h * 0.82,
+                vx: dir * (3 + Math.random() * 9),
+                vy: -(9 + Math.random() * 11),
+                size: 6 + Math.random() * 6,
+                rot: Math.random() * Math.PI,
+                vr: (Math.random() - 0.5) * 0.4,
+                color: this.colors[Math.floor(Math.random() * this.colors.length)]
+              });
+            }
+          }
+        },
+
+        loop: function () {
+          var self = this;
+          if (!this.running || !this.ctx) return;
+          var ctx = this.ctx;
+          var w = this.canvas.width;
+          var h = this.canvas.height;
+          ctx.clearRect(0, 0, w, h);
+
+          for (var i = this.parts.length - 1; i >= 0; i--) {
+            var p = this.parts[i];
+            p.vy += 0.3;
+            p.vx *= 0.992;
+            p.x += p.vx;
+            p.y += p.vy;
+            p.rot += p.vr;
+            if (p.y > h + 30) {
+              this.parts.splice(i, 1);
+              continue;
+            }
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate(p.rot);
+            ctx.fillStyle = p.color;
+            ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+            ctx.restore();
+          }
+
+          this.raf = requestAnimationFrame(function () { self.loop(); });
+        },
+
+        stop: function () {
+          this.running = false;
+          if (this.raf) cancelAnimationFrame(this.raf);
+          this.raf = 0;
+          this.parts = [];
+          if (this.ctx && this.canvas) this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         }
       };
 
@@ -2842,6 +3458,8 @@
         score: 0,
         vitalBattery: 15, // Nivel de batería vital: 0 a 100%
         stationActive: false,
+        celebrationTimers: [],
+        celebrationBatteryTimer: null,
         dom: {},
 
         stationsData: [
@@ -2925,6 +3543,11 @@
             welcomeScreen: document.getElementById('welcomeScreen'),
             startBtn: document.getElementById('startBtn'),
             finalScreen: document.getElementById('finalScreen'),
+            celebrationOverlay: document.getElementById('celebrationOverlay'),
+            celebrationCanvas: document.getElementById('celebrationCanvas'),
+            celebrationBatteryFill: document.getElementById('celebrationBatteryFill'),
+            celebrationBatteryText: document.getElementById('celebrationBatteryText'),
+            celebrationReportBtn: document.getElementById('celebrationReportBtn'),
             finalBadgeIcon: document.getElementById('finalBadgeIcon'),
             finalTitle: document.getElementById('finalTitle'),
             finalDesc: document.getElementById('finalDesc'),
@@ -2955,6 +3578,7 @@
               self.autoAdvanceTimer = null;
             }
             self.dom.welcomeScreen.style.display = 'none';
+            self.clearCelebration();
             Santuario3DEngine.resetSceneState();
             self.loadStation(1);
           });
@@ -2975,9 +3599,15 @@
             }
           });
 
+          this.dom.celebrationReportBtn.addEventListener('click', function () {
+            SoundEngine.playTone(660, 'triangle', 0.12, 0.16);
+            self.clearCelebration();
+            self.dom.finalScreen.style.display = 'flex';
+          });
+
           this.dom.toggle3dViewBtn.addEventListener('click', function () {
             var isMin = self.dom.finalScreen.classList.toggle('minimized');
-            self.dom.toggle3dViewText.textContent = isMin ? 'Restaurar Informe' : 'Examinar Habitación y Escenario 3D';
+            self.dom.toggle3dViewText.textContent = isMin ? 'Restaurar Informe' : 'Ver Escenario Final en 3D';
           });
 
           this.dom.finishScormBtn.addEventListener('click', function () {
@@ -2989,6 +3619,7 @@
           });
 
           this.dom.retryGameBtn.addEventListener('click', function () {
+            self.clearCelebration();
             if (self.autoAdvanceTimer) {
               clearTimeout(self.autoAdvanceTimer);
               self.autoAdvanceTimer = null;
@@ -3016,6 +3647,8 @@
         loadStation: function (stationNum) {
           this.currentStation = stationNum;
           this.stationActive = true;
+          var appRoot = document.getElementById('rechargeApp');
+          if (appRoot) appRoot.classList.remove('finale-mode');
           var data = this.stationsData[stationNum - 1];
 
           // Limpiar feedback inline previo
@@ -3593,9 +4226,89 @@
           }
 
           // Animación 3D del amanecer triunfal o amanecer pesado
-          Santuario3DEngine.playFinale(passed, this.score);
+          var appRoot = document.getElementById('rechargeApp');
+          if (appRoot) appRoot.classList.add('finale-mode');
 
-          this.dom.finalScreen.style.display = 'flex';
+          if (passed) {
+            // Final de celebración cinemática antes del informe
+            this.startCelebration();
+          } else {
+            Santuario3DEngine.playFinale(passed, this.score);
+            this.dom.finalScreen.style.display = 'flex';
+          }
+        },
+
+        clearCelebration: function () {
+          this.celebrationTimers.forEach(function (t) { clearTimeout(t); });
+          this.celebrationTimers = [];
+          if (this.celebrationBatteryTimer) {
+            clearInterval(this.celebrationBatteryTimer);
+            this.celebrationBatteryTimer = null;
+          }
+          Confetti2D.stop();
+          this.dom.celebrationOverlay.classList.remove('active');
+          this.dom.celebrationOverlay.classList.remove('complete');
+        },
+
+        startCelebration: function () {
+          var self = this;
+          var d = this.dom;
+          this.clearCelebration();
+
+          d.finalScreen.style.display = 'none';
+          var walkHint = document.getElementById('touchWalkPill');
+          if (walkHint) walkHint.classList.add('faded');
+
+          // Reiniciar estado visual de la tarjeta de celebración
+          var seals = d.celebrationOverlay.querySelectorAll('.celebration-seal');
+          for (var s = 0; s < seals.length; s++) seals[s].classList.remove('show');
+          d.celebrationBatteryFill.style.width = '15%';
+          d.celebrationBatteryText.textContent = '15%';
+          d.celebrationOverlay.classList.add('active');
+
+          // Escenario 3D de celebración + confeti 2D con cañones laterales
+          Santuario3DEngine.playFinale(true, this.score);
+          Confetti2D.start(d.celebrationCanvas);
+
+          var later = function (fn, ms) {
+            self.celebrationTimers.push(setTimeout(fn, ms));
+          };
+
+          later(function () { Confetti2D.burst(); }, 1000);
+          later(function () { Confetti2D.burst(); }, 2800);
+          later(function () { Confetti2D.burst(); }, 5200);
+
+          // Los 4 sellos de logro se encienden uno a uno
+          var notes = [523.25, 659.25, 783.99, 1046.5];
+          for (var i = 0; i < seals.length; i++) {
+            (function (idx) {
+              later(function () {
+                seals[idx].classList.add('show');
+                SoundEngine.playTone(notes[idx % notes.length], 'triangle', 0.22, 0.2);
+              }, 900 + idx * 650);
+            })(i);
+          }
+
+          // La batería vital sube hasta su nivel final
+          var target = Math.max(15, Math.min(100, this.vitalBattery));
+          later(function () {
+            var startTs = performance.now();
+            var duration = 2800;
+            self.celebrationBatteryTimer = setInterval(function () {
+              var p = Math.min(1, (performance.now() - startTs) / duration);
+              var eased = 1 - Math.pow(1 - p, 3);
+              var val = Math.round(15 + (target - 15) * eased);
+              d.celebrationBatteryFill.style.width = val + '%';
+              d.celebrationBatteryText.textContent = val + '%';
+              if (p >= 1) {
+                clearInterval(self.celebrationBatteryTimer);
+                self.celebrationBatteryTimer = null;
+                d.celebrationOverlay.classList.add('complete');
+                SoundEngine.playVictory();
+                Confetti2D.burst();
+              }
+            }, 40);
+          }, 700);
         }
       };
 
