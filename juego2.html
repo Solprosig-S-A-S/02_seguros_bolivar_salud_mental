@@ -722,6 +722,34 @@
       text-align: center;
       color: #FFF;
     }
+
+    /* FLASH Y VIÑETA CINEMÁTICA DE ACCIDENTES / ÉXITOS */
+    .cinematic-flash {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 20;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    .cinematic-flash.danger {
+      opacity: 1;
+      box-shadow: inset 0 0 70px rgba(239, 68, 68, 0.85), inset 0 0 160px rgba(185, 28, 28, 0.55);
+      animation: dangerPulseStrobe 0.35s ease-in-out infinite alternate;
+    }
+    .cinematic-flash.success {
+      opacity: 1;
+      box-shadow: inset 0 0 80px rgba(16, 185, 129, 0.65);
+      animation: successGlowFade 1.2s ease-out forwards;
+    }
+    @keyframes dangerPulseStrobe {
+      from { opacity: 0.55; }
+      to { opacity: 1; }
+    }
+    @keyframes successGlowFade {
+      0% { opacity: 0.85; }
+      100% { opacity: 0; }
+    }
   </style>
 </head>
 <body>
@@ -731,6 +759,7 @@
     <!-- 1. LIENZO 3D ISOMÉTRICO THREE.JS -->
     <div class="canvas-3d-container" id="canvas3dContainer">
       <div id="threeCanvas"></div>
+      <div class="cinematic-flash" id="cinematicFlash"></div>
     </div>
 
     <!-- 2. HUD SUPERIOR LIMPIO -->
@@ -1090,6 +1119,68 @@
           setTimeout(function () { self.playTone(220, 'sawtooth', 0.32, 0.22); }, 130);
         },
 
+        playCrash: function () {
+          if (this.muted) return;
+          this.init();
+          if (!this.ctx) return;
+          try {
+            var osc = this.ctx.createOscillator();
+            var gain = this.ctx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(160, this.ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(25, this.ctx.currentTime + 0.5);
+            gain.gain.setValueAtTime(0.5, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.55);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start();
+            osc.stop(this.ctx.currentTime + 0.55);
+          } catch (e) {}
+        },
+
+        playSiren: function () {
+          if (this.muted) return;
+          this.init();
+          if (!this.ctx) return;
+          try {
+            var osc = this.ctx.createOscillator();
+            var gain = this.ctx.createGain();
+            osc.type = 'sawtooth';
+            var t = this.ctx.currentTime;
+            osc.frequency.setValueAtTime(400, t);
+            osc.frequency.linearRampToValueAtTime(750, t + 0.25);
+            osc.frequency.linearRampToValueAtTime(400, t + 0.5);
+            osc.frequency.linearRampToValueAtTime(750, t + 0.75);
+            osc.frequency.linearRampToValueAtTime(400, t + 1.0);
+            gain.gain.setValueAtTime(0.25, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 1.1);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start();
+            osc.stop(t + 1.1);
+          } catch (e) {}
+        },
+
+        playFall: function () {
+          if (this.muted) return;
+          this.init();
+          if (!this.ctx) return;
+          try {
+            var osc = this.ctx.createOscillator();
+            var gain = this.ctx.createGain();
+            osc.type = 'sine';
+            var t = this.ctx.currentTime;
+            osc.frequency.setValueAtTime(550, t);
+            osc.frequency.exponentialRampToValueAtTime(45, t + 0.7);
+            gain.gain.setValueAtTime(0.35, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.75);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start();
+            osc.stop(t + 0.75);
+          } catch (e) {}
+        },
+
         playVictory: function () {
           var self = this;
           this.playTone(440, 'triangle', 0.15, 0.2);
@@ -1125,6 +1216,16 @@
         rainGroup: null,
         ambientDustGroup: null,
         workersList: [],
+
+        // Sistema cinematográfico de consecuencias y sacudida de cámara
+        cameraShake: 0,
+        cinematicActive: false,
+        cinematicRound: 0,
+        cinematicIsCorrect: false,
+        cinematicStartTime: 0,
+        impactDustGroup: null,
+        impactParticles: [],
+        impactDustStartTime: 0,
 
         // Cámara dinámica con zoom cinematográfico a cada escenario
         currentLookAt: new THREE.Vector3(0, -0.7, 0),
@@ -1223,6 +1324,7 @@
           this.buildRainSystem();
           this.buildAtmosphere();
           this.buildActiveBeacon();
+          this.buildImpactDust();
 
           this.bindResize();
           this.bindTouchControls();
@@ -1395,9 +1497,11 @@
             baseRotY: rotY || 0,
             role: role || 'worker',
             head: head,
+            helmet: helmet,
             torso: torso,
             lArm: lArm,
-            rArm: rArm
+            rArm: rArm,
+            tbox: (role === 'rebar' ? tbox : null)
           };
 
           this.scene.add(w);
@@ -1694,7 +1798,54 @@
           this.activeBeacon = group;
         },
 
+        buildImpactDust: function () {
+          var group = new THREE.Group();
+          var pMat = new THREE.MeshBasicMaterial({ color: 0xD1D5DB, transparent: true, opacity: 0.85 });
+          this.impactParticles = [];
+          for (var i = 0; i < 24; i++) {
+            var p = new THREE.Mesh(new THREE.SphereGeometry(0.14, 6, 6), pMat);
+            group.add(p);
+            this.impactParticles.push({
+              mesh: p,
+              vx: (Math.random() - 0.5) * 5.0,
+              vy: Math.random() * 4.0 + 1.0,
+              vz: (Math.random() - 0.5) * 5.0,
+              scale: 0.15
+            });
+          }
+          group.visible = false;
+          this.scene.add(group);
+          this.impactDustGroup = group;
+        },
+
+        triggerImpactDust: function (x, y, z) {
+          if (!this.impactDustGroup) return;
+          this.impactDustGroup.position.set(x, y, z);
+          this.impactDustGroup.visible = true;
+          this.impactDustStartTime = performance.now();
+          this.impactParticles.forEach(function (pt) {
+            pt.mesh.position.set(0, 0, 0);
+            pt.scale = 0.2;
+            pt.mesh.scale.set(0.2, 0.2, 0.2);
+            pt.mesh.material.opacity = 0.85;
+          });
+        },
+
         applyDecisionVisuals: function (roundId, isCorrect) {
+          this.cinematicActive = true;
+          this.cinematicRound = roundId;
+          this.cinematicIsCorrect = isCorrect;
+          this.cinematicStartTime = performance.now();
+
+          var flashEl = document.getElementById('cinematicFlash');
+          if (flashEl) {
+            flashEl.className = 'cinematic-flash ' + (isCorrect ? 'success' : 'danger');
+          }
+
+          if (isCorrect) {
+            SoundEngine.playSuccess();
+          }
+
           if (roundId === 1) {
             if (isCorrect) {
               this.front1Resolved = true;
@@ -1721,16 +1872,30 @@
             } else {
               this.front1Error = true;
               this.front1Resolved = false;
+              this.cameraShake = 0.45;
+              SoundEngine.playAlert();
+              setTimeout(function () {
+                SoundEngine.playCrash();
+                SoundEngine.playSiren();
+              }, 400);
+
+              this.targetLookAt.set(-4.8, 0.8, -3.2);
+              this.baseTargetRadius = 13.0;
+
               // Derrame caótico de concreto en zona equivocada
               if (!this.concreteSpillMesh && this.front1Concrete) {
                 var spill = new THREE.Mesh(
-                  new THREE.CylinderGeometry(0.9, 1.2, 0.08, 12),
+                  new THREE.CylinderGeometry(1.6, 2.2, 0.12, 16),
                   new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.95 })
                 );
-                spill.position.set(-3.8, 0.04, -4.0);
+                spill.position.set(-4.2, 0.04, -3.8);
                 this.front1Concrete.add(spill);
                 this.concreteSpillMesh = spill;
               }
+              if (this.northColumnMesh) {
+                this.northColumnMesh.rotation.z = -0.18;
+              }
+              this.triggerImpactDust(-4.2, 0.1, -3.8);
             }
           } else if (roundId === 2) {
             if (isCorrect) {
@@ -1769,11 +1934,36 @@
                 this.craneConesGroup = cones;
               }
             } else {
+              // ¡DESASTRE FATAL DE GRÚA: CAÍDA LIBRE Y APLASTAMIENTO!
               this.craneError = true;
-              if (this.craneLoad) {
-                this.craneLoad.rotation.z = 0.55;
-                this.craneLoad.rotation.x = -0.4;
+              this.cameraShake = 0.70;
+              SoundEngine.playCrash();
+              setTimeout(function () { SoundEngine.playSiren(); }, 450);
+
+              this.targetLookAt.set(2.2, 0.6, -3.5);
+              this.baseTargetRadius = 13.5;
+              this.targetPitch = 0.48;
+
+              // Cable roto se dispara hacia arriba
+              if (this.craneCable) {
+                this.craneCable.scale.y = 0.15;
+                this.craneCable.position.set(2.2, 8.2, -5.5);
               }
+              // La pesada formaleta cae y aplasta la zona del señalero
+              if (this.craneLoad) {
+                this.craneLoad.position.set(2.2, 0.35, -3.8);
+                this.craneLoad.rotation.set(-0.25, 0.15, 0.35);
+              }
+              // El señalero cae fulminado boca arriba bajo el impacto
+              if (this.craneWorker) {
+                this.craneWorker.position.set(2.2, 0.12, -3.2);
+                this.craneWorker.rotation.set(-Math.PI / 2, 0, 0.4);
+                if (this.craneWorker.userData && this.craneWorker.userData.helmet) {
+                  this.craneWorker.userData.helmet.position.set(0.8, -1.2, 1.2);
+                  this.craneWorker.userData.helmet.rotation.set(1.4, 0.2, 0.8);
+                }
+              }
+              this.triggerImpactDust(2.2, 0.4, -3.8);
             }
           } else if (roundId === 3) {
             if (isCorrect) {
@@ -1801,8 +1991,30 @@
                 this.rebarSafetyTape = barGroup;
               }
             } else {
+              // ¡CAÍDA FATAL DESDE 18 METROS AL VACÍO!
               this.front3Error = true;
               this.front3Secured = false;
+              this.cameraShake = 0.55;
+              SoundEngine.playFall();
+              setTimeout(function () {
+                SoundEngine.playCrash();
+                SoundEngine.playSiren();
+              }, 600);
+
+              // La cámara hace un contrapicado hacia abajo al borde del abismo
+              this.targetLookAt.set(8.2, -6.5, 4.0);
+              this.targetPitch = 0.78;
+              this.baseTargetRadius = 15.0;
+
+              // El trabajador tropieza e inicia caída al vacío
+              if (this.rebarWorker) {
+                this.rebarWorker.position.set(8.2, -0.5, 4.2);
+                this.rebarWorker.rotation.set(0.8, 0.3, 0.5);
+                if (this.rebarWorker.userData && this.rebarWorker.userData.helmet) {
+                  this.rebarWorker.userData.helmet.position.set(0.5, 2.0, 0);
+                  this.rebarWorker.userData.helmet.rotation.set(1.5, 1.0, 0);
+                }
+              }
             }
           } else if (roundId === 4) {
             if (isCorrect) {
@@ -1831,8 +2043,39 @@
                 this.corridorGreenArrows = arrowGrp;
               }
             } else {
+              // ¡TROPIEZO VIOLENTO Y ATRAPAMIENTO EN EL PASILLO!
               this.front4Error = true;
               this.front4Cleaned = false;
+              this.cameraShake = 0.45;
+              SoundEngine.playCrash();
+              setTimeout(function () { SoundEngine.playSiren(); }, 400);
+
+              this.targetLookAt.set(-3.5, 0.35, 4.2);
+              this.baseTargetRadius = 12.0;
+              this.targetPitch = 0.52;
+
+              // Trabajador cae de bruces derribado
+              if (this.corridorWorker) {
+                this.corridorWorker.position.set(-3.4, 0.12, 4.2);
+                this.corridorWorker.rotation.set(Math.PI / 2, 0, 0.3);
+                if (this.corridorWorker.userData && this.corridorWorker.userData.helmet) {
+                  this.corridorWorker.userData.helmet.position.set(-0.7, -1.1, 0.8);
+                  this.corridorWorker.userData.helmet.rotation.set(0.9, 0.4, 1.2);
+                }
+              }
+              // Carretilla volcada
+              if (this.corridorWheelbarrow) {
+                this.corridorWheelbarrow.position.set(-2.6, 0.3, 3.8);
+                this.corridorWheelbarrow.rotation.set(0.6, 1.4, Math.PI / 2);
+              }
+              // Cajas rotas desparramadas sobre el trabajador
+              if (this.corridorBoxes) {
+                this.corridorBoxes[0].position.set(-3.6, 0.32, 4.1);
+                this.corridorBoxes[0].rotation.set(0.4, 0.2, -0.6);
+                this.corridorBoxes[1].position.set(-3.8, 0.25, 4.5);
+                this.corridorBoxes[1].rotation.set(-0.5, 0.7, 0.3);
+              }
+              this.triggerImpactDust(-3.4, 0.2, 4.2);
             }
           }
         },
@@ -1842,6 +2085,35 @@
           this.baseTargetRadius = 28.0;
           this.targetYaw = -0.78;
           this.targetPitch = 0.54;
+          this.cameraShake = 0;
+          this.cinematicActive = false;
+
+          var flashEl = document.getElementById('cinematicFlash');
+          if (flashEl) flashEl.className = 'cinematic-flash';
+
+          if (this.impactDustGroup) this.impactDustGroup.visible = false;
+
+          // Restaurar todos los trabajadores a su postura original
+          if (this.workersList) {
+            this.workersList.forEach(function (w) {
+              var u = w.userData;
+              if (!u) return;
+              w.position.set(u.baseX, u.baseY, u.baseZ);
+              w.rotation.set(0, u.baseRotY, 0);
+              if (u.helmet) {
+                u.helmet.position.set(0, 1.28, 0);
+                u.helmet.rotation.set(0, 0, 0);
+              }
+              if (u.lArm) u.lArm.rotation.set(0, 0, 0);
+              if (u.rArm) u.rArm.rotation.set(0, 0, 0);
+              if (u.torso) u.torso.rotation.set(0, 0, 0);
+              if (u.head) u.head.rotation.set(0, 0, 0);
+            });
+          }
+
+          if (this.northColumnMesh) {
+            this.northColumnMesh.rotation.set(0, 0, 0);
+          }
 
           this.front1Resolved = false;
           this.front1Error = false;
@@ -1871,7 +2143,7 @@
           if (this.craneBeacon) this.craneBeacon.material.color.setHex(0xEF4444);
           if (this.craneWorker) {
             this.craneWorker.position.set(2.2, 0, -3.8);
-            this.craneWorker.rotation.y = Math.PI;
+            this.craneWorker.rotation.set(0, Math.PI, 0);
           }
           if (this.craneConesGroup && this.craneConesGroup.parent) {
             this.craneConesGroup.parent.remove(this.craneConesGroup);
@@ -1889,11 +2161,13 @@
           this.front4Error = false;
           if (this.corridorBoxes) {
             this.corridorBoxes[0].position.set(-4.5, 0.45, 4.3);
+            this.corridorBoxes[0].rotation.set(0, 0, 0);
             this.corridorBoxes[1].position.set(-4.0, 0.4, 4.8);
+            this.corridorBoxes[1].rotation.set(0, 0, 0);
           }
           if (this.corridorWheelbarrow) {
             this.corridorWheelbarrow.position.set(-2.8, 0.25, 4.0);
-            this.corridorWheelbarrow.rotation.y = 0.4;
+            this.corridorWheelbarrow.rotation.set(0, 0.4, 0);
           }
           if (this.corridorGreenArrows && this.corridorGreenArrows.parent) {
             this.corridorGreenArrows.parent.remove(this.corridorGreenArrows);
@@ -1990,6 +2264,34 @@
           );
           this.camera.lookAt(this.currentLookAt);
 
+          // Sacudida cinematográfica de cámara (Camera Shake)
+          if (this.cameraShake > 0.002) {
+            var s = this.cameraShake;
+            this.camera.position.x += (Math.random() - 0.5) * s;
+            this.camera.position.y += (Math.random() - 0.5) * s;
+            this.camera.position.z += (Math.random() - 0.5) * s;
+            this.cameraShake *= 0.91;
+          } else {
+            this.cameraShake = 0;
+          }
+
+          // Partículas de polvo de impacto cinemático
+          if (this.impactDustGroup && this.impactDustGroup.visible) {
+            var dElapsed = (now - this.impactDustStartTime) * 0.001;
+            if (dElapsed > 1.8) {
+              this.impactDustGroup.visible = false;
+            } else {
+              this.impactParticles.forEach(function (pt) {
+                pt.mesh.position.x += pt.vx * 0.025;
+                pt.mesh.position.y += pt.vy * 0.025 - 0.035;
+                pt.mesh.position.z += pt.vz * 0.025;
+                pt.scale += 0.03;
+                pt.mesh.scale.set(pt.scale, pt.scale, pt.scale);
+                pt.mesh.material.opacity = Math.max(0, 0.85 - dElapsed * 0.5);
+              });
+            }
+          }
+
           // 2. FRENTE 1: Trompo de concreto con vibración mecánica o parada controlada
           if (this.mixerDrumMesh && !this.mixerDrumStopped) {
             this.mixerDrumMesh.rotation.y += 0.045;
@@ -2056,8 +2358,13 @@
               var u = w.userData;
               if (!u) return;
 
-              // Respiración base
-              w.position.y = u.baseY + Math.sin(time * 3 + i) * 0.012;
+              // Respiración base solo si no está en estado de colapso o caída
+              var isWorkerDown = (u.role === 'crane_signaler' && selfEngine.craneError) ||
+                                 (u.role === 'rebar' && selfEngine.front3Error) ||
+                                 (u.role === 'corridor' && selfEngine.front4Error);
+              if (!isWorkerDown) {
+                w.position.y = u.baseY + Math.sin(time * 3 + i) * 0.012;
+              }
 
               // FRENTE 1: Supervisor 1 (Ingeniero Residente)
               if (u.role === 'supervisor1') {
@@ -2128,10 +2435,12 @@
                   if (u.rArm) u.rArm.rotation.x = -0.85; // pulgar arriba
                   if (u.head) u.head.rotation.x = 0;
                 } else if (selfEngine.craneError) {
-                  // Pánico por colisión: cubriéndose y agachado
-                  if (u.lArm) u.lArm.rotation.x = -1.6;
-                  if (u.rArm) u.rArm.rotation.x = -1.6;
-                  w.position.y = -0.22;
+                  // ¡ACCIDENTE FATAL: Señalero derribado boca arriba por aplastamiento!
+                  w.position.set(2.2, 0.12, -3.2);
+                  w.rotation.set(-Math.PI / 2, 0, 0.4);
+                  if (u.lArm) u.lArm.rotation.set(0.3, 0, 0.8);
+                  if (u.rArm) u.rArm.rotation.set(-0.2, 0, -0.6);
+                  if (u.head) u.head.rotation.set(0.2, 0.3, 0);
                 } else {
                   // Emergencia climática activa: agitando brazos en cruz de peligro "¡STOP!"
                   if (u.lArm) u.lArm.rotation.x = -1.25 + Math.sin(time * 6) * 0.45;
@@ -2149,10 +2458,19 @@
                   if (u.torso) u.torso.rotation.x = 0.04;
                   if (u.head) u.head.rotation.x = 0.2;
                 } else if (selfEngine.front3Error) {
-                  // Agotamiento extremo: hombros caídos y cabeza gacha
-                  if (u.rArm) u.rArm.rotation.x = 0.2;
-                  if (u.lArm) u.lArm.rotation.x = 0.2;
-                  if (u.head) u.head.rotation.x = 0.45;
+                  // ¡CAÍDA LIBRE AL ABISMO (18 METROS) EN TIEMPO REAL!
+                  var fallElapsed = Math.max(0, (now - selfEngine.cinematicStartTime) * 0.001);
+                  var fallY = Math.max(-28, -Math.pow(fallElapsed * 5.6, 2));
+                  w.position.set(8.2 + Math.min(1.5, fallElapsed * 0.5), fallY, 4.2);
+                  w.rotation.x += 0.09;
+                  w.rotation.z += 0.07;
+                  if (u.lArm) u.lArm.rotation.set(-1.8, 0.4, 0.5);
+                  if (u.rArm) u.rArm.rotation.set(-1.9, -0.3, -0.4);
+                  if (u.head) u.head.rotation.set(0.6, 0, 0);
+                  if (u.helmet) {
+                    u.helmet.position.set(0.6, 3.5, 0);
+                    u.helmet.rotation.x += 0.12;
+                  }
                 } else {
                   // Prisa por salida: mirando su muñeca (reloj) e impaciente por marcharse
                   if (u.lArm) u.lArm.rotation.x = -0.95 + Math.sin(time * 3.2) * 0.18; // mirando reloj
@@ -2169,9 +2487,12 @@
                   if (u.lArm) u.lArm.rotation.x = 0;
                   if (u.head) u.head.rotation.y = 0;
                 } else if (selfEngine.front4Error) {
-                  // Enojo y confrontación pasiva
-                  if (u.rArm) u.rArm.rotation.x = -0.3 + Math.sin(time * 6) * 0.2;
-                  if (u.lArm) u.lArm.rotation.x = 0.3;
+                  // ¡ATRAPAMIENTO POR ESCOMBROS: Derribado en el pasillo!
+                  w.position.set(-3.4, 0.12, 4.2);
+                  w.rotation.set(Math.PI / 2, 0, 0.3);
+                  if (u.lArm) u.lArm.rotation.set(0.4, 0, -0.5);
+                  if (u.rArm) u.rArm.rotation.set(0.2, 0, 0.8);
+                  if (u.head) u.head.rotation.set(0.3, 0.2, 0);
                 } else {
                   // Brazos cruzados en resistencia pasivo-agresiva
                   if (u.lArm) u.lArm.rotation.x = -0.65;
@@ -2352,6 +2673,7 @@
 
         cacheDom: function () {
           this.dom = {
+            cinematicFlash: document.getElementById('cinematicFlash'),
             roundTag: document.getElementById('roundTag'),
             soundToggleBtn: document.getElementById('soundToggleBtn'),
             soundIconOn: document.getElementById('soundIconOn'),
@@ -2526,13 +2848,13 @@
             SoundEngine.playAlert();
             if (buttonEl) buttonEl.classList.add('wrong-state');
             var wrongFeedback = [
-              'Conflicto de mando: vaciar sin una orden técnica unificada causa demoliciones y estrés crítico.',
-              'Riesgo mortal: mover cargas con viento fuerte puede volcar la grúa y causar accidentes fatales.',
-              'Peligro de caída: dejar bordes a 18m desprotegidos por el afán de salir expone a la noche a una caída mortal.',
-              'Riesgo de emergencia: un pasillo de evacuación bloqueado con escombros pone en peligro a todos.'
+              '¡COLAPSO ESTRUCTURAL Y DERRAME! El vaciado sin orden técnica dañó el encofrado, agrietó la columna y desató caos en la cuadrilla.',
+              '¡ACCIDENTE FATAL! La ráfaga de viento cortó la eslinga; la formaleta de 1.8 toneladas cayó al vacío aplastando al señalero.',
+              '¡CAÍDA MORTAL AL VACÍO (18 METROS)! Por el afán de terminar el turno sin baranda perimetral, el oficial tropezó y cayó al abismo.',
+              '¡ATRAPAMIENTO POR ESCOMBROS! El trabajador tropezó a oscuras con la carretilla; las cajas de escombros colapsaron encima de él.'
             ];
             if (this.dom.situationFeedbackInline) {
-              this.dom.situationFeedbackInline.textContent = wrongFeedback[this.currentRound - 1] || 'Acción riesgosa.';
+              this.dom.situationFeedbackInline.textContent = wrongFeedback[this.currentRound - 1] || 'Acción riesgosa con consecuencias graves.';
               this.dom.situationFeedbackInline.className = 'situation-feedback-inline active error';
             }
           }
@@ -2540,10 +2862,11 @@
           Isometric3DEngine.applyDecisionVisuals(this.currentRound, isCorrect);
           this.updateMentalMeter();
 
-          // Pausa interactiva para observar la consecuencia antes del drawer
+          // Pausa cinematográfica interactiva para observar la consecuencia física en el 3D antes del drawer
+          var delayMs = isCorrect ? 2000 : 2800;
           setTimeout(function () {
             self.showFeedback(isCorrect, isCorrect ? data.summaryText : (choice.wrongText || data.wrongText));
-          }, 1100);
+          }, delayMs);
         },
 
         updateMentalMeter: function () {
