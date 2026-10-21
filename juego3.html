@@ -2207,7 +2207,7 @@
         /* Faro luminoso de la caseta de hidratación */
         buildCasetaBeacon: function () {
           var beacon = new THREE.Group();
-          beacon.position.set(0.4, 0.05, 0.6);
+          beacon.position.set(0.85, 0.05, 0.55);
 
           var ringMat = new THREE.MeshBasicMaterial({
             color: 0x38BDF8,
@@ -2242,15 +2242,63 @@
           return { minX: -3.0, maxX: 3.0, minZ: -3.0, maxZ: 3.0 };
         },
 
+        resolveStationCollisions: function (pos) {
+          if (this.currentStationId === 1) {
+            // 1. Evitar chocar con el dispensador de agua (cilindro en x: 1.1, z: -0.4)
+            var coolerX = 1.1;
+            var coolerZ = -0.4;
+            var minCoolerDist = 0.78; // Distancia segura para que el modelo 3D no se solape
+            var dx = pos.x - coolerX;
+            var dz = pos.z - coolerZ;
+            var distSq = dx * dx + dz * dz;
+            if (distSq < minCoolerDist * minCoolerDist && distSq > 0.0001) {
+              var d = Math.sqrt(distSq);
+              pos.x = coolerX + (dx / d) * minCoolerDist;
+              pos.z = coolerZ + (dz / d) * minCoolerDist;
+            }
+
+            // 2. Evitar chocar con la banca de reposo (caja en x: -2.1 a 0.5, z: 0.6 a 1.4)
+            if (pos.x > -2.25 && pos.x < 0.65 && pos.z > 0.55 && pos.z < 1.45) {
+              var dNorth = 1.45 - pos.z;
+              var dSouth = pos.z - 0.55;
+              var dEast = 0.65 - pos.x;
+              var dWest = pos.x - (-2.25);
+              var minD = Math.min(dNorth, dSouth, dEast, dWest);
+              if (minD === dSouth) pos.z = 0.55;
+              else if (minD === dNorth) pos.z = 1.45;
+              else if (minD === dEast) pos.x = 0.65;
+              else pos.x = -2.25;
+            }
+
+            // 3. Postes estructurales de la caseta
+            var posts = [[-2.2, -1.8], [2.2, -1.8], [-2.2, 1.8], [2.2, 1.8]];
+            for (var i = 0; i < posts.length; i++) {
+              var px = posts[i][0];
+              var pz = posts[i][1];
+              var pdx = pos.x - px;
+              var pdz = pos.z - pz;
+              var pdistSq = pdx * pdx + pdz * pdz;
+              if (pdistSq < 0.35 * 0.35 && pdistSq > 0.0001) {
+                var pdist = Math.sqrt(pdistSq);
+                pos.x = px + (pdx / pdist) * 0.35;
+                pos.z = pz + (pdz / pdist) * 0.35;
+              }
+            }
+          }
+          return pos;
+        },
+
         setPlayerDestination: function (x, z, isDragging) {
           var b = this.getCurrentWalkBounds();
           var clampedX = Math.max(b.minX, Math.min(b.maxX, x));
           var clampedZ = Math.max(b.minZ, Math.min(b.maxZ, z));
 
-          this.playerTargetPos.set(clampedX, 0, clampedZ);
+          var safePos = this.resolveStationCollisions({ x: clampedX, z: clampedZ });
+
+          this.playerTargetPos.set(safePos.x, 0, safePos.z);
 
           if (this.targetMarkerMesh) {
-            this.targetMarkerMesh.position.set(clampedX, 0.04, clampedZ);
+            this.targetMarkerMesh.position.set(safePos.x, 0.04, safePos.z);
             this.targetMarkerMesh.visible = true;
             this.targetMarkerMesh.scale.set(1.2, 1.2, 1.2);
           }
@@ -2266,11 +2314,14 @@
             if (callback) callback();
             return;
           }
-          this.setPlayerDestination(0.8, -0.2, false);
+          // Punto de llegada seguro y despejado frente al dispensador (sin chocar con la caseta)
+          var arrivalX = 0.85;
+          var arrivalZ = 0.55;
+          this.setPlayerDestination(arrivalX, arrivalZ, false);
           var interval = setInterval(function () {
             var p = self.playerAvatar.position;
-            var dist = Math.sqrt((p.x - 0.8) * (p.x - 0.8) + (p.z + 0.2) * (p.z + 0.2));
-            if (dist < 0.25 || !self.isPlayerWalking) {
+            var dist = Math.sqrt((p.x - arrivalX) * (p.x - arrivalX) + (p.z - arrivalZ) * (p.z - arrivalZ));
+            if (dist < 0.28 || !self.isPlayerWalking) {
               clearInterval(interval);
               if (callback) callback();
             }
@@ -2280,9 +2331,9 @@
         checkStationProximity: function () {
           if (this.currentStationId === 1 && GameApp.stationActive) {
             var p = this.playerAvatar.position;
-            var distToShelter = Math.sqrt(p.x * p.x + (p.z - 0.2) * (p.z - 0.2));
+            var distToEntrance = Math.sqrt((p.x - 0.85) * (p.x - 0.85) + (p.z - 0.65) * (p.z - 0.65));
             var distToCooler = Math.sqrt((p.x - 1.1) * (p.x - 1.1) + (p.z + 0.4) * (p.z + 0.4));
-            if (distToShelter < 1.6 || distToCooler < 1.4) {
+            if (distToEntrance < 0.95 || distToCooler < 1.35) {
               if (typeof GameApp.onCasetaArrival === 'function') {
                 var cb = GameApp.onCasetaArrival;
                 GameApp.onCasetaArrival = null;
@@ -2310,6 +2361,7 @@
 
             currentPos.x += dirX * moveStep;
             currentPos.z += dirZ * moveStep;
+            this.resolveStationCollisions(currentPos);
 
             var targetYaw = Math.atan2(dirX, dirZ);
             var curYaw = this.playerAvatar.rotation.y;
@@ -2497,16 +2549,21 @@
           if (fatigueOverlay) fatigueOverlay.className = 'visual-fatigue-overlay';
 
           if (this.playerAvatar) {
-            this.playerAvatar.position.set(0.8, 0, -0.2);
-            this.playerAvatar.rotation.y = -Math.PI / 2;
+            // Posición frontal despejada sin colisión física con el dispensador
+            this.playerAvatar.position.set(0.85, 0, 0.55);
+            this.playerAvatar.rotation.y = 2.92;
+            if (this.playerRightArm) {
+              this.playerRightArm.rotation.x = -1.15;
+              this.playerRightArm.rotation.z = -0.25;
+            }
           }
           if (this.beaconMesh) this.beaconMesh.visible = false;
           if (this.targetMarkerMesh) this.targetMarkerMesh.visible = false;
 
-          // Animación de cámara volando al dispensador de sombra
-          this.targetLookAt.set(0.8, 1.1, -0.2);
-          this.baseTargetRadius = 7.5;
-          this.targetYaw = -0.3;
+          // Animación de cámara enfocando al trabajador y dispensador armónicamente
+          this.targetLookAt.set(0.95, 1.0, 0.1);
+          this.baseTargetRadius = 7.2;
+          this.targetYaw = -0.35;
 
           SoundEngine.playWaterPour();
           SoundEngine.playSuccess();
