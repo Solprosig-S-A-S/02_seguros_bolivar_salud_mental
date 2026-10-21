@@ -750,6 +750,137 @@
       0% { opacity: 0.85; }
       100% { opacity: 0; }
     }
+
+    /* PANTALLA Y TARJETA CINEMÁTICA DE FINALES DE SUPERVISIÓN */
+    .finale-card {
+      background: rgba(10, 22, 34, 0.94);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 20px;
+      padding: 22px 20px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      animation: finaleCardPop 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      max-height: 90vh;
+      overflow-y: auto;
+      touch-action: pan-y;
+    }
+    @keyframes finaleCardPop {
+      0% { opacity: 0; transform: scale(0.92) translateY(20px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .finale-score-box {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+    }
+    .finale-score-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .finale-meter-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 8px;
+    }
+    .finale-diagnosis-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 7px;
+      margin-bottom: 14px;
+      text-align: left;
+    }
+    .diag-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      padding: 9px 12px;
+    }
+    .diag-card.success {
+      border-left: 3.5px solid #10B981;
+      background: rgba(16, 185, 129, 0.07);
+    }
+    .diag-card.danger {
+      border-left: 3.5px solid #EF4444;
+      background: rgba(239, 68, 68, 0.07);
+    }
+    .diag-header {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11.5px;
+      margin-bottom: 3px;
+    }
+    .diag-card p {
+      margin: 0;
+      font-size: 11px;
+      color: #CBD5E1;
+      line-height: 1.35;
+    }
+    .secondary-view-btn {
+      width: 100%;
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 12px;
+      padding: 9px 12px;
+      color: #CBD5E1;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+    .secondary-view-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #FFF;
+      border-color: var(--bolivar-yellow);
+    }
+    .start-btn.retry-btn {
+      background: linear-gradient(180deg, #EF4444 0%, #B91C1C 100%);
+      border-color: #DC2626;
+      color: #FFF;
+    }
+
+    /* MODO VISTA 3D MINIMIZADA DEL FINAL */
+    .screen-overlay.minimized {
+      background: transparent !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      pointer-events: none;
+      justify-content: flex-end;
+      padding-bottom: 24px;
+    }
+    .screen-overlay.minimized .screen-content-card {
+      pointer-events: auto;
+      max-width: 320px;
+      background: rgba(10, 22, 34, 0.90);
+      border: 1px solid var(--bolivar-yellow);
+      padding: 10px 14px;
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    }
+    .screen-overlay.minimized .screen-desc,
+    .screen-overlay.minimized .finale-score-box,
+    .screen-overlay.minimized .finale-diagnosis-grid,
+    .screen-overlay.minimized #finalBadgeIcon,
+    .screen-overlay.minimized #finalHeaderTag,
+    .screen-overlay.minimized #finishScormBtn,
+    .screen-overlay.minimized #retryGameBtn {
+      display: none !important;
+    }
+    .screen-overlay.minimized .screen-title {
+      font-size: 13px !important;
+      margin-bottom: 6px !important;
+    }
   </style>
 </head>
 <body>
@@ -936,10 +1067,10 @@
 
     <!-- 7. PANTALLA FINAL DE RESULTADOS Y CERTIFICACIÓN SCORM -->
     <div class="screen-overlay" id="finalScreen" style="display: none;">
-      <div class="screen-content-card">
+      <div class="screen-content-card finale-card" id="finalCard">
         <div style="margin-bottom: 6px;">
-          <span style="color:var(--bolivar-yellow); font-size:12px; font-weight:600; letter-spacing:0.8px;">SEGUROS BOLÍVAR • ARL</span><br>
-          <span style="color:#94A3B8; font-size:11px; font-weight:500;">BALANCE DE CARGA MENTAL</span>
+          <span style="color:var(--bolivar-yellow); font-size:12px; font-weight:700; letter-spacing:0.8px;">SEGUROS BOLÍVAR • ARL</span><br>
+          <span style="color:#94A3B8; font-size:11px; font-weight:600; text-transform:uppercase;" id="finalHeaderTag">BALANCE DE SUPERVISIÓN Y SALUD MENTAL</span>
         </div>
 
         <div class="screen-badge-icon success" id="finalBadgeIcon">
@@ -948,33 +1079,57 @@
           </svg>
         </div>
 
-        <h2 class="screen-title" id="finalTitle">¡Carga Mental Dominada!</h2>
+        <h2 class="screen-title" id="finalTitle">¡Supervisión Ejemplar: Mando Sereno y Cero Accidentes!</h2>
         <p class="screen-desc" id="finalDesc">
-          Demostraste maestría para priorizar la seguridad, resolver imprevistos con serenidad y proteger el bienestar de tu equipo.
+          Priorizaste la vida sobre el afán de entrega, unificaste el mando técnico y protegiste la salud mental de tu equipo bajo la Res. 2764 de 2022.
         </p>
 
-        <!-- Tarjeta de Puntaje SCORM -->
-        <div style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.18); border-radius:14px; padding:12px; margin-bottom:14px;">
-          <div style="font-size:11.5px; color:#CBD5E1; text-transform:uppercase; font-weight:600; margin-bottom:2px;">EFECTIVIDAD DE MANDO</div>
-          <div style="font-size:clamp(30px, 7vw, 36px); font-weight:700; color:var(--bolivar-yellow); font-family:monospace; line-height:1.1;" id="finalScoreVal">100 / 100 PTS</div>
-          <div style="font-size:11.5px; color:#A7F3D0; text-transform:uppercase; font-weight:600; letter-spacing:0.4px; margin-top:4px;" id="finalStatusVal">ESTADO SCORM: APROBADO (≥ 80%)</div>
+        <!-- Tarjeta de Puntaje SCORM y Carga Mental -->
+        <div class="finale-score-box" id="finalScoreBox">
+          <div class="finale-score-row">
+            <div>
+              <div style="font-size:10.5px; color:#CBD5E1; text-transform:uppercase; font-weight:700;">EFECTIVIDAD DE DECISIONES</div>
+              <div style="font-size:clamp(26px, 6vw, 32px); font-weight:800; color:var(--bolivar-yellow); font-family:monospace; line-height:1.1;" id="finalScoreVal">100 / 100 PTS</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:10.5px; color:#CBD5E1; text-transform:uppercase; font-weight:700;">ESTADO SCORM</div>
+              <div style="font-size:12px; font-weight:700; margin-top:4px;" id="finalStatusVal">APROBADO (≥ 75%)</div>
+            </div>
+          </div>
+          <div class="finale-meter-summary" id="finalMeterSummary">
+            <span style="font-size:11px; color:#CBD5E1;">Carga Mental Final:</span>
+            <span class="meter-status-pill" id="finalMentalPill"><span id="finalMentalText">ENFOCADO (30%)</span></span>
+          </div>
         </div>
 
-        <button class="start-btn" id="finishScormBtn" style="margin-bottom:8px;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-            <polyline points="17 21 17 13 7 13 7 21"></polyline>
-          </svg>
-          <span>FINALIZAR Y REGISTRAR EN LMS</span>
-        </button>
+        <!-- Matriz de Diagnóstico del Supervisor (Inyectado según Final A o B) -->
+        <div class="finale-diagnosis-grid" id="finalDiagnosisGrid"></div>
 
-        <button class="start-btn" id="retryGameBtn" style="display:none; background:linear-gradient(180deg, #E63946 0%, #B91C1C 100%); border-color:#991B1B; color:#FFF;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <polyline points="23 4 23 10 17 10"></polyline>
-            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
-          </svg>
-          <span>REPETIR JORNADA (VOLVER A INTENTAR)</span>
-        </button>
+        <div class="finale-actions-row">
+          <button class="start-btn" id="finishScormBtn" style="margin-bottom:8px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+              <polyline points="17 21 17 13 7 13 7 21"></polyline>
+            </svg>
+            <span>FINALIZAR Y REGISTRAR EN LMS</span>
+          </button>
+
+          <button class="start-btn retry-btn" id="retryGameBtn" style="display:none; margin-bottom:8px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+            </svg>
+            <span>REINICIAR JORNADA Y CORREGIR DECISIONES</span>
+          </button>
+
+          <button class="secondary-view-btn" id="toggle3dViewBtn" type="button">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M16 12l-4-4-4 4M12 8v8"></path>
+            </svg>
+            <span id="toggle3dViewText">Examinar Escenario 3D Completo</span>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -1186,6 +1341,26 @@
           this.playTone(440, 'triangle', 0.15, 0.2);
           setTimeout(function () { self.playTone(554.37, 'triangle', 0.18, 0.2); }, 110);
           setTimeout(function () { self.playTone(659.25, 'triangle', 0.28, 0.25); }, 220);
+        },
+
+        playFinaleVictory: function () {
+          var self = this;
+          var notes = [440, 554.37, 659.25, 880, 1108.73];
+          notes.forEach(function (freq, idx) {
+            setTimeout(function () {
+              self.playTone(freq, 'triangle', 0.32, 0.22);
+            }, idx * 110);
+          });
+        },
+
+        playFinaleFailure: function () {
+          var self = this;
+          var notes = [329.63, 293.66, 246.94, 196.00];
+          notes.forEach(function (freq, idx) {
+            setTimeout(function () {
+              self.playTone(freq, 'sawtooth', 0.35, 0.16);
+            }, idx * 190);
+          });
         }
       };
 
@@ -1226,6 +1401,14 @@
         impactDustGroup: null,
         impactParticles: [],
         impactDustStartTime: 0,
+
+        // Luces dinámicas y sistema de finales
+        hemiLight: null,
+        dirLight: null,
+        finaleMode: false,
+        finaleType: null,
+        celebrationGroup: null,
+        celebrationList: [],
 
         // Cámara dinámica con zoom cinematográfico a cada escenario
         currentLookAt: new THREE.Vector3(0, -0.7, 0),
@@ -1325,6 +1508,7 @@
           this.buildAtmosphere();
           this.buildActiveBeacon();
           this.buildImpactDust();
+          this.buildCelebrationParticles();
 
           this.bindResize();
           this.bindTouchControls();
@@ -1349,6 +1533,7 @@
         setupLighting: function () {
           var hemi = new THREE.HemisphereLight(0xC4E2FF, 0x1B2C3D, 0.85);
           this.scene.add(hemi);
+          this.hemiLight = hemi;
 
           var sun = new THREE.DirectionalLight(0xFFF6E5, 1.1);
           sun.position.set(16, 26, 14);
@@ -1356,6 +1541,7 @@
           sun.shadow.mapSize.width = 1024;
           sun.shadow.mapSize.height = 1024;
           this.scene.add(sun);
+          this.dirLight = sun;
 
           var fill = new THREE.DirectionalLight(0x38BDF8, 0.45);
           fill.position.set(-16, 14, -14);
@@ -1831,6 +2017,82 @@
           });
         },
 
+        buildCelebrationParticles: function () {
+          var count = 36;
+          var group = new THREE.Group();
+          var colors = [0xFBBF24, 0x10B981, 0x38BDF8, 0xF59E0B];
+          this.celebrationList = [];
+          for (var i = 0; i < count; i++) {
+            var col = colors[i % colors.length];
+            var pMat = new THREE.MeshBasicMaterial({ color: col });
+            var pMesh = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.14, 0.14), pMat);
+            pMesh.position.set(
+              (Math.random() - 0.5) * 16,
+              Math.random() * 8 + 0.5,
+              (Math.random() - 0.5) * 16
+            );
+            group.add(pMesh);
+            this.celebrationList.push({
+              mesh: pMesh,
+              vy: 0.02 + Math.random() * 0.035,
+              rotX: 0.02 + Math.random() * 0.05,
+              rotY: 0.03 + Math.random() * 0.04,
+              baseX: pMesh.position.x,
+              baseZ: pMesh.position.z,
+              seed: Math.random() * 10
+            });
+          }
+          group.visible = false;
+          this.scene.add(group);
+          this.celebrationGroup = group;
+        },
+
+        playFinale: function (passed, score) {
+          this.finaleMode = true;
+          this.finaleType = passed ? 'victory' : 'failure';
+          this.cinematicActive = true;
+          this.targetLookAt.set(0, 0.4, 0);
+          this.baseTargetRadius = passed ? 25.0 : 28.0;
+          this.targetPitch = passed ? 0.48 : 0.38;
+
+          var flashEl = document.getElementById('cinematicFlash');
+          if (flashEl) {
+            flashEl.className = 'cinematic-flash ' + (passed ? 'success' : 'danger');
+          }
+
+          if (passed) {
+            SoundEngine.playFinaleVictory();
+            if (this.celebrationGroup) this.celebrationGroup.visible = true;
+            if (this.hemiLight) this.hemiLight.color.setHex(0xFFFBEB);
+            if (this.dirLight) {
+              this.dirLight.color.setHex(0xFDE68A);
+              this.dirLight.intensity = 1.25;
+            }
+
+            // Restaurar y reubicar a todos los trabajadores en modo celebración
+            if (this.workersList) {
+              this.workersList.forEach(function (w) {
+                var u = w.userData;
+                if (!u) return;
+                w.position.set(u.baseX, u.baseY, u.baseZ);
+                w.rotation.set(0, u.baseRotY, 0);
+                if (u.helmet) {
+                  u.helmet.position.set(0, 1.28, 0);
+                  u.helmet.rotation.set(0, 0, 0);
+                }
+              });
+            }
+          } else {
+            SoundEngine.playFinaleFailure();
+            if (this.celebrationGroup) this.celebrationGroup.visible = false;
+            if (this.hemiLight) this.hemiLight.color.setHex(0x64748B);
+            if (this.dirLight) {
+              this.dirLight.color.setHex(0x94A3B8);
+              this.dirLight.intensity = 0.55;
+            }
+          }
+        },
+
         applyDecisionVisuals: function (roundId, isCorrect) {
           this.cinematicActive = true;
           this.cinematicRound = roundId;
@@ -2087,11 +2349,19 @@
           this.targetPitch = 0.54;
           this.cameraShake = 0;
           this.cinematicActive = false;
+          this.finaleMode = false;
+          this.finaleType = null;
 
           var flashEl = document.getElementById('cinematicFlash');
           if (flashEl) flashEl.className = 'cinematic-flash';
 
           if (this.impactDustGroup) this.impactDustGroup.visible = false;
+          if (this.celebrationGroup) this.celebrationGroup.visible = false;
+          if (this.hemiLight) this.hemiLight.color.setHex(0xC4E2FF);
+          if (this.dirLight) {
+            this.dirLight.color.setHex(0xFFF6E5);
+            this.dirLight.intensity = 1.1;
+          }
 
           // Restaurar todos los trabajadores a su postura original
           if (this.workersList) {
@@ -2242,6 +2512,9 @@
           var time = now * 0.001;
 
           // 1. Suavizado y vuelo cinematográfico de cámara hacia el escenario activo
+          if (this.finaleMode && !this.isDragging) {
+            this.targetYaw += (this.finaleType === 'victory' ? 0.0035 : 0.0018);
+          }
           this.currentLookAt.lerp(this.targetLookAt, 0.055);
           this.yaw += (this.targetYaw - this.yaw) * 0.058;
           this.pitch += (this.targetPitch - this.pitch) * 0.058;
@@ -2290,6 +2563,19 @@
                 pt.mesh.material.opacity = Math.max(0, 0.85 - dElapsed * 0.5);
               });
             }
+          }
+
+          // Partículas de celebración de victoria final
+          if (this.celebrationGroup && this.celebrationGroup.visible) {
+            this.celebrationList.forEach(function (cp) {
+              cp.mesh.position.y += cp.vy;
+              cp.mesh.rotation.x += cp.rotX;
+              cp.mesh.rotation.y += cp.rotY;
+              cp.mesh.position.x = cp.baseX + Math.sin(time * 2 + cp.seed) * 0.35;
+              if (cp.mesh.position.y > 10.0) {
+                cp.mesh.position.y = 0.3;
+              }
+            });
           }
 
           // 2. FRENTE 1: Trompo de concreto con vibración mecánica o parada controlada
@@ -2358,10 +2644,47 @@
               var u = w.userData;
               if (!u) return;
 
+              // Posturas cinematográficas globales durante el final de la partida
+              if (selfEngine.finaleMode) {
+                if (selfEngine.finaleType === 'victory') {
+                  // Cuadrilla unida celebrando el turno seguro con brazos en alto
+                  if (u.role === 'supervisor1') {
+                    if (u.rArm) u.rArm.rotation.x = -1.5 + Math.sin(time * 4) * 0.3;
+                    if (u.lArm) u.lArm.rotation.x = -0.3;
+                    if (u.head) u.head.rotation.y = Math.sin(time * 2) * 0.2;
+                  } else if (u.role === 'supervisor2') {
+                    if (u.rArm) u.rArm.rotation.x = -1.4 + Math.sin(time * 4.5) * 0.3;
+                    if (u.lArm) u.lArm.rotation.x = -1.4 + Math.cos(time * 4.5) * 0.3;
+                    if (u.head) u.head.rotation.x = -0.15;
+                  } else if (u.role === 'mixer_operator') {
+                    if (u.rArm) u.rArm.rotation.x = -1.2 + Math.sin(time * 3) * 0.2;
+                    if (u.lArm) u.lArm.rotation.x = 0;
+                  } else if (u.role === 'crane_signaler') {
+                    if (u.rArm) u.rArm.rotation.x = -0.9;
+                    if (u.lArm) u.lArm.rotation.x = -1.2 + Math.cos(time * 3.5) * 0.25;
+                  } else if (u.role === 'rebar') {
+                    if (u.rArm) u.rArm.rotation.x = -1.3 + Math.sin(time * 4) * 0.25;
+                    if (u.lArm) u.lArm.rotation.x = -0.3;
+                  } else if (u.role === 'corridor') {
+                    if (u.rArm) u.rArm.rotation.x = -1.1 + Math.sin(time * 3.8) * 0.3;
+                    if (u.lArm) u.lArm.rotation.x = -1.1 + Math.cos(time * 3.8) * 0.3;
+                  }
+                  return;
+                } else if (selfEngine.finaleType === 'failure') {
+                  // Cuadrilla agotada y abatida por sobrecarga y fallas de mando
+                  if (u.head) u.head.rotation.x = 0.45;
+                  if (u.torso) u.torso.rotation.x = 0.12;
+                  if (u.lArm) u.lArm.rotation.x = 0.25;
+                  if (u.rArm) u.rArm.rotation.x = 0.25;
+                  return;
+                }
+              }
+
               // Respiración base solo si no está en estado de colapso o caída
-              var isWorkerDown = (u.role === 'crane_signaler' && selfEngine.craneError) ||
+              var isWorkerDown = (!selfEngine.finaleMode) && (
+                                 (u.role === 'crane_signaler' && selfEngine.craneError) ||
                                  (u.role === 'rebar' && selfEngine.front3Error) ||
-                                 (u.role === 'corridor' && selfEngine.front4Error);
+                                 (u.role === 'corridor' && selfEngine.front4Error));
               if (!isWorkerDown) {
                 w.position.y = u.baseY + Math.sin(time * 3 + i) * 0.012;
               }
@@ -2703,6 +3026,12 @@
             finalDesc: document.getElementById('finalDesc'),
             finalScoreVal: document.getElementById('finalScoreVal'),
             finalStatusVal: document.getElementById('finalStatusVal'),
+            finalHeaderTag: document.getElementById('finalHeaderTag'),
+            finalMentalPill: document.getElementById('finalMentalPill'),
+            finalMentalText: document.getElementById('finalMentalText'),
+            finalDiagnosisGrid: document.getElementById('finalDiagnosisGrid'),
+            toggle3dViewBtn: document.getElementById('toggle3dViewBtn'),
+            toggle3dViewText: document.getElementById('toggle3dViewText'),
             finishScormBtn: document.getElementById('finishScormBtn'),
             retryGameBtn: document.getElementById('retryGameBtn'),
             closureScreen: document.getElementById('closureScreen'),
@@ -2736,9 +3065,15 @@
             }
           });
 
+          this.dom.toggle3dViewBtn.addEventListener('click', function () {
+            var isMin = self.dom.finalScreen.classList.toggle('minimized');
+            self.dom.toggle3dViewText.textContent = isMin ? 'Restaurar Informe de Supervisión' : 'Examinar Escenario 3D Completo';
+          });
+
           this.dom.finishScormBtn.addEventListener('click', function () {
             SoundEngine.playVictory();
             ScormAPI.finish();
+            self.dom.finalScreen.classList.remove('minimized');
             self.dom.finalScreen.style.display = 'none';
             self.dom.closureScreen.style.display = 'flex';
           });
@@ -2752,6 +3087,8 @@
               self.dom.situationFeedbackInline.textContent = '';
               self.dom.situationFeedbackInline.style.display = 'none';
             }
+            self.dom.finalScreen.classList.remove('minimized');
+            self.dom.toggle3dViewText.textContent = 'Examinar Escenario 3D Completo';
             self.dom.finalScreen.style.display = 'none';
             Isometric3DEngine.resetSceneState();
             self.loadRound(1);
@@ -2904,33 +3241,82 @@
         },
 
         showFinalScreen: function () {
-          var passed = (this.score >= 80);
+          var passed = (this.score >= 75);
           ScormAPI.setScore(this.score);
           ScormAPI.setStatus(passed ? 'passed' : 'failed');
 
           this.dom.finalScoreVal.textContent = this.score + ' / 100 PTS';
 
+          // Actualizar semáforo de carga mental en el resumen final
+          this.dom.finalMentalPill.className = 'meter-status-pill ' + (this.mentalLoad <= 35 ? '' : (this.mentalLoad <= 70 ? 'warning' : 'danger'));
+          this.dom.finalMentalText.textContent = (this.mentalLoad <= 35 ? 'ENFOCADO' : (this.mentalLoad <= 70 ? 'ALERTA' : 'SOBRECARGA')) + ' (' + this.mentalLoad + '%)';
+
           if (passed) {
+            this.dom.finalHeaderTag.textContent = 'SUPERVISOR DESTACADO • CERO ACCIDENTES';
             this.dom.finalBadgeIcon.className = 'screen-badge-icon success';
-            this.dom.finalBadgeIcon.innerHTML = '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>';
-            this.dom.finalTitle.textContent = '¡Carga Mental Dominada!';
-            this.dom.finalDesc.textContent = 'Priorizaste con maestría la seguridad, el respeto al ritmo biológico y el control de la fatiga en obra.';
-            this.dom.finalStatusVal.textContent = 'ESTADO SCORM: APROBADO (≥ 80%)';
+            this.dom.finalBadgeIcon.style.borderColor = '#10B981';
+            this.dom.finalBadgeIcon.style.color = '#10B981';
+            this.dom.finalBadgeIcon.innerHTML = '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+            this.dom.finalTitle.textContent = '¡Supervisión Ejemplar: Mando Sereno y Cero Accidentes!';
+            this.dom.finalDesc.textContent = 'Demostraste maestría para priorizar la vida, resolver órdenes cruzadas con serenidad técnica y proteger la salud mental de tu cuadrilla bajo la Res. 2764 de 2022.';
+            this.dom.finalStatusVal.textContent = 'APROBADO (≥ 75%)';
             this.dom.finalStatusVal.style.color = '#4ADE80';
             this.dom.finishScormBtn.style.display = 'flex';
             this.dom.retryGameBtn.style.display = 'none';
+
+            this.dom.finalDiagnosisGrid.innerHTML = [
+              '<div class="diag-card success">',
+              '  <div class="diag-header"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><strong>Mando Técnico Unificado:</strong></div>',
+              '  <p>Pausaste el vaciado ante instrucciones cruzadas, evitando conflicto de rol y daños estructurales.</p>',
+              '</div>',
+              '<div class="diag-card success">',
+              '  <div class="diag-header"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><strong>Autoridad Preventiva Inmediata:</strong></div>',
+              '  <p>Frenaste la maniobra de grúa ante ráfagas de viento crítico; la vida prevaleció sobre el afán.</p>',
+              '</div>',
+              '<div class="diag-card success">',
+              '  <div class="diag-header"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><strong>Control de Fatiga de Cierre (5:00 PM):</strong></div>',
+              '  <p>Balizaste el borde a 18m con postes rígidos y bitácora ordenada sin ceder al afán de salida.</p>',
+              '</div>',
+              '<div class="diag-card success">',
+              '  <div class="diag-header"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><strong>Cultura de Respeto y Rutas Libres:</strong></div>',
+              '  <p>Lideraste aseo colectivo despejando la vía de evacuación y asegurando un relevo digno.</p>',
+              '</div>'
+            ].join('');
           } else {
+            this.dom.finalHeaderTag.textContent = 'ALERTA PSICOSOCIAL • SINIESTRALIDAD EN CAMPO';
             this.dom.finalBadgeIcon.className = 'screen-badge-icon';
             this.dom.finalBadgeIcon.style.borderColor = '#EF4444';
             this.dom.finalBadgeIcon.style.color = '#EF4444';
-            this.dom.finalBadgeIcon.innerHTML = '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>';
-            this.dom.finalTitle.textContent = 'Sobrecarga Operativa Detectada';
-            this.dom.finalDesc.textContent = 'Obtuviste ' + this.score + ' pts. Recuerda que el afán y la indecisión aumentan la siniestralidad. Repite la jornada para certificar.';
-            this.dom.finalStatusVal.textContent = 'ESTADO SCORM: NO APROBADO (< 80%)';
+            this.dom.finalBadgeIcon.innerHTML = '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>';
+            this.dom.finalTitle.textContent = 'Sobrecarga Operativa y Falla en Toma de Decisiones';
+            this.dom.finalDesc.textContent = 'El afán de entrega, la ambigüedad en las órdenes y la fatiga derivaron en accidentes críticos y agotamiento psicológico en la obra.';
+            this.dom.finalStatusVal.textContent = 'NO APROBADO (< 75%)';
             this.dom.finalStatusVal.style.color = '#F87171';
             this.dom.finishScormBtn.style.display = 'none';
             this.dom.retryGameBtn.style.display = 'flex';
+
+            this.dom.finalDiagnosisGrid.innerHTML = [
+              '<div class="diag-card danger">',
+              '  <div class="diag-header"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2.5"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon></svg><strong>Ambigüedad y Conflicto de Rol:</strong></div>',
+              '  <p>Vaciar sin orden técnica provocó desperdicio de concreto, fisuras y sobrecarga cognitiva en el operario.</p>',
+              '</div>',
+              '<div class="diag-card danger">',
+              '  <div class="diag-header"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2.5"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon></svg><strong>Omisión de Peligro Climático Fatal:</strong></div>',
+              '  <p>Continuar izando con ráfagas de viento cortó la eslinga; la formaleta cayó aplastando al señalero.</p>',
+              '</div>',
+              '<div class="diag-card danger">',
+              '  <div class="diag-header"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2.5"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon></svg><strong>Afán al Cierre y Omisión Perimetral:</strong></div>',
+              '  <p>Omitir la baranda rígida a 18m por afán de salida derivó en una caída libre mortal al abismo.</p>',
+              '</div>',
+              '<div class="diag-card danger">',
+              '  <div class="diag-header"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2.5"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon></svg><strong>Taponamiento de Ruta y Hostilidad:</strong></div>',
+              '  <p>Dejar escombros en la ruta atrapó al personal en la oscuridad y generó fricción hostil entre turnos.</p>',
+              '</div>'
+            ].join('');
           }
+
+          // Iniciar la animación cinemática 3D del final (órbita 360, iluminación, personajes)
+          Isometric3DEngine.playFinale(passed, this.score);
 
           this.dom.finalScreen.style.display = 'flex';
         }
