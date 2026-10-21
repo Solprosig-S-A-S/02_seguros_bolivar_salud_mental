@@ -320,30 +320,48 @@
     }
 
     .situation-dialogue {
+      display: flex;
+      flex-direction: column;
+      gap: 2.5px;
+      margin: 2px 0 3px 0;
+    }
+
+    .dialogue-line {
       font-size: clamp(10.5px, 2.3vw, 11.5px);
-      font-weight: 500;
+      line-height: 1.32;
       color: #F8FAFC;
-      line-height: 1.35;
-      font-style: italic;
-      margin: 0;
+    }
+
+    .char-tag {
+      font-weight: 700;
+      color: #38BDF8;
+      margin-right: 4px;
+    }
+
+    .char-tag.alert {
+      color: #F87171;
+    }
+
+    .dialogue-line.alert-line {
+      color: #CBD5E1;
     }
 
     .situation-question {
-      font-size: clamp(11.5px, 2.5vw, 12.5px);
+      font-size: clamp(12px, 2.6vw, 13px);
       font-weight: 700;
       color: var(--bolivar-yellow);
       line-height: 1.35;
-      margin: 0;
+      margin: 2px 0 0 0;
     }
 
     .situation-feedback-inline {
       font-size: clamp(10px, 2.2vw, 11px);
       font-weight: 600;
-      padding: 3px 6px;
+      padding: 4px 8px;
       border-radius: 6px;
       display: none;
       line-height: 1.25;
-      margin-top: 2px;
+      margin-top: 3px;
     }
     .situation-feedback-inline.active.success {
       display: block;
@@ -775,9 +793,10 @@
           <span class="round-badge" id="stepChip">RONDA 1 DE 4</span>
           <span class="speaker-label" id="bannerSpeakerText">FRENTE 1 • VACIADO DE CONCRETO</span>
         </div>
-        <p class="situation-dialogue" id="bannerDialogueText">
-          Residente: "¡Vacíen en la columna norte ya!" — Maestro: "¡No, primero la placa sur o se pierde el viaje!"
-        </p>
+        <div class="situation-dialogue" id="bannerDialogueText">
+          <div class="dialogue-line"><span class="char-tag">Residente:</span> "¡Vacíen ya en la columna norte!"</div>
+          <div class="dialogue-line"><span class="char-tag">Maestro:</span> "¡No, primero la placa sur o se daña el concreto!"</div>
+        </div>
         <p class="situation-question" id="questionText">
           ¿Qué harías tú?
         </p>
@@ -2215,24 +2234,25 @@
             frontIndex: 1,
             zone: 'FRENTE 1: VACIADO DE CONCRETO (PISO 5)',
             speaker: 'FRENTE 1 • VACIADO DE CONCRETO',
-            dialogue: 'Residente: "¡Vacíen en la columna norte ya!" — Maestro: "¡No, primero la placa sur o se pierde el viaje!"',
+            dialogue: '<div class="dialogue-line"><span class="char-tag">Residente:</span> "¡Vacíen ya en la columna norte!"</div>' +
+                      '<div class="dialogue-line"><span class="char-tag">Maestro:</span> "¡No, primero la placa sur o se daña el concreto!"</div>',
             promptText: '¿Qué harías tú?',
-            summaryText: 'Pausaste 3 minutos, revisaste planos técnicos y unificaste el mando con ambos. Según la Resolución 2764 de 2022, las órdenes contradictorias saturan la carga mental del equipo y provocan reprocesos forzados.',
-            wrongText: 'Comenzar a vaciar por afán o ceder al mando más agresivo genera vaciados en zonas erróneas, demoliciones costosas y estrés agudo en la cuadrilla.',
+            summaryText: 'Pausaste 3 minutos, revisaste la bitácora técnica y definiste una sola orden oficial. Según la Resolución 2764 de 2022 (Salud Mental en el Trabajo), las órdenes contradictorias saturan la carga mental del equipo y provocan reprocesos forzados.',
+            wrongText: 'Ceder a la prisa o al mando más agresivo provoca vaciados en zonas erróneas, demoliciones costosas y estrés agudo en la cuadrilla.',
             choices: [
               {
                 letter: 'A',
-                title: 'Descargar en la placa sur para complacer al Maestro',
+                title: 'Fundir la placa sur para no confrontar al Maestro',
                 correct: false
               },
               {
                 letter: 'B',
-                title: 'Pausar el vaciado 3 minutos, revisar planos y unificar una sola orden con ambos',
+                title: 'Pausar el vaciado 3 minutos, revisar planos y definir una sola orden oficial',
                 correct: true
               },
               {
                 letter: 'C',
-                title: 'Dejar que el operador del mixer decida dónde vaciar',
+                title: 'Dejar que el operador del mixer descargue donde él prefiera',
                 correct: false
               }
             ]
@@ -2242,24 +2262,25 @@
             frontIndex: 2,
             zone: 'FRENTE 2: GRÚA TORRE Y FORMALETA EN ALTURA',
             speaker: 'FRENTE 2 • GRÚA EN TORMENTA',
-            dialogue: 'Operador de grúa: "¡Ráfagas de viento sacuden la pluma y la carga oscila!" — Capataz: "¡Bájala ya o nos atrasamos!"',
+            dialogue: '<div class="dialogue-line"><span class="char-tag">Operador:</span> "¡Ráfagas de 45 km/h sacuden la pluma y la carga oscila!"</div>' +
+                      '<div class="dialogue-line"><span class="char-tag">Capataz:</span> "¡No frenes la grúa, bájala ya que vamos contra el tiempo!"</div>',
             promptText: '¿Qué harías tú?',
-            summaryText: 'Paraste la maniobra de inmediato y aseguraste la formaleta en el suelo. En emergencias con maquinaria y clima adverso, la integridad física de las personas prima siempre sobre cualquier plazo.',
-            wrongText: 'Forzar un izaje con viento fuerte y carga oscilando puede volcar la grúa o soltar la formaleta sobre los trabajadores.',
+            summaryText: 'Detuviste la maniobra de inmediato y aseguraste la formaleta en tierra. En emergencias con maquinaria y clima adverso, la integridad física de las personas prima siempre sobre cualquier plazo de entrega.',
+            wrongText: 'Forzar un izaje con ráfagas de viento y carga oscilando puede volcar la grúa o soltar la carga sobre el personal. Ante peligro inminente la única orden válida es parar y asegurar.',
             choices: [
               {
                 letter: 'A',
-                title: '¡Parar la maniobra ya mismo, evacuar el radio de 10m y asentar la formaleta en tierra!',
+                title: '¡Detener el izaje ya mismo, evacuar el área y apoyar la carga en el suelo!',
                 correct: true
               },
               {
                 letter: 'B',
-                title: 'Decirle a los ayudantes que jalen las manilas con fuerza para controlarla',
+                title: 'Ordenar a los ayudantes jalar las manilas para forzar el anclaje contra el viento',
                 correct: false
               },
               {
                 letter: 'C',
-                title: 'Continuar con el izaje confiando en que el viento bajará rápido',
+                title: 'Continuar bajando la carga confiando en que el viento calmará pronto',
                 correct: false
               }
             ]
@@ -2269,19 +2290,20 @@
             frontIndex: 3,
             zone: 'FRENTE 3: BORDE PERIMETRAL Y PARALES AL CIERRE',
             speaker: 'FRENTE 3 • BORDE A 18M AL CIERRE',
-            dialogue: 'Oficial de cuadrilla: "¡Son las 5:00 PM! Guardemos herramienta y vámonos ya... nadie se va a asomar al borde de noche."',
+            dialogue: '<div class="dialogue-line"><span class="char-tag">Oficial:</span> "¡Jefe, son las 5:00 PM! Guardemos herramienta y salgamos ya..."</div>' +
+                      '<div class="dialogue-line alert-line"><span class="char-tag alert">Alerta:</span> El borde perimetral a 18m quedó abierto y sin barandas.</div>',
             promptText: '¿Qué harías tú?',
-            summaryText: 'Acordonaste el borde a 2 metros con cinta reflectiva antes de salir. Más del 60% de los accidentes graves ocurren al cierre de turno por la prisa desordenada y la fatiga acumulada.',
-            wrongText: 'Dejar un borde a 18m desprotegido por afán de salida expone al turno nocturno a caídas fatales. La seguridad no se negocia por 10 minutos.',
+            summaryText: 'Delimitaste el borde a 2 metros con cinta reflectiva antes de salir. Más del 60% de los accidentes graves ocurren en los últimos 30 minutos de la jornada por la prisa desordenada y la fatiga acumulada. Protegiste al turno entrante con serenidad.',
+            wrongText: 'Dejar un borde a 18m desprotegido por afán de salir expone al turno nocturno a caídas fatales, y la agresión verbal destruye la confianza.',
             choices: [
               {
                 letter: 'A',
-                title: 'Dejar el borde abierto y apagar las luces para que nadie suba de noche',
+                title: 'Dejar el borde abierto y apagar las luces para salir a la hora exacta',
                 correct: false
               },
               {
                 letter: 'B',
-                title: 'Gritarle a la cuadrilla y obligarlos a quedarse dos horas extra de castigo',
+                title: 'Gritarle a la cuadrilla y obligarlos a quedarse horas extra de castigo',
                 correct: false
               },
               {
@@ -2296,24 +2318,25 @@
             frontIndex: 4,
             zone: 'FRENTE 4: PASILLO CENTRAL Y ACOPIO DE ESCOMBROS',
             speaker: 'FRENTE 4 • PASILLO Y RELEVO',
-            dialogue: 'Ayudante saliente: "El turno de la noche gana más por recargo... que recojan ellos los escombros si quieren pasar."',
+            dialogue: '<div class="dialogue-line"><span class="char-tag">Ayudante:</span> "El turno noche gana más recargos... que limpien ellos si quieren pasar."</div>' +
+                      '<div class="dialogue-line alert-line"><span class="char-tag alert">Alerta:</span> La ruta principal de evacuación está taponada con escombros.</div>',
             promptText: '¿Qué harías tú?',
-            summaryText: 'Organizaste 10 minutos de aseo colectivo promoviendo el respeto entre turnos. Un pasillo despejado evita caídas en la oscuridad y mantiene las rutas de evacuación libres ante cualquier emergencia.',
-            wrongText: 'Bloquear pasillos con escombros obstruye las salidas de emergencia y fomenta un ambiente de trabajo tóxico y conflictivo.',
+            summaryText: 'Lideraste 10 minutos de orden y aseo en equipo promoviendo el respeto entre turnos. Un pasillo despejado previene caídas en la oscuridad y mantiene las salidas de emergencia libres ante cualquier eventualidad.',
+            wrongText: 'Bloquear vías de evacuación con escombros pone en riesgo la vida de todos en caso de emergencia y genera un clima laboral hostil entre cuadrillas.',
             choices: [
               {
                 letter: 'A',
-                title: 'Dejar los escombros ahí y radicarle una queja al turno de la noche',
+                title: 'Dejar el pasillo bloqueado y radicar una queja contra el relevo',
                 correct: false
               },
               {
                 letter: 'B',
-                title: 'Convocar 10 minutos de orden y aseo colectivo con respeto antes de salir',
+                title: 'Liderar 10 minutos de orden y aseo en equipo para despejar la ruta de evacuación',
                 correct: true
               },
               {
                 letter: 'C',
-                title: 'Tirar los escombros al foso del ascensor para desocupar rápido',
+                title: 'Tirar los escombros al foso del ascensor para despejar el paso a la fuerza',
                 correct: false
               }
             ]
@@ -2402,6 +2425,11 @@
             self.score = 0;
             self.mentalLoad = 30;
             self.updateMentalMeter();
+            if (self.dom.situationFeedbackInline) {
+              self.dom.situationFeedbackInline.className = 'situation-feedback-inline';
+              self.dom.situationFeedbackInline.textContent = '';
+              self.dom.situationFeedbackInline.style.display = 'none';
+            }
             self.dom.finalScreen.style.display = 'none';
             Isometric3DEngine.resetSceneState();
             self.loadRound(1);
@@ -2418,13 +2446,20 @@
           this.roundActive = true;
           var data = this.roundsData[roundNum - 1];
 
+          // Ocultar y limpiar retroalimentación inline de la ronda anterior
+          if (this.dom.situationFeedbackInline) {
+            this.dom.situationFeedbackInline.className = 'situation-feedback-inline';
+            this.dom.situationFeedbackInline.textContent = '';
+            this.dom.situationFeedbackInline.style.display = 'none';
+          }
+
           if (this.dom.roundTag) this.dom.roundTag.textContent = 'RONDA ' + roundNum + ' DE 4';
           if (this.dom.stepChip) this.dom.stepChip.textContent = 'RONDA ' + roundNum + ' DE 4';
           if (this.dom.questionText) this.dom.questionText.textContent = data.promptText;
 
           // Actualizar diálogo integrado en la consola (sin tapar el 3D)
           if (this.dom.bannerSpeakerText) this.dom.bannerSpeakerText.textContent = data.speaker;
-          if (this.dom.bannerDialogueText) this.dom.bannerDialogueText.textContent = data.dialogue;
+          if (this.dom.bannerDialogueText) this.dom.bannerDialogueText.innerHTML = data.dialogue;
 
           // Enfocar cámara y spotlight en el frente de obra correspondiente
           Isometric3DEngine.focusActiveFront(data.frontIndex);
@@ -2530,6 +2565,11 @@
         },
 
         showFeedback: function (isCorrect, messageText) {
+          if (this.dom.situationFeedbackInline) {
+            this.dom.situationFeedbackInline.className = 'situation-feedback-inline';
+            this.dom.situationFeedbackInline.textContent = '';
+            this.dom.situationFeedbackInline.style.display = 'none';
+          }
           this.dom.feedbackDrawer.className = 'feedback-drawer' + (isCorrect ? '' : ' error');
           this.dom.feedbackBadge.className = 'feedback-badge' + (isCorrect ? '' : ' error');
           this.dom.feedbackBadgeText.textContent = isCorrect ? 'DECISIÓN ACERTADA (+25 PTS)' : 'DECISIÓN INADECUADA (0 PTS)';
