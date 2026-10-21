@@ -1,0 +1,2632 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Santuario de Recarga 3D - Seguros Bolívar</title>
+
+  <!-- Three.js r128 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <style>
+    /* ====================================================================
+       SISTEMA DE DISEÑO SEGUROS BOLÍVAR • SANTUARIO DE RECARGA 3D
+       ==================================================================== */
+    :root {
+      --bolivar-green: #2A9D8F;
+      --bolivar-green-dark: #1E7268;
+      --bolivar-green-light: #E0F5F2;
+      --bolivar-yellow: #FFB703;
+      --bolivar-yellow-dark: #D49000;
+      --bolivar-yellow-light: #FFF8E7;
+      --bolivar-blue: #023047;
+      --bolivar-blue-dark: #011E2D;
+      --bolivar-blue-light: #E8F1F5;
+      --bolivar-red: #E63946;
+      --bolivar-cyan: #38BDF8;
+      --font-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: 'JetBrains Mono', "Consolas", monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      outline: none;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      height: 100dvh;
+      overflow: hidden;
+      background-color: #03080F;
+      font-family: var(--font-main);
+      color: #FFFFFF;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: none;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* CONTENEDOR MÓVIL PRINCIPAL (MÁXIMO 430PX) */
+    .recharge-app {
+      width: 100%;
+      max-width: 430px;
+      height: 100%;
+      max-height: 920px;
+      margin: auto;
+      position: relative;
+      background: radial-gradient(circle at 50% 35%, #0B2236 0%, #030C14 100%);
+      overflow: hidden;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.9);
+    }
+
+    @media (min-width: 480px) {
+      .recharge-app {
+        border-radius: 28px;
+        border: 3px solid rgba(255, 255, 255, 0.15);
+        height: 96vh;
+        max-height: 880px;
+      }
+    }
+
+    /* LIENZO 3D THREE.JS */
+    .canvas-3d-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      display: block;
+      touch-action: none;
+    }
+
+    #threeCanvas {
+      width: 100% !important;
+      height: 100% !important;
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: block;
+      touch-action: none;
+    }
+
+    /* EFECTO DE FATIGA VISUAL Y ESTRÉS TÉRMICO (CANVAS OVERLAY) */
+    .visual-fatigue-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 5;
+      backdrop-filter: blur(0px);
+      -webkit-backdrop-filter: blur(0px);
+      transition: backdrop-filter 0.8s ease, box-shadow 0.8s ease;
+    }
+    .visual-fatigue-overlay.active {
+      backdrop-filter: blur(4.5px);
+      -webkit-backdrop-filter: blur(4.5px);
+      box-shadow: inset 0 0 90px rgba(245, 158, 11, 0.45), inset 0 0 160px rgba(239, 68, 68, 0.25);
+      animation: fatigueHazePulse 2.5s ease-in-out infinite alternate;
+    }
+    @keyframes fatigueHazePulse {
+      0% { opacity: 0.75; transform: scale(1); }
+      100% { opacity: 1; transform: scale(1.01); }
+    }
+
+    /* FLASH CINEMÁTICO DE ENERGÍA Y EVENTOS */
+    .cinematic-flash {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 20;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    .cinematic-flash.success {
+      opacity: 1;
+      box-shadow: inset 0 0 90px rgba(42, 157, 143, 0.85), inset 0 0 160px rgba(56, 189, 248, 0.5);
+      animation: successGlowFade 1.4s ease-out forwards;
+    }
+    .cinematic-flash.danger {
+      opacity: 1;
+      box-shadow: inset 0 0 80px rgba(239, 68, 68, 0.85);
+      animation: dangerPulseStrobe 0.35s ease-in-out infinite alternate;
+    }
+    @keyframes successGlowFade {
+      0% { opacity: 0.9; }
+      100% { opacity: 0; }
+    }
+    @keyframes dangerPulseStrobe {
+      from { opacity: 0.55; }
+      to { opacity: 1; }
+    }
+
+    /* HEADER SUPERIOR CON MEDIDOR DE BATERÍA VITAL */
+    .floating-hud {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: max(8px, env(safe-area-inset-top, 8px)) 12px 8px 12px;
+      background: linear-gradient(180deg, rgba(2, 48, 71, 0.82) 0%, rgba(2, 48, 71, 0.6) 85%, transparent 100%);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 35;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .brand-badge-circle {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--bolivar-yellow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 13.5px;
+      color: var(--bolivar-blue-dark);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+      flex-shrink: 0;
+    }
+    .station-tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #FFFFFF;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    /* MEDIDOR DE BATERÍA VITAL (0-100%) */
+    .battery-meter-box {
+      flex: 1;
+      max-width: 190px;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 9px;
+      padding: 3px 8px;
+    }
+    .battery-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #94A3B8;
+      margin-bottom: 2px;
+      letter-spacing: 0.3px;
+    }
+    .battery-status-pill {
+      font-size: 9px;
+      font-weight: 800;
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: rgba(230, 57, 70, 0.2);
+      color: #F87171;
+      border: 1px solid rgba(230, 57, 70, 0.3);
+      transition: all 0.3s ease;
+    }
+    .battery-status-pill.charging {
+      background: rgba(255, 183, 3, 0.2);
+      color: #FBBF24;
+      border-color: rgba(255, 183, 3, 0.3);
+    }
+    .battery-status-pill.full {
+      background: rgba(42, 157, 143, 0.25);
+      color: #4ADE80;
+      border-color: rgba(42, 157, 143, 0.4);
+    }
+    .battery-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .battery-fill {
+      height: 100%;
+      width: 15%;
+      background: linear-gradient(90deg, #E63946, #F59E0B);
+      border-radius: 3px;
+      transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.4s ease;
+    }
+
+    .hud-actions {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .icon-chip-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .icon-chip-btn:active {
+      transform: scale(0.92);
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* PÍLDORA DE AYUDA TÁCTIL 3D */
+    .touch-rot-pill {
+      position: absolute;
+      top: 56px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 30;
+      background: rgba(2, 48, 71, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 4px 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      font-weight: 600;
+      color: #CBD5E1;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+      white-space: nowrap;
+    }
+    .touch-rot-pill.faded {
+      opacity: 0;
+    }
+
+    /* CONSOLA INFERIOR DE ESTACIÓN Y ACCIÓN DIRECTA */
+    .station-deck {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      z-index: 40;
+      padding: 0 10px max(10px, env(safe-area-inset-bottom, 10px)) 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      pointer-events: none;
+    }
+
+    .station-card {
+      pointer-events: auto;
+      background: rgba(4, 18, 30, 0.90);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 16px;
+      padding: 10px 13px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .station-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+    .station-badge {
+      font-size: 9.5px;
+      font-weight: 800;
+      color: var(--bolivar-blue-dark);
+      background: var(--bolivar-yellow);
+      padding: 2px 7px;
+      border-radius: 5px;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+    .location-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--bolivar-cyan);
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .station-dialogue {
+      font-size: 11.5px;
+      line-height: 1.35;
+      color: #E2E8F0;
+      background: rgba(255, 255, 255, 0.05);
+      border-left: 3px solid var(--bolivar-yellow);
+      padding: 5px 8px;
+      border-radius: 0 6px 6px 0;
+    }
+    .dialogue-line {
+      margin-bottom: 2px;
+    }
+    .char-tag {
+      font-weight: 700;
+      color: var(--bolivar-yellow);
+    }
+    .char-tag.alert {
+      color: #F87171;
+    }
+
+    .station-prompt {
+      font-size: 11px;
+      font-weight: 700;
+      color: #F1F5F9;
+      margin: 1px 0;
+    }
+
+    /* CONTENEDOR DINÁMICO DE ACCIÓN TÁCTIL */
+    .station-action-zone {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    /* BOTÓN PRIMARIO DE ACCIÓN DE ESTACIÓN */
+    .action-btn-primary {
+      width: 100%;
+      min-height: 44px;
+      background: linear-gradient(180deg, #2A9D8F 0%, #1E7268 100%);
+      border: 1px solid #10B981;
+      border-radius: 11px;
+      color: #FFFFFF;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(42, 157, 143, 0.35);
+      transition: all 0.15s ease;
+    }
+    .action-btn-primary:active {
+      transform: scale(0.98);
+      filter: brightness(1.1);
+    }
+
+    /* BOTÓN INTERACTIVO DE BIOPULSO RESPIRATORIO (ESTACIÓN 2) */
+    .bio-breathe-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 0;
+    }
+    .breathe-phase-label {
+      font-size: 11.5px;
+      font-weight: 800;
+      color: var(--bolivar-cyan);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .breathe-press-btn {
+      width: 100%;
+      height: 46px;
+      background: linear-gradient(180deg, #0284C7 0%, #0369A1 100%);
+      border: 1.5px solid #38BDF8;
+      border-radius: 12px;
+      color: #FFFFFF;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      touch-action: none;
+      box-shadow: 0 4px 16px rgba(56, 189, 248, 0.35);
+      transition: all 0.2s ease;
+    }
+    .breathe-press-btn.active {
+      background: linear-gradient(180deg, #10B981 0%, #059669 100%);
+      border-color: #34D399;
+      box-shadow: 0 0 20px rgba(52, 211, 153, 0.6);
+      transform: scale(0.98);
+    }
+
+    /* CHECKLIST INTERACTIVO DE TOQUES (ESTACIONES 3 Y 4) */
+    .touch-checklist-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+    .touch-step-card {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 9px;
+      padding: 7px 8px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .touch-step-card:active {
+      transform: scale(0.96);
+    }
+    .touch-step-card.completed {
+      background: rgba(42, 157, 143, 0.2);
+      border-color: #2A9D8F;
+      color: #A7F3D0;
+    }
+    .step-check-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 1.5px solid #94A3B8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .touch-step-card.completed .step-check-dot {
+      background: #10B981;
+      border-color: #10B981;
+      color: #FFF;
+    }
+    .step-text-title {
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    /* RETROALIMENTACIÓN INLINE INMEDIATA */
+    .station-feedback-inline {
+      display: none;
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1.35;
+      padding: 6px 10px;
+      border-radius: 8px;
+      animation: inlinePop 0.25s ease-out;
+    }
+    .station-feedback-inline.active {
+      display: block;
+    }
+    .station-feedback-inline.success {
+      background: rgba(42, 157, 143, 0.25);
+      border: 1px solid #2A9D8F;
+      color: #6EE7B7;
+    }
+    @keyframes inlinePop {
+      0% { opacity: 0; transform: translateY(4px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* MODAL DRAWER PEDAGÓGICO DE CIERRE DE ESTACIÓN */
+    .feedback-modal {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 120;
+      background: rgba(2, 20, 32, 0.75);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: none;
+      align-items: flex-end;
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+    .feedback-modal.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .feedback-drawer {
+      width: 100%;
+      background: rgba(4, 20, 34, 0.96);
+      border-top: 2px solid var(--bolivar-green);
+      border-radius: 20px 20px 0 0;
+      padding: 16px 16px max(16px, env(safe-area-inset-bottom, 16px)) 16px;
+      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.8);
+      transform: translateY(100%);
+      transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .feedback-modal.active .feedback-drawer {
+      transform: translateY(0);
+    }
+
+    .drawer-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 9px;
+      border-radius: 6px;
+      font-size: 10.5px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      background: rgba(42, 157, 143, 0.2);
+      border: 1px solid #2A9D8F;
+      color: #6EE7B7;
+      width: fit-content;
+    }
+    .drawer-text {
+      font-size: 12px;
+      line-height: 1.45;
+      color: #E2E8F0;
+    }
+
+    /* PANTALLAS DE OVERLAY (BIENVENIDA Y FINAL) */
+    .screen-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(2, 48, 71, 0.85);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      z-index: 150;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 20px 16px;
+      text-align: center;
+      color: #FFF;
+      overflow-y: auto;
+      touch-action: pan-y;
+    }
+    .screen-content-card {
+      width: 100%;
+      max-width: 440px;
+      margin: 0 auto;
+    }
+
+    .screen-badge-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      margin: 4px auto 10px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 183, 3, 0.16);
+      border: 3px solid var(--bolivar-yellow);
+      color: var(--bolivar-yellow);
+    }
+    .screen-badge-icon.success {
+      background: rgba(42, 157, 143, 0.2);
+      border-color: #2A9D8F;
+      color: #2A9D8F;
+    }
+
+    .screen-title {
+      font-size: clamp(19px, 4.8vw, 22px);
+      font-weight: 800;
+      color: #FFFFFF;
+      margin-bottom: 6px;
+      line-height: 1.25;
+    }
+    .screen-desc {
+      font-size: 12px;
+      line-height: 1.45;
+      color: #CBD5E1;
+      margin-bottom: 12px;
+    }
+
+    /* REGLAS DE ORO DE AUTOCUIDADO */
+    .rules-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin-bottom: 14px;
+      text-align: left;
+    }
+    .rule-item {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      padding: 9px 11px;
+      display: flex;
+      gap: 9px;
+      align-items: flex-start;
+    }
+    .rule-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .rule-icon.cyan { background: rgba(56, 189, 248, 0.2); color: #38BDF8; }
+    .rule-icon.yellow { background: rgba(255, 183, 3, 0.2); color: var(--bolivar-yellow); }
+    .rule-icon.green { background: rgba(42, 157, 143, 0.2); color: #2A9D8F; }
+    .rule-info h4 {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin-bottom: 2px;
+    }
+    .rule-info p {
+      font-size: 10.5px;
+      color: #94A3B8;
+      line-height: 1.35;
+      margin: 0;
+    }
+
+    .start-btn {
+      width: 100%;
+      height: 48px;
+      border-radius: 12px;
+      background: linear-gradient(180deg, var(--bolivar-yellow) 0%, #F59E0B 100%);
+      border: 1px solid #D49000;
+      color: var(--bolivar-blue-dark);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(255, 183, 3, 0.35);
+      transition: all 0.15s ease;
+    }
+    .start-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* PANTALLA FINAL Y TARJETA DE RECARGA */
+    .finale-card {
+      background: rgba(10, 22, 34, 0.94);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 20px;
+      padding: 20px 18px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      animation: finaleCardPop 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes finaleCardPop {
+      0% { opacity: 0; transform: scale(0.92) translateY(20px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .finale-score-box {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+    }
+    .finale-score-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .finale-meter-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 8px;
+    }
+    .finale-diagnosis-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 7px;
+      margin-bottom: 14px;
+      text-align: left;
+    }
+    .diag-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      padding: 8px 11px;
+    }
+    .diag-card.success {
+      border-left: 3.5px solid #10B981;
+      background: rgba(16, 185, 129, 0.07);
+    }
+    .diag-card.danger {
+      border-left: 3.5px solid #EF4444;
+      background: rgba(239, 68, 68, 0.07);
+    }
+    .diag-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      margin-bottom: 2px;
+    }
+    .diag-card p {
+      margin: 0;
+      font-size: 10.5px;
+      color: #CBD5E1;
+      line-height: 1.35;
+    }
+    .secondary-view-btn {
+      width: 100%;
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 12px;
+      padding: 9px 12px;
+      color: #CBD5E1;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      margin-top: 4px;
+    }
+    .secondary-view-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #FFF;
+      border-color: var(--bolivar-yellow);
+    }
+
+    /* MINIMIZACIÓN DE REPORTE PARA INSPECCIÓN 3D */
+    .screen-overlay.minimized {
+      background: transparent !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      pointer-events: none;
+      justify-content: flex-end;
+      padding-bottom: 24px;
+    }
+    .screen-overlay.minimized .screen-content-card {
+      pointer-events: auto;
+      max-width: 320px;
+      background: rgba(10, 22, 34, 0.90);
+      border: 1px solid var(--bolivar-yellow);
+      padding: 10px 14px;
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    }
+    .screen-overlay.minimized .screen-desc,
+    .screen-overlay.minimized .finale-score-box,
+    .screen-overlay.minimized .finale-diagnosis-grid,
+    .screen-overlay.minimized #finalBadgeIcon,
+    .screen-overlay.minimized #finalHeaderTag,
+    .screen-overlay.minimized #finishScormBtn,
+    .screen-overlay.minimized #retryGameBtn {
+      display: none !important;
+    }
+    .screen-overlay.minimized .screen-title {
+      font-size: 12.5px !important;
+      margin-bottom: 5px !important;
+    }
+
+    /* PANTALLA DE CIERRE SCORM */
+    .closure-screen-overlay {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: #023047;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 18px;
+      text-align: center;
+      color: #FFF;
+    }
+  </style>
+</head>
+<body>
+
+  <main class="recharge-app" id="rechargeApp">
+
+    <!-- 1. LIENZO 3D THREE.JS -->
+    <div class="canvas-3d-container" id="canvas3dContainer">
+      <div id="threeCanvas"></div>
+      <div class="visual-fatigue-overlay" id="visualFatigueOverlay"></div>
+      <div class="cinematic-flash" id="cinematicFlash"></div>
+    </div>
+
+    <!-- 2. HUD SUPERIOR CON BATERÍA VITAL -->
+    <header class="floating-hud">
+      <div class="brand-group">
+        <div class="brand-badge-circle" aria-hidden="true">B</div>
+        <span class="station-tag" id="stationTag">ESTACIÓN 1 DE 4</span>
+      </div>
+
+      <!-- Medidor de Batería Vital -->
+      <div class="battery-meter-box">
+        <div class="battery-header-row">
+          <span>BATERÍA VITAL:</span>
+          <span class="battery-status-pill" id="batteryStatusPill">
+            <span id="batteryStatusText">AGOTADO (15%)</span>
+          </span>
+        </div>
+        <div class="battery-track">
+          <div class="battery-fill" id="batteryFill"></div>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="index.html" class="icon-chip-btn" style="text-decoration:none;" title="Volver al Portal de Juegos" aria-label="Volver al Portal">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+        </a>
+        <button id="soundToggleBtn" class="icon-chip-btn" aria-label="Audio" title="Sonido">
+          <svg id="soundIconOn" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          </svg>
+          <svg id="soundIconOff" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="display:none;">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <line x1="23" y1="9" x2="17" y2="15"></line>
+            <line x1="17" y1="9" x2="23" y2="15"></line>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Píldora de sugerencia táctil 3D -->
+    <div class="touch-rot-pill" id="touchRotPill">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <path d="M16 12l-4-4-4 4M12 8v8"></path>
+      </svg>
+      <span>Arrastra para rotar y examinar el entorno en 3D</span>
+    </div>
+
+    <!-- 3. CONSOLA INFERIOR DE ESTACIÓN Y ACCIONES TÁCTILES -->
+    <footer class="station-deck" id="stationDeck">
+      <div class="station-card" id="stationCard">
+        <div class="station-header">
+          <span class="station-badge" id="stepChip">ESTACIÓN 1 DE 4</span>
+          <span class="location-label" id="locationLabel">CASETA DE SOMBRA E HIDRATACIÓN</span>
+        </div>
+
+        <div class="station-dialogue" id="stationDialogue">
+          <div class="dialogue-line"><span class="char-tag">Operario:</span> "El resplandor del mediodía me nubla la vista y el calor me agota..."</div>
+          <div class="dialogue-line"><span class="char-tag alert">Alerta:</span> Cansancio visual agudo y estrés térmico en la losa de construcción.</div>
+        </div>
+
+        <p class="station-prompt" id="stationPrompt">
+          ¿Qué acción de recuperación realizas?
+        </p>
+
+        <!-- Zona de controles dinámicos de estación -->
+        <div class="station-action-zone" id="actionZone">
+          <!-- Se inyecta dinámicamente según la estación activa -->
+        </div>
+
+        <div class="station-feedback-inline" id="stationFeedbackInline"></div>
+      </div>
+    </footer>
+
+    <!-- 4. MODAL DRAWER DE RETROALIMENTACIÓN PEDAGÓGICA -->
+    <div class="feedback-modal" id="feedbackModal">
+      <div class="feedback-drawer" id="feedbackDrawer">
+        <div class="drawer-badge" id="drawerBadge">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span id="drawerBadgeText">RECUPERACIÓN EFECTIVA (+25 PTS)</span>
+        </div>
+
+        <p class="drawer-text" id="drawerFeedbackText">
+          Las pausas breves de sombra e hidratación restablecen la agudeza visual y eliminan el estrés térmico acumulado.
+        </p>
+
+        <button class="start-btn" id="feedbackAdvanceBtn">
+          <span>AVANZAR A LA SIGUIENTE ESTACIÓN</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- 5. PANTALLA DE BIENVENIDA -->
+    <div class="screen-overlay" id="welcomeScreen">
+      <div class="screen-content-card">
+        <div style="margin-bottom: 8px;">
+          <span style="color:var(--bolivar-yellow); font-size:12px; font-weight:700; letter-spacing:0.8px;">SEGUROS BOLÍVAR • ARL</span><br>
+          <span style="color:#94A3B8; font-size:11px; font-weight:600;">AUTOCUIDADO, FISIOLOGÍA Y DESCANSO REPARADOR</span>
+        </div>
+
+        <div class="screen-badge-icon">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path>
+          </svg>
+        </div>
+
+        <h1 class="screen-title">Santuario de Recarga 3D</h1>
+        <p class="screen-desc">
+          En labores de alto riesgo (Clase V), la agudeza visual y los reflejos dependen de la recuperación celular. Recorre las 4 estaciones táctiles para recargar tu <strong>Batería Vital al 100%</strong>.
+        </p>
+
+        <!-- 3 Reglas de Oro -->
+        <div class="rules-grid">
+          <div class="rule-item">
+            <div class="rule-icon cyan">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>
+            </div>
+            <div class="rule-info">
+              <h4>1. Sombra e Hidratación en Turno</h4>
+              <p>Pausas cortas disipan el estrés térmico y restablecen el enfoque visual (Res. 2764/2022).</p>
+            </div>
+          </div>
+
+          <div class="rule-item">
+            <div class="rule-icon yellow">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+            </div>
+            <div class="rule-info">
+              <h4>2. Biopulso Respiratorio (4-7-8)</h4>
+              <p>La respiración diafragmática modula el ritmo cardíaco ante la presión de obra.</p>
+            </div>
+          </div>
+
+          <div class="rule-item">
+            <div class="rule-icon green">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            </div>
+            <div class="rule-info">
+              <h4>3. Desconexión y Sueño Nocturno</h4>
+              <p>Cierra la puerta a las notificaciones (Ley 2460/2025) y cuida tu higiene del sueño.</p>
+            </div>
+          </div>
+        </div>
+
+        <button class="start-btn" id="startBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
+          <span>INICIAR RUTA DE RECUPERACIÓN</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 6. PANTALLA FINAL CON CERTIFICACIÓN Y DOS FINALES -->
+    <div class="screen-overlay" id="finalScreen" style="display: none;">
+      <div class="screen-content-card finale-card" id="finalCard">
+        <div style="margin-bottom: 6px;">
+          <span style="color:var(--bolivar-yellow); font-size:12px; font-weight:700; letter-spacing:0.8px;">SEGUROS BOLÍVAR • ARL</span><br>
+          <span style="color:#94A3B8; font-size:11px; font-weight:600; text-transform:uppercase;" id="finalHeaderTag">BALANCE DE AUTOCUIDADO Y ENERGÍA VITAL</span>
+        </div>
+
+        <div class="screen-badge-icon success" id="finalBadgeIcon">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+
+        <h2 class="screen-title" id="finalTitle">¡Batería Vital al 100%: Energía y Alerta Plena!</h2>
+        <p class="screen-desc" id="finalDesc">
+          Dominaste los rituales fisiológicos de hidratación, respiración consciente, desconexión laboral e higiene del sueño reparador.
+        </p>
+
+        <!-- Tarjeta de Puntaje SCORM y Batería Vital -->
+        <div class="finale-score-box">
+          <div class="finale-score-row">
+            <div>
+              <div style="font-size:10px; color:#CBD5E1; text-transform:uppercase; font-weight:700;">NIVEL DE RECARGA ALCANZADO</div>
+              <div style="font-size:clamp(26px, 6vw, 32px); font-weight:800; color:var(--bolivar-yellow); font-family:monospace; line-height:1.1;" id="finalScoreVal">100 / 100 PTS</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:10px; color:#CBD5E1; text-transform:uppercase; font-weight:700;">ESTADO SCORM</div>
+              <div style="font-size:12px; font-weight:700; color:#4ADE80; margin-top:4px;" id="finalStatusVal">APROBADO (≥ 75%)</div>
+            </div>
+          </div>
+          <div class="finale-meter-summary">
+            <span style="font-size:11px; color:#CBD5E1;">Batería Vital Final:</span>
+            <span class="battery-status-pill full" id="finalBatteryPill"><span id="finalBatteryText">ÓPTIMA (100%)</span></span>
+          </div>
+        </div>
+
+        <!-- Matriz de Diagnóstico Pedagógico -->
+        <div class="finale-diagnosis-grid" id="finalDiagnosisGrid"></div>
+
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          <button class="start-btn" id="finishScormBtn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+              <polyline points="17 21 17 13 7 13 7 21"></polyline>
+            </svg>
+            <span>FINALIZAR Y REGISTRAR EN LMS</span>
+          </button>
+
+          <button class="start-btn" id="retryGameBtn" style="display:none; background:linear-gradient(180deg, #E63946 0%, #B91C1C 100%); border-color:#991B1B; color:#FFF;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+            </svg>
+            <span>REPETIR RUTA DE RECUPERACIÓN</span>
+          </button>
+
+          <button class="secondary-view-btn" id="toggle3dViewBtn" type="button">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M16 12l-4-4-4 4M12 8v8"></path>
+            </svg>
+            <span id="toggle3dViewText">Examinar Escenario 3D Completo</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. PANTALLA DE CIERRE DEFINITIVO LMS -->
+    <div class="closure-screen-overlay" id="closureScreen" style="display: none;">
+      <div style="width:54px; height:54px; border-radius:50%; background:#2A9D8F; display:flex; align-items:center; justify-content:center; margin:0 auto 12px auto;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FFF" stroke-width="3">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+      <h2 style="font-size:clamp(18px, 4.5vw, 20px); font-weight:700; color:var(--bolivar-yellow); margin-bottom:6px;">SESIÓN REGISTRADA EN LMS</h2>
+      <p style="font-size:13px; color:#CBD5E1; max-width:320px; margin-bottom:18px; line-height:1.4;">
+        Tu recarga vital y balance de autocuidado han sido transmitidos a la plataforma institucional de aprendizaje.
+      </p>
+      <button id="closeWindowBtn" class="start-btn" style="max-width:280px;">
+        <span>CERRAR VENTANA</span>
+      </button>
+    </div>
+
+  </main>
+
+  <!-- ====================================================================
+       SCRIPTS: SCORM 1.2, AUDIO PROCEDURAL, THREE.JS 3D Y LÓGICA PEDAGÓGICA
+       ==================================================================== -->
+  <script>
+    (function () {
+      'use strict';
+
+      /* ------------------------------------------------------------------
+         1. API SCORM 1.2
+         ------------------------------------------------------------------ */
+      var ScormAPI = {
+        api: null,
+        initialized: false,
+
+        findAPI: function (win) {
+          var attempts = 0;
+          while (win && !win.API && attempts < 10) {
+            win = win.parent || win.opener;
+            attempts++;
+          }
+          return win ? win.API : null;
+        },
+
+        init: function () {
+          try {
+            this.api = this.findAPI(window);
+            if (this.api && !this.initialized) {
+              this.api.LMSInitialize('');
+              this.initialized = true;
+              this.api.LMSSetValue('cmi.core.lesson_status', 'incomplete');
+              this.api.LMSCommit('');
+            }
+          } catch (e) {
+            console.warn('[SCORM] No detectado. Modo autónomo.');
+          }
+        },
+
+        setScore: function (score) {
+          if (!this.api || !this.initialized) return;
+          try {
+            this.api.LMSSetValue('cmi.core.score.raw', String(score));
+            this.api.LMSSetValue('cmi.core.score.min', '0');
+            this.api.LMSSetValue('cmi.core.score.max', '100');
+            this.api.LMSCommit('');
+          } catch (e) {}
+        },
+
+        setStatus: function (status) {
+          if (!this.api || !this.initialized) return;
+          try {
+            this.api.LMSSetValue('cmi.core.lesson_status', status);
+            this.api.LMSCommit('');
+          } catch (e) {}
+        },
+
+        finish: function () {
+          if (!this.api || !this.initialized) return;
+          try {
+            this.api.LMSCommit('');
+            this.api.LMSFinish('');
+            this.initialized = false;
+          } catch (e) {}
+        }
+      };
+
+      /* ------------------------------------------------------------------
+         2. MOTOR DE AUDIO PROCEDURAL (WEB AUDIO API)
+         ------------------------------------------------------------------ */
+      var SoundEngine = {
+        ctx: null,
+        muted: false,
+
+        init: function () {
+          if (!this.ctx) {
+            var AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            if (AudioContextClass) {
+              this.ctx = new AudioContextClass();
+            }
+          }
+          if (this.ctx && this.ctx.state === 'suspended') {
+            this.ctx.resume();
+          }
+        },
+
+        toggleMute: function () {
+          this.muted = !this.muted;
+          return this.muted;
+        },
+
+        playTone: function (freq, type, duration, gainVal) {
+          if (this.muted) return;
+          this.init();
+          if (!this.ctx) return;
+          try {
+            var osc = this.ctx.createOscillator();
+            var gain = this.ctx.createGain();
+            osc.type = type || 'sine';
+            osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+            gain.gain.setValueAtTime(gainVal || 0.2, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start();
+            osc.stop(this.ctx.currentTime + duration);
+          } catch (e) {}
+        },
+
+        playSuccess: function () {
+          var self = this;
+          this.playTone(523.25, 'triangle', 0.16, 0.2); // C5
+          setTimeout(function () { self.playTone(659.25, 'triangle', 0.22, 0.2); }, 90); // E5
+        },
+
+        playWaterPour: function () {
+          if (this.muted) return;
+          this.init();
+          if (!this.ctx) return;
+          try {
+            // Sonido de chorro y burbujas de agua fresca
+            var now = this.ctx.currentTime;
+            for (var i = 0; i < 6; i++) {
+              var f = 800 + Math.random() * 600;
+              var osc = this.ctx.createOscillator();
+              var gain = this.ctx.createGain();
+              osc.type = 'sine';
+              osc.frequency.setValueAtTime(f, now + i * 0.08);
+              osc.frequency.exponentialRampToValueAtTime(f + 250, now + i * 0.08 + 0.06);
+              gain.gain.setValueAtTime(0.12, now + i * 0.08);
+              gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.07);
+              osc.connect(gain);
+              gain.connect(this.ctx.destination);
+              osc.start(now + i * 0.08);
+              osc.stop(now + i * 0.08 + 0.07);
+            }
+          } catch (e) {}
+        },
+
+        playBreatheChime: function (pitchUp) {
+          if (this.muted) return;
+          this.init();
+          if (!this.ctx) return;
+          try {
+            // Cuenco tibetano suave / armónico
+            var osc = this.ctx.createOscillator();
+            var osc2 = this.ctx.createOscillator();
+            var gain = this.ctx.createGain();
+            var baseFreq = pitchUp ? 432 : 324;
+            osc.type = 'sine';
+            osc2.type = 'triangle';
+            osc.frequency.setValueAtTime(baseFreq, this.ctx.currentTime);
+            osc2.frequency.setValueAtTime(baseFreq * 1.5, this.ctx.currentTime);
+            gain.gain.setValueAtTime(0.22, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 1.2);
+            osc.connect(gain);
+            osc2.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start();
+            osc2.start();
+            osc.stop(this.ctx.currentTime + 1.2);
+            osc2.stop(this.ctx.currentTime + 1.2);
+          } catch (e) {}
+        },
+
+        playLockerLock: function () {
+          if (this.muted) return;
+          this.init();
+          if (!this.ctx) return;
+          try {
+            // Chasquido y cierre metálico de cerrojo
+            var osc = this.ctx.createOscillator();
+            var gain = this.ctx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(140, this.ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(40, this.ctx.currentTime + 0.12);
+            gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.15);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start();
+            osc.stop(this.ctx.currentTime + 0.15);
+          } catch (e) {}
+        },
+
+        playLightSwitch: function () {
+          if (this.muted) return;
+          this.init();
+          if (!this.ctx) return;
+          try {
+            var osc = this.ctx.createOscillator();
+            var gain = this.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(1200, this.ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(200, this.ctx.currentTime + 0.05);
+            gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.06);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start();
+            osc.stop(this.ctx.currentTime + 0.06);
+          } catch (e) {}
+        },
+
+        playVictory: function () {
+          var self = this;
+          var notes = [440, 554.37, 659.25, 880];
+          notes.forEach(function (freq, idx) {
+            setTimeout(function () {
+              self.playTone(freq, 'triangle', 0.22, 0.2);
+            }, idx * 100);
+          });
+        },
+
+        playFinaleVictory: function () {
+          var self = this;
+          var notes = [392, 523.25, 659.25, 783.99, 1046.50];
+          notes.forEach(function (freq, idx) {
+            setTimeout(function () {
+              self.playTone(freq, 'triangle', 0.35, 0.22);
+            }, idx * 110);
+          });
+        },
+
+        playFinaleFailure: function () {
+          var self = this;
+          var notes = [330, 293.66, 246.94, 196.00];
+          notes.forEach(function (freq, idx) {
+            setTimeout(function () {
+              self.playTone(freq, 'sawtooth', 0.35, 0.16);
+            }, idx * 180);
+          });
+        }
+      };
+
+      /* ------------------------------------------------------------------
+         3. MOTOR 3D SANTUARIO DE RECARGA (THREE.JS)
+         ------------------------------------------------------------------ */
+      var Santuario3DEngine = {
+        scene: null,
+        camera: null,
+        renderer: null,
+        container: null,
+
+        // Grupos de escenarios 3D
+        station1Group: null,
+        station2Group: null,
+        station3Group: null,
+        station4Group: null,
+
+        // Elementos interactivos
+        waterJugMesh: null,
+        waterStreamMesh: null,
+        radioScreenMesh: null,
+        bioRingMesh: null,
+        lockerDoorPivot: null,
+        padlockMesh: null,
+        helmetMesh: null,
+        bootsMesh: null,
+        phoneScreenMesh: null,
+        curtainLeftMesh: null,
+        curtainRightMesh: null,
+        bedsideLampLight: null,
+
+        // Luces dinámicas
+        hemiLight: null,
+        sunLight: null,
+        ambientFog: null,
+
+        // Partículas
+        celebrationGroup: null,
+        celebrationList: [],
+
+        // Cámara interactiva y órbita
+        currentLookAt: new THREE.Vector3(0, 0, 0),
+        targetLookAt: new THREE.Vector3(0, 0, 0),
+        currentRadius: 22.0,
+        baseTargetRadius: 22.0,
+        yaw: -0.65,
+        targetYaw: -0.65,
+        pitch: 0.48,
+        targetPitch: 0.48,
+        isDragging: false,
+        dragStartX: 0,
+        dragStartY: 0,
+        hasInteracted: false,
+
+        // Estados cinemáticos
+        finaleMode: false,
+        finaleType: null,
+        currentStationId: 1,
+
+        init: function (containerEl) {
+          this.container = containerEl;
+          var w = containerEl.clientWidth || window.innerWidth;
+          var h = containerEl.clientHeight || window.innerHeight;
+
+          this.scene = new THREE.Scene();
+          this.scene.background = new THREE.Color(0x061523);
+          this.ambientFog = new THREE.Fog(0x061523, 24, 65);
+          this.scene.fog = this.ambientFog;
+
+          this.camera = new THREE.PerspectiveCamera(50, w / h, 0.1, 300);
+          this.updateCameraPosition();
+
+          this.renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+          this.renderer.setSize(w, h);
+          this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+          this.renderer.shadowMap.enabled = true;
+          this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+          containerEl.appendChild(this.renderer.domElement);
+
+          this.setupLighting();
+          this.buildStation1Hydration();
+          this.buildStation2Radio();
+          this.buildStation3LockerRoom();
+          this.buildStation4Bedroom();
+          this.buildCelebrationParticles();
+
+          this.bindResize();
+          this.bindTouchControls();
+          this.animate();
+        },
+
+        setupLighting: function () {
+          var hemi = new THREE.HemisphereLight(0xFFFBEB, 0x1E293B, 0.95);
+          this.scene.add(hemi);
+          this.hemiLight = hemi;
+
+          var sun = new THREE.DirectionalLight(0xFFF7ED, 1.25);
+          sun.position.set(14, 24, 12);
+          sun.castShadow = true;
+          sun.shadow.mapSize.width = 1024;
+          sun.shadow.mapSize.height = 1024;
+          this.scene.add(sun);
+          this.sunLight = sun;
+        },
+
+        updateCameraPosition: function () {
+          var r = this.currentRadius;
+          var cy = r * Math.sin(this.pitch);
+          var horiz = r * Math.cos(this.pitch);
+          var cx = horiz * Math.sin(this.yaw);
+          var cz = horiz * Math.cos(this.yaw);
+
+          this.camera.position.set(
+            this.currentLookAt.x + cx,
+            this.currentLookAt.y + cy,
+            this.currentLookAt.z + cz
+          );
+          this.camera.lookAt(this.currentLookAt);
+        },
+
+        /* ------------------------------------------------------------------
+           ESTACIÓN 1: CASETA DE SOMBRA E HIDRATACIÓN (LOSA BAJO EL SOL)
+           ------------------------------------------------------------------ */
+        buildStation1Hydration: function () {
+          var grp = new THREE.Group();
+
+          // Losa de concreto en obra
+          var slabMat = new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.85 });
+          var slab = new THREE.Mesh(new THREE.BoxGeometry(16, 0.8, 16), slabMat);
+          slab.position.y = -0.4;
+          slab.receiveShadow = true;
+          grp.add(slab);
+
+          // Columnas estructurales de concreto al fondo
+          var colMat = new THREE.MeshStandardMaterial({ color: 0x64748B, roughness: 0.9 });
+          [-5, 5].forEach(function (cx) {
+            [-5, 5].forEach(function (cz) {
+              var col = new THREE.Mesh(new THREE.BoxGeometry(0.8, 4.5, 0.8), colMat);
+              col.position.set(cx, 2.25, cz);
+              col.castShadow = true;
+              grp.add(col);
+            });
+          });
+
+          // Caseta de Sombra e Hidratación (Refugio térmico)
+          var shelter = new THREE.Group();
+          shelter.position.set(0, 0, 0);
+
+          // 4 Postes tubulares de la caseta
+          var postMat = new THREE.MeshStandardMaterial({ color: 0x0284C7, metalness: 0.4 });
+          [[-2.2, -1.8], [2.2, -1.8], [-2.2, 1.8], [2.2, 1.8]].forEach(function (p) {
+            var post = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 2.8), postMat);
+            post.position.set(p[0], 1.4, p[1]);
+            post.castShadow = true;
+            shelter.add(post);
+          });
+
+          // Techo de lona protectora reflectiva (azul sombra)
+          var roofMat = new THREE.MeshStandardMaterial({ color: 0x023047, roughness: 0.4 });
+          var roof = new THREE.Mesh(new THREE.BoxGeometry(4.8, 0.12, 4.0), roofMat);
+          roof.position.set(0, 2.8, 0);
+          roof.castShadow = true;
+          shelter.add(roof);
+
+          // Bancas de madera para reposo
+          var benchMat = new THREE.MeshStandardMaterial({ color: 0x854D0E, roughness: 0.7 });
+          var bench = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.12, 0.6), benchMat);
+          bench.position.set(-0.8, 0.45, 1.0);
+          bench.castShadow = true;
+          shelter.add(bench);
+
+          // Estación Dispensador de Agua (Water Cooler)
+          var coolerGroup = new THREE.Group();
+          coolerGroup.position.set(1.1, 0, -0.4);
+
+          // Mueble blanco dispensador
+          var bodyMat = new THREE.MeshStandardMaterial({ color: 0xF8FAFC, roughness: 0.3 });
+          var body = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.35, 1.0, 16), bodyMat);
+          body.position.y = 0.5;
+          body.castShadow = true;
+          coolerGroup.add(body);
+
+          // Botellón de agua azul translúcido (20L)
+          var jugMat = new THREE.MeshStandardMaterial({
+            color: 0x38BDF8,
+            transparent: true,
+            opacity: 0.65,
+            roughness: 0.1,
+            metalness: 0.1
+          });
+          var jug = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.32, 0.75, 16), jugMat);
+          jug.position.y = 1.35;
+          jug.castShadow = true;
+          coolerGroup.add(jug);
+          this.waterJugMesh = jug;
+
+          // Grifos y bandeja
+          var tap = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.12, 0.18), new THREE.MeshBasicMaterial({ color: 0x0284C7 }));
+          tap.position.set(0, 0.85, 0.3);
+          coolerGroup.add(tap);
+
+          // Avatar de trabajador reposando en la sombra
+          var worker = new THREE.Group();
+          worker.position.set(-0.8, 0.45, 1.0);
+          var torso = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.55, 0.28), new THREE.MeshStandardMaterial({ color: 0x0284C7 }));
+          torso.position.y = 0.45;
+          worker.add(torso);
+          var head = new THREE.Mesh(new THREE.SphereGeometry(0.18, 12, 12), new THREE.MeshStandardMaterial({ color: 0xFBBF24 }));
+          head.position.y = 0.85;
+          worker.add(head);
+          var hardHat = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.22, 0.12, 12), new THREE.MeshStandardMaterial({ color: 0xFACC15 }));
+          hardHat.position.y = 0.98;
+          worker.add(hardHat);
+          shelter.add(worker);
+
+          shelter.add(coolerGroup);
+          grp.add(shelter);
+
+          this.scene.add(grp);
+          this.station1Group = grp;
+        },
+
+        /* ------------------------------------------------------------------
+           ESTACIÓN 2: EL BIOSEÑALIZADOR 3D (CLOSE-UP DE RADIO DE CAMPO)
+           ------------------------------------------------------------------ */
+        buildStation2Radio: function () {
+          var grp = new THREE.Group();
+          grp.position.set(0, 0, 0);
+
+          // Chasis de radio comunicador de campo estilo Bento
+          var radioMat = new THREE.MeshStandardMaterial({ color: 0x1E293B, roughness: 0.45, metalness: 0.2 });
+          var chassis = new THREE.Mesh(new THREE.BoxGeometry(2.4, 4.2, 0.85), radioMat);
+          chassis.position.y = 0;
+          chassis.castShadow = true;
+          grp.add(chassis);
+
+          // Antena de goma
+          var antMat = new THREE.MeshStandardMaterial({ color: 0x0F172A, roughness: 0.7 });
+          var antenna = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.1, 2.2), antMat);
+          antenna.position.set(-0.8, 3.1, 0);
+          grp.add(antenna);
+
+          // Botones laterales PTT y perilla
+          var knob = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.35, 12), antMat);
+          knob.position.set(0.6, 2.2, 0);
+          grp.add(knob);
+
+          // Pantalla LCD matriz holográfica
+          var screenMat = new THREE.MeshBasicMaterial({ color: 0x042F2E });
+          var screen = new THREE.Mesh(new THREE.PlaneGeometry(1.8, 2.2), screenMat);
+          screen.position.set(0, 0.3, 0.435);
+          grp.add(screen);
+          this.radioScreenMesh = screen;
+
+          // Anillo bio-respiratorio 3D luminoso (4-7-8)
+          var ringMat = new THREE.MeshBasicMaterial({ color: 0x38BDF8, side: THREE.DoubleSide });
+          var ring = new THREE.Mesh(new THREE.RingGeometry(0.35, 0.52, 32), ringMat);
+          ring.position.set(0, 0.3, 0.445);
+          grp.add(ring);
+          this.bioRingMesh = ring;
+
+          // Altavoz y rejillas inferiores
+          var grillMat = new THREE.MeshBasicMaterial({ color: 0x0F172A });
+          for (var gi = 0; gi < 4; gi++) {
+            var slit = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.05, 0.02), grillMat);
+            slit.position.set(0, -1.2 - gi * 0.15, 0.44);
+            grp.add(slit);
+          }
+
+          grp.visible = false;
+          this.scene.add(grp);
+          this.station2Group = grp;
+        },
+
+        /* ------------------------------------------------------------------
+           ESTACIÓN 3: CASILLERO DE DESCONEXIÓN (VESTIDORES AL ATARDECER)
+           ------------------------------------------------------------------ */
+        buildStation3LockerRoom: function () {
+          var grp = new THREE.Group();
+
+          // Piso de vestidores (baldosa industrial)
+          var floorMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.6 });
+          var floor = new THREE.Mesh(new THREE.BoxGeometry(12, 0.4, 10), floorMat);
+          floor.position.y = -0.2;
+          floor.receiveShadow = true;
+          grp.add(floor);
+
+          // Pared posterior
+          var wallMat = new THREE.MeshStandardMaterial({ color: 0x1E293B, roughness: 0.8 });
+          var wall = new THREE.Mesh(new THREE.BoxGeometry(12, 6, 0.4), wallMat);
+          wall.position.set(0, 2.8, -3.2);
+          grp.add(wall);
+
+          // Batería de 3 casilleros metálicos
+          var lockerMat = new THREE.MeshStandardMaterial({ color: 0x0284C7, roughness: 0.4, metalness: 0.3 });
+          var lockerFrame = new THREE.Mesh(new THREE.BoxGeometry(3.6, 4.6, 1.2), lockerMat);
+          lockerFrame.position.set(0, 2.3, -2.4);
+          lockerFrame.castShadow = true;
+          grp.add(lockerFrame);
+
+          // Interior hueco del casillero central
+          var hollowMat = new THREE.MeshStandardMaterial({ color: 0x0F172A, roughness: 0.8 });
+          var hollow = new THREE.Mesh(new THREE.BoxGeometry(1.0, 4.2, 1.05), hollowMat);
+          hollow.position.set(0, 2.3, -2.35);
+          grp.add(hollow);
+
+          // Puerta del casillero con pivote para abrir/cerrar
+          var doorPivot = new THREE.Group();
+          doorPivot.position.set(-0.55, 2.3, -1.82);
+          var doorMat = new THREE.MeshStandardMaterial({ color: 0x0369A1, metalness: 0.4, roughness: 0.35 });
+          var door = new THREE.Mesh(new THREE.BoxGeometry(1.1, 4.2, 0.06), doorMat);
+          door.position.set(0.55, 0, 0);
+          doorPivot.add(door);
+          doorPivot.rotation.y = -1.45; // Abierto por defecto
+          grp.add(doorPivot);
+          this.lockerDoorPivot = doorPivot;
+
+          // Candado de seguridad
+          var lockMat = new THREE.MeshStandardMaterial({ color: 0xF59E0B, metalness: 0.6, roughness: 0.3 });
+          var lock = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.22, 0.1), lockMat);
+          lock.position.set(0.5, 0, 0.08);
+          lock.visible = false;
+          doorPivot.add(lock);
+          this.padlockMesh = lock;
+
+          // Casco en la repisa interior
+          var helmet = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.22, 0.16, 16), new THREE.MeshStandardMaterial({ color: 0xFACC15 }));
+          helmet.position.set(0, 3.6, -2.35);
+          grp.add(helmet);
+          this.helmetMesh = helmet;
+
+          // Botas de seguridad en el fondo
+          var boots = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.28, 0.45), new THREE.MeshStandardMaterial({ color: 0x78350F }));
+          boots.position.set(0, 0.5, -2.35);
+          grp.add(boots);
+          this.bootsMesh = boots;
+
+          grp.visible = false;
+          this.scene.add(grp);
+          this.station3Group = grp;
+        },
+
+        /* ------------------------------------------------------------------
+           ESTACIÓN 4: ESPACIO DE DESCANSO NOCTURNO (HABITACIÓN 3D)
+           ------------------------------------------------------------------ */
+        buildStation4Bedroom: function () {
+          var grp = new THREE.Group();
+
+          // Piso de madera cálida
+          var floor = new THREE.Mesh(new THREE.BoxGeometry(12, 0.4, 10), new THREE.MeshStandardMaterial({ color: 0x451A03, roughness: 0.6 }));
+          floor.position.y = -0.2;
+          floor.receiveShadow = true;
+          grp.add(floor);
+
+          // Paredes de habitación
+          var wallMat = new THREE.MeshStandardMaterial({ color: 0x1E1B4B, roughness: 0.85 });
+          var backWall = new THREE.Mesh(new THREE.BoxGeometry(12, 5.5, 0.3), wallMat);
+          backWall.position.set(0, 2.5, -3.5);
+          grp.add(backWall);
+
+          // Cama cómoda con cabecero y sábanas limpias
+          var bedGroup = new THREE.Group();
+          bedGroup.position.set(-0.8, 0, -1.2);
+          var mattress = new THREE.Mesh(new THREE.BoxGeometry(3.0, 0.65, 3.6), new THREE.MeshStandardMaterial({ color: 0xF8FAFC, roughness: 0.5 }));
+          mattress.position.y = 0.55;
+          bedGroup.add(mattress);
+          var blanket = new THREE.Mesh(new THREE.BoxGeometry(3.05, 0.35, 2.4), new THREE.MeshStandardMaterial({ color: 0x2A9D8F, roughness: 0.6 }));
+          blanket.position.set(0, 0.75, 0.5);
+          bedGroup.add(blanket);
+          var pillow = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.25, 0.6), new THREE.MeshStandardMaterial({ color: 0xFFFFFF }));
+          pillow.position.set(0, 0.95, -1.2);
+          bedGroup.add(pillow);
+          grp.add(bedGroup);
+
+          // Mesa de noche
+          var table = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.9, 1.0), new THREE.MeshStandardMaterial({ color: 0x312E81 }));
+          table.position.set(1.6, 0.45, -1.8);
+          grp.add(table);
+
+          // Smartphone en la mesa con pantalla azul activa
+          var phone = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.04, 0.42), new THREE.MeshBasicMaterial({ color: 0x38BDF8 }));
+          phone.position.set(1.4, 0.93, -1.6);
+          grp.add(phone);
+          this.phoneScreenMesh = phone;
+
+          // Lámpara de noche con punto de luz cálido
+          var lampBase = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.16, 0.6), new THREE.MeshStandardMaterial({ color: 0xD97706 }));
+          lampBase.position.set(1.7, 1.2, -1.9);
+          grp.add(lampBase);
+          var lampShade = new THREE.Mesh(new THREE.ConeGeometry(0.25, 0.35, 16), new THREE.MeshStandardMaterial({ color: 0xFEF3C7, side: THREE.DoubleSide }));
+          lampShade.position.set(1.7, 1.55, -1.9);
+          grp.add(lampShade);
+
+          var lampLight = new THREE.PointLight(0xFDE68A, 1.8, 8);
+          lampLight.position.set(1.7, 1.6, -1.9);
+          grp.add(lampLight);
+          this.bedsideLampLight = lampLight;
+
+          // Ventana con vista nocturna y cortinas
+          var windowFrame = new THREE.Mesh(new THREE.BoxGeometry(3.2, 2.6, 0.1), new THREE.MeshBasicMaterial({ color: 0x020617 }));
+          windowFrame.position.set(-2.8, 2.8, -3.3);
+          grp.add(windowFrame);
+
+          var curtainMat = new THREE.MeshStandardMaterial({ color: 0x1E3A8A, roughness: 0.7 });
+          var curtL = new THREE.Mesh(new THREE.BoxGeometry(0.5, 2.6, 0.15), curtainMat);
+          curtL.position.set(-4.1, 2.8, -3.2);
+          grp.add(curtL);
+          this.curtainLeftMesh = curtL;
+
+          var curtR = new THREE.Mesh(new THREE.BoxGeometry(0.5, 2.6, 0.15), curtainMat);
+          curtR.position.set(-1.5, 2.8, -3.2);
+          grp.add(curtR);
+          this.curtainRightMesh = curtR;
+
+          grp.visible = false;
+          this.scene.add(grp);
+          this.station4Group = grp;
+        },
+
+        /* ------------------------------------------------------------------
+           PARTÍCULAS Y CONFETI CELEBRATORIO (FINALE)
+           ------------------------------------------------------------------ */
+        buildCelebrationParticles: function () {
+          var count = 35;
+          var group = new THREE.Group();
+          var colors = [0xFBBF24, 0x10B981, 0x38BDF8, 0xF59E0B];
+          this.celebrationList = [];
+          for (var i = 0; i < count; i++) {
+            var col = colors[i % colors.length];
+            var pMat = new THREE.MeshBasicMaterial({ color: col });
+            var pMesh = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.14, 0.14), pMat);
+            pMesh.position.set(
+              (Math.random() - 0.5) * 12,
+              Math.random() * 6 + 0.5,
+              (Math.random() - 0.5) * 12
+            );
+            group.add(pMesh);
+            this.celebrationList.push({
+              mesh: pMesh,
+              vy: 0.02 + Math.random() * 0.03,
+              rotX: 0.02 + Math.random() * 0.05,
+              rotY: 0.03 + Math.random() * 0.04,
+              baseX: pMesh.position.x,
+              seed: Math.random() * 10
+            });
+          }
+          group.visible = false;
+          this.scene.add(group);
+          this.celebrationGroup = group;
+        },
+
+        /* ------------------------------------------------------------------
+           CAMBIO FLUIDO DE ESCENARIOS Y LUZ SEGÚN LA ESTACIÓN
+           ------------------------------------------------------------------ */
+        focusStation: function (stationId) {
+          this.currentStationId = stationId;
+          this.finaleMode = false;
+          if (this.celebrationGroup) this.celebrationGroup.visible = false;
+
+          // Ocultar todos y mostrar el activo
+          if (this.station1Group) this.station1Group.visible = (stationId === 1);
+          if (this.station2Group) this.station2Group.visible = (stationId === 2);
+          if (this.station3Group) this.station3Group.visible = (stationId === 3);
+          if (this.station4Group) this.station4Group.visible = (stationId === 4);
+
+          var fatigueOverlay = document.getElementById('visualFatigueOverlay');
+
+          if (stationId === 1) {
+            // Estación 1: Sol del mediodía en la losa, efecto de fatiga visual
+            this.targetLookAt.set(0, 1.2, 0);
+            this.baseTargetRadius = 14.5;
+            this.targetYaw = -0.55;
+            this.targetPitch = 0.42;
+
+            if (this.hemiLight) this.hemiLight.color.setHex(0xFFFBEB);
+            if (this.sunLight) {
+              this.sunLight.color.setHex(0xFFF7ED);
+              this.sunLight.intensity = 1.35;
+            }
+            if (this.ambientFog) this.ambientFog.color.setHex(0x061523);
+            this.scene.background.setHex(0x061523);
+
+            if (fatigueOverlay) fatigueOverlay.className = 'visual-fatigue-overlay active';
+          }
+          else if (stationId === 2) {
+            // Estación 2: Primer plano del radio y biopulso respiratorio
+            this.targetLookAt.set(0, 0.4, 0);
+            this.baseTargetRadius = 6.2;
+            this.targetYaw = 0.0;
+            this.targetPitch = 0.15;
+
+            if (this.hemiLight) this.hemiLight.color.setHex(0x0E7490);
+            if (this.sunLight) {
+              this.sunLight.color.setHex(0x38BDF8);
+              this.sunLight.intensity = 0.8;
+            }
+            if (fatigueOverlay) fatigueOverlay.className = 'visual-fatigue-overlay';
+          }
+          else if (stationId === 3) {
+            // Estación 3: Vestidores al atardecer dorado (5:30 PM)
+            this.targetLookAt.set(0, 2.0, -1.8);
+            this.baseTargetRadius = 8.5;
+            this.targetYaw = -0.45;
+            this.targetPitch = 0.32;
+
+            if (this.hemiLight) this.hemiLight.color.setHex(0xF59E0B);
+            if (this.sunLight) {
+              this.sunLight.color.setHex(0xD97706);
+              this.sunLight.intensity = 1.1;
+            }
+            if (fatigueOverlay) fatigueOverlay.className = 'visual-fatigue-overlay';
+          }
+          else if (stationId === 4) {
+            // Estación 4: Habitación nocturna (Higiene del sueño)
+            this.targetLookAt.set(0, 1.5, -1.0);
+            this.baseTargetRadius = 9.2;
+            this.targetYaw = -0.65;
+            this.targetPitch = 0.38;
+
+            if (this.hemiLight) this.hemiLight.color.setHex(0x1E1B4B);
+            if (this.sunLight) {
+              this.sunLight.color.setHex(0x1E3A8A);
+              this.sunLight.intensity = 0.35;
+            }
+            if (this.ambientFog) this.ambientFog.color.setHex(0x020617);
+            this.scene.background.setHex(0x020617);
+            if (fatigueOverlay) fatigueOverlay.className = 'visual-fatigue-overlay';
+          }
+        },
+
+        /* ------------------------------------------------------------------
+           ACCIONES FÍSICAS DE CADA ESTACIÓN
+           ------------------------------------------------------------------ */
+        drinkWaterStation1: function () {
+          // Despejar el desenfoque visual de fatiga
+          var fatigueOverlay = document.getElementById('visualFatigueOverlay');
+          if (fatigueOverlay) fatigueOverlay.className = 'visual-fatigue-overlay';
+
+          // Animación de cámara volando al dispensador de sombra
+          this.targetLookAt.set(0.6, 1.2, 0.4);
+          this.baseTargetRadius = 7.5;
+          this.targetYaw = -0.3;
+
+          SoundEngine.playWaterPour();
+          SoundEngine.playSuccess();
+        },
+
+        updateBreathingRing: function (scale, colorHex) {
+          if (this.bioRingMesh) {
+            this.bioRingMesh.scale.set(scale, scale, 1);
+            if (colorHex) this.bioRingMesh.material.color.setHex(colorHex);
+          }
+        },
+
+        closeLockerStation3: function () {
+          if (this.lockerDoorPivot) {
+            this.lockerDoorPivot.rotation.y = 0; // Puerta cerrada
+          }
+          if (this.padlockMesh) {
+            this.padlockMesh.visible = true; // Candado asegurado
+          }
+          SoundEngine.playLockerLock();
+          SoundEngine.playSuccess();
+        },
+
+        completeNightStation4: function () {
+          // Apagar luz azul del celular
+          if (this.phoneScreenMesh) {
+            this.phoneScreenMesh.material.color.setHex(0x0F172A);
+          }
+          // Cerrar cortinas
+          if (this.curtainLeftMesh && this.curtainRightMesh) {
+            this.curtainLeftMesh.position.x = -3.2;
+            this.curtainRightMesh.position.x = -2.4;
+          }
+          // Apagar lámpara de noche
+          if (this.bedsideLampLight) {
+            this.bedsideLampLight.intensity = 0.05;
+          }
+          SoundEngine.playLightSwitch();
+          SoundEngine.playSuccess();
+        },
+
+        playFinale: function (passed, score) {
+          this.finaleMode = true;
+          this.finaleType = passed ? 'victory' : 'failure';
+
+          if (passed) {
+            // Amanecer radiante 3D (6:00 AM)
+            SoundEngine.playFinaleVictory();
+            if (this.celebrationGroup) this.celebrationGroup.visible = true;
+            if (this.hemiLight) this.hemiLight.color.setHex(0xFFFBEB);
+            if (this.sunLight) {
+              this.sunLight.color.setHex(0xFDE68A);
+              this.sunLight.intensity = 1.45;
+            }
+            this.targetLookAt.set(0, 1.5, 0);
+            this.baseTargetRadius = 11.5;
+            this.targetPitch = 0.38;
+          } else {
+            // Despertar con fatiga y déficit de sueño
+            SoundEngine.playFinaleFailure();
+            if (this.hemiLight) this.hemiLight.color.setHex(0x475569);
+            if (this.sunLight) {
+              this.sunLight.color.setHex(0x64748B);
+              this.sunLight.intensity = 0.45;
+            }
+          }
+        },
+
+        resetSceneState: function () {
+          this.finaleMode = false;
+          this.finaleType = null;
+          if (this.celebrationGroup) this.celebrationGroup.visible = false;
+          if (this.lockerDoorPivot) this.lockerDoorPivot.rotation.y = -1.45;
+          if (this.padlockMesh) this.padlockMesh.visible = false;
+          if (this.phoneScreenMesh) this.phoneScreenMesh.material.color.setHex(0x38BDF8);
+          if (this.curtainLeftMesh) this.curtainLeftMesh.position.x = -4.1;
+          if (this.curtainRightMesh) this.curtainRightMesh.position.x = -1.5;
+          if (this.bedsideLampLight) this.bedsideLampLight.intensity = 1.8;
+          this.focusStation(1);
+        },
+
+        bindResize: function () {
+          var self = this;
+          window.addEventListener('resize', function () {
+            if (!self.container || !self.camera || !self.renderer) return;
+            var w = self.container.clientWidth || window.innerWidth;
+            var h = self.container.clientHeight || window.innerHeight;
+            self.camera.aspect = w / h;
+            self.camera.updateProjectionMatrix();
+            self.renderer.setSize(w, h);
+            self.updateCameraPosition();
+          });
+        },
+
+        bindTouchControls: function () {
+          var self = this;
+          var appEl = document.getElementById('rechargeApp') || window;
+          var hintEl = document.getElementById('touchRotPill');
+
+          var onStart = function (e) {
+            if (e.target && e.target.closest && e.target.closest('button, .station-deck, .feedback-modal, .screen-overlay, .floating-hud')) {
+              return;
+            }
+            self.isDragging = true;
+            self.dragStartX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
+            self.dragStartY = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
+
+            if (!self.hasInteracted) {
+              self.hasInteracted = true;
+              if (hintEl) hintEl.classList.add('faded');
+            }
+          };
+
+          var onMove = function (e) {
+            if (!self.isDragging) return;
+            var currentX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
+            var currentY = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
+            var dx = currentX - self.dragStartX;
+            var dy = currentY - self.dragStartY;
+            self.dragStartX = currentX;
+            self.dragStartY = currentY;
+
+            self.targetYaw -= dx * 0.006;
+            self.targetPitch = Math.max(0.18, Math.min(0.85, self.targetPitch + dy * 0.005));
+          };
+
+          var onEnd = function () {
+            self.isDragging = false;
+          };
+
+          appEl.addEventListener('pointerdown', onStart, { passive: true });
+          window.addEventListener('pointermove', onMove, { passive: true });
+          window.addEventListener('pointerup', onEnd, { passive: true });
+          window.addEventListener('pointercancel', onEnd, { passive: true });
+
+          setTimeout(function () {
+            if (hintEl) hintEl.classList.add('faded');
+          }, 4500);
+        },
+
+        animate: function () {
+          var self = this;
+          requestAnimationFrame(function () { self.animate(); });
+
+          var now = performance.now();
+          var time = now * 0.001;
+
+          // Órbita cinematográfica continua durante el final
+          if (this.finaleMode && !this.isDragging) {
+            this.targetYaw += (this.finaleType === 'victory' ? 0.004 : 0.002);
+          }
+
+          // Suavizado dinámico de cámara
+          this.currentLookAt.lerp(this.targetLookAt, 0.055);
+          this.yaw += (this.targetYaw - this.yaw) * 0.058;
+          this.pitch += (this.targetPitch - this.pitch) * 0.058;
+          this.currentRadius += (this.baseTargetRadius - this.currentRadius) * 0.055;
+
+          var idleSway = (!this.isDragging) ? Math.sin(time * 0.8) * 0.003 : 0;
+          var curPitch = this.pitch + idleSway;
+
+          var cy = this.currentRadius * Math.sin(curPitch);
+          var horiz = this.currentRadius * Math.cos(curPitch);
+          var cx = horiz * Math.sin(this.yaw);
+          var cz = horiz * Math.cos(this.yaw);
+
+          this.camera.position.set(
+            this.currentLookAt.x + cx,
+            this.currentLookAt.y + cy,
+            this.currentLookAt.z + cz
+          );
+          this.camera.lookAt(this.currentLookAt);
+
+          // Partículas celebratorias en el final
+          if (this.celebrationGroup && this.celebrationGroup.visible) {
+            this.celebrationList.forEach(function (cp) {
+              cp.mesh.position.y += cp.vy;
+              cp.mesh.rotation.x += cp.rotX;
+              cp.mesh.rotation.y += cp.rotY;
+              cp.mesh.position.x = cp.baseX + Math.sin(time * 2 + cp.seed) * 0.35;
+              if (cp.mesh.position.y > 8.0) {
+                cp.mesh.position.y = 0.3;
+              }
+            });
+          }
+
+          this.renderer.render(this.scene, this.camera);
+        }
+      };
+
+      /* ------------------------------------------------------------------
+         4. CONTROLADOR NARRATIVO: LAS 4 ESTACIONES DE RECARGA
+         ------------------------------------------------------------------ */
+      var GameApp = {
+        currentStation: 1,
+        score: 0,
+        vitalBattery: 15, // Nivel de batería vital: 0 a 100%
+        stationActive: false,
+        dom: {},
+
+        stationsData: [
+          {
+            id: 1,
+            location: 'CASETA DE SOMBRA E HIDRATACIÓN',
+            dialogue: '<div class="dialogue-line"><span class="char-tag">Operario:</span> "El resplandor del mediodía me nubla la vista y el calor me agota..."</div>' +
+                      '<div class="dialogue-line"><span class="char-tag alert">Alerta:</span> Cansancio visual agudo y estrés térmico en la losa de construcción.</div>',
+            prompt: '¿Qué acción de recuperación realizas?',
+            feedback: 'Las pausas breves de 5 a 10 minutos bajo la sombra con hidratación de agua fresca reducen la temperatura corporal, restablecen la agudeza visual y previenen desmayos o caídas en trabajos pesados (Res. 2764/2022).',
+            scoreAdd: 25,
+            batteryTarget: 40
+          },
+          {
+            id: 2,
+            location: 'RADIO DE CAMPO • BIOPULSO RESPIRATORIO',
+            dialogue: '<div class="dialogue-line"><span class="char-tag">Operario:</span> "Siento palpitaciones y tensión en el pecho tras el cruce de órdenes..."</div>' +
+                      '<div class="dialogue-line"><span class="char-tag alert">Alerta:</span> Activación del sistema simpático y sobrecarga por cortisol.</div>',
+            prompt: 'Realiza el ciclo de respiración guiada 4-7-8 en el bio-radio:',
+            feedback: 'La respiración diafragmática 4-7-8 estimula el nervio vago, desacelera los latidos cardíacos y devuelve la serenidad cognitiva en momentos de alta exigencia.',
+            scoreAdd: 25,
+            batteryTarget: 65
+          },
+          {
+            id: 3,
+            location: 'VESTIDORES • CASILLERO DE DESCONEXIÓN',
+            dialogue: '<div class="dialogue-line"><span class="char-tag">Operario:</span> "Son las 5:30 PM... el turno terminó pero el teléfono no para de sonar."</div>' +
+                      '<div class="dialogue-line"><span class="char-tag alert">Alerta:</span> Riesgo de hiperconexión y conflicto trabajo-familia.</div>',
+            prompt: 'Realiza el ritual de desconexión laboral en tu casillero:',
+            feedback: 'La desconexión laboral efectiva (Ley 2460 de 2025) establece un límite psicológico infranqueable: al cerrar el casillero y guardar las herramientas, la mente queda libre para descansar y compartir con la familia.',
+            scoreAdd: 25,
+            batteryTarget: 85
+          },
+          {
+            id: 4,
+            location: 'HABITACIÓN 3D • HIGIENE DEL SUEÑO',
+            dialogue: '<div class="dialogue-line"><span class="char-tag">Operario:</span> "Son las 10:00 PM. Mañana tengo turno en altura a primera hora."</div>' +
+                      '<div class="dialogue-line"><span class="char-tag alert">Alerta:</span> La luz azul y el ruido exterior inhiben la melatonina reparadora.</div>',
+            prompt: 'Prepara el santuario de sueño con los 3 pasos de higiene:',
+            feedback: 'Dormir en oscuridad total y sin pantallas permite que el cerebro alcance las fases Delta y REM, reparando el tejido muscular y asegurando reflejos al 100% para labores de Clase V.',
+            scoreAdd: 25,
+            batteryTarget: 100
+          }
+        ],
+
+        init: function () {
+          this.cacheDom();
+          this.bindEvents();
+          ScormAPI.init();
+          Santuario3DEngine.init(document.getElementById('canvas3dContainer'));
+        },
+
+        cacheDom: function () {
+          this.dom = {
+            stationTag: document.getElementById('stationTag'),
+            batteryStatusPill: document.getElementById('batteryStatusPill'),
+            batteryStatusText: document.getElementById('batteryStatusText'),
+            batteryFill: document.getElementById('batteryFill'),
+            soundToggleBtn: document.getElementById('soundToggleBtn'),
+            soundIconOn: document.getElementById('soundIconOn'),
+            soundIconOff: document.getElementById('soundIconOff'),
+            stepChip: document.getElementById('stepChip'),
+            locationLabel: document.getElementById('locationLabel'),
+            stationDialogue: document.getElementById('stationDialogue'),
+            stationPrompt: document.getElementById('stationPrompt'),
+            actionZone: document.getElementById('actionZone'),
+            stationFeedbackInline: document.getElementById('stationFeedbackInline'),
+            feedbackModal: document.getElementById('feedbackModal'),
+            feedbackDrawer: document.getElementById('feedbackDrawer'),
+            drawerBadge: document.getElementById('drawerBadge'),
+            drawerBadgeText: document.getElementById('drawerBadgeText'),
+            drawerFeedbackText: document.getElementById('drawerFeedbackText'),
+            feedbackAdvanceBtn: document.getElementById('feedbackAdvanceBtn'),
+            welcomeScreen: document.getElementById('welcomeScreen'),
+            startBtn: document.getElementById('startBtn'),
+            finalScreen: document.getElementById('finalScreen'),
+            finalBadgeIcon: document.getElementById('finalBadgeIcon'),
+            finalTitle: document.getElementById('finalTitle'),
+            finalDesc: document.getElementById('finalDesc'),
+            finalScoreVal: document.getElementById('finalScoreVal'),
+            finalStatusVal: document.getElementById('finalStatusVal'),
+            finalHeaderTag: document.getElementById('finalHeaderTag'),
+            finalBatteryPill: document.getElementById('finalBatteryPill'),
+            finalBatteryText: document.getElementById('finalBatteryText'),
+            finalDiagnosisGrid: document.getElementById('finalDiagnosisGrid'),
+            toggle3dViewBtn: document.getElementById('toggle3dViewBtn'),
+            toggle3dViewText: document.getElementById('toggle3dViewText'),
+            finishScormBtn: document.getElementById('finishScormBtn'),
+            retryGameBtn: document.getElementById('retryGameBtn'),
+            closureScreen: document.getElementById('closureScreen'),
+            closeWindowBtn: document.getElementById('closeWindowBtn')
+          };
+        },
+
+        bindEvents: function () {
+          var self = this;
+
+          this.dom.startBtn.addEventListener('click', function () {
+            SoundEngine.init();
+            SoundEngine.playSuccess();
+            self.dom.welcomeScreen.style.display = 'none';
+            Santuario3DEngine.resetSceneState();
+            self.loadStation(1);
+          });
+
+          this.dom.soundToggleBtn.addEventListener('click', function () {
+            var muted = SoundEngine.toggleMute();
+            self.dom.soundIconOn.style.display = muted ? 'none' : 'block';
+            self.dom.soundIconOff.style.display = muted ? 'block' : 'none';
+          });
+
+          this.dom.feedbackAdvanceBtn.addEventListener('click', function () {
+            self.dom.feedbackModal.classList.remove('active');
+            if (self.currentStation < 4) {
+              self.loadStation(self.currentStation + 1);
+            } else {
+              self.showFinalScreen();
+            }
+          });
+
+          this.dom.toggle3dViewBtn.addEventListener('click', function () {
+            var isMin = self.dom.finalScreen.classList.toggle('minimized');
+            self.dom.toggle3dViewText.textContent = isMin ? 'Restaurar Informe de Recarga' : 'Examinar Escenario 3D Completo';
+          });
+
+          this.dom.finishScormBtn.addEventListener('click', function () {
+            SoundEngine.playVictory();
+            ScormAPI.finish();
+            self.dom.finalScreen.classList.remove('minimized');
+            self.dom.finalScreen.style.display = 'none';
+            self.dom.closureScreen.style.display = 'flex';
+          });
+
+          this.dom.retryGameBtn.addEventListener('click', function () {
+            self.score = 0;
+            self.vitalBattery = 15;
+            self.updateBatteryMeter();
+            if (self.dom.stationFeedbackInline) {
+              self.dom.stationFeedbackInline.className = 'station-feedback-inline';
+              self.dom.stationFeedbackInline.textContent = '';
+            }
+            self.dom.finalScreen.classList.remove('minimized');
+            self.dom.finalScreen.style.display = 'none';
+            Santuario3DEngine.resetSceneState();
+            self.loadStation(1);
+          });
+
+          this.dom.closeWindowBtn.addEventListener('click', function () {
+            try { window.close(); } catch (e) {}
+            window.location.href = 'index.html';
+          });
+        },
+
+        loadStation: function (stationNum) {
+          this.currentStation = stationNum;
+          this.stationActive = true;
+          var data = this.stationsData[stationNum - 1];
+
+          // Limpiar feedback inline previo
+          if (this.dom.stationFeedbackInline) {
+            this.dom.stationFeedbackInline.className = 'station-feedback-inline';
+            this.dom.stationFeedbackInline.textContent = '';
+          }
+
+          this.dom.stationTag.textContent = 'ESTACIÓN ' + stationNum + ' DE 4';
+          this.dom.stepChip.textContent = 'ESTACIÓN ' + stationNum + ' DE 4';
+          this.dom.locationLabel.textContent = data.location;
+          this.dom.stationDialogue.innerHTML = data.dialogue;
+          this.dom.stationPrompt.textContent = data.prompt;
+
+          // Enfocar cámara y entorno 3D
+          Santuario3DEngine.focusStation(stationNum);
+
+          // Construir controles interactivos de la estación
+          this.renderStationControls(stationNum, data);
+        },
+
+        renderStationControls: function (stationNum, data) {
+          var self = this;
+          var zone = this.dom.actionZone;
+          zone.innerHTML = '';
+
+          if (stationNum === 1) {
+            // Estación 1: Botón táctil para entrar a la sombra e hidratarse
+            var btn = document.createElement('button');
+            btn.className = 'action-btn-primary';
+            btn.innerHTML = [
+              '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>',
+              '<span>ENTRAR A LA CASETA Y TOMAR AGUA FRESCA</span>'
+            ].join('');
+
+            btn.addEventListener('click', function () {
+              if (!self.stationActive) return;
+              self.stationActive = false;
+              btn.style.pointerEvents = 'none';
+
+              Santuario3DEngine.drinkWaterStation1();
+              self.score += data.scoreAdd;
+              self.vitalBattery = data.batteryTarget;
+              self.updateBatteryMeter();
+              ScormAPI.setScore(self.score);
+
+              self.showInlineFeedback('¡Pausa de hidratación completada! El enfoque visual se ha restablecido al 100%.');
+
+              setTimeout(function () {
+                self.showFeedback(data.feedback);
+              }, 2000);
+            });
+
+            zone.appendChild(btn);
+          }
+          else if (stationNum === 2) {
+            // Estación 2: Biopulso respiratorio guiado 4-7-8
+            var container = document.createElement('div');
+            container.className = 'bio-breathe-container';
+
+            var phaseLabel = document.createElement('div');
+            phaseLabel.className = 'breathe-phase-label';
+            phaseLabel.textContent = 'TOCA Y MANTÉN PRESIONADO PARA INHALAR';
+
+            var breatheBtn = document.createElement('button');
+            breatheBtn.className = 'breathe-press-btn';
+            breatheBtn.innerHTML = [
+              '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>',
+              '<span>MANTENER PULSADO (BIOPULSO 4-7-8)</span>'
+            ].join('');
+
+            var isHolding = false;
+            var breatheTimer = null;
+            var phaseTime = 0;
+            var currentPhase = 0; // 0: Inhale (4s), 1: Hold (7s), 2: Exhale (8s)
+            var cyclesDone = 0;
+
+            var startBreathe = function (e) {
+              e.preventDefault();
+              if (!self.stationActive || isHolding) return;
+              isHolding = true;
+              breatheBtn.classList.add('active');
+              phaseTime = 0;
+              currentPhase = 0;
+              cyclesDone = 0;
+
+              SoundEngine.playBreatheChime(true);
+              if (navigator.vibrate) navigator.vibrate([30]);
+
+              breatheTimer = setInterval(function () {
+                phaseTime += 0.25;
+
+                if (currentPhase === 0) {
+                  // Inhala (4s)
+                  phaseLabel.textContent = 'INHALA PROFUNDO (' + Math.ceil(4 - phaseTime) + 's)...';
+                  var progress = Math.min(1.0, phaseTime / 4.0);
+                  Santuario3DEngine.updateBreathingRing(1.0 + progress * 0.9, 0x38BDF8);
+
+                  if (phaseTime >= 4.0) {
+                    currentPhase = 1;
+                    phaseTime = 0;
+                    SoundEngine.playBreatheChime(false);
+                    if (navigator.vibrate) navigator.vibrate([40, 60, 40]);
+                  }
+                }
+                else if (currentPhase === 1) {
+                  // Retén (7s)
+                  phaseLabel.textContent = 'RETÉN EL AIRE (' + Math.ceil(7 - phaseTime) + 's)...';
+                  Santuario3DEngine.updateBreathingRing(1.9, 0xFBBF24);
+
+                  if (phaseTime >= 7.0) {
+                    currentPhase = 2;
+                    phaseTime = 0;
+                    SoundEngine.playBreatheChime(false);
+                  }
+                }
+                else if (currentPhase === 2) {
+                  // Exhala (8s)
+                  phaseLabel.textContent = 'EXHALA SUAVE (' + Math.ceil(8 - phaseTime) + 's)...';
+                  var progress = Math.min(1.0, phaseTime / 8.0);
+                  Santuario3DEngine.updateBreathingRing(1.9 - progress * 0.9, 0x10B981);
+
+                  if (phaseTime >= 8.0) {
+                    cyclesDone++;
+                    clearInterval(breatheTimer);
+                    breatheBtn.style.pointerEvents = 'none';
+                    self.stationActive = false;
+
+                    self.score += data.scoreAdd;
+                    self.vitalBattery = data.batteryTarget;
+                    self.updateBatteryMeter();
+                    ScormAPI.setScore(self.score);
+
+                    phaseLabel.textContent = 'FRECUENCIA CARDÍACA: 68 BPM (ESTABILIZADA)';
+                    self.showInlineFeedback('¡Biopulso 4-7-8 exitoso! Tensión arterial y niveles de estrés regulados.');
+
+                    setTimeout(function () {
+                      self.showFeedback(data.feedback);
+                    }, 1800);
+                  }
+                }
+              }, 250);
+            };
+
+            var stopBreathe = function (e) {
+              if (breatheTimer && self.stationActive) {
+                clearInterval(breatheTimer);
+                isHolding = false;
+                breatheBtn.classList.remove('active');
+                if (cyclesDone === 0) {
+                  phaseLabel.textContent = 'CICLO INTERRUMPIDO • VUELVE A PULSAR';
+                  Santuario3DEngine.updateBreathingRing(1.0, 0x38BDF8);
+                }
+              }
+            };
+
+            breatheBtn.addEventListener('pointerdown', startBreathe);
+            window.addEventListener('pointerup', stopBreathe);
+            window.addEventListener('pointercancel', stopBreathe);
+
+            container.appendChild(phaseLabel);
+            container.appendChild(breatheBtn);
+            zone.appendChild(container);
+          }
+          else if (stationNum === 3) {
+            // Estación 3: Checklist interactivo de Desconexión Laboral (Ley 2460/2025)
+            var grid = document.createElement('div');
+            grid.className = 'touch-checklist-grid';
+
+            var steps = [
+              { id: 'helmet', text: '1. Guardar Casco', done: false },
+              { id: 'boots', text: '2. Guardar Botas', done: false },
+              { id: 'phone', text: '3. Silenciar Alertas', done: false },
+              { id: 'locker', text: '4. Cerrar Candado', done: false }
+            ];
+
+            steps.forEach(function (st) {
+              var card = document.createElement('div');
+              card.className = 'touch-step-card';
+              card.innerHTML = [
+                '<div class="step-check-dot"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><polyline points="20 6 9 17 4 12"></polyline></svg></div>',
+                '<span class="step-text-title">' + st.text + '</span>'
+              ].join('');
+
+              card.addEventListener('click', function () {
+                if (!self.stationActive || st.done) return;
+                st.done = true;
+                card.classList.add('completed');
+                SoundEngine.playTone(480, 'triangle', 0.1, 0.15);
+
+                if (st.id === 'helmet') {
+                  if (Santuario3DEngine.helmetMesh) Santuario3DEngine.helmetMesh.position.y = 3.2;
+                } else if (st.id === 'boots') {
+                  if (Santuario3DEngine.bootsMesh) Santuario3DEngine.bootsMesh.position.z = -2.7;
+                } else if (st.id === 'locker') {
+                  Santuario3DEngine.closeLockerStation3();
+                }
+
+                // Verificar si todos los 4 pasos están completados
+                var allCompleted = steps.every(function (s) { return s.done; });
+                if (allCompleted) {
+                  self.stationActive = false;
+                  self.score += data.scoreAdd;
+                  self.vitalBattery = data.batteryTarget;
+                  self.updateBatteryMeter();
+                  ScormAPI.setScore(self.score);
+
+                  self.showInlineFeedback('¡Desconexión laboral consumada! La obra queda resguardada y tu tiempo es libre.');
+
+                  setTimeout(function () {
+                    self.showFeedback(data.feedback);
+                  }, 1800);
+                }
+              });
+
+              grid.appendChild(card);
+            });
+
+            zone.appendChild(grid);
+          }
+          else if (stationNum === 4) {
+            // Estación 4: Ritual de Higiene del Sueño en la Habitación 3D
+            var grid = document.createElement('div');
+            grid.className = 'touch-checklist-grid';
+
+            var steps = [
+              { id: 'blueLight', text: '1. Apagar Celular (Luz Azul)', done: false },
+              { id: 'curtains', text: '2. Cerrar Cortinas', done: false },
+              { id: 'lamp', text: '3. Apagar Lámpara de Noche', done: false }
+            ];
+
+            steps.forEach(function (st) {
+              var card = document.createElement('div');
+              card.className = 'touch-step-card';
+              card.innerHTML = [
+                '<div class="step-check-dot"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><polyline points="20 6 9 17 4 12"></polyline></svg></div>',
+                '<span class="step-text-title">' + st.text + '</span>'
+              ].join('');
+
+              card.addEventListener('click', function () {
+                if (!self.stationActive || st.done) return;
+                st.done = true;
+                card.classList.add('completed');
+
+                if (st.id === 'blueLight') {
+                  if (Santuario3DEngine.phoneScreenMesh) Santuario3DEngine.phoneScreenMesh.material.color.setHex(0x0F172A);
+                  SoundEngine.playTone(320, 'sine', 0.1, 0.15);
+                } else if (st.id === 'curtains') {
+                  if (Santuario3DEngine.curtainLeftMesh) Santuario3DEngine.curtainLeftMesh.position.x = -3.2;
+                  if (Santuario3DEngine.curtainRightMesh) Santuario3DEngine.curtainRightMesh.position.x = -2.4;
+                  SoundEngine.playTone(400, 'triangle', 0.1, 0.15);
+                } else if (st.id === 'lamp') {
+                  if (Santuario3DEngine.bedsideLampLight) Santuario3DEngine.bedsideLampLight.intensity = 0.05;
+                  SoundEngine.playLightSwitch();
+                }
+
+                var allCompleted = steps.every(function (s) { return s.done; });
+                if (allCompleted) {
+                  self.stationActive = false;
+                  self.score += data.scoreAdd;
+                  self.vitalBattery = data.batteryTarget;
+                  self.updateBatteryMeter();
+                  ScormAPI.setScore(self.score);
+
+                  self.showInlineFeedback('¡Santuario de descanso listo! Ambiente óptimo para el sueño Delta reparador.');
+
+                  setTimeout(function () {
+                    self.showFeedback(data.feedback);
+                  }, 1800);
+                }
+              });
+
+              grid.appendChild(card);
+            });
+
+            zone.appendChild(grid);
+          }
+        },
+
+        showInlineFeedback: function (text) {
+          if (this.dom.stationFeedbackInline) {
+            this.dom.stationFeedbackInline.textContent = text;
+            this.dom.stationFeedbackInline.className = 'station-feedback-inline active success';
+          }
+        },
+
+        updateBatteryMeter: function () {
+          this.dom.batteryFill.style.width = this.vitalBattery + '%';
+
+          if (this.vitalBattery <= 35) {
+            this.dom.batteryFill.style.background = '#E63946';
+            this.dom.batteryStatusPill.className = 'battery-status-pill';
+            this.dom.batteryStatusText.textContent = 'AGOTADO (' + this.vitalBattery + '%)';
+          } else if (this.vitalBattery <= 75) {
+            this.dom.batteryFill.style.background = '#FFB703';
+            this.dom.batteryStatusPill.className = 'battery-status-pill charging';
+            this.dom.batteryStatusText.textContent = 'RECUPERANDO (' + this.vitalBattery + '%)';
+          } else {
+            this.dom.batteryFill.style.background = '#2A9D8F';
+            this.dom.batteryStatusPill.className = 'battery-status-pill full';
+            this.dom.batteryStatusText.textContent = 'ÓPTIMO (' + this.vitalBattery + '%)';
+          }
+        },
+
+        showFeedback: function (messageText) {
+          if (this.dom.stationFeedbackInline) {
+            this.dom.stationFeedbackInline.className = 'station-feedback-inline';
+            this.dom.stationFeedbackInline.textContent = '';
+          }
+          this.dom.drawerFeedbackText.textContent = messageText;
+
+          var isLast = (this.currentStation >= 4);
+          this.dom.feedbackAdvanceBtn.querySelector('span').textContent = isLast ? 'VER BALANCE Y CERTIFICACIÓN' : 'AVANZAR A LA SIGUIENTE ESTACIÓN';
+          this.dom.feedbackModal.classList.add('active');
+        },
+
+        showFinalScreen: function () {
+          var passed = (this.score >= 75);
+          ScormAPI.setScore(this.score);
+          ScormAPI.setStatus(passed ? 'passed' : 'failed');
+
+          this.dom.finalScoreVal.textContent = this.score + ' / 100 PTS';
+
+          this.dom.finalBatteryPill.className = 'battery-status-pill ' + (this.vitalBattery >= 85 ? 'full' : (this.vitalBattery >= 50 ? 'charging' : ''));
+          this.dom.finalBatteryText.textContent = (this.vitalBattery >= 85 ? 'ÓPTIMA' : 'INSUFICIENTE') + ' (' + this.vitalBattery + '%)';
+
+          if (passed) {
+            this.dom.finalHeaderTag.textContent = 'AUTOCUIDADO INTEGRAL • ENERGÍA VITAL 100%';
+            this.dom.finalBadgeIcon.className = 'screen-badge-icon success';
+            this.dom.finalBadgeIcon.innerHTML = '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+            this.dom.finalTitle.textContent = '¡Batería Vital al 100%: Energía y Alerta Plena!';
+            this.dom.finalDesc.textContent = 'Dominaste los rituales fisiológicos de hidratación, respiración consciente, desconexión laboral e higiene del sueño reparador.';
+            this.dom.finalStatusVal.textContent = 'APROBADO (≥ 75%)';
+            this.dom.finalStatusVal.style.color = '#4ADE80';
+            this.dom.finishScormBtn.style.display = 'flex';
+            this.dom.retryGameBtn.style.display = 'none';
+
+            this.dom.finalDiagnosisGrid.innerHTML = [
+              '<div class="diag-card success">',
+              '  <div class="diag-header"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><strong>Agudeza Visual Restaurada:</strong></div>',
+              '  <p>Pausaste en sombra e hidratación, disipando el estrés térmico y la fatiga ocular.</p>',
+              '</div>',
+              '<div class="diag-card success">',
+              '  <div class="diag-header"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><strong>Regulación Fisiológica (Biopulso 4-7-8):</strong></div>',
+              '  <p>Activaste el sistema nervioso parasimpático estabilizando tu ritmo cardíaco en 68 BPM.</p>',
+              '</div>',
+              '<div class="diag-card success">',
+              '  <div class="diag-header"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><strong>Desconexión Laboral Activa (Ley 2460/2025):</strong></div>',
+              '  <p>Cerraste tu casillero y apagaste alertas de trabajo protegiendo tu espacio familiar.</p>',
+              '</div>',
+              '<div class="diag-card success">',
+              '  <div class="diag-header"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><strong>Sueño Reparador Clase V:</strong></div>',
+              '  <p>Eliminaste la luz azul y el ruido, garantizando reflejos al 100% para el siguiente turno.</p>',
+              '</div>'
+            ].join('');
+          } else {
+            this.dom.finalHeaderTag.textContent = 'ALERTA DE FATIGA • DÉFICIT DE DESCANSO';
+            this.dom.finalBadgeIcon.className = 'screen-badge-icon';
+            this.dom.finalBadgeIcon.innerHTML = '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2.5"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>';
+            this.dom.finalTitle.textContent = 'Déficit de Descanso y Riesgo de Fatiga Crónica';
+            this.dom.finalDesc.textContent = 'Omitiste rituales clave de recuperación biológica. La fatiga acumulada en obra de alto riesgo aumenta un 40% la posibilidad de incidentes.';
+            this.dom.finalStatusVal.textContent = 'NO APROBADO (< 75%)';
+            this.dom.finalStatusVal.style.color = '#F87171';
+            this.dom.finishScormBtn.style.display = 'none';
+            this.dom.retryGameBtn.style.display = 'flex';
+
+            this.dom.finalDiagnosisGrid.innerHTML = [
+              '<div class="diag-card danger">',
+              '  <div class="diag-header"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2.5"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon></svg><strong>Estrés Térmico y Visión Borrosa:</strong></div>',
+              '  <p>Omitir la hidratación bajo el sol reduce la velocidad de reacción y nubla la vista.</p>',
+              '</div>',
+              '<div class="diag-card danger">',
+              '  <div class="diag-header"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2.5"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon></svg><strong>Hiperactividad por Cortisol:</strong></div>',
+              '  <p>No realizar micro-pausas respiratorias sostiene la taquicardia y el agotamiento mental.</p>',
+              '</div>',
+              '<div class="diag-card danger">',
+              '  <div class="diag-header"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2.5"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon></svg><strong>Invasión del Trabajo al Hogar:</strong></div>',
+              '  <p>No desconectarse del trabajo impide que el sistema nervioso entre en reposo reparador.</p>',
+              '</div>',
+              '<div class="diag-card danger">',
+              '  <div class="diag-header"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2.5"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon></svg><strong>Insomnio por Luz Azul y Ruido:</strong></div>',
+              '  <p>Usar pantallas antes de dormir bloquea la melatonina, induciendo microsueños diurnos.</p>',
+              '</div>'
+            ].join('');
+          }
+
+          // Animación 3D del amanecer triunfal o amanecer pesado
+          Santuario3DEngine.playFinale(passed, this.score);
+
+          this.dom.finalScreen.style.display = 'flex';
+        }
+      };
+
+      // Inicialización automática al cargar el documento
+      window.addEventListener('DOMContentLoaded', function () {
+        GameApp.init();
+      });
+
+    })();
+  </script>
+</body>
+</html>
