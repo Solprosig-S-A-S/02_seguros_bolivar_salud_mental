@@ -291,8 +291,8 @@
     .situation-header {
       display: flex;
       align-items: center;
-      justify-content: space-between;
       gap: 6px;
+      flex-wrap: wrap;
     }
 
     .round-badge {
@@ -307,8 +307,24 @@
       flex-shrink: 0;
     }
 
+    .supervisor-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(42, 157, 143, 0.22);
+      border: 1px solid rgba(42, 157, 143, 0.65);
+      color: #6EE7B7;
+      font-size: clamp(8.5px, 1.9vw, 9.5px);
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 5px;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
     .speaker-label {
-      font-size: clamp(9.5px, 2.1vw, 10px);
+      font-size: clamp(9px, 2vw, 10px);
       font-weight: 600;
       color: #94A3B8;
       text-transform: uppercase;
@@ -316,10 +332,12 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      flex: 1;
+      text-align: right;
     }
 
     .situation-dialogue {
-      font-size: clamp(10.5px, 2.4vw, 11.5px);
+      font-size: clamp(10.5px, 2.3vw, 11.5px);
       font-weight: 500;
       color: #F8FAFC;
       line-height: 1.35;
@@ -328,8 +346,8 @@
     }
 
     .situation-question {
-      font-size: clamp(11px, 2.5vw, 12px);
-      font-weight: 600;
+      font-size: clamp(11.5px, 2.5vw, 12.5px);
+      font-weight: 700;
       color: var(--bolivar-yellow);
       line-height: 1.35;
       margin: 0;
@@ -763,7 +781,7 @@
         <circle cx="12" cy="12" r="10"></circle>
         <path d="M16 12l-4-4-4 4M12 8v8"></path>
       </svg>
-      <span>Pulgar para rotar la obra en 3D</span>
+      <span>Arrastra para rotar y examinar el escenario en 3D</span>
     </div>
 
     <!-- 4. CONSOLA INFERIOR DE DECISIÓN (COMPACTA, DIRECTA Y SIN ARRASTRE) -->
@@ -772,13 +790,20 @@
       <div class="situation-card" id="situationCard">
         <div class="situation-header">
           <span class="round-badge" id="stepChip">RONDA 1 DE 4</span>
-          <span class="speaker-label" id="bannerSpeakerText">RESIDENTE vs. MAESTRO GENERAL</span>
+          <span class="supervisor-badge">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <span>SUPERVISOR SST</span>
+          </span>
+          <span class="speaker-label" id="bannerSpeakerText">ÓRDENES CONTRADICTORIAS EN VACIADO</span>
         </div>
         <p class="situation-dialogue" id="bannerDialogueText">
-          "¡Vacíen en la columna norte de una vez! / ¡De ninguna manera, primero la placa sur o se pierde el viaje!"
+          "El Residente te ordena vaciar de inmediato la columna norte, pero el Maestro General te exige la placa sur o se pierde el viaje. La cuadrilla espera tu orden."
         </p>
         <p class="situation-question" id="questionText">
-          ¿Cómo debe actuar el líder para resolver la contradicción de órdenes y cuidar a la cuadrilla?
+          ¿Qué harías tú como supervisor ante esta contradicción de órdenes?
         </p>
         <div class="situation-feedback-inline" id="situationFeedbackInline"></div>
       </div>
@@ -825,7 +850,7 @@
 
         <h1 class="screen-title">El Arquitecto del Tiempo</h1>
         <p class="screen-desc">
-          Lideras la losa del Piso 5. Tu desafío: resolver <strong>4 imprevistos de alta tensión</strong> cuidando la carga mental y la seguridad de tu cuadrilla.
+          Asumes el rol de <strong>Supervisor SST / Líder de Obra</strong> en la losa del Piso 5. Ante 4 dilemas operativos críticos, la cuadrilla te preguntará: <em>"¿Qué harías tú?"</em>
         </p>
 
         <!-- Briefing de la situación crítica -->
@@ -836,10 +861,10 @@
               <line x1="12" y1="8" x2="12" y2="12"></line>
               <line x1="12" y1="16" x2="12.01" y2="16"></line>
             </svg>
-            <span>Reto de Salud Mental en Obra</span>
+            <span>Reto de Carga Mental y Liderazgo de Campo</span>
           </div>
           <p class="briefing-text">
-            Las órdenes contradictorias, las fallas mecánicas y el afán del cierre disparan el agotamiento cognitivo. Cuando el líder prioriza con calma técnica, <strong>salva vidas y elimina la sobrecarga mental</strong>.
+            Las órdenes contradictorias, las fallas mecánicas y el afán del cierre disparan el agotamiento cognitivo. Cuando el supervisor actúa con serenidad técnica y autoridad preventiva, <strong>salva vidas y elimina la sobrecarga mental</strong>.
           </p>
         </div>
 
@@ -1106,23 +1131,74 @@
         ambientDustGroup: null,
         workersList: [],
 
+        // Cámara dinámica con zoom cinematográfico a cada escenario
+        currentLookAt: new THREE.Vector3(0, -0.7, 0),
+        targetLookAt: new THREE.Vector3(0, -0.7, 0),
+        currentRadius: 28.0,
+        baseTargetRadius: 28.0,
+
         // Rotación táctil interactiva
         yaw: -0.78,
         targetYaw: -0.78,
-        pitch: 0.58,
-        targetPitch: 0.58,
+        pitch: 0.54,
+        targetPitch: 0.54,
         isDragging: false,
         dragStartX: 0,
         dragStartY: 0,
         hasInteracted: false,
 
-        // Coordenadas de los 4 frentes de obra
+        // Coordenadas, zoom cercano y ángulos cinematográficos para cada dilema del supervisor
         frontTargets: [
-          { pos: new THREE.Vector3(-4.5, 0.5, -4.5), speakerPos: new THREE.Vector3(-4.5, 2.0, -4.5), color: 0x38BDF8, yaw: -0.78 }, // Frente 1
-          { pos: new THREE.Vector3(2.2, 1.8, -5.5), speakerPos: new THREE.Vector3(2.2, 3.8, -5.5), color: 0xEF4444, yaw: -0.35 },  // Frente 2
-          { pos: new THREE.Vector3(4.8, 0.5, 4.5), speakerPos: new THREE.Vector3(4.8, 2.0, 4.5), color: 0xFFB703, yaw: 0.78 },     // Frente 3
-          { pos: new THREE.Vector3(-4.2, 0.5, 4.5), speakerPos: new THREE.Vector3(-4.2, 1.9, 4.5), color: 0xF59E0B, yaw: -2.35 }    // Frente 4
+          {
+            // Frente 1: Vaciado de concreto, trompo y conflicto de mandos
+            lookAt: new THREE.Vector3(-4.6, 1.1, -3.8),
+            pos: new THREE.Vector3(-4.6, 1.1, -3.8),
+            speakerPos: new THREE.Vector3(-4.6, 2.3, -3.8),
+            radius: 14.5,
+            yaw: -0.85,
+            pitch: 0.44,
+            color: 0x38BDF8
+          },
+          {
+            // Frente 2: Grúa torre, formaleta oscilando en tormenta y señalero
+            lookAt: new THREE.Vector3(2.5, 2.8, -4.8),
+            pos: new THREE.Vector3(2.5, 2.8, -4.8),
+            speakerPos: new THREE.Vector3(2.2, 4.4, -5.5),
+            radius: 16.5,
+            yaw: -0.38,
+            pitch: 0.34,
+            color: 0xEF4444
+          },
+          {
+            // Frente 3: Borde perimetral a 18m de altura y oficial fatigado
+            lookAt: new THREE.Vector3(4.8, 1.1, 4.0),
+            pos: new THREE.Vector3(4.8, 1.1, 4.0),
+            speakerPos: new THREE.Vector3(4.8, 2.2, 4.0),
+            radius: 14.0,
+            yaw: 1.12,
+            pitch: 0.44,
+            color: 0xFFB703
+          },
+          {
+            // Frente 4: Pasillo principal bloqueado por escombros y ayudante desafiante
+            lookAt: new THREE.Vector3(-3.8, 1.0, 4.2),
+            pos: new THREE.Vector3(-3.8, 1.0, 4.2),
+            speakerPos: new THREE.Vector3(-3.8, 2.1, 4.2),
+            radius: 13.5,
+            yaw: -2.35,
+            pitch: 0.46,
+            color: 0xF59E0B
+          }
         ],
+
+        getAdaptiveRadius: function (baseRadius) {
+          var w = this.container ? (this.container.clientWidth || window.innerWidth) : window.innerWidth;
+          var h = this.container ? (this.container.clientHeight || window.innerHeight) : window.innerHeight;
+          var aspect = w / h;
+          if (aspect < 0.55) return baseRadius * 1.30;
+          if (aspect < 0.75) return baseRadius * 1.15;
+          return baseRadius;
+        },
 
         init: function (containerEl) {
           this.container = containerEl;
@@ -1159,19 +1235,18 @@
         },
 
         updateCameraPosition: function () {
-          var w = this.container ? (this.container.clientWidth || window.innerWidth) : window.innerWidth;
-          var h = this.container ? (this.container.clientHeight || window.innerHeight) : window.innerHeight;
-          var aspect = w / h;
-
-          var radius = (aspect < 0.55) ? 34 : ((aspect < 0.75) ? 31 : 29);
-
-          var cy = radius * Math.sin(this.pitch);
-          var horiz = radius * Math.cos(this.pitch);
+          var r = this.getAdaptiveRadius(this.baseTargetRadius || 28.0);
+          var cy = r * Math.sin(this.pitch);
+          var horiz = r * Math.cos(this.pitch);
           var cx = horiz * Math.sin(this.yaw);
           var cz = horiz * Math.cos(this.yaw);
 
-          this.camera.position.set(cx, cy + 2.0, cz);
-          this.camera.lookAt(0, -0.7, 0);
+          this.camera.position.set(
+            this.currentLookAt.x + cx,
+            this.currentLookAt.y + cy,
+            this.currentLookAt.z + cz
+          );
+          this.camera.lookAt(this.currentLookAt);
         },
 
         setupLighting: function () {
@@ -1583,8 +1658,15 @@
 
         focusActiveFront: function (frontIndex) {
           var t = this.frontTargets[frontIndex - 1] || this.frontTargets[0];
+          if (t.lookAt) {
+            this.targetLookAt.copy(t.lookAt);
+          }
+          this.baseTargetRadius = t.radius || 15.0;
+          this.targetYaw = t.yaw;
+          this.targetPitch = (t.pitch !== undefined) ? t.pitch : 0.44;
+
           if (this.activeSpotlight) {
-            this.activeSpotlight.target.position.copy(t.pos);
+            this.activeSpotlight.target.position.copy(t.pos || t.lookAt);
             this.activeSpotlight.color.setHex(t.color);
             this.scene.add(this.activeSpotlight.target);
           }
@@ -1592,7 +1674,6 @@
             this.activeBeacon.position.set(t.speakerPos.x, t.speakerPos.y + 0.95, t.speakerPos.z);
             this.activeBeacon.visible = true;
           }
-          this.targetYaw = t.yaw;
         },
 
         buildActiveBeacon: function () {
@@ -1762,6 +1843,11 @@
         },
 
         resetSceneState: function () {
+          this.targetLookAt.set(0, -0.7, 0);
+          this.baseTargetRadius = 28.0;
+          this.targetYaw = -0.78;
+          this.targetPitch = 0.54;
+
           this.front1Resolved = false;
           this.front1Error = false;
           this.mixerDrumStopped = false;
@@ -1886,24 +1972,28 @@
           var now = performance.now();
           var time = now * 0.001;
 
-          // 1. Suavizado de rotación táctil de la cámara hacia el frente activo
-          this.yaw += (this.targetYaw - this.yaw) * 0.06;
-          this.pitch += (this.targetPitch - this.pitch) * 0.06;
+          // 1. Suavizado y vuelo cinematográfico de cámara hacia el escenario activo
+          this.currentLookAt.lerp(this.targetLookAt, 0.055);
+          this.yaw += (this.targetYaw - this.yaw) * 0.058;
+          this.pitch += (this.targetPitch - this.pitch) * 0.058;
 
-          var idleSway = (!this.isDragging) ? Math.sin(time * 0.8) * 0.004 : 0;
+          var targetR = this.getAdaptiveRadius(this.baseTargetRadius || 28.0);
+          this.currentRadius += (targetR - this.currentRadius) * 0.055;
+
+          var idleSway = (!this.isDragging) ? Math.sin(time * 0.8) * 0.003 : 0;
           var curPitch = this.pitch + idleSway;
 
-          var w = this.container ? (this.container.clientWidth || window.innerWidth) : window.innerWidth;
-          var h = this.container ? (this.container.clientHeight || window.innerHeight) : window.innerHeight;
-          var aspect = w / h;
-          var radius = (aspect < 0.55) ? 34 : ((aspect < 0.75) ? 31 : 29);
-
-          var cy = radius * Math.sin(curPitch);
-          var horiz = radius * Math.cos(curPitch);
+          var cy = this.currentRadius * Math.sin(curPitch);
+          var horiz = this.currentRadius * Math.cos(curPitch);
           var cx = horiz * Math.sin(this.yaw);
           var cz = horiz * Math.cos(this.yaw);
-          this.camera.position.set(cx, cy + 2.0, cz);
-          this.camera.lookAt(0, -0.7, 0);
+
+          this.camera.position.set(
+            this.currentLookAt.x + cx,
+            this.currentLookAt.y + cy,
+            this.currentLookAt.z + cz
+          );
+          this.camera.lookAt(this.currentLookAt);
 
           // 2. FRENTE 1: Trompo de concreto con vibración mecánica o parada controlada
           if (this.mixerDrumMesh && !this.mixerDrumStopped) {
@@ -2148,11 +2238,11 @@
             id: 1,
             frontIndex: 1,
             zone: 'FRENTE 1: VACIADO DE CONCRETO (PISO 5)',
-            speaker: 'RESIDENTE DE ESTRUCTURAS vs. MAESTRO GENERAL',
-            dialogue: '"¡Vacíen en la columna norte de una vez! / ¡De ninguna manera, la prioridad contractual es la placa sur!"',
-            promptText: '¿Cómo debe actuar el líder para resolver la contradicción de órdenes y cuidar a la cuadrilla?',
-            summaryText: 'Aclaraste el mando técnico unificando la directriz oficial con serenidad. Según la Resolución 2764 de 2022 (Salud Mental en el Trabajo), la ambigüedad y el conflicto de rol son fuentes primarias de sobrecarga cognitiva, reprocesos forzados y desmoralización en obra.',
-            wrongText: 'Comenzar a vaciar por afán o ceder al mando más agresivo genera vaciados en zonas erróneas, demoliciones forzadas y crisis de estrés agudo en la cuadrilla.',
+            speaker: 'DILEMA: ÓRDENES CONTRADICTORIAS EN VACIADO',
+            dialogue: '"El Residente te ordena vaciar ya en la columna norte, pero el Maestro exige la placa sur o se pierde el viaje. La cuadrilla te mira esperando tu decisión."',
+            promptText: '¿Qué harías tú como supervisor ante esta contradicción de órdenes?',
+            summaryText: 'Como supervisor unificaste el mando técnico con calma y rigor. Según la Resolución 2764 de 2022 (Salud Mental en el Trabajo), la ambigüedad y el conflicto de rol son disparadores críticos de sobrecarga cognitiva, reprocesos forzados y desmoralización en obra.',
+            wrongText: 'Ceder al afán o al mando más agresivo genera vaciados en zonas erróneas, demoliciones costosas y estrés agudo en la cuadrilla. Como supervisor, debes pausar y unificar.',
             choices: [
               {
                 letter: 'A',
@@ -2161,12 +2251,12 @@
               },
               {
                 letter: 'B',
-                title: 'Pausar el mixer 3 minutos, verificar bitácora técnica y unificar el mando',
+                title: 'Pausar el mixer 3 minutos, verificar bitácora técnica y unificar una sola directriz oficial',
                 correct: true
               },
               {
                 letter: 'C',
-                title: 'Dejar que el operador del mixer descargue donde mejor le parezca',
+                title: 'Desentenderte y dejar que el operador del mixer descargue donde mejor le parezca',
                 correct: false
               }
             ]
@@ -2175,25 +2265,25 @@
             id: 2,
             frontIndex: 2,
             zone: 'FRENTE 2: GRÚA TORRE Y FORMALETA EN ALTURA',
-            speaker: 'OPERADOR DE GRÚA (DESDE CABINA A 30 METROS)',
-            dialogue: '"¡Ráfagas de viento sacuden la pluma y la formaleta oscila... pero el capataz exige bajarla ya!"',
-            promptText: '¿Cuál es la respuesta inmediata ante la oscilación peligrosa de la carga suspendida?',
-            summaryText: 'Detuviste la maniobra de inmediato y evacuaste el radio de caída. En situaciones de riesgo inminente, el control de la carga mental exige ejercer la autoridad preventiva: la vida y la integridad física de la cuadrilla priman absolutamente sobre cualquier meta de tiempo.',
-            wrongText: 'Forzar un izaje con alerta mecánica y viento causa caídas catastróficas de carga. Ante el peligro inminente la única orden admisible es parar y proteger.',
+            speaker: 'DILEMA: ALERTA DE GRÚA BAJO TORMENTA',
+            dialogue: '"Ráfagas de 45 km/h sacuden la formaleta a 30m y suena la alarma de sobrecarga. Por radio, el capataz te presiona: \'¡Bájala ya o nos atrasamos!\'"',
+            promptText: '¿Qué harías tú como supervisor frente al riesgo inminente de caída de la carga?',
+            summaryText: 'Ejerciste tu autoridad preventiva deteniendo la maniobra y protegiendo vidas. El control de la carga mental en emergencias exige claridad absoluta: la integridad física de la cuadrilla prima siempre sobre cualquier meta de tiempo.',
+            wrongText: 'Forzar un izaje bajo ráfagas de viento y con alarma de cabina activa es causa directa de accidentes mortales por desprendimiento de carga. Tu deber como supervisor es parar y asegurar.',
             choices: [
               {
                 letter: 'A',
-                title: '¡Parar la maniobra ya mismo, evacuar el radio de 10m y asentar la carga!',
+                title: '¡Parar la maniobra ya mismo, evacuar el radio de 10m y asentar la formaleta en tierra!',
                 correct: true
               },
               {
                 letter: 'B',
-                title: 'Apresurar a los ayudantes para jalar manilas y forzar el anclaje',
+                title: 'Ordenar a los ayudantes jalar manilas con fuerza para obligar el anclaje contra el viento',
                 correct: false
               },
               {
                 letter: 'C',
-                title: 'Ignorar la alarma mecánica de cabina y continuar con el izaje',
+                title: 'Autorizar continuar el izaje confiando en que el viento bajará rápido',
                 correct: false
               }
             ]
@@ -2202,25 +2292,25 @@
             id: 3,
             frontIndex: 3,
             zone: 'FRENTE 3: BORDE PERIMETRAL Y PARALES AL CIERRE',
-            speaker: 'OFICIAL DE ESTRUCTURAS (FATIGA DE FIN DE TURNO - 5:00 PM)',
-            dialogue: '"¡Son las cinco en punto! Guardemos herramienta y salgamos ya... nadie se va a asomar al borde de noche."',
-            promptText: '¿Cómo responder ante la tentación de dejar el borde desprotegido para salir a tiempo?',
-            summaryText: 'Reorganizaste el plan y señalizaste preventivamente sin caer en el afán del cierre. Las estadísticas de ARL confirman que más del 60% de los accidentes graves ocurren en los últimos 30 minutos de turno por la combinación de fatiga cognitiva y prisa desordenada.',
-            wrongText: 'Dejar un borde desprotegido al salir o imponer horas extra no planificadas genera accidentes mortales o amotinamientos por sobreesfuerzo laboral.',
+            speaker: 'DILEMA: AFÁN AL CIERRE Y BORDE A 18M (5:00 PM)',
+            dialogue: '"Son las 5:00 PM, la cuadrilla recoge herramienta con afán para salir y deja el borde a 18m sin protección. El oficial te dice: \'Jefe, nadie se va a asomar de noche, vámonos ya.\'"',
+            promptText: '¿Qué harías tú como supervisor ante el afán de salir y el borde desprotegido?',
+            summaryText: 'Gestionaste el afán de salida con liderazgo y calma técnica. Más del 60% de los accidentes graves en obra ocurren en los últimos 30 minutos de la jornada debido al agotamiento cognitivo y la prisa. Asegurar el borde sin desbordar los ánimos salva vidas.',
+            wrongText: 'Permitir un borde desprotegido al cierre expone al turno nocturno a caídas fatales de altura, mientras que la agresión verbal destruye la confianza del equipo. El supervisor actúa con orden y serenidad.',
             choices: [
               {
                 letter: 'A',
-                title: 'Apagar las luces de la losa para que nadie se acerque al borde',
+                title: 'Dejar el borde abierto y apagar las luces para que nadie suba de noche',
                 correct: false
               },
               {
                 letter: 'B',
-                title: 'Obligar a la cuadrilla a quedarse dos horas extra sin previo aviso',
+                title: 'Imponer a gritos dos horas extra de castigo forzado a toda la cuadrilla',
                 correct: false
               },
               {
                 letter: 'C',
-                title: 'Reorganizar con calma: balizar a 2 metros con cinta reflectiva y registrar en bitácora',
+                title: 'Reorganizar con calma: balizar a 2 metros con cinta reflectiva y registrar el relevo en bitácora',
                 correct: true
               }
             ]
@@ -2229,25 +2319,25 @@
             id: 4,
             frontIndex: 4,
             zone: 'FRENTE 4: PASILLO CENTRAL Y ACOPIO DE ESCOMBROS',
-            speaker: 'AYUDANTE DE CUADRILLA (ENTREGA DE RELEVO DE TURNO)',
-            dialogue: '"El turno de la noche gana más por recargo... que ellos despejen el pasillo si quieren pasar."',
-            promptText: '¿Cuál es la decisión correcta para garantizar un relevo seguro y un clima de respeto?',
-            summaryText: 'Lideraste una jornada de 10 minutos de orden y aseo colectivo. Un entorno de trabajo limpio y despejado disminuye la fatiga visual, previene tropiezos en la oscuridad y fomenta el respeto mutuo entre turnos según el componente de relaciones sociales en el trabajo (Resolución 2764 de 2022).',
-            wrongText: 'Dejar escombros en vías de evacuación bloquea las salidas de emergencia, genera tropiezos en la oscuridad y desata rencores entre cuadrillas.',
+            speaker: 'DILEMA: VÍA DE ESCAPE TAPADA Y CONFLICTO DE RELEVO',
+            dialogue: '"El pasillo principal y vía de evacuación está taponado de escombros. El ayudante saliente se cruza de brazos y dice: \'La noche gana más con recargos... que limpien ellos si quieren pasar.\'"',
+            promptText: '¿Qué harías tú como supervisor para garantizar el paso seguro y el respeto mutuo?',
+            summaryText: 'Lideraste una jornada ágil de aseo colectivo promoviendo la empatía laboral. La Resolución 2764 de 2022 destaca las relaciones sociales en el trabajo como factor protector clave: un entorno limpio y solidario reduce la fatiga visual y previene accidentes de tropiezo.',
+            wrongText: 'Ignorar los escombros o arrojarlos a fosos bloquea salidas de emergencia y fomenta un clima laboral hostil y tóxico. Como supervisor, unes a los turnos a través del orden compartido.',
             choices: [
               {
                 letter: 'A',
-                title: 'Dejar los escombros tirados y radicar una queja contra el relevo',
+                title: 'Dejar los escombros tirados y radicar un informe disciplinario contra el relevo',
                 correct: false
               },
               {
                 letter: 'B',
-                title: 'Convocar 10 minutos de orden y aseo colectivo con respeto y liderazgo',
+                title: 'Convocar 10 minutos de orden y aseo colectivo explicando que una vía tapada es peligro mortal para todos',
                 correct: true
               },
               {
                 letter: 'C',
-                title: 'Patear los escombros hacia el foso del ascensor para desocupar rápido',
+                title: 'Patear los escombros hacia el foso del ascensor para desocupar rápido sin discutir',
                 correct: false
               }
             ]
@@ -2411,10 +2501,10 @@
             ScormAPI.setScore(this.score);
             if (buttonEl) buttonEl.classList.add('correct-state');
             var succFeedback = [
-              'Liderazgo unificado: la pausa de 3 min alineó el mando y la mezcla va a la columna verificada.',
-              'Decisión vital: formaleta asentada en bloques de apoyo y personal evacuado a 10 metros.',
-              'Cierre preventivo: balizamiento a 2 metros instalado y entrega registrada en bitácora.',
-              'Cultura de equipo: 10 min de aseo colectivo despejaron la vía con respeto mutuo.'
+              'Liderazgo unificado: pausaste el vaciado 3 min, revisaste planos y unificaste el mando técnico.',
+              'Decisión vital: parada inmediata de izaje, radio de 10m evacuado y formaleta asentada en tierra.',
+              'Cierre preventivo: balizamiento perimetral instalado a 2m y relevo registrado en bitácora.',
+              'Cultura de equipo: 10 min de aseo colectivo despejaron la vía con respeto y trabajo conjunto.'
             ];
             if (this.dom.situationFeedbackInline) {
               this.dom.situationFeedbackInline.textContent = succFeedback[this.currentRound - 1] || 'Decisión acertada.';
@@ -2425,10 +2515,10 @@
             SoundEngine.playAlert();
             if (buttonEl) buttonEl.classList.add('wrong-state');
             var wrongFeedback = [
-              'Conflicto de rol: fundir sin orden unificada causa vaciados erróneos y demolición forzada.',
-              'Peligro inminente: la formaleta osciló bruscamente y golpeó la estructura bajo el viento.',
-              'Riesgo de caída: dejar el borde desprotegido al salir viola las normas de seguridad.',
-              'Ambiente hostil: los escombros en el pasillo bloquean la salida de emergencia.'
+              'Conflicto de rol: vaciar sin orden técnica unificada causa demoliciones y estrés crítico en cuadrilla.',
+              'Peligro de muerte: continuar el izaje con ráfagas de viento desestabiliza la grúa y arriesga vidas.',
+              'Peligro de caída a 18m: dejar el borde desprotegido por afán de salida viola normas de seguridad.',
+              'Riesgo de emergencia: el pasillo tapado con escombros bloquea la evacuación y genera hostilidad.'
             ];
             if (this.dom.situationFeedbackInline) {
               this.dom.situationFeedbackInline.textContent = wrongFeedback[this.currentRound - 1] || 'Acción riesgosa.';
