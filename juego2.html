@@ -913,7 +913,7 @@
       <!-- Logo y Ronda -->
       <div class="brand-group">
         <div class="brand-badge-circle" aria-hidden="true">B</div>
-        <span class="round-tag" id="roundTag">RONDA 1 DE 4</span>
+        <span class="round-tag" id="roundTag">SITUACIÓN 1 DE 10</span>
       </div>
 
       <!-- Semáforo de Carga Mental -->
@@ -965,7 +965,7 @@
       <!-- Tarjeta compacta de situación y pregunta -->
       <div class="situation-card" id="situationCard">
         <div class="situation-header">
-          <span class="round-badge" id="stepChip">RONDA 1 DE 4</span>
+          <span class="round-badge" id="stepChip">SITUACIÓN 1 DE 10</span>
           <span class="speaker-label" id="bannerSpeakerText">FRENTE 1 • VACIADO DE CONCRETO</span>
         </div>
         <div class="situation-dialogue" id="bannerDialogueText">
@@ -991,11 +991,11 @@
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
             <polyline points="20 6 9 17 4 12"></polyline>
           </svg>
-          <span id="feedbackBadgeText">DECISIÓN ACERTADA (+25 PTS)</span>
+          <span id="feedbackBadgeText">DECISIÓN ACERTADA (+10 PTS)</span>
         </div>
         <p class="feedback-single-text" id="feedbackSingleText">Explicación concisa...</p>
         <button class="feedback-advance-btn" id="feedbackAdvanceBtn">
-          <span>AVANZAR A LA SIGUIENTE RONDA</span>
+          <span>SIGUIENTE SITUACIÓN</span>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <polyline points="9 18 15 12 9 6"></polyline>
           </svg>
@@ -1020,7 +1020,7 @@
 
         <h1 class="screen-title">El Arquitecto del Tiempo</h1>
         <p class="screen-desc">
-          Asumes el rol de <strong>Supervisor SST / Líder de Obra</strong> en la losa del Piso 5. Ante 4 dilemas operativos críticos, la cuadrilla te preguntará: <em>"¿Qué harías tú?"</em>
+          Asumes el rol de <strong>Supervisor SST / Líder de Obra</strong> en la losa del Piso 5. Ante 10 situaciones de coordinación y liderazgo, la cuadrilla te preguntará: <em>"¿Qué harías tú?"</em>
         </p>
 
         <!-- Briefing de la situación crítica -->
@@ -1108,7 +1108,7 @@
             </div>
             <div style="text-align:right;">
               <div style="font-size:10.5px; color:#CBD5E1; text-transform:uppercase; font-weight:700;">ESTADO SCORM</div>
-              <div style="font-size:12px; font-weight:700; margin-top:4px;" id="finalStatusVal">APROBADO (≥ 75%)</div>
+              <div style="font-size:12px; font-weight:700; margin-top:4px;" id="finalStatusVal">APROBADO (≥ 80%)</div>
             </div>
           </div>
           <div class="finale-meter-summary" id="finalMeterSummary">
@@ -1519,6 +1519,7 @@
           this.buildFront2Crane();
           this.buildFront3Rebar();
           this.buildFront4Corridor();
+          this.buildLeadershipScenes();
           this.buildRainSystem();
           this.buildAtmosphere();
           this.buildActiveBeacon();
@@ -2069,6 +2070,8 @@
           this.targetLookAt.set(0, 0.4, 0);
           this.baseTargetRadius = passed ? 25.0 : 28.0;
           this.targetPitch = passed ? 0.48 : 0.38;
+          if(this.leadershipActive){this.targetLookAt.set(0,.85,0);this.baseTargetRadius=8.0;}
+          if(this.activeBeacon)this.activeBeacon.visible=false;
 
           var flashEl = document.getElementById('cinematicFlash');
           if (flashEl) {
@@ -2121,6 +2124,11 @@
 
           if (isCorrect) {
             SoundEngine.playSuccess();
+          }
+
+          if (roundId >= 5) {
+            this.applyLeadershipDecision(roundId, isCorrect);
+            return;
           }
 
           if (roundId === 1) {
@@ -2357,7 +2365,140 @@
           }
         },
 
+        buildLeadershipScenes: function () {
+          this.leadershipScenes = {};
+          function box(parent, size, pos, color) {
+            var mesh = new THREE.Mesh(new THREE.BoxGeometry(size[0], size[1], size[2]), new THREE.MeshStandardMaterial({color:color, roughness:0.72}));
+            mesh.position.set(pos[0],pos[1],pos[2]);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh;
+          }
+          function label(parent, text, x, y, z, width) {
+            var canvas=document.createElement('canvas');canvas.width=512;canvas.height=128;
+            var ctx=canvas.getContext('2d');ctx.fillStyle='#023047';ctx.fillRect(0,0,512,128);ctx.fillStyle='#FFB703';ctx.font='bold 42px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(text,256,64,480);
+            var mesh=new THREE.Mesh(new THREE.PlaneGeometry(width,width/4),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(canvas),side:THREE.DoubleSide}));mesh.position.set(x,y,z);parent.add(mesh);return mesh;
+          }
+          var titles={5:'ORDEN DE TRABAJO',6:'PEDIDOS POR RADIO',7:'PAUSA Y RELEVO',8:'PRIMERA TAREA',9:'ENTREGA PENDIENTE',10:'BITÁCORA DE TURNO'};
+          for(var id=5;id<=10;id++){
+            var group=new THREE.Group();group.visible=false;this.scene.add(group);
+            var s={group:group,id:id,cards:[],pieces:[],decision:null};this.leadershipScenes[id]=s;
+            box(group,[5.4,.04,3.8],[0,.025,0],0x334155);
+            box(group,[5.4,.035,.06],[0,.06,1.85],0xFFB703);
+            s.worker=this.createWorkerMesh(-1.7,.15,.35,0xFFB703,0xFFFFFF,'training_'+id);group.add(s.worker);s.worker.userData.trainingId=id;
+            s.partner=this.createWorkerMesh(1.7,.15,-.35,0x0284C7,0xFFB703,'training_'+id);group.add(s.partner);s.partner.userData.trainingId=id;
+            s.board=new THREE.Group();group.add(s.board);
+            box(s.board,[2.6,1.2,.09],[0,1.25,-.65],0x475569);
+            for(var side=-1;side<=1;side+=2)box(s.board,[.07,1,.07],[side*1.1,.5,-.65],0x1E293B);
+            label(s.board,titles[id],0,2.02,-.59,2.35);
+            var words=id===5?['PRIMERO','DESPUÉS','PENDIENTE']:id===6?['AVISO 1','AVISO 2','AVISO 3']:id===9?['DISPONIBLE','ESPERA','REPROGRAMAR']:['TERMINADO','PENDIENTE','RESPONSABLE'];
+            for(var i=0;i<3;i++){
+              var card=new THREE.Group();s.board.add(card);card.position.set((i-1)*.78,1.25,-.57);
+              box(card,[.7,.7,.035],[0,0,0],0xF8FAFC);label(card,words[i],0,.19,.025,.66);
+              var mark=box(card,[.48,.055,.025],[0,-.08,.03],0xF59E0B);
+              box(card,[.48,.025,.025],[0,-.21,.03],0x64748B);s.cards.push({group:card,mark:mark});
+            }
+            if(id===6){
+              s.radio=new THREE.Group();group.add(s.radio);s.radio.position.set(-.75,.82,.7);
+              box(group,[1.8,.08,.65],[0,.75,.7],0xB87530);
+              [-.7,.7].forEach(function(x){box(group,[.08,.75,.4],[x,.38,.7],0x1E293B);});
+              box(s.radio,[.28,.45,.16],[0,.22,0],0x1E293B);box(s.radio,[.035,.28,.035],[-.08,.55,0],0x334155);
+              s.radioLight=box(s.radio,[.08,.05,.015],[.06,.34,.09],0xEF4444);
+              s.sheet=box(group,[.65,.035,.4],[.45,.81,.7],0xF8FAFC);
+            }
+            if(id===7||id===8){
+              s.board.visible=false;
+              s.worker.position.x=-.85;s.worker.userData.baseX=-.85;
+              box(group,[1.8,.09,.8],[.4,.75,.15],0xB87530);
+              [-.3,1.1].forEach(function(x){box(group,[.09,.72,.55],[x,.36,.15],0x1E293B);});
+              label(group,titles[id],.4,.55,.57,1.5);
+              for(var j=0;j<3;j++)s.pieces.push(box(group,[.3,.18,.3],[-.15+j*.5,.89,.15],[0x0284C7,0xFFB703,0x16A34A][j]));
+              if(id===7){
+                box(group,[1,.12,.6],[-1.7,.45,-.75],0x0284C7);
+                box(group,[1,.55,.08],[-1.7,.75,-1.02],0x075985);
+                [-2.05,-1.35].forEach(function(x){box(group,[.08,.42,.45],[x,.21,-.75],0x1E293B);});
+                s.cup=box(group,[.13,.2,.13],[-1.25,.61,-.7],0xF8FAFC);
+              }else{
+                for(var slot=0;slot<3;slot++)box(group,[.38,.018,.38],[-.15+slot*.5,.81,.15],[0x075985,0xB45309,0x166534][slot]);
+              }
+            }
+            if(id===9){
+              s.cart=new THREE.Group();group.add(s.cart);s.cart.position.set(0,.12,.85);
+              box(s.cart,[1.5,.1,.65],[0,.15,0],0x0284C7);
+              for(var wheel=0;wheel<4;wheel++){
+                var tire=new THREE.Mesh(new THREE.CylinderGeometry(.12,.12,.07,12),new THREE.MeshStandardMaterial({color:0x111827}));tire.rotation.x=Math.PI/2;tire.position.set(wheel<2?-.55:.55,0,wheel%2?-.33:.33);s.cart.add(tire);
+              }
+              label(s.cart,'MATERIAL SIN LLEGAR',0,.25,.36,1.45);
+            }
+            if(id===10){
+              s.logbook=new THREE.Group();group.add(s.logbook);s.logbook.position.set(-1,.9,.55);
+              box(s.logbook,[.6,.06,.48],[0,0,0],0x0284C7);box(s.logbook,[.53,.018,.41],[0,.04,0],0xF8FAFC);
+              s.logLines=new THREE.Group();s.logbook.add(s.logLines);
+              for(var line=0;line<4;line++)box(s.logLines,[.38,.01,.018],[0,.054,-.12+line*.08],0x1E293B);
+            }
+            this.frontTargets.push({lookAt:new THREE.Vector3(0,.85,0),pos:new THREE.Vector3(0,.85,0),speakerPos:new THREE.Vector3(-1.7,1.5,.15),radius:6.8,yaw:-.22,pitch:.42,color:0x38BDF8});
+          }
+        },
+
+        prepareSituation: function (id) {
+          this.leadershipActive = id >= 5 ? id : null;
+          var original = id < 5;
+          [this.front1Concrete,this.front2Crane,this.front3Rebar,this.front4Corridor].forEach(function(g){if(g)g.visible=original;});
+          this.workersList.forEach(function(w){if(w.userData.role.indexOf('training_')!==0)w.visible=original;});
+          var scenes=this.leadershipScenes||{};
+          Object.keys(scenes).forEach(function(key){scenes[key].group.visible=Number(key)===id;});
+          var s=scenes[id];
+          if(s){
+            s.decision=null;
+            s.cards.forEach(function(c,i){c.group.position.set((i-1)*.25,1.2+i*.07,-.5+i*.05);c.group.rotation.z=(i-1)*.22;c.mark.material.color.setHex(0xF59E0B);});
+            s.pieces.forEach(function(p,i){p.position.set(-.15+i*.5,.89,.15);p.rotation.set(0,0,0);});
+            if(s.logbook){s.logbook.position.set(-1,.9,.55);s.logLines.visible=false;}
+          }
+        },
+
+        applyLeadershipDecision: function (id, correct) {
+          var s=this.leadershipScenes[id];if(!s)return;
+          s.decision=correct;s.decisionTime=performance.now();
+          s.cards.forEach(function(c){c.mark.material.color.setHex(correct?0x10B981:0xEF4444);});
+          if(s.logLines)s.logLines.visible=correct;
+          if(!correct)this.cameraShake=.08;
+        },
+
+        animateLeadershipScenes: function (time) {
+          var s=this.leadershipScenes&&this.leadershipScenes[this.leadershipActive];if(!s||this.finaleMode)return;
+          var decided=s.decision!==null,good=s.decision===true,elapsed=decided?(performance.now()-s.decisionTime)*.001:0;
+          s.cards.forEach(function(c,i){
+            var x=good?(i-1)*.78:(i-1)*.25+Math.sin(time*2+i)*.07;
+            c.group.position.lerp(new THREE.Vector3(x,good?1.25:1.2+i*.07,good?-.57:-.5+i*.05),.06);
+            c.group.rotation.z+=( (good?0:(i-1)*.22)-c.group.rotation.z)*.06;
+          });
+          if(s.radio){s.radio.rotation.z=decided?(good?0:Math.sin(time*15)*.04):Math.sin(time*15)*.04;s.radioLight.material.color.setHex(good?0x10B981:Math.sin(time*6)>0?0xEF4444:0x450A0A);}
+          if(s.id===7)s.pieces.forEach(function(p,i){p.position.y=good?.89:.89+Math.abs(Math.sin(time*3+i))*.08;p.rotation.y=good?0:Math.sin(time*2+i)*.25;});
+          if(s.id===8)s.pieces.forEach(function(p,i){var slot=good?i:[2,0,1][i];p.position.lerp(new THREE.Vector3(-.15+slot*.5,.89+(decided&&!good?Math.abs(Math.sin(time*2+i))*.12:0),.15),.05);p.rotation.y=good?0:Math.sin(time*1.5+i)*.3;});
+          if(s.logbook)s.logbook.position.lerp(new THREE.Vector3(good?1.35:-1,.9+(good&&elapsed<2?Math.sin(elapsed*Math.PI/2)*.2:0),.55),.045);
+        },
+
+        animateLeadershipWorker: function (worker,time) {
+          var u=worker.userData,s=this.leadershipScenes[u.trainingId];if(!s||!s.group.visible)return;
+          var good=s.decision===true,main=worker===s.worker;
+          worker.position.y=u.baseY+Math.sin(time*2)*.01;
+          worker.rotation.set(0,u.baseRotY,0);
+          u.head.rotation.set(good?.08:.3,Math.sin(time*(good?1:3))*(good?.08:.25),0);
+          u.torso.rotation.x=good?0:.09;
+          u.rArm.rotation.x=good?-.5+Math.sin(time*2)*.08:-.9+Math.sin(time*5)*.22;
+          u.lArm.rotation.x=good?-.2:-.7+Math.cos(time*4)*.18;
+          if(s.id===7&&main){
+            worker.position.x+=( (good?-1.7:u.baseX)-worker.position.x)*.05;
+            worker.position.z+=( (good?-.25:u.baseZ)-worker.position.z)*.05;
+            worker.position.y=u.baseY;
+            u.head.rotation.x=good?.1:.48;
+            u.torso.rotation.x=good?.06:.22;
+            u.rArm.rotation.x=good?-.2:-.8+Math.sin(time*3)*.1;
+            u.lArm.rotation.x=good?-.2:-.6;
+          }
+          if(s.id===8&&good){u.rArm.rotation.x=main?-.45:-.85+Math.sin(time*2)*.12;u.head.rotation.y=main?.3:-.3;}
+          if(s.id===10&&good){u.rArm.rotation.x=-.8;u.head.rotation.x=.18;}
+        },
+
         resetSceneState: function () {
+          this.prepareSituation(1);
           this.targetLookAt.set(0, -0.7, 0);
           this.baseTargetRadius = 28.0;
           this.targetYaw = -0.78;
@@ -2652,6 +2793,8 @@
             });
           }
 
+          this.animateLeadershipScenes(time);
+
           // 6. GESTICULACIÓN Y MOVIMIENTOS SIGNIFICATIVOS DE TRABAJADORES (CON SENTIDO PSICOLÓGICO Y FÍSICO)
           var selfEngine = this;
           if (this.workersList) {
@@ -2694,6 +2837,8 @@
                   return;
                 }
               }
+
+              if(u.role.indexOf('training_')===0){selfEngine.animateLeadershipWorker(w,time);return;}
 
               // Respiración base solo si no está en estado de colapso o caída
               var isWorkerDown = (!selfEngine.finaleMode) && (
@@ -2843,7 +2988,8 @@
 
           // 7. Animación del haz de luz y foco 3D en el frente activo
           if (this.activeBeacon && this.activeBeacon.visible && GameApp.currentRound) {
-            var bTarget = this.frontTargets[GameApp.currentRound - 1];
+            var activeData = GameApp.roundsData[GameApp.currentRound - 1];
+            var bTarget = activeData && this.frontTargets[activeData.frontIndex - 1];
             if (bTarget && bTarget.speakerPos) {
               this.activeBeacon.position.y = bTarget.speakerPos.y + 0.95 + Math.sin(time * 3.8) * 0.12;
               this.activeBeacon.rotation.y += 0.025;
@@ -2878,7 +3024,7 @@
       };
 
       /* ------------------------------------------------------------------
-         4. CONTROLADOR NARRATIVO: LAS 4 RONDAS CONCRETAS DE DECISIÓN
+         4. CONTROLADOR NARRATIVO: LAS 10 SITUACIONES DE DECISIÓN
          ------------------------------------------------------------------ */
       var RoundBriefs = [
         { situation: 'Residente y maestro dan órdenes distintas. El mixer espera.', choices: ['Seguir al maestro para evitar el conflicto.', 'Pausar, revisar planos y unificar la orden.', 'Dejar que el operador elija dónde descargar.'] },
@@ -2892,6 +3038,7 @@
         score: 0,
         mentalLoad: 30, // Semáforo de carga mental: 0-100
         roundActive: false,
+        answers: [],
         dom: {},
 
         roundsData: [
@@ -3006,7 +3153,181 @@
                 correct: false
               }
             ]
-          }
+          },
+{
+  "id": 5,
+  "speaker": "PLANIFICACIÓN • PRIORIDADES",
+  "situation": "Dos frentes piden apoyo y el residente quiere terminar ambos antes del descanso.",
+  "promptText": "El equipo no alcanza para todo al mismo tiempo. ¿Qué haces?",
+  "summaryText": "El tablero queda ordenado y la cuadrilla se concentra en una tarea a la vez. Acordar prioridades, responsables y tiempos evita cambiar de actividad sin terminar y permite avisar qué quedará pendiente.",
+  "wrongText": "Las tareas se cruzan en el tablero y el equipo va de un pedido a otro. Prometer todo sin revisar la capacidad aumenta las interrupciones y deja trabajos incompletos.",
+  "choices": [
+    {
+      "title": "Acepto terminar ambos frentes en el mismo plazo y voy moviendo a la cuadrilla según quién insista más.",
+      "correct": false,
+      "wrongText": "Cambiar de frente con cada llamado deja tareas a medias. El equipo pierde claridad y aumenta la presión por cumplir dos promesas incompatibles.",
+      "letter": "A"
+    },
+    {
+      "title": "Reviso qué es prioritario, acuerdo un orden con el residente y asigno responsables. Informo qué puede hacerse hoy y qué debe reprogramarse.",
+      "correct": true,
+      "letter": "B"
+    },
+    {
+      "title": "Reparto el personal entre ambos frentes sin revisar las necesidades. Espero que cada grupo resuelva cómo cumplir.",
+      "correct": false,
+      "wrongText": "Dividir al personal sin revisar recursos ni responsabilidades deja a ambos grupos tratando de resolver faltantes mientras corre el plazo.",
+      "letter": "C"
+    }
+  ],
+  "frontIndex": 5,
+  "zone": "PLANIFICACIÓN • PRIORIDADES"
+},
+{
+  "id": 6,
+  "speaker": "COORDINACIÓN • INTERRUPCIONES",
+  "situation": "Estás revisando una entrega. Por radio llegan tres pedidos distintos y todos se presentan como urgentes.",
+  "promptText": "¿Cómo atiendes los pedidos sin perder lo que estabas revisando?",
+  "summaryText": "Los avisos dejan de superponerse y las solicitudes quedan en una fila. Comprobaste si había un peligro inmediato, registraste los otros pedidos y confirmaste a cada persona cuándo serían atendidos.",
+  "wrongText": "Los avisos se amontonan y la revisión queda incompleta. Cambiar de tarea con cada llamado, o ignorar todo, impide distinguir lo urgente de lo que puede esperar.",
+  "choices": [
+    {
+      "title": "Pregunto si hay un peligro inmediato. Registro los demás pedidos, confirmo su prioridad y acuerdo cuándo responder mientras cierro la revisión.",
+      "correct": true,
+      "letter": "A"
+    },
+    {
+      "title": "Respondo cada llamado al instante y trato de continuar la revisión al mismo tiempo, confiando en recordar dónde iba.",
+      "correct": false,
+      "wrongText": "Los pedidos se mezclan con la revisión. Al depender de la memoria, dejas un dato sin comprobar y debes volver sobre el trabajo.",
+      "letter": "B"
+    },
+    {
+      "title": "Apago el radio hasta terminar sin avisar. Después averiguaré qué necesitaban y si algo era urgente.",
+      "correct": false,
+      "wrongText": "El radio queda sin respuesta y los pedidos siguen pendientes. Sin avisar ni comprobar su urgencia, el equipo no sabe cómo coordinarse contigo.",
+      "letter": "C"
+    }
+  ],
+  "frontIndex": 6,
+  "zone": "COORDINACIÓN • INTERRUPCIONES"
+},
+{
+  "id": 7,
+  "speaker": "CUADRILLA • FATIGA",
+  "situation": "Un compañero repite errores y dice: «Me cuesta concentrarme, pero puedo seguir para terminar».",
+  "promptText": "¿Qué haces al notar que la fatiga ya afecta su trabajo?",
+  "summaryText": "La tarea se detiene y el compañero se aparta para descansar. Revisas su estado con él y coordinas una pausa o relevo antes de continuar; el plazo se ajusta a la capacidad real del equipo.",
+  "wrongText": "El compañero sigue inclinado sobre el trabajo y las piezas vuelven a desordenarse. Mantener la misma exigencia cuando ya aparecen errores aumenta el reproceso y la sobrecarga.",
+  "choices": [
+    {
+      "title": "Le pido un último esfuerzo porque falta poco. Prometo que podrá descansar cuando termine todo lo pendiente.",
+      "correct": false,
+      "wrongText": "El compañero continúa fatigado y repite el error. Posponer la pausa hasta terminar todo mantiene la misma condición que está dificultando el trabajo.",
+      "letter": "A"
+    },
+    {
+      "title": "Lo cambio a otra tarea que también exige atención y mantengo el plazo, sin hablar de cómo se siente.",
+      "correct": false,
+      "wrongText": "Cambiaste la actividad, pero no atendiste la fatiga. La dificultad para concentrarse continúa en la nueva tarea.",
+      "letter": "B"
+    },
+    {
+      "title": "Detengo su tarea, hablo con él y coordino una pausa o un relevo. Ajusto el trabajo pendiente antes de pedirle que continúe.",
+      "correct": true,
+      "letter": "C"
+    }
+  ],
+  "frontIndex": 7,
+  "zone": "CUADRILLA • FATIGA"
+},
+{
+  "id": 8,
+  "speaker": "EQUIPO • COMPAÑERO NUEVO",
+  "situation": "Llega un compañero nuevo. Le dicen: «Mira a los demás y arranca; hoy no hay tiempo para explicar».",
+  "promptText": "¿Cómo lo integras sin dejarlo adivinando lo que debe hacer?",
+  "summaryText": "El compañero observa una demostración y ordena las piezas con acompañamiento. Explicar la tarea, confirmar lo entendido y dejar un referente reduce las dudas y permite corregir antes de repetir un error.",
+  "wrongText": "Las piezas quedan en un orden equivocado y el compañero duda frente al puesto. Dar por entendido el trabajo tras una indicación rápida traslada la incertidumbre a quien acaba de llegar.",
+  "choices": [
+    {
+      "title": "Le digo que copie al compañero más rápido. Si surge una duda importante, él sabrá cuándo preguntar.",
+      "correct": false,
+      "wrongText": "Observar sin conocer el objetivo ni tener un referente deja dudas sin resolver. El compañero empieza copiando una secuencia que no comprende.",
+      "letter": "A"
+    },
+    {
+      "title": "Explico qué debe hacer y con quién trabajará. Le pido que lo repita con sus palabras y acompaño el primer intento.",
+      "correct": true,
+      "letter": "B"
+    },
+    {
+      "title": "Le doy todas las instrucciones de una sola vez y me voy a otro frente, para no retrasar al resto.",
+      "correct": false,
+      "wrongText": "La información llega junta y sin comprobar lo entendido. Al empezar solo, el compañero mezcla los pasos y necesita rehacer la tarea.",
+      "letter": "C"
+    }
+  ],
+  "frontIndex": 8,
+  "zone": "EQUIPO • COMPAÑERO NUEVO"
+},
+{
+  "id": 9,
+  "speaker": "PROGRAMACIÓN • MATERIAL RETRASADO",
+  "situation": "El material no llegó. Te piden mantener la entrega de hoy aunque una parte del trabajo depende de ese suministro.",
+  "promptText": "¿Qué propones mientras confirman la llegada del material?",
+  "summaryText": "El espacio de material sigue vacío, pero el tablero separa lo pendiente de lo que sí puede avanzar. Comunicas el retraso, reorganizas tareas viables y acuerdas un plazo revisable sin prometer lo que no controlas.",
+  "wrongText": "El espacio sigue vacío y el tablero conserva tareas que no pueden empezar. Ocultar el faltante o improvisar para sostener el plazo añade presión sin resolver la dependencia.",
+  "choices": [
+    {
+      "title": "Confirmo el retraso, informo qué tareas afecta y acuerdo cuáles pueden avanzar con lo disponible. Actualizo el plazo con el responsable.",
+      "correct": true,
+      "letter": "A"
+    },
+    {
+      "title": "Mantengo la promesa de entrega y no aviso todavía. Confío en que el material llegue a tiempo para recuperar el retraso.",
+      "correct": false,
+      "wrongText": "El equipo espera junto al espacio vacío y el plazo no cambia. Avisar tarde reduce el margen para reorganizar el trabajo con los demás.",
+      "letter": "B"
+    },
+    {
+      "title": "Pido avanzar con otro material disponible sin consultar su uso, para mostrar progreso mientras llega el pedido.",
+      "correct": false,
+      "wrongText": "El pedido sigue sin llegar y empiezas un trabajo sin confirmar su viabilidad. Mostrar avance no resuelve la dependencia y puede generar reproceso.",
+      "letter": "C"
+    }
+  ],
+  "frontIndex": 9,
+  "zone": "PROGRAMACIÓN • MATERIAL RETRASADO"
+},
+{
+  "id": 10,
+  "speaker": "CIERRE • ENTREGA DE TURNO",
+  "situation": "Llega el relevo. Hay tareas terminadas, una pendiente y un cambio que todavía no quedó registrado.",
+  "promptText": "¿Cómo entregas el turno para que el siguiente equipo pueda continuar?",
+  "summaryText": "La bitácora pasa al relevo con las tareas ordenadas. Registras qué terminó, qué sigue pendiente y qué cambió; confirmas quién recibe cada asunto y das espacio para preguntas.",
+  "wrongText": "La bitácora queda sin completar y el relevo recibe tareas sueltas. Sin revisar pendientes y responsables, el nuevo turno tiene que reconstruir la información y puede repetir trabajo.",
+  "choices": [
+    {
+      "title": "Digo que todo está casi listo y me retiro. El relevo podrá descubrir los detalles al recorrer el frente.",
+      "correct": false,
+      "wrongText": "El relevo recibe una idea incompleta del avance. Tiene que descubrir los pendientes y el cambio que no registraste antes de organizarse.",
+      "letter": "A"
+    },
+    {
+      "title": "Dejo una nota general y envío los detalles en distintos mensajes, sin confirmar quién recibió la información.",
+      "correct": false,
+      "wrongText": "La información queda repartida y no hay un responsable confirmado. Un mensaje enviado no asegura que el siguiente turno haya entendido el pendiente.",
+      "letter": "B"
+    },
+    {
+      "title": "Revisamos juntos avances, pendientes y cambios. Los dejo registrados, confirmamos responsables y respondo preguntas antes de retirarme.",
+      "correct": true,
+      "letter": "C"
+    }
+  ],
+  "frontIndex": 10,
+  "zone": "CIERRE • ENTREGA DE TURNO"
+}
         ],
 
         init: function () {
@@ -3079,8 +3400,10 @@
           });
 
           this.dom.feedbackAdvanceBtn.addEventListener('click', function () {
+            if (self.dom.feedbackAdvanceBtn.disabled) return;
+            self.dom.feedbackAdvanceBtn.disabled = true;
             self.dom.feedbackModal.classList.remove('active');
-            if (self.currentRound < 4) {
+            if (self.currentRound < self.roundsData.length) {
               self.loadRound(self.currentRound + 1);
             } else {
               self.showFinalScreen();
@@ -3101,7 +3424,10 @@
           });
 
           this.dom.retryGameBtn.addEventListener('click', function () {
+            self.answers = [];
             self.score = 0;
+            ScormAPI.setScore(0);
+            ScormAPI.setStatus('incomplete');
             self.mentalLoad = 30;
             self.updateMentalMeter();
             if (self.dom.situationFeedbackInline) {
@@ -3123,6 +3449,7 @@
         },
 
         loadRound: function (roundNum) {
+          this.dom.feedbackAdvanceBtn.disabled = true;
           this.currentRound = roundNum;
           this.roundActive = true;
           var data = this.roundsData[roundNum - 1];
@@ -3134,15 +3461,16 @@
             this.dom.situationFeedbackInline.style.display = 'none';
           }
 
-          if (this.dom.roundTag) this.dom.roundTag.textContent = 'RONDA ' + roundNum + ' DE 4';
-          if (this.dom.stepChip) this.dom.stepChip.textContent = 'RONDA ' + roundNum + ' DE 4';
+          if (this.dom.roundTag) this.dom.roundTag.textContent = 'SITUACIÓN ' + roundNum + ' DE ' + this.roundsData.length;
+          if (this.dom.stepChip) this.dom.stepChip.textContent = 'SITUACIÓN ' + roundNum + ' DE ' + this.roundsData.length;
           if (this.dom.questionText) this.dom.questionText.textContent = data.promptText;
 
           // Actualizar diálogo integrado en la consola (sin tapar el 3D)
           if (this.dom.bannerSpeakerText) this.dom.bannerSpeakerText.textContent = data.speaker;
-          if (this.dom.bannerDialogueText) this.dom.bannerDialogueText.textContent = RoundBriefs[roundNum - 1].situation;
+          if (this.dom.bannerDialogueText) this.dom.bannerDialogueText.textContent = data.situation || RoundBriefs[roundNum - 1].situation;
 
           // Enfocar cámara y spotlight en el frente de obra correspondiente
+          Isometric3DEngine.prepareSituation(data.id);
           Isometric3DEngine.focusActiveFront(data.frontIndex);
 
           // Renderizar las 3 opciones de decisión
@@ -3164,7 +3492,7 @@
             btn.setAttribute('tabindex', '0');
             btn.innerHTML = [
               '<div class="choice-letter-badge">' + c.letter + '</div>',
-              '<span class="choice-text-label">' + RoundBriefs[data.id - 1].choices[idx] + '</span>'
+              '<span class="choice-text-label">' + c.title + '</span>'
             ].join('');
 
             btn.addEventListener('click', function () {
@@ -3189,10 +3517,11 @@
           });
 
           var isCorrect = choice.correct;
+          this.answers.push({id:data.id,choice:choice,correct:isCorrect});
 
           if (isCorrect) {
-            this.score += 25;
-            this.mentalLoad = Math.max(15, this.mentalLoad - 15);
+            this.score = Math.round(100 * this.answers.filter(function (answer) { return answer.correct; }).length / this.roundsData.length);
+            this.mentalLoad = Math.max(15, this.mentalLoad - 6);
             SoundEngine.playSuccess();
             ScormAPI.setScore(this.score);
             if (buttonEl) buttonEl.classList.add('correct-state');
@@ -3201,7 +3530,7 @@
               this.dom.situationFeedbackInline.className = 'situation-feedback-inline active success';
             }
           } else {
-            this.mentalLoad = Math.min(100, this.mentalLoad + 25);
+            this.mentalLoad = Math.min(100, this.mentalLoad + 12);
             SoundEngine.playAlert();
             if (buttonEl) buttonEl.classList.add('wrong-state');
             if (this.dom.situationFeedbackInline) {
@@ -3246,16 +3575,18 @@
           }
           this.dom.feedbackDrawer.className = 'feedback-drawer' + (isCorrect ? '' : ' error');
           this.dom.feedbackBadge.className = 'feedback-badge' + (isCorrect ? '' : ' error');
-          this.dom.feedbackBadgeText.textContent = isCorrect ? 'DECISIÓN ACERTADA (+25 PTS)' : 'DECISIÓN INADECUADA (0 PTS)';
+          this.dom.feedbackBadgeText.textContent = isCorrect ? 'DECISIÓN ACERTADA (+10 PTS)' : 'DECISIÓN INADECUADA (0 PTS)';
           this.dom.feedbackSingleText.textContent = messageText;
 
-          var isLast = (this.currentRound >= 4);
-          this.dom.feedbackAdvanceBtn.querySelector('span').textContent = isLast ? 'VER CERTIFICACIÓN Y BALANCE' : 'AVANZAR A LA SIGUIENTE RONDA';
+          var isLast = (this.currentRound >= this.roundsData.length);
+          this.dom.feedbackAdvanceBtn.querySelector('span').textContent = isLast ? 'VER CERTIFICACIÓN Y BALANCE' : 'SIGUIENTE SITUACIÓN';
+          this.dom.feedbackAdvanceBtn.disabled = false;
           this.dom.feedbackModal.classList.add('active');
         },
 
         showFinalScreen: function () {
-          var passed = (this.score >= 75);
+          if (this.answers.length !== this.roundsData.length) return;
+          var passed = (this.score >= 80);
           ScormAPI.setScore(this.score);
           ScormAPI.setStatus(passed ? 'passed' : 'failed');
 
@@ -3266,69 +3597,50 @@
           this.dom.finalMentalText.textContent = (this.mentalLoad <= 35 ? 'ENFOCADO' : (this.mentalLoad <= 70 ? 'ALERTA' : 'SOBRECARGA')) + ' (' + this.mentalLoad + '%)';
 
           if (passed) {
-            this.dom.finalHeaderTag.textContent = 'SUPERVISOR DESTACADO • CERO ACCIDENTES';
+            this.dom.finalHeaderTag.textContent = 'RECORRIDO COMPLETO • LIDERAZGO PREVENTIVO';
             this.dom.finalBadgeIcon.className = 'screen-badge-icon success';
             this.dom.finalBadgeIcon.style.borderColor = '#10B981';
             this.dom.finalBadgeIcon.style.color = '#10B981';
             this.dom.finalBadgeIcon.innerHTML = '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>';
-            this.dom.finalTitle.textContent = '¡Supervisión Ejemplar: Mando Sereno y Cero Accidentes!';
-            this.dom.finalDesc.textContent = 'Demostraste maestría para priorizar la vida, resolver órdenes cruzadas con serenidad técnica y proteger la salud mental de tu cuadrilla bajo la Res. 2764 de 2022.';
-            this.dom.finalStatusVal.textContent = 'APROBADO (≥ 75%)';
+            this.dom.finalTitle.textContent = 'Completaste las 10 situaciones.';
+            this.dom.finalDesc.textContent = 'Acertaste en '+this.answers.filter(function (answer) { return answer.correct; }).length+' de '+this.roundsData.length+' situaciones. Revisa tus decisiones para reconocer lo que funcionó y lo que puedes mejorar.';
+            this.dom.finalStatusVal.textContent = 'APROBADO (≥ 80%)';
             this.dom.finalStatusVal.style.color = '#4ADE80';
             this.dom.finishScormBtn.style.display = 'flex';
             this.dom.retryGameBtn.style.display = 'none';
 
-            this.dom.finalDiagnosisGrid.innerHTML = [
-              '<div class="diag-card success">',
-              '  <div class="diag-header"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><strong>Mando Técnico Unificado:</strong></div>',
-              '  <p>Pausaste el vaciado ante instrucciones cruzadas, evitando conflicto de rol y daños estructurales.</p>',
-              '</div>',
-              '<div class="diag-card success">',
-              '  <div class="diag-header"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><strong>Autoridad Preventiva Inmediata:</strong></div>',
-              '  <p>Frenaste la maniobra de grúa ante ráfagas de viento crítico; la vida prevaleció sobre el afán.</p>',
-              '</div>',
-              '<div class="diag-card success">',
-              '  <div class="diag-header"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><strong>Control de Fatiga de Cierre (5:00 PM):</strong></div>',
-              '  <p>Balizaste el borde a 18m con postes rígidos y bitácora ordenada sin ceder al afán de salida.</p>',
-              '</div>',
-              '<div class="diag-card success">',
-              '  <div class="diag-header"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><strong>Cultura de Respeto y Rutas Libres:</strong></div>',
-              '  <p>Lideraste aseo colectivo despejando la vía de evacuación y asegurando un relevo digno.</p>',
-              '</div>'
-            ].join('');
+  
           } else {
-            this.dom.finalHeaderTag.textContent = 'ALERTA PSICOSOCIAL • SINIESTRALIDAD EN CAMPO';
+            this.dom.finalHeaderTag.textContent = 'RECORRIDO COMPLETO • OPORTUNIDADES DE MEJORA';
             this.dom.finalBadgeIcon.className = 'screen-badge-icon';
             this.dom.finalBadgeIcon.style.borderColor = '#EF4444';
             this.dom.finalBadgeIcon.style.color = '#EF4444';
             this.dom.finalBadgeIcon.innerHTML = '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>';
-            this.dom.finalTitle.textContent = 'Sobrecarga Operativa y Falla en Toma de Decisiones';
-            this.dom.finalDesc.textContent = 'El afán de entrega, la ambigüedad en las órdenes y la fatiga derivaron en accidentes críticos y agotamiento psicológico en la obra.';
-            this.dom.finalStatusVal.textContent = 'NO APROBADO (< 75%)';
+            this.dom.finalTitle.textContent = 'Tu coordinación puede mejorar.';
+            this.dom.finalDesc.textContent = 'Acertaste en '+this.answers.filter(function (answer) { return answer.correct; }).length+' de '+this.roundsData.length+' situaciones. Revisa las consecuencias y vuelve a intentarlo con prioridades claras y una mejor coordinación.';
+            this.dom.finalStatusVal.textContent = 'NO APROBADO (< 80%)';
             this.dom.finalStatusVal.style.color = '#F87171';
             this.dom.finishScormBtn.style.display = 'none';
             this.dom.retryGameBtn.style.display = 'flex';
 
-            this.dom.finalDiagnosisGrid.innerHTML = [
-              '<div class="diag-card danger">',
-              '  <div class="diag-header"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2.5"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon></svg><strong>Ambigüedad y Conflicto de Rol:</strong></div>',
-              '  <p>Vaciar sin orden técnica provocó desperdicio de concreto, fisuras y sobrecarga cognitiva en el operario.</p>',
-              '</div>',
-              '<div class="diag-card danger">',
-              '  <div class="diag-header"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2.5"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon></svg><strong>Omisión de Peligro Climático Fatal:</strong></div>',
-              '  <p>Continuar izando con ráfagas de viento cortó la eslinga; la formaleta cayó aplastando al señalero.</p>',
-              '</div>',
-              '<div class="diag-card danger">',
-              '  <div class="diag-header"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2.5"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon></svg><strong>Afán al Cierre y Omisión Perimetral:</strong></div>',
-              '  <p>Omitir la baranda rígida a 18m por afán de salida derivó en una caída libre mortal al abismo.</p>',
-              '</div>',
-              '<div class="diag-card danger">',
-              '  <div class="diag-header"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2.5"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon></svg><strong>Taponamiento de Ruta y Hostilidad:</strong></div>',
-              '  <p>Dejar escombros en la ruta atrapó al personal en la oscuridad y generó fricción hostil entre turnos.</p>',
-              '</div>'
-            ].join('');
+  
           }
 
+          this.dom.finalDiagnosisGrid.replaceChildren();
+          var self = this;
+          this.answers.forEach(function (answer) {
+            var data = self.roundsData[answer.id - 1];
+            var card = document.createElement('div');
+            card.className = 'diag-card ' + (answer.correct ? 'success' : 'danger');
+            var heading = document.createElement('strong');
+            heading.textContent = answer.id + '. ' + data.speaker + (answer.correct ? ' · 10 puntos' : ' · Por mejorar');
+            var selected = document.createElement('p');
+            selected.textContent = 'Elegiste: ' + answer.choice.title;
+            var consequence = document.createElement('p');
+            consequence.textContent = answer.correct ? data.summaryText : (answer.choice.wrongText || data.wrongText);
+            card.append(heading, selected, consequence);
+            self.dom.finalDiagnosisGrid.appendChild(card);
+          });
           // Iniciar la animación cinemática 3D del final (órbita 360, iluminación, personajes)
           Isometric3DEngine.playFinale(passed, this.score);
 
