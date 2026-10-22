@@ -176,7 +176,7 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline-color:var(
    <div class="series-brand">SEGUROS BOLÍVAR • ARL</div><div class="series-subtitle">BIENESTAR FINANCIERO Y TRANQUILIDAD FAMILIAR</div>
    <div class="screen-badge-icon"><svg aria-hidden="true"><use href="#i-save"/></svg></div>
    <h2 id="welcomeTitle" class="screen-title">La Ruta de tu Quincena 3D</h2>
-   <p class="screen-desc">Elige una meta y recorre seis situaciones cotidianas. Te acompañamos paso a paso para terminar con <strong>un plan para tu próximo pago</strong>.</p>
+   <p class="screen-desc">Elige una meta y recorre diez situaciones cotidianas. Te acompañamos paso a paso para terminar con <strong>un plan para tu próximo pago</strong>.</p>
    <div class="rules-grid">
     <div class="rule-item"><div class="rule-icon cyan"><svg aria-hidden="true"><use href="#i-joy"/></svg></div><div class="rule-info"><h4>1. Elige lo que quieres lograr</h4><p>Llegar tranquilo, tener un respaldo o cumplir una meta.</p></div></div>
     <div class="rule-item"><div class="rule-icon yellow"><svg aria-hidden="true"><use href="#i-home"/></svg></div><div class="rule-info"><h4>2. Decide y observa lo que pasa</h4><p>Cuida la casa, enfrenta imprevistos y ajusta tu plan.</p></div></div>
@@ -244,7 +244,23 @@ const GUIDE=[
  {id:'recreation',card:'recreation',chapter:'6 · Un plan en familia',speaker:'EN FAMILIA',line:'«¿Qué podemos hacer juntos este fin de semana?»',title:'¿Qué plan propones para disfrutar sin gastar de más?',options:[
   option('Revisamos los pendientes y elegimos un plan con un límite de gasto, sin usar el dinero de la casa ni la reserva.','joy','El plan tiene un límite.','La familia comparte un momento de juego. Disfrutar también hace parte del presupuesto. Revisa que lo necesario esté cubierto: los pagos pendientes todavía necesitan atención.'),
   option('Propongo jugar en casa o ir al parque sin gastar. Guardamos lo disponible para una meta que acordemos juntos.','reserve','Disfrutan y conservan el respaldo.','La familia juega con la pelota y el dinero queda guardado. Hablar de las prioridades permite encontrar planes agradables sin gastar más.'),
-  option('Propongo comprar a cuotas lo que todos quieren. Para disfrutar hoy dejamos el presupuesto del próximo pago para después.','debt','El gusto comprometió el siguiente pago.','El juego se detiene y la familia queda preocupada por los pagos. Comprar a cuotas sin un plan convierte el gusto de hoy en un pendiente de mañana.')]}
+  option('Propongo comprar a cuotas lo que todos quieren. Para disfrutar hoy dejamos el presupuesto del próximo pago para después.','debt','El gusto comprometió el siguiente pago.','El juego se detiene y la familia queda preocupada por los pagos. Comprar a cuotas sin un plan convierte el gusto de hoy en un pendiente de mañana.')]},
+ {id:'services',chapter:'7 · Los servicios de la casa',speaker:'LLEGARON LOS RECIBOS',line:'«La luz, el agua y el gas vencen en fechas distintas. Organicemos los pagos.»',title:'¿Cómo incluyes los servicios en tu presupuesto?',options:[
+  option('Reviso cada recibo, separo lo necesario y anoto las fechas. Si no alcanza, ajusto otros gastos y consulto opciones de pago.',null,'Cada servicio tiene su lugar en el plan.','Los recibos se ordenan por servicio y fecha. Sabes qué dinero debes reservar y puedes actuar antes del vencimiento; anotar el pago no significa que ya esté pagado.',{services:'planned'}),
+  option('Aparto lo mismo que el mes pasado sin abrir los recibos. Si alguno subió, lo resolveré cuando llegue la fecha.',null,'El valor real sigue sin revisar.','Los recibos quedan pendientes sobre la mesa. Al no revisar sus valores, puedes descubrir demasiado tarde que separaste menos de lo necesario.',{services:'estimated'}),
+  option('Uso esa plata para una compra y espero a que llegue un aviso. Después buscaré cómo pagar los servicios.',null,'Los servicios se quedaron sin respaldo.','Los recibos se acumulan y la persona se preocupa. El dinero ya tiene otro destino: ahora debes resolver estos pagos con menos margen.',{services:'postponed'})]},
+ {id:'smallExpenses',chapter:'8 · Lo pequeño también cuenta',speaker:'AL REVISAR LA SEMANA',line:'«Entre cafés, antojos y domicilios, se fue más plata de la que pensaba.»',title:'¿Qué harías para controlar esos gastos sin dejar de disfrutar?',options:[
+  option('Anoto lo que gasto, elijo cuáles gustos quiero conservar y pongo un límite que sí pueda cumplir esta semana.',null,'Tus gustos tienen un límite claro.','Las compras quedan agrupadas y una parte de las monedas permanece en la bandeja. Registrar lo pequeño permite decidir qué disfrutas y qué puedes reducir.',{smallExpenses:'tracked'}),
+  option('No los anoto porque cada compra cuesta poco. Me concentro solo en los gastos grandes del mes.',null,'Las compras pequeñas también se acumulan.','Aparecen más vasos y bolsas mientras disminuyen las monedas. Cada gasto parecía pequeño, pero juntos reducen lo disponible para el resto de la semana.',{smallExpenses:'ignored'}),
+  option('Decido no volver a gastar en ningún gusto, pero no reviso cuánto estaba gastando ni cómo voy a organizarme.',null,'La intención todavía necesita un plan.','Los antojos se apartan, pero el registro queda vacío. Sin conocer tus gastos ni acordar un límite realista, será difícil mantener la decisión.',{smallExpenses:'allOrNothing'})]},
+ {id:'familyHelp',chapter:'9 · Ayudar sin desprotegerte',speaker:'UN FAMILIAR TE PIDE AYUDA',line:'«Estoy corto esta semana. ¿Puedes prestarme una plata hasta el próximo pago?»',title:'Quieres ayudar. ¿Cómo respondes sin descuidar tu casa?',options:[
+  option('«Revisemos qué necesitas. Puedo ayudarte hasta este límite sin tocar mis pagos; si no alcanza, buscamos otra forma de apoyarte».',null,'Ofreciste ayuda con un límite claro.','Un sobre de apoyo se separa de los sobres de la casa. Acordar cuánto puedes dar, o ayudar de otra forma, evita depender de una devolución para cubrir lo indispensable.',{familyHelp:'bounded'}),
+  option('«Claro, te paso lo del arriendo porque me lo devuelves pronto». Confío en recibirlo antes de tener que pagar.',null,'El arriendo depende de una devolución.','El sobre de la casa pasa al familiar y su espacio queda vacío. Si la devolución se demora, el arriendo seguirá venciendo y tendrás que buscar cómo cubrirlo.',{familyHelp:'rent'}),
+  option('«Pido prestado para pasarte la plata y después miramos cómo pagar». Acepto ayudar antes de revisar las cuotas.',null,'La ayuda añadió una obligación sin plan.','Aparece un nuevo sobre de cobro. Querer ayudar no elimina la obligación que asumiste: necesitas saber cómo la pagarás sin afectar los gastos de tu hogar.',{familyHelp:'borrowed'})]},
+ {id:'review',chapter:'10 · Antes del próximo pago',speaker:'TU PLAN SIGUE CONTIGO',line:'«Ya pasó una semana. Revisemos qué pagamos y qué falta hasta la próxima quincena.»',title:'¿Cómo mantienes útil tu presupuesto después de hacerlo?',options:[
+  option('Comparo lo planeado con lo que gasté, reviso los pendientes y ajusto lo que queda. Acuerdo con mi familia qué cambia esta semana.',null,'Tu presupuesto se adapta a lo que pasó.','El tablero se organiza y aparecen marcas de revisión. Sabes qué falta y puedes ajustar a tiempo. Ahora arma tu presupuesto real con tus propios ingresos y gastos.',{review:'adjusted'}),
+  option('Miro cuánto saldo tengo y considero que todo está disponible. No reviso cuáles pagos todavía faltan.',null,'El saldo no cuenta toda la historia.','El tablero mantiene recibos pendientes. Parte del dinero que ves puede estar comprometido: gastarlo sin revisar puede dejar una obligación sin cubrir.',{review:'balanceOnly'}),
+  option('Guardo el presupuesto y no lo cambio, aunque algunos gastos hayan sido distintos. Lo revisaré cuando vuelva a cobrar.',null,'El plan se quedó atrás de tus gastos.','Los recibos nuevos quedan fuera del tablero. Un presupuesto necesita revisiones sencillas para responder a cambios; esperar al siguiente pago reduce el tiempo para corregir.',{review:'unchanged'})]}
 ];
 const GOALS={
  calm:{title:'Llegar tranquilo al próximo pago',action:'Al recibir mi pago, separaré primero el dinero de los gastos indispensables.'},
@@ -252,10 +268,17 @@ const GOALS={
  family:{title:'Cumplir una meta familiar',action:'Acordaré con mi familia una meta y cuánto podemos guardar después de cubrir lo necesario.'}
 };
 const HINTS={home:'Empieza por lo que necesitas hasta el próximo pago: casa, comida, transporte y obligaciones.',emergency:'Antes de otra compra, revisa qué necesita atención ahora y cuánto puedes destinar al imprevisto.',storage:'Para una emergencia, el dinero debe estar separado y disponible cuando lo necesites.',loan:'Antes de decir sí, necesitas conocer el costo total, las fechas y si puedes pagar.',beer:'Puedes poner un límite con respeto y proponer otro plan para compartir.',recreation:'Disfrutar también cuenta. Primero revisa los pendientes y acuerda un límite.'};
+Object.assign(HINTS,{
+ services:'Revisa luz, agua y gas por separado: valor, fecha y dinero reservado. Un recordatorio no reemplaza el pago.',
+ smallExpenses:'Los gastos pequeños se suman. Registrarlos te ayuda a elegir un límite realista, sin eliminar todos tus gustos.',
+ familyHelp:'Antes de prometer, revisa cuánto puedes dar sin depender de que te lo devuelvan para pagar lo indispensable.',
+ review:'El saldo puede incluir dinero comprometido. Revisa lo gastado, los pagos pendientes y cuánto falta para cobrar.'
+});
+const FOLLOWUP_GOOD={services:'planned',smallExpenses:'tracked',familyHelp:'bounded',review:'adjusted'};
 function selectedGoal(){return GOALS[state.goal]||GOALS.calm;}
 function guideSteps(){return GUIDE;}
 function deriveState(answers,feedback=false,feedbackPage=0,stage='play',goal=null){
- const result={v:4,goal:GOALS[goal]?goal:null,stage,answers:[],assignments:[],decisions:{},feedback:!!feedback,feedbackPage};
+ const result={v:5,goal:GOALS[goal]?goal:null,stage,answers:[],assignments:[],decisions:{},feedback:!!feedback,feedbackPage};
  for(const answer of answers){const step=guideSteps(result.decisions)[result.answers.length];if(!step||!answer||answer.id!==step.id||!Number.isInteger(answer.choice)||!step.options[answer.choice])throw Error('Decisión fuera de secuencia');const choice=step.options[answer.choice];result.answers.push({id:answer.id,choice:answer.choice});if(step.card)result.assignments.push([step.card,choice.destination]);Object.assign(result.decisions,choice.decisions);}
  return result;
 }
@@ -320,8 +343,8 @@ const World={root:null,spots:{},actors:[],targets:[],coins:[],drops:[],elapsed:0
  for(const dx of [-width*.4,width*.4])for(const dz of [-depth*.35,depth*.35])this.box(g,[.055,height,.055],[x+dx,height/2,z+dz],0x1E293B);
  },
  init(){this.root=new THREE.Group();Scene.scene.add(this.root);
- for(const id of ['home','emergency','storage','loan','beer','recreation']){const g=new THREE.Group();this.root.add(g);this.spots[id]=g;this.room(g,id);}
- this.buildHome();this.buildRepair();this.buildSavings();this.buildPhone();this.buildFriends();this.buildFamily();
+ for(const {id} of GUIDE){const g=new THREE.Group();this.root.add(g);this.spots[id]=g;this.room(g,id);}
+ this.buildHome();this.buildRepair();this.buildSavings();this.buildPhone();this.buildFriends();this.buildFamily();this.buildBudgetScenes();
  const canvas=Scene.renderer.domElement;canvas.style.touchAction='none';canvas.addEventListener('pointerdown',e=>{if(!$('welcome').hidden)return;this.gesture={id:e.pointerId,x:e.clientX,y:e.clientY,lastX:e.clientX,lastY:e.clientY,moved:false};canvas.setPointerCapture(e.pointerId);});canvas.addEventListener('pointermove',e=>{const g=this.gesture;if(!g||e.pointerId!==g.id)return;if(Math.hypot(e.clientX-g.x,e.clientY-g.y)>7)g.moved=true;if(g.moved){this.orbit=Math.max(-.25,Math.min(.25,this.orbit+(e.clientX-g.lastX)*.0025));this.pitch=Math.max(-.2,Math.min(.35,this.pitch+(e.clientY-g.lastY)*.0015));}g.lastX=e.clientX;g.lastY=e.clientY;});canvas.addEventListener('pointerup',e=>{const g=this.gesture;this.gesture=null;if(!g||g.moved)return;const r=canvas.getBoundingClientRect(),ray=new THREE.Raycaster();ray.setFromCamera(new THREE.Vector2((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1),Scene.camera);const hit=ray.intersectObjects(this.targets,true).find(h=>{let o=h.object;while(o){if(!o.visible)return false;o=o.parent;}return true;});if(hit){let o=hit.object;while(o&&!o.userData.action)o=o.parent;if(o)this.interact(o.userData.action);}});canvas.addEventListener('pointercancel',()=>this.gesture=null);
  $('worldAction').addEventListener('click',()=>this.interact(this.activeId));$('worldCenter').addEventListener('click',()=>{this.focus((state.feedback?feedbackStep():currentStep())?.id||this.activeId);});this.look=new THREE.Vector3();this.goal=new THREE.Vector3();this.reset();this.layoutObserver=new ResizeObserver(()=>this.layout());this.layoutObserver.observe($('app'));this.layoutObserver.observe($('hand'));this.layoutObserver.observe($('resultModal').querySelector('.sheet'));this.layout();},
  buildHome(){const g=this.spots.home;
@@ -396,6 +419,95 @@ const World={root:null,spots:{},actors:[],targets:[],coins:[],drops:[],elapsed:0
  },
  buildFriends(){const g=this.spots.beer;this.table(g,0,.2,1.2,.7,.75);this.friends=[this.person(g,-.8,-.3,0xFFB703),this.person(g,.8,-.3,0x0284C7)];this.bottles=[];for(let i=0;i<6;i++){const bottle=new THREE.Group();bottle.position.set((i%3-1)*.3,.76,Math.floor(i/3)*.28);g.add(bottle);this.box(bottle,[.1,.23,.1],[0,.12,0],0x3F6212);this.box(bottle,[.05,.12,.05],[0,.29,0],0x4D7C0F);this.box(bottle,[.105,.075,.105],[0,.13,0],0xe1bc65);this.touch(bottle,'beer','Mover la bandeja');this.bottles.push(bottle);}this.tray=this.box(g,[1,.025,.55],[0,.75,.13],0xc9bda0);this.touch(this.tray,'beer','Mover la bandeja');this.partyLight=new THREE.PointLight(0xffad65,0,3);this.partyLight.position.set(0,1.8,0);g.add(this.partyLight);this.plant(g,-1.65,-.85);},
  buildFamily(){const g=this.spots.recreation;this.box(g,[2,.35,.65],[0,.28,-.6],0x075985);this.box(g,[2,.65,.17],[0,.65,-.9],0x0284C7);for(const x of [-.95,.95])this.box(g,[.18,.35,.65],[x,.55,-.6],0x075985);for(const x of [-.48,.48])this.box(g,[.65,.12,.48],[x,.5,-.55],0x2A9D8F);this.family=[this.person(g,-.7,.1,0xEA7B26),this.person(g,.65,.1,0x16A34A,.68)];this.ball=this.sphere(g,.14,[0,.15,.5],0xFFB703);this.touch(this.ball,'recreation','Jugar con la pelota');this.plant(g,-1.2,-.7);this.box(g,[.5,.05,.4],[.7,.55,-.4],0xe8d6a1);},
+ buildBudgetScenes(){
+ this.budgetScenes={};
+ for(const id of Object.keys(FOLLOWUP_GOOD)){
+  const g=this.spots[id],desk=new THREE.Group();g.add(desk);this.table(desk,0,.35,2.2,.76,.85);
+  const actor=this.person(g,id==='familyHelp'?-.65:.7,-.45,0x0284C7);this.plant(g,-1.25,-.9);
+  this.budgetScenes[id]={g,desk,actor,papers:[],coins:[],items:[]};
+ }
+ const services=this.budgetScenes.services;
+ ['LUZ','AGUA','GAS'].forEach((name,i)=>{
+  const paper=new THREE.Group();services.desk.add(paper);paper.position.set((i-1)*.64,.83,.3);
+  this.box(paper,[.5,.035,.52],[0,0,0],0xF8FAFC);
+  const label=this.text(paper,name,[0,.022,0],.46,'#FFB703');label.rotation.x=-Math.PI/2;
+  const mark=this.box(paper,[.39,.012,.045],[0,.025,.16],0xE76F51);
+  this.touch(paper,'services','Revisar el recibo de '+name.toLowerCase());services.papers.push({g:paper,mark});
+ });
+ services.sign=this.text(services.g,'POR REVISAR',[0,.65,.79],1.4);
+ const small=this.budgetScenes.smallExpenses;
+ this.box(small.desk,[.48,.04,.44],[-.73,.83,.45],0xFFB703);
+ for(let i=0;i<7;i++){
+  const coin=new THREE.Mesh(new THREE.CylinderGeometry(.055,.055,.022,16),Scene.material(0xFFB703));coin.position.set(-.86+(i%3)*.12,.87+Math.floor(i/3)*.026,.45);coin.castShadow=true;small.desk.add(coin);small.coins.push(coin);this.touch(coin,'smallExpenses','Revisar lo que queda');
+ }
+ for(let i=0;i<5;i++){
+  const item=new THREE.Group();small.desk.add(item);item.position.set(-.12+(i%3)*.35,.82,.15+Math.floor(i/3)*.32);
+  if(i%2){this.box(item,[.2,.24,.16],[0,.12,0],0xEA7B26);this.box(item,[.13,.05,.1],[0,.26,0],0xF8FAFC);}
+  else {const cup=new THREE.Mesh(new THREE.CylinderGeometry(.09,.065,.2,16),Scene.material(i===0?0xF8FAFC:0x16A34A));cup.position.y=.1;cup.castShadow=true;item.add(cup);this.box(item,[.15,.025,.15],[0,.21,0],0x334155);}
+  small.items.push(item);this.touch(item,'smallExpenses','Revisar una compra pequeña');
+ }
+ small.sign=this.text(small.g,'GASTOS DE LA SEMANA',[0,.65,.79],1.4);
+ const help=this.budgetScenes.familyHelp;help.relative=this.person(help.g,.8,-.35,0xEA7B26);
+ ['CASA','APOYO'].forEach((name,i)=>{
+  const envelope=new THREE.Group();help.desk.add(envelope);envelope.position.set(i? .55:-.55,.84,.35);
+  this.box(envelope,[.65,.045,.4],[0,0,0],i?0xFFB703:0x0284C7);
+  const label=this.text(envelope,name,[0,.025,0],.55);label.rotation.x=-Math.PI/2;
+  help.papers.push({g:envelope});this.touch(envelope,'familyHelp','Revisar el sobre de '+name.toLowerCase());
+ });
+ help.notice=this.text(help.g,'NUEVA CUOTA',[0,1.2,-.2],1.15,'#FFB5A2');help.notice.visible=false;
+ help.sign=this.text(help.g,'ACORDAR UN LÍMITE',[0,.65,.79],1.4);
+ const review=this.budgetScenes.review;
+ this.box(review.g,[1.9,.85,.07],[0,1.3,-.35],0xB87530);
+ ['GASTADO','PENDIENTE','AJUSTAR'].forEach((name,i)=>{
+  const card=new THREE.Group();review.g.add(card);card.position.set((i-1)*.57,1.3,-.28);
+  this.box(card,[.53,.62,.025],[0,0,0],0xF8FAFC);this.text(card,name,[0,.19,.018],.51,'#FFB703');
+  for(let j=0;j<3;j++)this.box(card,[.31,.018,.018],[.04,.06-j*.09,.023],0x64748B);
+  const tick=new THREE.Group();card.add(tick);tick.position.set(-.14,-.15,.04);
+  const a=this.box(tick,[.055,.025,.02],[-.018,0,0],0x16A34A);a.rotation.z=-.7;
+  const b=this.box(tick,[.11,.025,.02],[.035,.025,0],0x16A34A);b.rotation.z=.8;
+  review.papers.push({g:card,tick});this.touch(card,'review','Revisar '+name.toLowerCase());
+ });
+ review.sign=this.text(review.g,'REVISIÓN SEMANAL',[0,1.86,-.3],1.55);
+ this.touch(services.sign,'services','Revisar fechas y valores');this.touch(small.sign,'smallExpenses','Revisar gastos pequeños');this.touch(help.sign,'familyHelp','Revisar el límite de ayuda');this.touch(review.sign,'review','Revisar el presupuesto');
+ },
+ budgetHint(id){const decision=state.decisions[id];if(!decision)return {services:'Toca los recibos: cada servicio tiene su valor y su fecha.',smallExpenses:'Toca las compras: los gastos pequeños también se suman.',familyHelp:'Toca los sobres: separa lo de la casa antes de ofrecer ayuda.',review:'Toca el tablero: revisa lo gastado y lo que falta.'}[id];return GUIDE.find(step=>step.id===id)?.options.find(choice=>choice.decisions[id]===decision)?.headline||'';},
+ applyBudgetScenes(){
+ if(!this.budgetScenes)return;
+ const words={services:['REVISAR VALOR Y FECHA','PAGOS ORGANIZADOS','RECIBOS PENDIENTES'],smallExpenses:['GASTOS DE LA SEMANA','GUSTOS CON LÍMITE','FALTA UN PLAN'],familyHelp:['ACORDAR UN LÍMITE','APOYO CON LÍMITE','LA CASA EN RIESGO'],review:['REVISIÓN SEMANAL','PLAN ACTUALIZADO','PENDIENTES SIN REVISAR']};
+ for(const [id,s] of Object.entries(this.budgetScenes)){
+  const decision=state.decisions[id],good=decision===FOLLOWUP_GOOD[id];s.actor.mode=decision&&!good?'worry':'idle';
+  if(s.relative)s.relative.mode=decision&&!good?'worry':'idle';
+  const title=words[id][decision?(good?1:2):0];
+  if(s.title!==title){s.sign.material.map.dispose();s.sign.material.map=Scene.label(title,decision&&!good?'#FFB5A2':good?'#A5F1BB':'#FFB703','#173c49',512,128);s.title=title;}
+  if(id==='services')s.papers.forEach(p=>p.mark.material.color.setHex(good?0x16A34A:0xE76F51).convertSRGBToLinear());
+  if(id==='familyHelp')s.notice.visible=decision==='borrowed';
+  if(id==='review')s.papers.forEach(p=>p.tick.visible=good);
+ }
+ if(this.budgetScenes[this.activeId]&&state.feedback)$('worldHint').textContent=this.budgetHint(this.activeId);
+ },
+ animateBudgetScenes(dt,time,action){
+ const s=this.budgetScenes?.[this.activeId];if(!s)return;
+ const id=this.activeId,decision=state.decisions[id],good=decision===FOLLOWUP_GOOD[id],ease=1-Math.exp(-dt*4);
+ const inspect=action>=0&&action<2?Math.sin(action*Math.PI/2)*.13:0;
+ if(id==='services')s.papers.forEach((p,i)=>{
+  p.g.position.lerp(new THREE.Vector3((i-1)*(good?.64:.32),.83+inspect+i*.018,good?.3:.3+i*.06),ease);
+  p.g.rotation.y=THREE.MathUtils.lerp(p.g.rotation.y,good?0:(i-1)*.35,ease);
+ });
+ if(id==='smallExpenses'){
+  s.items.forEach((item,i)=>{const visible=decision==='allOrNothing'?false:good?i<2:true;item.scale.lerp(new THREE.Vector3(visible?1:.001,visible?1:.001,visible?1:.001),ease);item.position.y=.82+inspect;});
+  s.coins.forEach((coin,i)=>{const visible=decision==='ignored'?i<2:good?i<6:true;const size=visible?1:.001;coin.scale.lerp(new THREE.Vector3(size,size,size),ease);});
+ }
+ if(id==='familyHelp')s.papers.forEach((p,i)=>{
+  const moved=decision==='rent'&&i===0;
+  p.g.position.lerp(new THREE.Vector3(moved?.76:i?(good?.7:.2):-.55,.84+inspect,moved?-.05:.35),ease);
+  p.g.rotation.y=THREE.MathUtils.lerp(p.g.rotation.y,moved?-.35:0,ease);
+ });
+ if(id==='review')s.papers.forEach((p,i)=>{
+  p.g.position.lerp(new THREE.Vector3((i-1)*.57,good?1.3:.88+i*.08,good?-.28:.38-i*.15),ease);
+  p.g.rotation.x=THREE.MathUtils.lerp(p.g.rotation.x,good?0:-1.1+inspect,ease);
+  p.g.rotation.z=THREE.MathUtils.lerp(p.g.rotation.z,good?0:(i-1)*.16,ease);
+ });
+ },
  reset(){this.key='';this.orbit=0;this.pitch=0;this.elapsed=0;this.reaction=0;Scene.phone.position.set(-.65,1.18,.08);Scene.phone.rotation.set(1.12,0,0);this.root.visible=true;Scene.room.visible=false;Scene.worksite.visible=false;this.look.set(0,1.1,0);this.goal.set(0,2.2,5);Scene.camera.position.copy(this.goal);this.focus('home',true);},
  sync(){if(!this.root)return;const step=state.feedback?feedbackStep():currentStep();if(!step)return;const key=step.id+':'+state.answers.length+':'+state.feedback;if(key===this.key)return;this.key=key;this.focus(step.id);this.reaction=state.feedback?this.elapsed:0;this.apply();},
  focus(id,instant=false){const changed=this.activeId!==id;this.activeId=id;this.orbit=0;this.pitch=0;
@@ -405,21 +517,21 @@ const World={root:null,spots:{},actors:[],targets:[],coins:[],drops:[],elapsed:0
  if(instant){Scene.camera.position.copy(destination);this.look.copy(this.lookGoal);this.travel=null;}
  else if(changed){this.look.copy(this.lookGoal);Scene.camera.position.copy(destination).add(new THREE.Vector3(.25,.1,.45));this.travel={from:Scene.camera.position.clone(),look:this.look.clone(),elapsed:0,duration:1.1};const viewport=$('scene');viewport.classList.remove('scene-enter');void viewport.offsetWidth;viewport.classList.add('scene-enter');}
  if(id==='home')this.fridgeOpen=true;if(changed&&id==='storage')this.reserveOpen=true;
- const labels={home:'Cerrar la nevera',emergency:'Revisar la fuga',storage:'Abrir la reserva',loan:'Atender el celular',beer:'Mover la bandeja',recreation:'Jugar con la pelota'};
+ const labels={home:'Cerrar la nevera',emergency:'Revisar la fuga',storage:'Abrir la reserva',loan:'Atender el celular',beer:'Mover la bandeja',recreation:'Jugar con la pelota',services:'Revisar los recibos',smallExpenses:'Ver los gastos',familyHelp:'Revisar los sobres',review:'Revisar el tablero'};
  $('worldAction').textContent=id==='storage'&&this.reserveOpen?'Cerrar la reserva':labels[id];$('worldHint').textContent='Toca los objetos para explorar · Desliza para mirar';this.actionTime=-10;this.apply();
  },
  reframe(){if(!this.activeId)return;
  const profiles={home:{width:3.2,height:2.65,x:-.12,y:1.2},emergency:{width:2.6,height:2.65,x:0,y:1.2},storage:{width:2.65,height:2.65,x:0,y:1.2},loan:{width:3.5,height:2.7,x:0,y:1.25},beer:{width:2.7,height:2.65,x:0,y:1.2},recreation:{width:2.9,height:2.65,x:0,y:1.2}};
- const f=profiles[this.activeId],tan=Math.tan(THREE.MathUtils.degToRad(Scene.camera.fov/2));
+ const f=profiles[this.activeId]||{width:3.1,height:2.65,x:0,y:1.2},tan=Math.tan(THREE.MathUtils.degToRad(Scene.camera.fov/2));
  this.viewDistance=Math.max(f.width/(2*tan*Math.max(.4,Scene.camera.aspect)),f.height/(2*tan))*1.06+.42;
  this.lookGoal=new THREE.Vector3(f.x,f.y,0);this.goal.copy(this.cameraPosition(0,0));
  },
  cameraPosition(orbit,pitch){const distance=this.viewDistance||5.5,elevation=.13+pitch*.22,horizontal=Math.cos(elevation)*distance;return new THREE.Vector3(this.lookGoal.x+Math.sin(orbit)*horizontal,this.lookGoal.y+Math.sin(elevation)*distance,this.lookGoal.z+Math.cos(orbit)*horizontal);},
  layout(){if(!Scene.renderer)return;const panel=state.stage==='result'&&!$('resultModal').hidden?$('resultModal').querySelector('.sheet'):$('hand');const height=panel.getBoundingClientRect().height;const app=$('app');app.style.setProperty('--panel-space',Math.ceil(height+22)+'px');Scene.resize();},
  choice(id){return state.assignments.find(a=>a[0]===id)?.[1];},
- apply(){const hadFood=this.homeGood;this.homeGood=this.choice('home')==='basic';this.saved=this.choice('emergency')==='reserve';this.storage=state.decisions.storage;this.loanBad=state.decisions.loan==='accepted';this.party=this.choice('beer')==='joy';this.familyGood=this.choice('recreation')!=='debt';this.food.visible=this.homeGood;if(this.homeGood&&!hadFood)this.food.scale.setScalar(.15);this.borrower.mode=this.loanBad?'worry':'idle';if(this.activeId==='home'&&state.feedback){this.fridgeOpen=true;$('worldAction').textContent='Cerrar la nevera';$('worldHint').textContent=this.homeGood?'Nevera llena: protegiste el mercado.':'Nevera vacía: el mercado quedó pendiente.';}const previousMap=this.bill.material.map;this.bill.material.map=Scene.label(this.homeGood?'PAGADO':'POR PAGAR',this.homeGood?'#a5f1bb':'#ffb5a2','#173c49',512,128);previousMap.dispose();this.bars.visible=this.storage==='locked';this.collector.g.visible=this.loanBad;this.repairer.mode=this.saved?'work':'worry';this.parent.mode=this.choice('home')&&!this.homeGood?'worry':'idle';this.family.forEach(a=>a.mode=this.familyGood?'play':'worry');this.friends.forEach(a=>a.mode=this.party?'dance':'idle');this.notices.forEach(n=>n.visible=this.loanBad);Scene.paintPhone(this.loanBad?'COBRO PENDIENTE':state.decisions.loan==='blocked'?'OFERTA RECHAZADA':'NUEVA OFERTA',this.loanBad?'Llamada entrante':'Toca para mirar');},
- interact(id){if(!$('welcome').hidden||!$('helpModal').hidden||!$('goalModal').hidden||!$('personalPlanModal').hidden||closing)return;this.activeId===id||(this.focus(id));this.actionTime=this.elapsed;if(id==='home'){this.fridgeOpen=!this.fridgeOpen;$('worldAction').textContent=this.fridgeOpen?'Cerrar la nevera':'Abrir la nevera';}if(id==='storage'){this.reserveOpen=this.storage==='locked'?false:!this.reserveOpen;$('worldAction').textContent=this.reserveOpen?'Cerrar la reserva':'Abrir la reserva';}AudioFX.tone(id==='loan'?880:440,.1,.04);const labels={home:this.homeGood?'La comida está protegida.':this.choice('home')?'Falta el mercado de la casa.':'Mira lo que necesita tu hogar.',emergency:this.saved?'La reserva permite atender la reparación.':'La fuga sigue: hace falta un respaldo.',storage:this.storage==='locked'?'No puedes retirar: elegiste un plazo que aún no termina.':this.storage==='mixed'?'El ahorro se mezcló con la plata para gastar.':this.reserveOpen?'Puedes acceder a la reserva.':'Cerraste la caja de la reserva.',loan:this.loanBad?'Otra llamada de cobro.':'Revisa antes de aceptar.',beer:this.party?'La cuenta de la salida sigue creciendo.':'Puedes compartir con otro plan.',recreation:this.familyGood?'Toca otra vez para jugar.':'Los pagos pendientes distraen a la familia.'};$('worldHint').textContent=labels[id];if(id==='loan'){Scene.paintPhone(this.loanBad?'COBRO':state.decisions.loan==='blocked'?'RECHAZADO':'OFERTA',this.loanBad?'Pago pendiente':'Condiciones sin aclarar');$('sceneSpeaker').textContent=this.loanBad?'LLAMADA DE COBRO':'MENSAJE RECIBIDO';$('sceneLine').textContent=this.loanBad?'«Te toca pagar hoy. ¿Ya tienes la cuota?»':state.decisions.loan==='blocked'?'Decidiste no aceptar esta oferta.':GUIDE.find(step=>step.id==='loan').line;}},
- final(kind){this.root.visible=true;Scene.room.visible=false;Scene.worksite.visible=false;$('sceneDialogue').hidden=true;this.focus(kind==='victory'?'recreation':this.loanBad?'loan':!this.homeGood?'home':!this.saved?'emergency':this.storage!=='liquid'?'storage':this.party?'beer':'recreation');this.apply();this.family.forEach(a=>a.mode=kind==='victory'?'dance':'worry');$('worldHint').textContent=kind==='victory'?'Tu familia disfruta con tranquilidad.':'Los pendientes siguen presentes en casa.';},
+ apply(){const hadFood=this.homeGood;this.homeGood=this.choice('home')==='basic';this.saved=this.choice('emergency')==='reserve';this.storage=state.decisions.storage;this.loanBad=state.decisions.loan==='accepted';this.party=this.choice('beer')==='joy';this.familyGood=this.choice('recreation')!=='debt';this.food.visible=this.homeGood;if(this.homeGood&&!hadFood)this.food.scale.setScalar(.15);this.borrower.mode=this.loanBad?'worry':'idle';if(this.activeId==='home'&&state.feedback){this.fridgeOpen=true;$('worldAction').textContent='Cerrar la nevera';$('worldHint').textContent=this.homeGood?'Nevera llena: protegiste el mercado.':'Nevera vacía: el mercado quedó pendiente.';}const previousMap=this.bill.material.map;this.bill.material.map=Scene.label(this.homeGood?'PAGADO':'POR PAGAR',this.homeGood?'#a5f1bb':'#ffb5a2','#173c49',512,128);previousMap.dispose();this.bars.visible=this.storage==='locked';this.collector.g.visible=this.loanBad;this.repairer.mode=this.saved?'work':'worry';this.parent.mode=this.choice('home')&&!this.homeGood?'worry':'idle';this.family.forEach(a=>a.mode=this.familyGood?'play':'worry');this.friends.forEach(a=>a.mode=this.party?'dance':'idle');this.notices.forEach(n=>n.visible=this.loanBad);this.applyBudgetScenes();Scene.paintPhone(this.loanBad?'COBRO PENDIENTE':state.decisions.loan==='blocked'?'OFERTA RECHAZADA':'NUEVA OFERTA',this.loanBad?'Llamada entrante':'Toca para mirar');},
+ interact(id){if(!$('welcome').hidden||!$('helpModal').hidden||!$('goalModal').hidden||!$('personalPlanModal').hidden||closing)return;this.activeId===id||(this.focus(id));this.actionTime=this.elapsed;if(id==='home'){this.fridgeOpen=!this.fridgeOpen;$('worldAction').textContent=this.fridgeOpen?'Cerrar la nevera':'Abrir la nevera';}if(id==='storage'){this.reserveOpen=this.storage==='locked'?false:!this.reserveOpen;$('worldAction').textContent=this.reserveOpen?'Cerrar la reserva':'Abrir la reserva';}AudioFX.tone(id==='loan'?880:440,.1,.04);const labels={home:this.homeGood?'La comida está protegida.':this.choice('home')?'Falta el mercado de la casa.':'Mira lo que necesita tu hogar.',emergency:this.saved?'La reserva permite atender la reparación.':'La fuga sigue: hace falta un respaldo.',storage:this.storage==='locked'?'No puedes retirar: elegiste un plazo que aún no termina.':this.storage==='mixed'?'El ahorro se mezcló con la plata para gastar.':this.reserveOpen?'Puedes acceder a la reserva.':'Cerraste la caja de la reserva.',loan:this.loanBad?'Otra llamada de cobro.':'Revisa antes de aceptar.',beer:this.party?'La cuenta de la salida sigue creciendo.':'Puedes compartir con otro plan.',recreation:this.familyGood?'Toca otra vez para jugar.':'Los pagos pendientes distraen a la familia.'};$('worldHint').textContent=labels[id]||this.budgetHint(id);if(id==='loan'){Scene.paintPhone(this.loanBad?'COBRO':state.decisions.loan==='blocked'?'RECHAZADO':'OFERTA',this.loanBad?'Pago pendiente':'Condiciones sin aclarar');$('sceneSpeaker').textContent=this.loanBad?'LLAMADA DE COBRO':'MENSAJE RECIBIDO';$('sceneLine').textContent=this.loanBad?'«Te toca pagar hoy. ¿Ya tienes la cuota?»':state.decisions.loan==='blocked'?'Decidiste no aceptar esta oferta.':GUIDE.find(step=>step.id==='loan').line;}},
+ final(kind){this.root.visible=true;Scene.room.visible=false;Scene.worksite.visible=false;$('sceneDialogue').hidden=true;this.focus(kind==='victory'?'recreation':this.loanBad?'loan':!this.homeGood?'home':!this.saved?'emergency':this.storage!=='liquid'?'storage':this.party?'beer':Object.keys(FOLLOWUP_GOOD).find(id=>state.decisions[id]!==FOLLOWUP_GOOD[id])||'recreation');this.apply();this.family.forEach(a=>a.mode=kind==='victory'?'dance':'worry');$('worldHint').textContent=kind==='victory'?'Tu familia disfruta con tranquilidad.':'Los pendientes siguen presentes en casa.';},
  update(dt,time){if(!this.root)return;this.elapsed+=dt;Scene.room.visible=false;Scene.worksite.visible=false;const smoothing=1-Math.exp(-dt*5);this.smoothOrbit=THREE.MathUtils.lerp(this.smoothOrbit||0,this.orbit,smoothing);this.smoothPitch=THREE.MathUtils.lerp(this.smoothPitch||0,this.pitch,smoothing);const desired=this.cameraPosition(this.smoothOrbit,this.smoothPitch);if(this.travel){this.travel.elapsed+=dt;const u=Math.min(1,this.travel.elapsed/this.travel.duration),ease=u*u*u*(u*(u*6-15)+10);Scene.camera.position.lerpVectors(this.travel.from,desired,ease);this.look.lerpVectors(this.travel.look,this.lookGoal,ease);if(u===1)this.travel=null;}else{Scene.camera.position.lerp(desired,1-Math.exp(-dt*8));this.look.lerp(this.lookGoal,1-Math.exp(-dt*8));}Scene.camera.lookAt(this.look);const action=this.elapsed-this.actionTime,react=this.reaction?this.elapsed-this.reaction:99;
  this.food.scale.lerp(new THREE.Vector3(1,1,1),1-Math.exp(-dt*3));this.fridgeDoor.rotation.y=THREE.MathUtils.lerp(this.fridgeDoor.rotation.y,this.fridgeOpen?-1.95:0,1-Math.exp(-dt*4));this.fridgeLight.intensity=THREE.MathUtils.lerp(this.fridgeLight.intensity,this.fridgeOpen?.42:.03,1-Math.exp(-dt*4));this.washer.rotation.z=this.saved?0:Math.sin(time*22)*.006;const puddleTarget=this.saved?.03:.8+Math.sin(time*.6)*.025;this.puddle.scale.lerp(new THREE.Vector3(puddleTarget,puddleTarget,puddleTarget),1-Math.exp(-dt*1.2));this.drops.forEach((d,i)=>{d.visible=!this.saved;d.position.y=.58-((time*.7+i*.09)% .5);d.position.x=-.35+Math.sin(i*3)*.08;});this.toolbox.rotation.z=this.saved&&this.activeId==='emergency'?Math.sin(time*8)*.07:0;
  this.lid.rotation.x=THREE.MathUtils.lerp(this.lid.rotation.x,this.storage!=='locked'&&this.reserveOpen&&this.activeId==='storage'?-1.5:0,dt*4);for(const c of this.coins){const scatter=this.storage==='mixed';const target=scatter?new THREE.Vector3(Math.sin(c.index*5)*.76,.76,Math.cos(c.index*3)*.32):c.base.clone();if(!scatter&&react<2&&this.activeId==='storage')target.y+=Math.sin(Math.min(1,react/2)*Math.PI)*.6;c.mesh.position.lerp(target,dt*4);c.mesh.rotation.z=scatter?.18:0;}
@@ -427,6 +539,7 @@ const World={root:null,spots:{},actors:[],targets:[],coins:[],drops:[],elapsed:0
  const cleared=!this.party&&!!this.choice('beer'),slide=action<2&&this.activeId==='beer'?Math.sin(action*Math.PI)*.1:0;
  this.tray.position.x=slide;this.tray.scale.y=THREE.MathUtils.lerp(this.tray.scale.y,cleared?.02:1,dt*4);this.tray.visible=!cleared||this.tray.scale.y>.04;
  this.bottles.forEach((b,i)=>{const size=THREE.MathUtils.lerp(b.scale.y,cleared?.01:1,dt*4);b.scale.setScalar(size);b.visible=(this.party||i<2)&&size>.03;b.position.x=(i%3-1)*.3+slide;b.rotation.z=this.party?Math.sin(time*3+i)*.04:0;});this.partyLight.intensity=this.party?.35+Math.sin(time*4)*.1:0;
+ this.animateBudgetScenes(dt,time,action);
  const playing=this.familyGood&&(this.activeId==='recreation');this.ball.position.x=playing?Math.sin(time*1.6)*.55:0;this.ball.position.y=.15+(playing?Math.abs(Math.sin(time*3.2))*(action<4?.8:.25):0);this.ball.rotation.z=time;for(const a of this.actors){const gait=a.mode==='dance'?Math.sin(time*7+a.seed):a.mode==='work'?Math.sin(time*8):a.mode==='play'?Math.sin(time*3+a.seed):Math.sin(time*1.3+a.seed)*.08;a.g.position.y=a.mode==='dance'?Math.abs(gait)*.08:0;a.g.rotation.z=a.mode==='worry'?Math.sin(time*1.2)*.035:0;a.g.rotation.x=a.mode==='worry'?.12:0;a.limbs.forEach((limb,i)=>{limb.rotation.x=gait*(i%2?.28:.5)*(i<2?1:-1);if(a.mode==='worry'&&i%2===0)limb.rotation.x=-1.1;});if(a.mode==='play'){a.g.rotation.y=Math.sin(time*1.6)*.2;a.g.position.x=a.base.x+Math.sin(time*1.6+a.seed)*.18;a.g.position.z=a.base.z+Math.cos(time*1.6+a.seed)*.12;}else{a.g.position.x=a.base.x;a.g.position.z=a.base.z;a.g.rotation.y=0;}if(a===this.repairer&&a.mode==='work'){a.g.position.set(.48,-.08,.3);a.g.rotation.y=-.8;a.g.rotation.x=.22;a.limbs[0].rotation.x=-1.15+Math.sin(time*6)*.12;a.limbs[2].rotation.x=-.7;}} 
  }
 };
@@ -469,11 +582,31 @@ function remaining(){return availableFor(state);}
 function currentStep(){return guideSteps()[state.answers.length];}
 function currentCard(){const step=currentStep();return step?.card?[...DECK,LOAN_CARD].find(c=>c.id===step.card):null;}
 function pendingMessages(){return !state.feedback&&['loan','beer'].includes(currentStep()?.id)?[currentStep().id]:[];}
-function evaluate(){const t=totals(),redirect=['basic','reserve'].includes(state.assignments.find(a=>a[0]==='beer')?.[1]),loanBlocked=state.decisions.loan==='blocked',essentials=t.basic>=BASIC_TARGET,reserve=t.reserve>=SAVE_TARGET,storage=state.decisions.storage==='liquid';const crisis=!essentials||state.decisions.loan==='accepted'||t.debt>0;const perfect=essentials&&reserve&&loanBlocked&&redirect&&storage&&!crisis;const raw=Math.round(50*Math.min(1,t.basic/BASIC_TARGET)+20*Math.min(1,t.reserve/SAVE_TARGET)+(loanBlocked?10:0)+(storage?10:0)+(redirect?10:0));const done=state.answers.length===GUIDE.length&&!state.feedback,ending=done?(crisis?'crisis':perfect?'victory':'tight'):null,score=ending==='crisis'?Math.min(59,raw):ending==='tight'?Math.min(79,raw):raw;return {score,ending,totals:t,essentials,reserve,redirect,loanBlocked,storage,done};}
-function calm(){const t=totals(),shortfall=Math.max(0,BASIC_TARGET-t.basic-remaining());let value=70+10*Math.min(1,t.basic/BASIC_TARGET)+20*Math.min(1,t.reserve/SAVE_TARGET)-35*(state.decisions.loan==='accepted')-Math.min(30,t.debt/10000)-Math.min(35,shortfall/10000)-Math.min(20,Math.max(0,t.joy-JOY_LIMIT)/10000);if(state.stage==='result'){const ending=evaluate().ending;if(ending==='victory')value=100;else value=Math.min(value,ending==='crisis'?39:79);}return Math.max(5,Math.min(100,Math.round(value)));}
-function validateSnapshot(raw){try{const s=typeof raw==='string'?JSON.parse(raw):raw;if(!s||![3,4].includes(s.v)||!Array.isArray(s.answers)||!['play','result'].includes(s.stage)||typeof s.feedback!=='boolean'||!Number.isInteger(s.feedbackPage)||s.feedbackPage!==0||s.feedback&&!s.answers.length)return null;if(s.v===4&&s.answers.length&&!GOALS[s.goal])return null;const derived=deriveState(s.answers,s.feedback,s.feedbackPage,s.stage,s.v===3?'calm':s.goal);if(s.stage==='result'&&(derived.answers.length!==guideSteps(derived.decisions).length||derived.feedback))return null;return derived;}catch(e){return null;}}
-function persist(){const result=evaluate();try{localStorage.setItem('bolivar_quincena_v4',JSON.stringify(state));localSaved=true;}catch(e){localSaved=false;}return LMS.write(state,result.score,state.stage==='result');}
-function restore(){let raw=LMS.get('cmi.suspend_data');let saved=validateSnapshot(raw);legacySave=!!raw&&!saved;if(!LMS.connected){try{raw=localStorage.getItem('bolivar_quincena_v4')||localStorage.getItem('bolivar_quincena_v3');saved=validateSnapshot(raw);legacySave=!!(localStorage.getItem('bolivar_quincena_v2')||localStorage.getItem('bolivar_quincena_v1'))&&!saved;}catch(e){}}return saved;}
+function evaluate(){
+ const t=totals(),redirect=['basic','reserve'].includes(state.assignments.find(a=>a[0]==='beer')?.[1]),loanBlocked=state.decisions.loan==='blocked',essentials=t.basic>=BASIC_TARGET,reserve=t.reserve>=SAVE_TARGET,storage=state.decisions.storage==='liquid';
+ const followup=Object.fromEntries(Object.entries(FOLLOWUP_GOOD).map(([id,good])=>[id,state.decisions[id]===good]));
+ const crisis=!essentials||state.decisions.loan==='accepted'||t.debt>0||['rent','borrowed'].includes(state.decisions.familyHelp);
+ const perfect=essentials&&reserve&&loanBlocked&&redirect&&storage&&Object.values(followup).every(Boolean)&&!crisis;
+ const raw=Math.round(30*Math.min(1,t.basic/BASIC_TARGET)+12*Math.min(1,t.reserve/SAVE_TARGET)+(loanBlocked?6:0)+(storage?6:0)+(redirect?6:0)+10*Object.values(followup).filter(Boolean).length);
+ const done=state.answers.length===GUIDE.length&&!state.feedback,ending=done?(crisis?'crisis':perfect?'victory':'tight'):null,score=ending==='crisis'?Math.min(59,raw):ending==='tight'?Math.min(79,raw):raw;
+ return {score,ending,totals:t,essentials,reserve,redirect,loanBlocked,storage,followup,done};
+}
+function calm(){const t=totals(),shortfall=Math.max(0,BASIC_TARGET-t.basic-remaining());let value=70+10*Math.min(1,t.basic/BASIC_TARGET)+20*Math.min(1,t.reserve/SAVE_TARGET)-35*(state.decisions.loan==='accepted')-Math.min(30,t.debt/10000)-Math.min(35,shortfall/10000)-Math.min(20,Math.max(0,t.joy-JOY_LIMIT)/10000);for(const [id,good] of Object.entries(FOLLOWUP_GOOD)){if(state.decisions[id])value+=state.decisions[id]===good?3:-10;}if(state.stage==='result'){const ending=evaluate().ending;if(ending==='victory')value=100;else value=Math.min(value,ending==='crisis'?39:79);}return Math.max(5,Math.min(100,Math.round(value)));}
+function validateSnapshot(raw){try{
+ const s=typeof raw==='string'?JSON.parse(raw):raw;
+ if(!s||![3,4,5].includes(s.v)||!Array.isArray(s.answers)||!['play','result'].includes(s.stage)||typeof s.feedback!=='boolean'||!Number.isInteger(s.feedbackPage)||s.feedbackPage!==0||s.feedback&&!s.answers.length)return null;
+ if(s.v>=4&&s.answers.length&&!GOALS[s.goal])return null;
+ // Las seis decisiones anteriores conservan su orden; una ruta antigua continúa en la séptima.
+ const previous=s.v<5;
+ if(previous&&(s.answers.length>6||s.stage==='result'&&(s.answers.length!==6||s.feedback)))return null;
+ const stage=previous&&s.stage==='result'?'play':s.stage;
+ const derived=deriveState(s.answers,s.feedback,s.feedbackPage,stage,s.v===3?'calm':s.goal);
+ if(stage==='result'&&(derived.answers.length!==guideSteps().length||derived.feedback))return null;
+ return derived;
+ }catch(e){return null;}}
+
+function persist(){const result=evaluate();try{localStorage.setItem('bolivar_quincena_v5',JSON.stringify(state));localSaved=true;}catch(e){localSaved=false;}return LMS.write(state,result.score,state.stage==='result');}
+function restore(){let raw=LMS.get('cmi.suspend_data');let saved=validateSnapshot(raw);legacySave=!!raw&&!saved;if(!LMS.connected){try{raw=localStorage.getItem('bolivar_quincena_v5')||localStorage.getItem('bolivar_quincena_v4')||localStorage.getItem('bolivar_quincena_v3');saved=validateSnapshot(raw);legacySave=!!(localStorage.getItem('bolivar_quincena_v2')||localStorage.getItem('bolivar_quincena_v1'))&&!saved;}catch(e){}}return saved;}
 function toast(text){clearTimeout(toastTimer);$('toast').textContent=text;$('toast').hidden=false;toastTimer=setTimeout(()=>$('toast').hidden=true,3200);}
 function showModal(id){returnFocus=document.activeElement;$(id).hidden=false;$(id).querySelector('button,a,[tabindex="0"]')?.focus({preventScroll:true});}
 function hideModal(id){$(id).hidden=true;if(returnFocus?.isConnected&&returnFocus.getClientRects().length)returnFocus.focus({preventScroll:true});}
@@ -582,8 +715,12 @@ function showResult(){const result=evaluate();if(!result.done)return;state.stage
  if(result.totals.debt>0)pending.push('adquiriste cuotas sin un plan de pago');
  if(!result.storage)pending.push(state.decisions.storage==='locked'?'la reserva quedó bloqueada':'la reserva se mezcló con otros gastos');
  if(!result.redirect)pending.push('la presión del grupo desplazó tus prioridades');
+ if(!result.followup.services)pending.push('los servicios quedaron sin organizar por valor y fecha');
+ if(!result.followup.smallExpenses)pending.push('los gastos pequeños quedaron sin un límite realista');
+ if(!result.followup.familyHelp)pending.push('la ayuda familiar comprometió dinero necesario o añadió una obligación');
+ if(!result.followup.review)pending.push('faltó revisar y ajustar el presupuesto');
  $('resultTitle').textContent=result.ending==='victory'?'Tu quincena tiene un plan.':result.ending==='crisis'?'Hay pendientes por resolver.':'Tu plan puede mejorar.';
- $('resultMessage').textContent=pending.length?'En tu recorrido, '+pending.slice(0,2).join(' y ')+'. Puedes ajustar tus decisiones y armar un presupuesto para tu próximo pago.':'Protegiste la casa, destinaste dinero al respaldo y pusiste límites para disfrutar. Ahora lleva lo aprendido a tu próximo pago: armemos tu presupuesto.';
+ $('resultMessage').textContent=pending.length?'En tu recorrido, '+pending.slice(0,2).join(' y ')+'. Revisa tus decisiones para ver cada pendiente y armar tu presupuesto.':'Completaste las diez situaciones: protegiste la casa y la reserva, organizaste los servicios y pusiste límites para disfrutar y ayudar. Ahora lleva lo aprendido a tu próximo pago: armemos tu presupuesto.';
  $('resultState').textContent='TU META: '+selectedGoal().title.toUpperCase();persist();renderResultMeter();showModal('resultModal');}
 function finish(){if(closing||state.stage!=='result')return;closing=true;const connected=LMS.connected,writeOK=persist(),finished=connected?LMS.finish():false;$('resultModal').hidden=true;$('closure').hidden=false;if(connected&&writeOK&&finished){$('closureTitle').textContent='Tu resultado quedó registrado.';$('closureText').textContent='Puntuación y estado enviados al LMS en SCORM '+LMS.version+'.';}else if(!connected&&localSaved){$('closureTitle').textContent='Tu balance quedó guardado aquí.';$('closureText').textContent=(LMS.api?'El LMS no permitió iniciar la sesión. Conservamos el resultado en este navegador.':'Esta partida se ejecutó fuera de un LMS. El resultado está disponible en este navegador.');}else if(localSaved){$('closureTitle').textContent='Conservamos tu partida en este navegador.';$('closureText').textContent='El LMS no confirmó el registro completo. Puedes volver a abrir el juego para intentar guardar de nuevo.';}else{$('closureTitle').textContent='No se confirmó el guardado.';$('closureText').textContent='Tu resultado fue de '+evaluate().score+' puntos. El navegador no permite guardar la partida y el LMS no confirmó el registro.';}AudioFX.tone(659,.2,.05);}
 
