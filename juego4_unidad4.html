@@ -72,7 +72,7 @@
 .icon-btn{border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.08)}
 .meter-row{font-weight:600}.meter-track{background:rgba(0,28,43,.6);box-shadow:inset 0 1px 3px #0004}
 .world-button,.budget-btn{background:rgba(2,48,71,.9);border-color:rgba(255,255,255,.3);color:#F8FAFC;border-radius:10px;font-weight:600}
-.world-hint,.result-mode .world-hint{background:rgba(2,48,71,.72);color:#F8FAFC;font-size:9px;text-shadow:none}
+.world-hint,.result-mode .world-hint{background:rgba(2,48,71,.85);color:#F8FAFC;font-size:11px;text-shadow:none}
 .guide-panel{background:linear-gradient(145deg,#0A496B,#023047);border:1px solid rgba(255,183,3,.4);border-radius:14px;box-shadow:0 4px 16px #0004}
 .guide-top{background:rgba(0,28,43,.28);border-bottom-color:rgba(255,255,255,.12)}
 .guide-top span{color:#F1F5F9;font-weight:600}.guide-top strong{padding:3px 6px;border-radius:5px;color:var(--navy);background:var(--yellow);font-size:10px;font-weight:800}
@@ -106,12 +106,12 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline-color:var(
 @media(max-height:680px){.guide-panel h2{font-size:15px}.intro h2{font-size:22px}.intro-badge{width:46px;height:46px;margin-bottom:8px}}
 @media(max-height:480px) and (min-width:600px){#app{max-width:none;max-height:none}.intro .sheet{max-width:440px}.intro-badge{display:none}}
 /* The dialogue sits in the upper margin of the room, away from faces and hands. */
-.scene-dialogue{position:absolute;z-index:2;top:9px;left:10px;right:10px;max-width:310px;margin:auto;padding:7px 10px;background:rgba(255,255,255,.95);border:1px solid #CBD5E1;border-radius:11px;box-shadow:0 3px 10px #02304722;pointer-events:none;color:#1E293B;font-size:11px;line-height:1.4}
-.scene-dialogue strong{display:block;font-size:9px;letter-spacing:.35px;color:#023047;margin-bottom:2px}.scene-dialogue span{display:block}
+.scene-dialogue{position:absolute;z-index:2;top:9px;left:10px;right:10px;max-width:330px;margin:auto;padding:9px 12px;background:rgba(255,255,255,.97);border:1px solid #CBD5E1;border-radius:11px;box-shadow:0 3px 10px #02304722;pointer-events:none;color:#1E293B;font-size:13px;line-height:1.45;font-weight:500}
+.scene-dialogue strong{display:block;font-size:10px;letter-spacing:.3px;color:#023047;margin-bottom:4px}.scene-dialogue span{display:block}
 #scene canvas{z-index:0}.guide-panel h2{font-size:15px;margin-bottom:9px}.answer-option{font-size:12px;line-height:1.4;padding:8px 10px;min-height:48px}.guide-options{gap:6px}.guide-panel{max-height:52%}.guide-scroll{padding:10px}
 .guide-top{padding:7px 10px}.feedback-content p{font-size:13px;line-height:1.5}.budget-modal .sheet{max-height:84%}.journal-entry summary{color:#FFB703;font-size:12px}.journal-entry p{font-size:12px}
-@media(max-height:680px){.scene-dialogue{font-size:10px;padding:5px 8px;top:6px}.scene-dialogue strong{font-size:8px}.guide-panel{max-height:55%}.answer-option{font-size:11px;padding:7px 8px}.guide-panel h2{font-size:14px}.guide-scroll{padding:8px}.guide-top{padding:6px 8px}}
-@media(max-height:480px) and (min-width:600px){.guide-panel{max-height:calc(100% - 20px)}.scene-dialogue{font-size:10px}}
+@media(max-height:680px){.scene-dialogue{font-size:12px;padding:7px 10px;top:6px}.scene-dialogue strong{font-size:10px}.guide-panel{max-height:55%}.answer-option{font-size:11px;padding:7px 8px}.guide-panel h2{font-size:14px}.guide-scroll{padding:8px}.guide-top{padding:6px 8px}}
+@media(max-height:480px) and (min-width:600px){.guide-panel{max-height:calc(100% - 20px)}.scene-dialogue{font-size:12px}}
 /* Misma estructura visual de portada y estaciones que juego3.html. */
 :root{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}
 #app{background:radial-gradient(circle at 50% 35%,#0B2236 0%,#030C14 100%)}
@@ -170,7 +170,7 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline-color:var(
   </div>
  </section>
 
-  <div class="world-controls"><button id="worldAction" class="world-button">Abrir la nevera</button><button id="worldCenter" class="world-button" aria-label="Volver a mirar la situación actual">↺</button></div><div id="worldHint" class="world-hint">Toca los objetos · desliza para mirar</div>
+  <div class="world-controls"><button id="worldAction" class="world-button">Abrir la nevera</button><button id="worldCenter" class="world-button" aria-label="Volver a mirar la situación actual">↺</button></div><div id="worldHint" class="world-hint">Toca los objetos para explorar · Desliza para mirar</div>
   <div id="toast" class="toast" role="status" hidden></div>
   <section id="welcome" role="dialog" aria-modal="true" class="overlay intro series-screen" aria-labelledby="welcomeTitle"><div class="sheet screen-content-card">
    <div class="series-brand">SEGUROS BOLÍVAR • ARL</div><div class="series-subtitle">BIENESTAR FINANCIERO Y TRANQUILIDAD FAMILIAR</div>
@@ -221,28 +221,28 @@ const DECK=[{id:'home',amount:500000},{id:'emergency',amount:200000},{id:'beer',
 const LOAN_CARD={id:'loanCash',amount:200000};
 const option=(text,destination,headline,explanation,decisions={})=>({text,destination,headline,explanation,decisions});
 const GUIDE=[
- {id:'home',card:'home',chapter:'1 · Primero, la casa',speaker:'EN CASA',line:'«Nos falta mercado y esta semana vence el arriendo.»',title:'Acabas de recibir tu quincena. ¿Cómo organizas el dinero?',options:[
-  option('Reviso los pagos con mi familia y separo arriendo, mercado y transporte antes de disponer del resto.','basic','La casa tiene lo necesario.','El mercado llega a la nevera y los pagos quedan separados. Acordar primero lo indispensable evita gastar un dinero que ya tenía destino.'),
+ {id:'home',card:'home',chapter:'1 · Primero, la casa',speaker:'EN CASA',line:'«Tenemos que hacer mercado y pagar el arriendo esta semana.»',title:'Recibiste tu quincena. ¿Qué separas primero?',options:[
+  option('Reviso los pagos con mi familia. Separo lo del arriendo, el mercado y el transporte antes de gastar en otras cosas.','basic','La casa tiene lo necesario.','La nevera se llena y tienes dinero apartado para los pagos de la casa. Ahora puedes decidir qué hacer con el resto.'),
   option('Aprovecho una promoción que termina hoy. Con lo que quede después organizo el mercado y los pagos.','joy','La promoción desplazó el mercado.','La nevera sigue vacía y el arriendo pendiente. La compra parecía una oportunidad, pero salió del dinero que necesitabas para la casa.'),
-  option('Guardo la quincena completa para mi meta. Aplazo el arriendo y mientras tanto compro la comida fiada.','reserve','Tienes ahorro, pero también pendientes.','La nevera sigue vacía: ese dinero quedó apartado mientras el mercado y el arriendo esperan. Una meta de ahorro no reemplaza los gastos básicos.')]},
- {id:'emergency',card:'emergency',chapter:'2 · Un imprevisto',speaker:'ZONA DE LAVADO',line:'«La lavadora está goteando. No contábamos con este gasto.»',title:'Aparece una reparación urgente. ¿Qué harías con el dinero disponible?',options:[
-  option('Separo dinero para el imprevisto, pido una cotización y atiendo la fuga antes de comprometerme con otros gastos.','reserve','Puedes atender la reparación.','El técnico arregla la fuga y el charco disminuye. Destinaste recursos al imprevisto; después conviene reponer la reserva que uses.'),
+  option('Separo primero para mi meta. Dejo el arriendo para después y, mientras tanto, compro la comida fiada.','reserve','Tienes ahorro, pero también pendientes.','La nevera sigue vacía: ese dinero quedó apartado mientras el mercado y el arriendo esperan. Una meta de ahorro no reemplaza los gastos básicos.')]},
+ {id:'emergency',card:'emergency',chapter:'2 · Un imprevisto',speaker:'ZONA DE LAVADO',line:'«La lavadora está botando agua. Necesitamos arreglarla.»',title:'La reparación no estaba en tus planes. ¿Qué harías?',options:[
+  option('Separo dinero para el imprevisto, pido una cotización y atiendo la fuga antes de comprometerme con otros gastos.','reserve','Puedes atender la reparación.','El técnico arregla la fuga y el charco disminuye. Atendiste el imprevisto; en los próximos pagos podrás reponer la reserva que usaste.'),
   option('Mantengo la compra que había planeado y dejo la reparación para cuando vuelva a recibir dinero.','joy','La fuga continúa.','El charco crece mientras el dinero se va a otro gasto. Aplazar una necesidad urgente puede traer daños y más gastos en casa.'),
-  option('Compro otra lavadora a cuotas de inmediato. Después reviso cuánto suman los pagos y cómo acomodarlos.','debt','La solución dejó una deuda sin revisar.','La fuga sigue pendiente mientras esperas el reemplazo. Además adquiriste cuotas sin comprobar si caben en tus próximos pagos.')]},
- {id:'storage',chapter:'3 · Cuidar la reserva',speaker:'TU RESERVA',line:'«Si vuelve a pasar algo, necesitamos poder usar el ahorro.»',title:'¿Dónde guardarías el dinero para una emergencia?',options:[
-  option('En una cuenta separada del gasto diario. Reviso su seguridad, sus costos y si puedo retirar cuando lo necesite.',null,'El dinero queda separado y accesible.','La reserva tiene un lugar propio. Revisar las condiciones te ayuda a elegir dónde guardarla; no basta con que una opción prometa ganancias.',{storage:'liquid'}),
+  option('Compro otra lavadora a cuotas de inmediato. Después reviso cuánto suman los pagos y cómo acomodarlos.','debt','Asumiste cuotas sin planearlas.','La fuga sigue pendiente mientras esperas el reemplazo. Además adquiriste cuotas sin comprobar si caben en tus próximos pagos.')]},
+ {id:'storage',chapter:'3 · Cuidar la reserva',speaker:'TU RESERVA',line:'«Guardemos un respaldo que podamos usar si surge otro imprevisto.»',title:'¿Dónde guardarías tu reserva para tenerla disponible?',options:[
+  option('En una cuenta separada del gasto diario. Reviso su seguridad, sus costos y si puedo retirar cuando lo necesite.',null,'El dinero queda separado y accesible.','Tu reserva queda separada del dinero para gastar. Antes de guardarla, revisa la seguridad, los costos y las condiciones para retirarla.',{storage:'liquid'}),
   option('En el mismo lugar que la plata de las salidas. Confío en acordarme de cuánto debo dejar sin gastar.',null,'La reserva se mezcla con los gastos.','Las monedas se dispersan entre los gastos del día. Sin separación ni registro es más fácil usar la reserva sin darse cuenta.',{storage:'mixed'}),
   option('En una opción que ofrece más rendimiento, aunque no permita retirar el dinero durante varios meses.',null,'La reserva queda fuera de alcance.','La caja se bloquea. El plazo puede servir para otra meta, pero una emergencia puede llegar antes de que puedas retirar el dinero.',{storage:'locked'})]},
- {id:'loan',chapter:'4 · Una oferta por celular',speaker:'MENSAJE RECIBIDO',line:'«Te presto hoy. Me pagas cada día. Después cuadramos cuánto.»',title:'La oferta no explica el costo total. ¿Cómo respondes?',options:[
+ {id:'loan',chapter:'4 · Una oferta por celular',speaker:'MENSAJE RECIBIDO',line:'«Te presto la plata hoy. Me pagas a diario; después hablamos del costo.»',title:'Te ofrecen plata sin aclarar cuánto devolverás. ¿Qué respondes?',options:[
   option('«Gracias, pero no acepto sin condiciones claras». Reviso si necesito el préstamo y cómo pagaría antes de comprometerme.',null,'Detuviste la oferta a tiempo.','El celular deja de insistir y no aparece un cobro nuevo. Pedir claridad antes de aceptar protege el dinero de tus próximos pagos.',{loan:'blocked'}),
   option('«Envíame la plata y luego hablamos de las cuotas». Resuelvo lo de hoy y dejo los detalles para después.',null,'Ahora llegan cobros que no habías previsto.','El celular vuelve a sonar y se acumulan avisos sobre la mesa. Aceptaste dinero sin saber el costo ni cómo afectaría los pagos de tu casa.',{loan:'accepted'}),
   option('«Primero necesito el costo total y las fechas por escrito». Dejo esta oferta y comparo condiciones antes de decidir.',null,'Te diste tiempo para comparar.','La oferta queda rechazada por ahora. Comparar costo, fechas y capacidad de pago permite decidir sin la presión de recibir dinero de inmediato.',{loan:'blocked'})]},
- {id:'beer',card:'beer',chapter:'5 · La presión del grupo',speaker:'UN COMPAÑERO',line:'«Ya pagaron. ¡Vamos a tomar! Hoy te toca invitar.»',title:'Quieres compartir sin desordenar tu quincena. ¿Qué dices?',options:[
+ {id:'beer',card:'beer',chapter:'5 · La presión del grupo',speaker:'UN COMPAÑERO',line:'«¡Ya pagaron! Vamos a tomar algo. Esta vez te toca invitar.»',title:'Quieres compartir y cuidar tu presupuesto. ¿Qué les dices?',options:[
   option('«Quiero compartir, pero hoy no puedo invitar. Hagamos algo sin costo; esa plata la estoy guardando para un imprevisto».','reserve','Pusiste un límite y propusiste otro plan.','La bandeja se retira y la conversación continúa. Compartir con la cuadrilla no exige gastar el dinero que estás protegiendo.'),
   option('«Esta vez paso; tengo gastos de la casa pendientes. Podemos encontrarnos otro día con un presupuesto acordado».','basic','Explicaste tu prioridad con respeto.','La salida queda para otro momento y ese dinero refuerza los gastos de la casa. Expresaste tu decisión sin atacar a tus compañeros.'),
-  option('«Listo, yo invito para no quedar mal». Pago la ronda aunque todavía no haya revisado mis pendientes.','joy','La presión del grupo decidió por ti.','La mesa se llena de botellas y la cuenta aumenta. Gastaste sin revisar tus prioridades; ahora tienes menos margen para la casa o un imprevisto.')]},
- {id:'recreation',card:'recreation',chapter:'6 · Un plan en familia',speaker:'EN FAMILIA',line:'«Queremos hacer algo juntos este fin de semana.»',title:'¿Cómo propones disfrutar sin comprometer la próxima quincena?',options:[
-  option('Revisamos los pendientes y elegimos un plan con un límite de gasto, sin usar el dinero de la casa ni la reserva.','joy','El plan tiene un límite.','La familia comparte un momento de juego. Un gusto puede caber en el presupuesto cuando lo necesario está cubierto; los pendientes anteriores siguen contando.'),
+  option('«Listo, yo invito para no quedar mal». Pago la ronda aunque todavía no haya revisado mis pendientes.','joy','La invitación redujo tu presupuesto.','La mesa se llena de botellas y la cuenta aumenta. Gastaste sin revisar tus prioridades; ahora tienes menos margen para la casa o un imprevisto.')]},
+ {id:'recreation',card:'recreation',chapter:'6 · Un plan en familia',speaker:'EN FAMILIA',line:'«¿Qué podemos hacer juntos este fin de semana?»',title:'¿Qué plan propones para disfrutar sin gastar de más?',options:[
+  option('Revisamos los pendientes y elegimos un plan con un límite de gasto, sin usar el dinero de la casa ni la reserva.','joy','El plan tiene un límite.','La familia comparte un momento de juego. Disfrutar también hace parte del presupuesto. Revisa que lo necesario esté cubierto: los pagos pendientes todavía necesitan atención.'),
   option('Propongo jugar en casa o ir al parque sin gastar. Guardamos lo disponible para una meta que acordemos juntos.','reserve','Disfrutan y conservan el respaldo.','La familia juega con la pelota y el dinero queda guardado. Hablar de las prioridades permite encontrar planes agradables sin gastar más.'),
   option('Propongo comprar a cuotas lo que todos quieren. Para disfrutar hoy dejamos el presupuesto del próximo pago para después.','debt','El gusto comprometió el siguiente pago.','El juego se detiene y la familia queda preocupada por los pagos. Comprar a cuotas sin un plan convierte el gusto de hoy en un pendiente de mañana.')]}
 ];
@@ -406,7 +406,7 @@ const World={root:null,spots:{},actors:[],targets:[],coins:[],drops:[],elapsed:0
  else if(changed){this.look.copy(this.lookGoal);Scene.camera.position.copy(destination).add(new THREE.Vector3(.25,.1,.45));this.travel={from:Scene.camera.position.clone(),look:this.look.clone(),elapsed:0,duration:1.1};const viewport=$('scene');viewport.classList.remove('scene-enter');void viewport.offsetWidth;viewport.classList.add('scene-enter');}
  if(id==='home')this.fridgeOpen=true;if(changed&&id==='storage')this.reserveOpen=true;
  const labels={home:'Cerrar la nevera',emergency:'Revisar la fuga',storage:'Abrir la reserva',loan:'Atender el celular',beer:'Mover la bandeja',recreation:'Jugar con la pelota'};
- $('worldAction').textContent=id==='storage'&&this.reserveOpen?'Cerrar la reserva':labels[id];$('worldHint').textContent='Toca un objeto o desliza para mirar';this.actionTime=-10;this.apply();
+ $('worldAction').textContent=id==='storage'&&this.reserveOpen?'Cerrar la reserva':labels[id];$('worldHint').textContent='Toca los objetos para explorar · Desliza para mirar';this.actionTime=-10;this.apply();
  },
  reframe(){if(!this.activeId)return;
  const profiles={home:{width:3.2,height:2.65,x:-.12,y:1.2},emergency:{width:2.6,height:2.65,x:0,y:1.2},storage:{width:2.65,height:2.65,x:0,y:1.2},loan:{width:3.5,height:2.7,x:0,y:1.25},beer:{width:2.7,height:2.65,x:0,y:1.2},recreation:{width:2.9,height:2.65,x:0,y:1.2}};
