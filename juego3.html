@@ -1344,6 +1344,23 @@
       text-align: center;
       color: #FFF;
     }
+    /* Guía breve y acciones legibles para dejar el entorno a la vista. */
+    .station-card { padding: 7px 10px; gap: 5px; }
+    .station-dialogue { background: none; border: 0; padding: 0; font-size: 13px; line-height: 1.3; }
+    .action-btn-primary, .touch-step-card { min-height: 44px; }
+    .step-text-title { font-size: 13px; line-height: 1.3; }
+    .touch-step-card { color: #FFF; font-family: inherit; text-align: left; }
+    .touch-walk-pill { top: 70px; font-size: 11px; padding: 4px 10px; }
+    .breathe-sub-instruction { display: none; }
+    .station-card.station-complete #actionZone,
+    .station-card.station-complete .station-dialogue { display: none; }
+    .feedback-modal { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
+    .feedback-drawer { max-height: 42%; overflow-y: auto; padding: 12px 14px; }
+    .drawer-text { font-size: 14px; line-height: 1.4; }
+    @media (max-height: 540px) and (min-width: 600px) {
+      .recharge-app { max-width: none; width: 100%; height: 100dvh; max-height: none; border: 0; border-radius: 0; }
+      .station-deck { left: auto; right: 0; width: 44%; }
+    }
   </style>
 </head>
 <body>
@@ -1677,21 +1694,30 @@
 
         findAPI: function (win) {
           var attempts = 0;
-          while (win && !win.API && attempts < 10) {
-            win = win.parent || win.opener;
+          while (win && attempts < 10) {
+            try {
+              if (win.API) return win.API;
+              if (win.parent && win.parent !== win) win = win.parent;
+              else break;
+            } catch (e) {
+              break;
+            }
             attempts++;
           }
-          return win ? win.API : null;
+          return null;
         },
 
         init: function () {
+          if (this.initialized) return;
           try {
-            this.api = this.findAPI(window);
-            if (this.api && !this.initialized) {
-              this.api.LMSInitialize('');
-              this.initialized = true;
-              this.api.LMSSetValue('cmi.core.lesson_status', 'incomplete');
-              this.api.LMSCommit('');
+            this.api = this.findAPI(window) || this.findAPI(window.opener);
+            if (this.api) {
+              var result = this.api.LMSInitialize('');
+              this.initialized = (result === 'true' || result === true);
+              if (this.initialized) {
+                this.api.LMSSetValue('cmi.core.lesson_status', 'incomplete');
+                this.api.LMSCommit('');
+              }
             }
           } catch (e) {
             console.warn('[SCORM] No detectado. Modo autónomo.');
@@ -3537,6 +3563,7 @@
             soundIconOff: document.getElementById('soundIconOff'),
             stepChip: document.getElementById('stepChip'),
             locationLabel: document.getElementById('locationLabel'),
+            stationCard: document.getElementById('stationCard'),
             stationDialogue: document.getElementById('stationDialogue'),
             stationPrompt: document.getElementById('stationPrompt'),
             actionZone: document.getElementById('actionZone'),
@@ -3670,7 +3697,14 @@
           this.dom.stationTag.textContent = 'PASO ' + stationNum + ' DE 4';
           this.dom.stepChip.textContent = 'PASO ' + stationNum + ' DE 4';
           this.dom.locationLabel.textContent = data.location;
-          this.dom.stationDialogue.innerHTML = data.dialogue;
+          this.dom.stationCard.classList.remove('station-complete');
+          this.dom.stationDialogue.style.display = stationNum === 2 ? 'none' : '';
+          this.dom.stationDialogue.textContent = [
+            'Lleva al trabajador a la caseta y bebe agua.',
+            'Mantén el círculo durante los tres ciclos.',
+            'Guarda tus cosas y silencia el trabajo.',
+            'Prepara la habitación para descansar.'
+          ][stationNum - 1];
           this.dom.stationPrompt.textContent = data.prompt || '';
           this.dom.stationPrompt.style.display = data.prompt ? 'block' : 'none';
 
@@ -3692,7 +3726,7 @@
             btn.className = 'action-btn-primary';
             btn.innerHTML = [
               '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>',
-              '<span>ENTRAR A LA CASETA Y BEBER AGUA</span>'
+              '<span>Ir a la caseta y beber</span>'
             ].join('');
 
             var completeStation1 = function () {
@@ -3974,7 +4008,8 @@
             ];
 
             steps.forEach(function (st) {
-              var card = document.createElement('div');
+              var card = document.createElement('button');
+              card.type = 'button';
               card.className = 'touch-step-card';
               card.innerHTML = [
                 '<div class="step-check-dot"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><polyline points="20 6 9 17 4 12"></polyline></svg></div>',
@@ -4029,7 +4064,8 @@
             ];
 
             steps.forEach(function (st) {
-              var card = document.createElement('div');
+              var card = document.createElement('button');
+              card.type = 'button';
               card.className = 'touch-step-card';
               card.innerHTML = [
                 '<div class="step-check-dot"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><polyline points="20 6 9 17 4 12"></polyline></svg></div>',
@@ -4077,6 +4113,7 @@
         },
 
         showInlineFeedback: function (text) {
+          this.dom.stationCard.classList.add('station-complete');
           if (this.dom.stationFeedbackInline) {
             this.dom.stationFeedbackInline.textContent = text;
             this.dom.stationFeedbackInline.className = 'station-feedback-inline active success';

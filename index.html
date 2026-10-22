@@ -220,6 +220,19 @@
       background: linear-gradient(90deg, #38BDF8 0%, #0284C7 100%);
     }
 
+    .game-card.game-4 .game-card-accent-strip {
+      background: linear-gradient(90deg, #FBBF24, #2DD4BF);
+    }
+    .game-card.game-4 .card-unit-badge {
+      background: #FBBF24;
+      color: #082F49;
+    }
+    .game-card.game-4 .btn-play-primary {
+      background: linear-gradient(180deg, #FBBF24, #F59E0B);
+      color: #082F49;
+      border: 1px solid #D49000;
+    }
+
     .card-top {
       display: flex;
       flex-direction: column;
@@ -622,6 +635,33 @@
         </div>
       </article>
 
+      <!-- TARJETA JUEGO 4 -->
+      <article class="game-card game-4">
+        <div class="game-card-accent-strip"></div>
+        <div class="card-top">
+          <div class="card-tag-row">
+            <span class="card-unit-badge">Módulo 4</span>
+            <span class="card-3d-badge">Solitario 3D · Primera persona</span>
+          </div>
+          <h2 class="game-title">El Solitario de la Quincena</h2>
+          <span class="game-subtitle">Finanzas personales y salud mental</span>
+          <p class="game-desc">Organiza tu efectivo, responde a la presión del celular y protege lo básico. Arrastra las cartas, construye una reserva y descubre tres finales según tus decisiones.</p>
+          <div class="feature-chips">
+            <span class="chip-item">Presupuesto 50/20/30</span>
+            <span class="chip-item">Tres finales</span>
+            <span class="chip-item">Control táctil</span>
+            <span class="chip-item">SCORM 1.2 / 2004</span>
+          </div>
+        </div>
+        <div class="card-actions">
+          <a href="juego4_unidad4.html" class="btn-play-primary"><span>Iniciar Juego 4 →</span></a>
+          <div class="btn-secondary-row">
+            <button class="btn-sub-action" onclick="openEmbedded('juego4_unidad4.html', 'Juego 4: El Solitario de la Quincena')">Jugar aquí</button>
+            <a href="scorm/Juego_04_SolitarioQuincena_SCORM.zip" class="btn-sub-action" download>SCORM 1.2 .zip</a>
+            <a href="scorm/Juego_04_SolitarioQuincena_SCORM2004.zip" class="btn-sub-action" download>SCORM 2004 .zip</a>
+          </div>
+        </div>
+      </article>
     </main>
 
     <!-- FOOTER -->
@@ -666,7 +706,7 @@
       }
     });
 
-    // Detectar parámetro ?game=1 o ?game=2 en la URL para abrir automáticamente
+    // Detectar parámetro ?game=1, ?game=2 o ?game=3 para abrir automáticamente
     (function () {
       var params = new URLSearchParams(window.location.search);
       var game = params.get('game');
@@ -674,6 +714,10 @@
         window.location.href = 'juego1.html';
       } else if (game === '2') {
         window.location.href = 'juego2.html';
+      } else if (game === '3') {
+        window.location.href = 'juego3.html';
+      } else if (game === '4') {
+        window.location.href = 'juego4_unidad4.html';
       }
     })();
   </script>

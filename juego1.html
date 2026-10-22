@@ -1153,6 +1153,59 @@
       box-shadow: 0 4px 18px rgba(255, 183, 3, 0.3) !important;
       animation: pulseReady 2s infinite !important;
     }
+    /* Interfaz de juego: decisiones breves y escenario despejado. */
+    .floating-hud-header { padding: 8px 12px 10px; gap: 3px; }
+    .brand-subtitle { display: none; }
+    .progress-track { height: 4px; }
+    .location-pill { display: none; }
+    .touch-look-hint { display: none; }
+    .character-speech-bubble {
+      transform: translate(-50%, -100%); animation: none;
+      width: 78%; max-width: 290px; min-width: 0;
+      padding: 7px 10px; border-radius: 10px;
+    }
+    .bubble-speaker-header { margin-bottom: 3px; }
+    .bubble-speaker-name { font-size: 10px; letter-spacing: 0.1px; flex: 1; }
+    .bubble-dialogue-text { font-size: 13px; line-height: 1.3; }
+    .dialogue-pagination { display: flex; align-items: center; justify-content: space-between; margin-top: 3px; gap: 6px; }
+    .dialogue-pagination[hidden] { display: none; }
+    .dialogue-page-count { color: #475569; font-size: 10px; }
+    .dialogue-page-btn { min-width: 32px; min-height: 32px; padding: 3px 8px; border: 1px solid #CBD5E1; border-radius: 8px; background: #F8FAFC; color: #023047; font: inherit; font-size: 11px; cursor: pointer; }
+    .dialogue-page-btn:disabled { opacity: 0.35; cursor: default; }
+    .replay-voice-btn { min-height: 28px; }
+    .floating-response-deck { bottom: max(8px, env(safe-area-inset-bottom)); gap: 4px; }
+    .question-header-row { margin: 0; }
+    .question-highlight-title { display: none; }
+    .floating-question-banner { padding: 7px 10px; }
+    .question-prompt-text { font-size: 14px; line-height: 1.3; margin-top: 3px; }
+    #responseBubblesList { gap: 5px !important; }
+    #responseBubblesList[hidden] { display: none !important; }
+    .decision-continue-btn { width: 100%; min-height: 44px; margin-top: 6px; border: 0; border-radius: 8px; background: var(--bolivar-yellow); color: var(--bolivar-blue); font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
+    .decision-continue-btn[hidden] { display: none; }
+    .text-response-bubble { min-height: 44px; padding: 7px 10px; border-radius: 10px; gap: 8px; }
+    .bubble-message-text { font-size: 14px; line-height: 1.3; }
+    .bubble-letter-icon { width: 24px; height: 24px; min-width: 24px; }
+    .teaching-modal-overlay { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
+    .teaching-drawer { max-height: 42%; padding: 12px 14px; border-radius: 16px 16px 0 0; }
+    .teaching-single-text { font-size: 14px; line-height: 1.4; }
+    .adventure-app.is-travelling .floating-response-deck,
+    .adventure-app.is-travelling .character-speech-bubble { visibility: hidden; }
+    @media (max-height: 640px) and (max-width: 599px) {
+      .bubble-message-text { font-size: 13px; line-height: 1.25; }
+      .text-response-bubble { padding: 6px 8px; }
+      .inspection-mode .character-speech-bubble { width: 148px; max-width: 148px; padding: 6px 8px; }
+      .inspection-mode .bubble-speaker-name { font-size: 9px; }
+      .inspection-mode #replayVoiceBtn { padding: 3px 4px; min-width: 28px; }
+      .inspection-mode #replayVoiceBtn span { display: none; }
+      .inspection-mode #dialogueNextBtn { font-size: 0; padding: 0; }
+      .inspection-mode #dialogueNextBtn::after { content: '›'; font-size: 18px; }
+    }
+    @media (max-height: 540px) and (min-width: 600px) {
+      .adventure-app { max-width: none; width: 100%; height: 100dvh; max-height: none; border: 0; border-radius: 0; }
+      .floating-response-deck { left: auto; right: 0; transform: none; width: 56%; }
+      .character-speech-bubble { max-width: 290px; width: 38%; }
+      .touch-look-hint { left: 25%; }
+    }
   </style>
 </head>
 <body>
@@ -1227,7 +1280,7 @@
         <circle cx="12" cy="12" r="10"></circle>
         <path d="M16 12l-4-4-4 4M12 8v8"></path>
       </svg>
-      <span>Gira 360° arrastrando el pulgar</span>
+      <span>Arrastra para mirar alrededor</span>
     </div>
 
     <!-- 3. BOCADILLO DE DIÁLOGO FLOTANTE DIRECTAMENTE SOBRE EL PERSONAJE 3D -->
@@ -1251,6 +1304,11 @@
       <p class="bubble-dialogue-text" id="bubbleText">
         "¡Atención cuadrilla! Relevo de turno en la columna: completen la bitácora antes de fundir..."
       </p>
+      <div class="dialogue-pagination" id="dialoguePagination" hidden>
+        <button type="button" class="dialogue-page-btn" id="dialoguePreviousBtn" aria-label="Frase anterior">‹</button>
+        <span class="dialogue-page-count" id="dialoguePageCount" aria-live="polite"></span>
+        <button type="button" class="dialogue-page-btn" id="dialogueNextBtn">Siguiente ›</button>
+      </div>
     </div>
 
     <!-- Flash fotográfico para Misión 4 -->
@@ -1265,6 +1323,7 @@
           <span class="question-highlight-title" id="questionHighlightTitle">¿CUÁL ES LA MEJOR RESPUESTA?</span>
         </div>
         <p class="question-prompt-text" id="questionPromptText">¿Cuál es la mejor respuesta para registrar el relevo sin errores ni rumores?</p>
+        <button type="button" class="decision-continue-btn" id="decisionContinueBtn" hidden>Ver explicación y continuar ›</button>
       </div>
 
       <div id="responseBubblesList" style="display: flex; flex-direction: column; gap: 7px;">
@@ -1778,6 +1837,22 @@
             osc.start(t); osc.stop(t + 0.45);
           });
         },
+        playImpact: function () {
+          if (this.muted) return; this.init(); if (!this.ctx) return;
+          var t = this.ctx.currentTime, duration = 0.32;
+          var buffer = this.ctx.createBuffer(1, Math.ceil(this.ctx.sampleRate * duration), this.ctx.sampleRate);
+          var samples = buffer.getChannelData(0);
+          for (var i = 0; i < samples.length; i++) samples[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / samples.length, 3);
+          var source = this.ctx.createBufferSource(); source.buffer = buffer;
+          var filter = this.ctx.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.value = 1100;
+          var gain = this.ctx.createGain(); gain.gain.value = 0.16;
+          source.connect(filter); filter.connect(gain); gain.connect(this.ctx.destination); source.start(t);
+        },
+        playElectricalFault: function () {
+          if (this.muted) return;
+          this.playRadioStatic();
+          this.playImpact();
+        },
         playHazard: function () {
           if (this.muted) return; this.init(); if (!this.ctx) return;
           var t = this.ctx.currentTime;
@@ -1848,6 +1923,16 @@
 
       var VoiceEngine = {
         currentAudio: null,
+        playbackId: 0,
+        currentText: null,
+        lastFeedbackText: null,
+        utterance: null,
+        speechQueue: [],
+        speechIndex: 0,
+        speechRetry: 0,
+        speechTimer: null,
+        speechCompletion: null,
+        lastSpeechError: null,
         currentKey: null,
         lastFeedbackKey: 'correct',
         isSpeaking: false,
@@ -1856,6 +1941,7 @@
           if (SoundEngine.muted) return;
           this.stop();
 
+          this.currentText = null;
           var audioUri = VoiceAudioData[key];
           var waveEl = document.getElementById('voiceWaveIndicator');
           var replayBtn = document.getElementById('replayVoiceBtn');
@@ -1865,6 +1951,13 @@
           }
 
           var self = this;
+          var playbackId = this.playbackId;
+          var fallbackUsed = false;
+          var fallback = function () {
+            if (self.playbackId !== playbackId || fallbackUsed) return;
+            fallbackUsed = true;
+            self.speakBrowserFallback(key, onEnded);
+          };
           if (audioUri) {
             try {
               this.currentAudio = new Audio(audioUri);
@@ -1875,6 +1968,7 @@
               if (replayBtn) replayBtn.classList.add('playing');
 
               this.currentAudio.onended = function () {
+                if (self.playbackId !== playbackId || fallbackUsed) return;
                 self.isSpeaking = false;
                 if (waveEl) waveEl.style.display = 'none';
                 if (replayBtn) replayBtn.classList.remove('playing');
@@ -1882,16 +1976,17 @@
               };
 
               this.currentAudio.onerror = function () {
+                if (self.playbackId !== playbackId || fallbackUsed) return;
                 self.isSpeaking = false;
                 if (waveEl) waveEl.style.display = 'none';
                 if (replayBtn) replayBtn.classList.remove('playing');
-                self.speakBrowserFallback(key, onEnded);
+                fallback();
               };
 
               var playPromise = this.currentAudio.play();
               if (playPromise !== undefined) {
                 playPromise.catch(function () {
-                  self.speakBrowserFallback(key, onEnded);
+                  fallback();
                 });
               }
               return;
@@ -1901,13 +1996,19 @@
           }
 
           // Si falla o no hay audio, usar fallback nativo del navegador
-          this.speakBrowserFallback(key, onEnded);
+          fallback();
         },
 
-        speakBrowserFallback: function (key, onEnded) {
-          if (SoundEngine.muted || !window.speechSynthesis) return;
-          try {
-            window.speechSynthesis.cancel();
+        speakConsequence: function (text) {
+          this.stop();
+          this.currentKey = 'consequence';
+          this.currentText = text;
+          this.lastFeedbackText = text;
+          this.speakBrowserFallback('consequence', null, text);
+        },
+
+        speakBrowserFallback: function (key, onEnded, directText) {
+          if (SoundEngine.muted) return;
             var textMap = {
               intro: 'Operación Piso Cinco: Canal Limpio. Asumes el turno como líder en la Torre B. Coordina con respeto y protege la salud mental de tu cuadrilla.',
               station1: '¡Atención cuadrilla! Relevo en la columna: completen la bitácora con datos exactos antes de fundir.',
@@ -1924,40 +2025,115 @@
               correct: '¡Acción correcta validada! Clima de cuadrilla fortalecido.',
               alert: '¡Atención! Esa decisión genera conflicto o riesgo crítico de accidente en la obra.'
             };
-            var text = textMap[key];
+            var text = directText || textMap[key];
             if (!text) return;
+            this.speechQueue = [];
+            var phrase = '';
+            text.trim().split(/\s+/).forEach(function (word) {
+              if (phrase && phrase.length + word.length + 1 > 140) {
+                VoiceEngine.speechQueue.push(phrase);
+                phrase = '';
+              }
+              phrase += (phrase ? ' ' : '') + word;
+              if (phrase.length >= 35 && /[.!?…;:]$/.test(word)) {
+                VoiceEngine.speechQueue.push(phrase);
+                phrase = '';
+              }
+            });
+            if (phrase) this.speechQueue.push(phrase);
+            this.speechIndex = 0;
+            this.speechRetry = 0;
+            this.speechKey = key;
+            this.speechCompletion = onEnded || null;
+            this.lastSpeechError = null;
+            this.readSpeechChunk();
+        },
 
-            var u = new SpeechSynthesisUtterance(text);
-            u.lang = 'es-CO';
-            u.rate = (key === 'station2' || key === 'station5' || key === 'station10') ? 1.05 : ((key === 'station4' || key === 'station6') ? 0.95 : 1.0);
-            u.pitch = (key === 'station2' || key === 'station5') ? 0.85 : ((key === 'station3' || key === 'station7') ? 1.15 : 1.0);
+        updateSpeechControls: function (speaking, retry) {
+          this.isSpeaking = speaking;
+          var wave = document.getElementById('voiceWaveIndicator');
+          if (wave) wave.style.display = speaking ? 'inline-flex' : 'none';
+          ['replayVoiceBtn', 'teachingVoiceBtn'].forEach(function (id) {
+            var button = document.getElementById(id);
+            if (!button) return;
+            button.classList.toggle('playing', speaking);
+            var label = button.querySelector('span');
+            if (label) label.textContent = retry ? 'REINTENTAR VOZ' : 'VOZ';
+          });
+        },
 
-            var waveEl = document.getElementById('voiceWaveIndicator');
-            var replayBtn = document.getElementById('replayVoiceBtn');
-            var self = this;
-
+        readSpeechChunk: function () {
+          var self = this, playbackId = this.playbackId;
+          clearTimeout(this.speechTimer);
+          if (SoundEngine.muted) return;
+          if (!window.speechSynthesis || typeof SpeechSynthesisUtterance === 'undefined') {
+            this.lastSpeechError = 'synthesis-unavailable';
+            this.updateSpeechControls(false, true);
+            return;
+          }
+          if (this.speechIndex >= this.speechQueue.length) {
+            var complete = this.speechCompletion;
+            this.speechCompletion = null;
+            this.utterance = null;
+            this.updateSpeechControls(false, false);
+            if (complete) complete();
+            return;
+          }
+          // Retener la locución hasta su evento final y usar fragmentos cortos.
+          var u = new SpeechSynthesisUtterance(this.speechQueue[this.speechIndex]);
+          this.utterance = u;
+          var current = function () { return self.playbackId === playbackId && self.utterance === u; };
+          var fail = function (error) {
+            if (!current()) return;
+            clearTimeout(self.speechTimer);
+            self.utterance = null;
+            self.lastSpeechError = error;
+            self.updateSpeechControls(false, false);
+            if (self.speechRetry < 1 && error !== 'not-allowed') {
+              self.speechRetry++;
+              try { window.speechSynthesis.cancel(); } catch (e) {}
+              self.speechTimer = setTimeout(function () {
+                if (self.playbackId === playbackId) self.readSpeechChunk();
+              }, 180);
+            } else {
+              self.speechCompletion = null;
+              self.updateSpeechControls(false, true);
+            }
+          };
+          try {
+            var voices = [];
+            try { voices = window.speechSynthesis.getVoices() || []; } catch (e) {}
+            var spanish = voices.filter(function (v) { return /^es/i.test(v.lang); });
+            var voice = spanish.find(function (v) { return v.localService && /^es[-_]CO$/i.test(v.lang); }) || spanish.find(function (v) { return v.localService; }) || spanish.find(function (v) { return /^es[-_]CO$/i.test(v.lang); }) || spanish[0];
+            // Si una voz concreta falla, dejar que el dispositivo elija otra.
+            if (voice && this.speechRetry === 0) { u.voice = voice; u.lang = voice.lang; }
+            else u.lang = this.speechRetry ? 'es' : 'es-ES';
+            u.rate = (this.speechKey === 'station2' || this.speechKey === 'station5' || this.speechKey === 'station10') ? 1.05 : 1.0;
+            u.pitch = 1;
             u.onstart = function () {
-              self.isSpeaking = true;
-              if (waveEl) waveEl.style.display = 'inline-flex';
-              if (replayBtn) replayBtn.classList.add('playing');
+              if (!current()) return;
+              clearTimeout(self.speechTimer);
+              self.lastSpeechError = null;
+              self.updateSpeechControls(true, false);
+              self.speechTimer = setTimeout(function () { fail('speech-timeout'); }, Math.max(16000, u.text.split(/\s+/).length * 900));
             };
             u.onend = function () {
-              self.isSpeaking = false;
-              if (waveEl) waveEl.style.display = 'none';
-              if (replayBtn) replayBtn.classList.remove('playing');
-              if (onEnded) onEnded();
+              if (!current()) return;
+              clearTimeout(self.speechTimer);
+              self.utterance = null;
+              self.speechIndex++;
+              self.speechRetry = 0;
+              self.readSpeechChunk();
             };
-            u.onerror = function () {
-              self.isSpeaking = false;
-              if (waveEl) waveEl.style.display = 'none';
-              if (replayBtn) replayBtn.classList.remove('playing');
-            };
-
+            u.onerror = function (event) { fail(event.error || 'synthesis-failed'); };
+            this.speechTimer = setTimeout(function () { fail('start-timeout'); }, 1800);
+            if (typeof window.speechSynthesis.resume === 'function') window.speechSynthesis.resume();
             window.speechSynthesis.speak(u);
-          } catch (e) {}
+          } catch (e) { fail('synthesis-failed'); }
         },
 
         replayCurrent: function () {
+          if (this.currentKey === 'consequence' && this.currentText) { this.speakConsequence(this.currentText); return; }
           if (!this.currentKey) {
             var st = (typeof AdventureGame !== 'undefined' && AdventureGame.currentStation) ? AdventureGame.currentStation : 1;
             this.currentKey = 'station' + st;
@@ -1966,12 +2142,21 @@
         },
 
         replayFeedback: function () {
+          if (this.lastFeedbackText) { this.speakConsequence(this.lastFeedbackText); return; }
           this.play(this.lastFeedbackKey || 'correct');
         },
 
         stop: function () {
+          this.playbackId++;
+          clearTimeout(this.speechTimer);
+          this.speechTimer = null;
+          this.utterance = null;
+          this.speechQueue = [];
+          this.speechCompletion = null;
           this.isSpeaking = false;
           if (this.currentAudio) {
+            this.currentAudio.onended = null;
+            this.currentAudio.onerror = null;
             try {
               this.currentAudio.pause();
               this.currentAudio.currentTime = 0;
@@ -1985,6 +2170,7 @@
           var replayBtn = document.getElementById('replayVoiceBtn');
           if (waveEl) waveEl.style.display = 'none';
           if (replayBtn) replayBtn.classList.remove('playing');
+          this.updateSpeechControls(false, false);
         }
       };
 
@@ -1992,6 +2178,316 @@
       /* ------------------------------------------------------------------
          3. MOTOR 3D THREE.JS: VISTA 100% PANTALLA COMPLETA
          ------------------------------------------------------------------ */
+      // Secuencias en segundos: movimiento continuo, gravedad y respuesta de la cuadrilla.
+      var ConsequenceDirector = {
+        baseline: [], sequence: null, effects: null, particles: [], shake: 0,
+
+        capture: function (engine) {
+          this.engine = engine;
+          this.baseline = [];
+          engine.scene.traverse(function (o) {
+            var materials = o.material ? (Array.isArray(o.material) ? o.material : [o.material]) : [];
+            ConsequenceDirector.baseline.push({ object: o, position: o.position.clone(), rotation: o.rotation.clone(), scale: o.scale.clone(), visible: o.visible, yBase: o.userData.yBase, intensity: o.intensity, colors: materials.map(function (m) { return m.color ? m.color.clone() : null; }) });
+          });
+        },
+
+        finish: function () {
+          if (this.sequence) {
+            this.sequence.tracks.forEach(function (t) { ConsequenceDirector.applyTrack(t, 1); });
+            if (this.sequence.station === 9) {
+              if (this.sequence.safe) this.engine.shoringJackMesh.scale.y = 1;
+              else this.engine.columnCrackMesh.scale.y = 1;
+            }
+          }
+          if (this.engine.electricSparkGroup) this.engine.electricSparkGroup.visible = false;
+          this.engine.workersList.forEach(function (w) {
+            if (w.userData.consequenceAnimated) w.userData.yBase = w.position.y;
+            w.userData.consequenceAnimated = false;
+            var p = w.userData.parts;
+            if (p) { p.leftLeg.rotation.x = 0; p.rightLeg.rotation.x = 0; }
+          });
+          this.sequence = null;
+          this.particles = [];
+          this.shake = 0;
+          if (this.effects) {
+            var geometries = new Set(), materials = new Set();
+            this.effects.traverse(function (o) {
+              if (o.geometry) geometries.add(o.geometry);
+              if (o.material) materials.add(o.material);
+            });
+            geometries.forEach(function (g) { g.dispose(); });
+            materials.forEach(function (m) { m.dispose(); });
+            this.engine.scene.remove(this.effects);
+            this.effects = null;
+          }
+        },
+
+        reset: function () {
+          this.finish();
+          this.baseline.forEach(function (s) {
+            var o = s.object;
+            o.position.copy(s.position); o.rotation.copy(s.rotation); o.scale.copy(s.scale); o.visible = s.visible;
+            o.userData.yBase = s.yBase; o.userData.consequenceAnimated = false;
+            if (s.intensity !== undefined) o.intensity = s.intensity;
+            var materials = o.material ? (Array.isArray(o.material) ? o.material : [o.material]) : [];
+            materials.forEach(function (m, i) { if (s.colors[i]) m.color.copy(s.colors[i]); });
+          });
+        },
+
+        move: function (mesh, position, rotation, delay, duration, gravity) {
+          if (!mesh) return;
+          mesh.userData.consequenceAnimated = true;
+          this.sequence.tracks.push({ object: mesh, start: mesh.position.clone(), end: position ? new THREE.Vector3(position[0], position[1], position[2]) : mesh.position.clone(), rotation: mesh.rotation.clone(), endRotation: rotation ? new THREE.Euler(rotation[0], rotation[1], rotation[2]) : mesh.rotation.clone(), delay: delay || 0, duration: duration || 1, gravity: !!gravity });
+        },
+
+        pose: function (worker, left, right, delay) {
+          if (!worker || !worker.userData.parts) return;
+          this.move(worker.userData.parts.leftArm, null, [left, 0, 0.15], delay, 0.55);
+          this.move(worker.userData.parts.rightArm, null, [right, 0, -0.15], delay, 0.55);
+        },
+
+        applyTrack: function (track, progress) {
+          var t = track.gravity ? progress * progress : progress * progress * (3 - 2 * progress);
+          track.object.position.lerpVectors(track.start, track.end, t);
+          track.object.rotation.set(THREE.MathUtils.lerp(track.rotation.x, track.endRotation.x, t), THREE.MathUtils.lerp(track.rotation.y, track.endRotation.y, t), THREE.MathUtils.lerp(track.rotation.z, track.endRotation.z, t));
+          var parts = track.object.userData.parts;
+          if (parts && track.start.distanceTo(track.end) > 0.4) {
+            var stride = progress > 0 && progress < 1 ? Math.sin(progress * Math.PI * 8) * 0.25 : 0;
+            parts.leftLeg.rotation.x = stride; parts.rightLeg.rotation.x = -stride;
+          }
+        },
+
+        at: function (time, action) { this.sequence.events.push({ time: time, action: action, fired: false }); },
+
+        box: function (size, position, color, parent) {
+          var mesh = new THREE.Mesh(new THREE.BoxGeometry(size[0], size[1], size[2]), new THREE.MeshStandardMaterial({ color: color, roughness: 0.78 }));
+          mesh.position.set(position[0], position[1], position[2]); mesh.castShadow = true;
+          (parent || this.effects).add(mesh);
+          return mesh;
+        },
+
+        burst: function (position, color, count) {
+          var geometry = new THREE.BoxGeometry(0.06, 0.06, 0.06);
+          var material = new THREE.MeshStandardMaterial({ color: color, roughness: 1 });
+          for (var i = 0; i < count; i++) {
+            var mesh = new THREE.Mesh(geometry, material);
+            mesh.position.set(position[0], position[1], position[2]);
+            mesh.scale.setScalar(0.5 + Math.random() * 1.8);
+            this.effects.add(mesh);
+            this.particles.push({ mesh: mesh, start: mesh.position.clone(), born: this.sequence.elapsed, velocity: new THREE.Vector3((Math.random() - 0.5) * 2.8, 1.0 + Math.random() * 2.8, (Math.random() - 0.5) * 2.8) });
+          }
+          for (var c = 0; c < 6; c++) {
+            var cloud = new THREE.Mesh(new THREE.SphereGeometry(0.16, 8, 6), new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.18, depthWrite: false }));
+            cloud.position.set(position[0], position[1], position[2]); this.effects.add(cloud);
+            this.particles.push({ mesh: cloud, dust: true, start: cloud.position.clone(), born: this.sequence.elapsed, velocity: new THREE.Vector3((Math.random() - 0.5) * 1.2, 0.35 + Math.random() * 0.3, (Math.random() - 0.5) * 1.2) });
+          }
+        },
+
+        impact: function (position, color, strength) {
+          this.burst(position, color, 26);
+          this.shake = strength || 0.035;
+          SoundEngine.playImpact();
+        },
+
+        color: function (mesh, color) { if (mesh && mesh.material && mesh.material.color) mesh.material.color.setHex(color); },
+
+        update: function (now) {
+          if (!this.sequence) return;
+          var s = this.sequence;
+          s.elapsed = (now - s.start) / 1000;
+          s.events.forEach(function (event) { if (!event.fired && s.elapsed >= event.time) { event.fired = true; event.action(); } });
+          s.tracks.forEach(function (track) { if (s.elapsed >= track.delay) ConsequenceDirector.applyTrack(track, Math.min(1, (s.elapsed - track.delay) / track.duration)); });
+          if (s.station === 3) {
+            var cableLength = Math.max(0.1, 14.5 - this.engine.craneLoad.position.y - 1.4);
+            this.engine.craneCable.scale.y = cableLength / 9.5;
+            this.engine.craneCable.position.y = 14.5 - cableLength / 2;
+            this.engine.craneSlings.forEach(function (sling) { sling.position.y = ConsequenceDirector.engine.craneLoad.position.y + 0.8; });
+          }
+          if (s.station === 9) {
+            var growth = Math.min(1, Math.max(0, (s.elapsed - 0.2) / 1.3));
+            if (s.safe) this.engine.shoringJackMesh.scale.y = 0.2 + growth * 0.8;
+            else this.engine.columnCrackMesh.scale.y = 0.05 + growth * 0.95;
+          }
+          if (s.puddle) {
+            var spread = Math.max(0.025, Math.min(1.2, (s.elapsed - 0.5) * 0.9));
+            s.puddle.scale.set(spread, 1, spread);
+            s.flow.visible = s.elapsed >= 0.5 && s.elapsed < 1.35;
+          }
+          this.particles.forEach(function (p) {
+            var age = Math.max(0, s.elapsed - p.born);
+            var flightTime = (p.velocity.y + Math.sqrt(p.velocity.y * p.velocity.y + 19.6 * p.start.y)) / 9.8;
+            var motionAge = Math.min(age, p.dust ? 2.4 : flightTime + 0.2);
+            p.mesh.position.copy(p.start).addScaledVector(p.velocity, motionAge);
+            p.mesh.position.y = Math.max(0.035, p.start.y + p.velocity.y * age - (p.dust ? 0.05 : 4.9) * age * age);
+            if (p.dust) {
+              p.mesh.scale.setScalar(1 + age * 2.2);
+              p.mesh.material.opacity = Math.max(0, 0.18 * (1 - age / 2.4));
+            }
+            if (p.mesh.position.y > 0.04) p.mesh.rotation.set(age * 5, age * 4, age * 2);
+          });
+          if (this.shake > 0.0005 && !this.engine.isWalking) {
+            this.engine.camera.position.x += Math.sin(now * 0.063) * this.shake;
+            this.engine.camera.position.y += Math.sin(now * 0.081) * this.shake * 0.5;
+            this.shake *= 0.88;
+          }
+          if (s.elapsed >= 2.65) {
+            this.engine.workersList.forEach(function (w) { if (w.userData.consequenceAnimated) w.userData.yBase = w.position.y; });
+          }
+        },
+
+        play: function (id, choice, safe) {
+          this.finish();
+          var e = this.engine, d = this;
+          this.effects = new THREE.Group(); e.scene.add(this.effects);
+          this.sequence = { start: performance.now(), elapsed: 0, tracks: [], events: [], station: id, safe: safe };
+          e.craneWobble = false;
+          var green = 0x10B981, red = 0xDC2626;
+          if (id === 1) {
+            this.color(e.station1Paper, safe ? green : red);
+            this.pose(e.residentWorker, -0.8, safe ? -0.5 : -1.8, 0.1);
+            if (safe) this.move(e.residentWorker, null, [0.04, 0.35, 0], 0, 0.7);
+            else {
+              var form = this.box([0.6, 1.2, 0.6], [-1.8, 0.6, 0.8], 0x9C6634);
+              var concrete = this.box([0.56, 0.48, 0.56], [-1.8, 0.95, 0.8], 0x94A3B8);
+              var wetConcrete = new THREE.MeshStandardMaterial({ color: 0x64748B, roughness: 0.95 });
+              var puddle = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 0.9, 0.035, 28), wetConcrete);
+              puddle.position.set(-1.8, 0.025, 0.8); puddle.scale.set(0.025, 1, 0.025);
+              this.effects.add(puddle);
+              var flow = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.12, 0.65, 10), wetConcrete);
+              flow.position.set(-1.8, 0.5, 0.8); flow.visible = false; this.effects.add(flow);
+              this.sequence.puddle = puddle; this.sequence.flow = flow;
+              this.move(form, [-2.0, 0.16, 0.75], [0.2, 0, -1.1], 0.5, 0.65, true);
+              this.move(concrete, [-1.8, 0.25, 0.8], [0.1, 0, 0.15], 0.5, 0.65, true);
+              this.move(e.residentWorker, [-1.2, 0, 0.4], [-0.1, -0.5, 0], 0.65, 0.8);
+              this.at(1.15, function () { d.impact([-1.8, 0.4, 0.8], 0x94A3B8); });
+            }
+          } else if (id === 2) {
+            this.color(e.radioLed, safe ? green : red);
+            this.pose(e.capatazWorker, safe ? -0.25 : -1.4, safe ? -0.3 : -1.9, 0);
+            if (safe) {
+              this.move(e.radioHelper, [-3.8, 0, -3.2], [0, 0.5, 0], 0.2, 1.8);
+              this.move(e.capatazWorker, null, [0, 0.35, 0], 0, 0.8);
+            } else if (choice.letter === 'A') {
+              var pivot = new THREE.Group(); pivot.position.set(-2.75, 0.02, -2.4); this.effects.add(pivot);
+              this.box([0.09, 2.5, 0.09], [0, 1.25, 0], 0x64748B, pivot);
+              this.move(pivot, null, [1.52, 0, -0.22], 0.3, 0.85, true);
+              this.move(e.radioHelper, [-3.25, 0.22, -2.15], [0.12, 0, -0.9], 0.55, 0.7);
+              this.pose(e.radioHelper, -1.7, -1.3, 0.4);
+              this.at(1.15, function () { d.impact([-2.75, 0.1, -1.8], 0x64748B); });
+            } else {
+              this.move(e.capatazWorker, [-3, 0, -3.25], [-0.15, 0, 0], 0, 0.8);
+              this.move(e.radioHelper, [-3.8, 0, -3.8], [0, -0.7, 0], 0.3, 0.9);
+              this.pose(e.radioHelper, -1.1, -1.1, 0.3);
+              this.at(0.55, function () { SoundEngine.playRadioStatic(); });
+            }
+          } else if (id === 3) {
+            e.craneTargetY = undefined;
+            this.color(e.craneDangerZone, safe ? green : red);
+            this.move(e.craneCrew[0], [0.2, 0, -8.2], [0, 0.4, 0], 0, 1.1);
+            this.move(e.craneCrew[1], [3.5, 0, -8.3], [0, -0.8, 0], 0.15, 1.1);
+            this.move(e.craneCrew[2], [4.0, 0, -9], [0, -1, 0], 0, 1.1);
+            this.pose(e.craneCrew[0], -1.5, -1.5, 0);
+            this.move(e.craneLoad, [2, safe ? 0.38 : 0.4, -9.5], [safe ? 0 : 0.24, 0, safe ? 0 : -0.35], safe ? 0.2 : 0.7, safe ? 2.1 : 0.6, !safe);
+            this.at(safe ? 0.1 : 0.7, function () { e.craneSlings.forEach(function (s) { s.visible = safe; }); });
+            this.at(safe ? 2.3 : 1.3, function () { if (!safe) d.impact([2, 0.4, -9.5], 0x94A3B8, 0.06); else SoundEngine.playFootstep(); });
+          } else if (id === 4) {
+            this.color(e.railingBar, safe ? green : red);
+            if (safe) {
+              this.move(e.railingPost, null, [0, 0, 0], 0, 0.8);
+              this.move(e.railingBar, [17.8, 1.15, 0], [0, 0, 0], 0, 0.8);
+              this.move(e.hazardWorker, [14.8, 0, 0.6], [0, -1.6, 0], 0, 1.1);
+              e.hazardOrb.visible = false;
+            } else {
+              this.move(e.railingPost, [18.1, 0.2, 0], [0, 0, -1.5], 0.3, 0.8, true);
+              this.move(e.railingBar, [18.25, -0.7, 0], [0.7, 0, -1.5], 0.3, 0.8, true);
+              this.move(e.hazardWorker, [17.3, 0, 0.6], [0, -1.6, -0.12], 0, 0.65);
+              this.at(0.68, function () { d.move(e.hazardWorker, [18.8, -3.2, 0.6], [0.3, -1.6, -0.9], 0.68, 0.8, true); });
+              this.pose(e.hazardWorker, -1.8, -1.8, 0.4);
+              this.at(1.1, function () { d.impact([18, 0.15, 0], 0x64748B); SoundEngine.playEmergencyAlarm(); });
+            }
+          } else if (id === 5) {
+            this.color(e.scaffoldTagMesh, safe ? green : red);
+            if (safe) {
+              this.move(e.scaffoldWorker, [-8.9, 0, 3.2], [0, 1, 0], 0.2, 1.9);
+              this.move(e.scaffoldContractor, [-7.5, 0, 1.8], [0, 2.4, 0], 0, 1.0);
+              this.pose(e.scaffoldContractor, -0.2, -0.2, 0);
+            } else {
+              this.move(e.scaffoldPlank, [0, 0.25, 0], [0.2, 0, -0.75], 0.6, 0.7, true);
+              this.move(e.scaffoldWorker, [-9.6, 0.3, 3.5], [0.1, 1.2, -1.1], 0.65, 0.75, true);
+              this.pose(e.scaffoldWorker, -1.8, -1.5, 0.5);
+              if (choice.letter === 'C') this.move(e.scaffoldContractor, [-9.0, 0.25, 2.8], [0.3, 2.4, 0.7], 0.25, 0.8);
+              this.at(1.35, function () { d.impact([-10, 0.2, 3.5], 0x9C6634); });
+            }
+          } else if (id === 6) {
+            e.mixerStopped = safe;
+            if (safe) {
+              e.lotoLockMesh.visible = true;
+              this.move(e.exhaustedWorker, [-8.0, 0, -6.5], [0, 0.5, 0], 0.2, 1.8);
+              this.pose(e.exhaustedWorker, -0.3, -0.3, 0);
+            } else {
+              this.move(e.exhaustedWorker, [-8.8, 0.2, -6.2], [0.2, -0.5, 1.4], 0.55, 0.8, true);
+              this.at(0.65, function () { e.electricSparkGroup.visible = true; d.burst([-10, 1.5, -7.3], 0xFFD166, 24); SoundEngine.playElectricalFault(); });
+              this.at(1.1, function () { d.shake = 0.025; });
+              this.at(1.55, function () { e.electricSparkGroup.visible = false; });
+            }
+          } else if (id === 7) {
+            this.color(e.panicAuraRing, safe ? 0x38BDF8 : red);
+            this.move(e.rescueWorker, [6.5, 0, -16], [0, 2.8, 0], 0.3, 1.2);
+            this.pose(e.rescueWorker, -0.8, -0.8, 0.4);
+            if (safe) {
+              this.move(e.panicWorker, [6.1, 0.38, -15.8], [0, Math.PI, 0], 0.5, 1.7);
+              this.pose(e.panicWorker, -0.25, -0.25, 0.2);
+            } else {
+              this.move(e.panicWorker, [6.2, 0.35, -17.7], [0.2, 0, 0.7], 0.25, 0.65);
+              this.pose(e.panicWorker, -1.6, -1.6, 0.15);
+              this.at(1.0, function () { d.move(e.panicWorker, [6.1, 0.32, -17.35], [0.2, 0, 0.35], 1, 0.7); SoundEngine.playEmergencyAlarm(); });
+            }
+          } else if (id === 8) {
+            e.sawStopped = safe;
+            this.color(e.sawBladeGuard, safe ? green : red);
+            if (safe) {
+              this.move(e.sawOperatorWorker, [5.0, 0, 6.0], [0, -0.5, 0], 0, 1.4);
+              this.move(e.sawCompadreWorker, [6.0, 0, 6.0], [0, 0.5, 0], 0.2, 1.2);
+            } else {
+              var wood = this.box([1.5, 0.08, 0.25], [6.1, 0.98, 7.5], 0xC99B61);
+              this.move(wood, [6.2, 0.05, 5.5], [-0.8, 0.3, 0.35], 0.5, 0.55, true);
+              this.move(e.sawOperatorWorker, [5.2, 0.2, 5.9], [0.1, 0, -0.65], 0.55, 0.6);
+              this.move(e.sawCompadreWorker, [6.8, 0, 5.6], [0, 0, 0], 0.65, 0.6);
+              this.pose(e.sawOperatorWorker, -1.6, -1.6, 0.5);
+              this.at(0.65, function () { d.impact([5.8, 0.95, 7.5], 0xC99B61); });
+            }
+          } else if (id === 9) {
+            if (safe) {
+              e.shoringJackMesh.visible = true;
+              e.shoringJackMesh.position.y = 0.4;
+              e.shoringJackMesh.scale.y = 0.2;
+              this.move(e.shoringJackMesh, [-1.35, 2.2, 0], null, 0, 1.0);
+              this.move(e.inspectorWorker, [-1.2, 0, -5.4], [0, 2.6, 0], 0, 1.2);
+              this.pose(e.inspectorWorker, -0.8, -0.4, 0);
+            } else {
+              e.columnCrackMesh.visible = true;
+              e.columnCrackMesh.scale.y = 0.05;
+              this.move(e.inspectorWorker, [-0.5, 0, -5], [0, 2.7, 0], 0.7, 0.8);
+              this.move(e.coerciveContractor, [-3.0, 0, -7.0], [0, 0.3, 0], 0.7, 0.8);
+              this.pose(e.inspectorWorker, -1.5, -1.6, 0.6);
+              this.at(0.5, function () { d.impact([-3.5, 2, -6], 0x94A3B8); });
+            }
+          } else if (id === 10) {
+            [e.voceroWorker, e.cuadrillaWorker1, e.cuadrillaWorker2].forEach(function (w, i) {
+              d.pose(w, safe ? -0.4 : -1.8, safe ? -0.5 : -1.5, i * 0.12);
+              d.move(w, [w.position.x + (i - 1) * (safe ? 0.3 : 0.15), 0, w.position.z + (safe ? -0.25 : 0.8)], [0, safe ? (i - 1) * 0.3 : 0, 0], i * 0.1, 1.3);
+            });
+            if (!safe) {
+              var barrier = this.box([1.3, 0.6, 0.12], [3.2, 0.45, -2.3], 0x9C6634);
+              this.move(barrier, [3.4, 0.1, -1.7], [1.4, 0.3, 0.1], 0.7, 0.5, true);
+              this.at(1.2, function () { d.impact([3.2, 0.2, -2], 0x9C6634); SoundEngine.playEmergencyAlarm(); });
+            }
+          }
+          return 2800;
+        }
+      };
+
+
       var Real3DEngine = {
         scene: null,
         camera: null,
@@ -2049,9 +2545,9 @@
           },
           {
             // Estación 9: Laboratorio de Calidad y Ensayos (Presión Directiva para Falsificar y Ética)
-            pos: new THREE.Vector3(-2.0, 1.72, -3.0),
-            look: new THREE.Vector3(-2.0, 1.25, -6.0),
-            speaker3DPos: new THREE.Vector3(-2.5, 2.05, -5.8)
+            pos: new THREE.Vector3(-0.4, 2.80, -2.3),
+            look: new THREE.Vector3(-2.4, 0.25, -6.0),
+            speaker3DPos: new THREE.Vector3(-3.1, 2.05, -6.6)
           },
           {
             // Estación 10: Asamblea Central de Cuadrilla (Crisis Colectiva y Mediación Restaurativa)
@@ -2116,6 +2612,10 @@
           this.renderer.setSize(w, h);
           this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
           this.renderer.shadowMap.enabled = true;
+          this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+          this.renderer.outputEncoding = THREE.sRGBEncoding;
+          this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+          this.renderer.toneMappingExposure = 0.85;
           containerEl.appendChild(this.renderer.domElement);
 
           this.setupLighting();
@@ -2132,6 +2632,7 @@
           this.buildStation10AssemblyDebrief();
           this.buildDebriefCrewProps();
           this.buildCitySkyline();
+          ConsequenceDirector.capture(this);
 
           this.bindResize();
           this.bindTouchControls();
@@ -2150,6 +2651,11 @@
           } else {
             this.camera.fov = 58;
           }
+          if (typeof AdventureGame !== 'undefined' && AdventureGame.currentStation === 9 && aspect >= 1.4 && h <= 540) {
+            this.camera.setViewOffset(w, h, w * 0.28, 0, w, h);
+          } else if (this.camera.view && this.camera.view.enabled) {
+            this.camera.clearViewOffset();
+          }
           this.camera.updateProjectionMatrix();
         },
 
@@ -2163,6 +2669,11 @@
           var sun = new THREE.DirectionalLight(0xfffaea, 1.15);
           sun.position.set(18, 36, 14);
           sun.castShadow = true;
+          sun.shadow.mapSize.set(1024, 1024);
+          sun.shadow.camera.left = -22; sun.shadow.camera.right = 22;
+          sun.shadow.camera.top = 22; sun.shadow.camera.bottom = -22;
+          sun.shadow.camera.near = 0.5; sun.shadow.camera.far = 100;
+          sun.shadow.normalBias = 0.02;
           this.scene.add(sun);
           this.sunLight = sun;
 
@@ -2269,19 +2780,22 @@
           curbWest.position.set(-18, 0.09, 0);
           this.scene.add(curbWest);
 
-          // 3. Barandas de protección perimetral reglamentarias OSHA en el borde Este (hacia el exterior)
+          // El tramo de la estación 4 es independiente para que pueda ceder o asegurarse.
           var railMat = new THREE.MeshStandardMaterial({ color: 0xF59E0B, metalness: 0.4, roughness: 0.5 });
           for (var rz = -16; rz <= 16; rz += 3.2) {
+            if (Math.abs(rz) < 1.8) continue;
             var stanchion = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 1.2), railMat);
             stanchion.position.set(17.8, 0.6, rz);
             this.scene.add(stanchion);
           }
-          var topRail = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.05, 34), railMat);
-          topRail.position.set(17.8, 1.15, 0);
-          this.scene.add(topRail);
-          var midRail = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, 34), railMat);
-          midRail.position.set(17.8, 0.58, 0);
-          this.scene.add(midRail);
+          [-9.5, 9.5].forEach(function (z) {
+            var topRail = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.05, 15), railMat);
+            topRail.position.set(17.8, 1.15, z);
+            Real3DEngine.scene.add(topRail);
+            var midRail = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, 15), railMat);
+            midRail.position.set(17.8, 0.58, z);
+            Real3DEngine.scene.add(midRail);
+          });
 
           // 4. Columnas estructurales de concreto armado
           var colMat = new THREE.MeshStandardMaterial({ color: 0x7E8792, roughness: 0.88 });
@@ -2438,8 +2952,15 @@
           helmStripe.position.set(0, 1.55, 0);
           w.add(helmStripe);
 
+          // Pivotes en los hombros para gestos y reacciones corporales.
+          var leftShoulder = new THREE.Group(); leftShoulder.position.set(-0.30, 1.22, 0.02);
+          lArm.position.set(0, -0.24, 0); lGlove.position.set(-0.03, -0.52, 0);
+          leftShoulder.add(lArm); leftShoulder.add(lGlove); w.add(leftShoulder);
+          var rightShoulder = new THREE.Group(); rightShoulder.position.set(0.30, 1.22, 0.02);
+          rArm.position.set(0, -0.24, 0); rGlove.position.set(0.03, -0.52, 0);
+          rightShoulder.add(rArm); rightShoulder.add(rGlove); w.add(rightShoulder);
           w.position.set(x, yBase, z);
-          w.userData = { yBase: yBase };
+          w.userData = { yBase: yBase, parts: { leftArm: leftShoulder, rightArm: rightShoulder, leftLeg: lLeg, rightLeg: rLeg } };
           if (rotY !== undefined) w.rotation.y = rotY;
           this.scene.add(w);
           this.workersList.push(w);
@@ -2570,6 +3091,7 @@
 
           // Capataz 3D al final del pasillo de parales
           this.capatazWorker = this.create3DWorker(-3.0, -4.0, 0xFFB703, 0xEA580C, 0);
+          this.radioHelper = this.create3DWorker(-3.65, -2.8, 0xFFFFFF, 0x10B981, 0.4);
         },
 
                 buildStation3CraneAndCrew: function () {
@@ -2646,6 +3168,7 @@
           this.craneHookGroup = load;
           this.craneLoad = load;
           this.craneCable = cable;
+          this.craneSlings = [slingL, slingR];
           this.craneDangerZone = dangerZone;
 
           // 3 Trabajadores posicionados con suficiente separación y encuadre óptimo
@@ -2795,6 +3318,7 @@
             spark.position.set((Math.random() - 0.5) * 0.4, (Math.random() - 0.5) * 0.4, 0.18);
             sparkGrp.add(spark);
           }
+          sparkGrp.position.y = 1.5;
           sparkGrp.visible = false;
           group.add(sparkGrp);
           this.electricSparkGroup = sparkGrp;
@@ -2802,6 +3326,7 @@
           // Trompo mezclador de apoyo
           var mixerMat = new THREE.MeshStandardMaterial({ color: 0xEA580C, roughness: 0.6 });
           var mixer = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.75, 1.1, 14), mixerMat);
+          this.mixerMesh = mixer;
           mixer.rotation.z = Math.PI / 4;
           mixer.position.set(-1.8, 0.85, 0.6);
           group.add(mixer);
@@ -2840,6 +3365,7 @@
           var lineMat = new THREE.MeshBasicMaterial({ color: 0xFACC15 });
           var lifeline = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 4.2), lineMat);
           lifeline.position.set(0, 2.0, -1.8);
+          lifeline.rotation.x = Math.PI / 2;
           group.add(lifeline);
 
           // Anillo aura de estabilidad psicológica
@@ -2877,6 +3403,9 @@
           sawBlade.position.set(-0.2, 0.95, 0);
           group.add(sawBlade);
           this.sawBladeMesh = sawBlade;
+          var bladeMark = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.025, 0.03), new THREE.MeshStandardMaterial({ color: 0x334155 }));
+          bladeMark.position.y = 0.015;
+          sawBlade.add(bladeMark);
 
           var guard = new THREE.Mesh(
             new THREE.CylinderGeometry(0.28, 0.28, 0.08, 16, 1, false, 0, Math.PI),
@@ -2930,9 +3459,47 @@
           group.add(jack);
           this.shoringJackMesh = jack;
 
+          // Resultado del ensayo dentro del escenario: no añadir paneles al HUD.
+          var resultCanvas = document.createElement('canvas');
+          resultCanvas.width = 640; resultCanvas.height = 360;
+          var resultContext = resultCanvas.getContext('2d');
+          resultContext.fillStyle = '#082F49'; resultContext.fillRect(0, 0, 640, 360);
+          resultContext.strokeStyle = '#FFB703'; resultContext.lineWidth = 12; resultContext.strokeRect(6, 6, 628, 348);
+          resultContext.textAlign = 'center';
+          resultContext.fillStyle = '#FFFFFF'; resultContext.font = 'bold 38px Arial'; resultContext.fillText('ENSAYO · COLUMNA C5', 320, 64);
+          resultContext.fillStyle = '#FFB703'; resultContext.font = 'bold 70px Arial'; resultContext.fillText('18 MPa', 320, 154);
+          resultContext.fillStyle = '#FFFFFF'; resultContext.font = '36px Arial'; resultContext.fillText('Requerido: 28 MPa', 320, 220);
+          resultContext.fillStyle = '#FDE68A'; resultContext.font = 'bold 31px Arial'; resultContext.fillText('RESISTENCIA INSUFICIENTE', 320, 302);
+          var resultTexture = new THREE.CanvasTexture(resultCanvas); resultTexture.encoding = THREE.sRGBEncoding;
+          var resultBoard = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 0.84), new THREE.MeshBasicMaterial({ map: resultTexture, toneMapped: false, side: THREE.DoubleSide }));
+          resultBoard.position.set(0, 1.48, -0.40);
+          resultBoard.rotation.y = 0.30;
+          group.add(resultBoard);
+          this.labResultBoard = resultBoard;
+
+          var columnCanvas = document.createElement('canvas'); columnCanvas.width = 256; columnCanvas.height = 128;
+          var columnContext = columnCanvas.getContext('2d');
+          columnContext.fillStyle = '#FFB703'; columnContext.fillRect(0, 0, 256, 128);
+          columnContext.fillStyle = '#082F49'; columnContext.font = 'bold 88px Arial'; columnContext.textAlign = 'center'; columnContext.fillText('C5', 128, 96);
+          var columnTexture = new THREE.CanvasTexture(columnCanvas); columnTexture.encoding = THREE.sRGBEncoding;
+          var columnLabel = new THREE.Mesh(new THREE.PlaneGeometry(0.44, 0.22), new THREE.MeshBasicMaterial({ map: columnTexture, toneMapped: false, side: THREE.DoubleSide }));
+          columnLabel.position.set(-1.515, 1.20, 0.1); columnLabel.rotation.y = Math.PI / 2;
+          group.add(columnLabel);
+          this.labColumnLabel = columnLabel;
+
           // Fisura que abraza exactamente la cara este de la columna C5
-          var crackMat = new THREE.MeshBasicMaterial({ color: 0x111111, wireframe: true });
-          var crack = new THREE.Mesh(new THREE.BoxGeometry(0.04, 2.2, 0.70), crackMat);
+          var crackMat = new THREE.MeshBasicMaterial({ color: 0x171717 });
+          var crack = new THREE.Group();
+          var crackPoints = [[-1.05, -0.2], [-0.65, 0.12], [-0.28, -0.08], [0.12, 0.20], [0.55, -0.12], [1.05, 0.13]];
+          for (var i = 1; i < crackPoints.length; i++) {
+            var a = new THREE.Vector3(0, crackPoints[i - 1][0], crackPoints[i - 1][1]);
+            var b = new THREE.Vector3(0, crackPoints[i][0], crackPoints[i][1]);
+            var direction = b.clone().sub(a);
+            var segment = new THREE.Mesh(new THREE.CylinderGeometry(0.023, 0.015, direction.length(), 6), crackMat);
+            segment.position.copy(a).add(b).multiplyScalar(0.5);
+            segment.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction.normalize());
+            crack.add(segment);
+          }
           crack.position.set(-1.52, 2.0, 0);
           crack.visible = false;
           group.add(crack);
@@ -2942,8 +3509,8 @@
           this.scene.add(group);
 
           // Inspector de calidad y Contratista coaccionador frente a la mesa de ensayos
-          this.inspectorWorker = this.create3DWorker(-1.5, -5.8, 0xFFFFFF, 0x2563EB, 3.14);
-          this.coerciveContractor = this.create3DWorker(-2.5, -5.8, 0x0F172A, 0xDC2626, 2.8);
+          this.inspectorWorker = this.create3DWorker(-0.75, -5.8, 0xFFFFFF, 0x2563EB, -0.4);
+          this.coerciveContractor = this.create3DWorker(-3.1, -6.6, 0x0F172A, 0xDC2626, 0.3);
         },
 
                 buildStation10AssemblyDebrief: function () {
@@ -3098,13 +3665,21 @@
           var bubbleWidth = bubbleEl.offsetWidth || 280;
           var bubbleHeight = bubbleEl.offsetHeight || 100;
           var halfW = bubbleWidth / 2;
-          sx = Math.max(halfW + 12, Math.min(w - halfW - 12, sx));
 
-          // Limitar sy para que NUNCA quede detrás del header superior (top: 80px)
-          // Dado que el bocadillo usa transform: translate(-50%, -100%), su borde superior está en sy - bubbleHeight.
-          var minTop = 84 + bubbleHeight;
-          var maxTop = Math.max(minTop + 15, h * 0.40);
+          // Mantener el diálogo entre la cabecera y las respuestas, cerca de quien habla.
+          var header = appEl.querySelector('.floating-hud-header');
+          var deck = document.getElementById('floatingResponseDeck');
+          var deckRect = deck ? deck.getBoundingClientRect() : null;
+          var sideDeck = deckRect && deckRect.left - rect.left > w * 0.25;
+          var availableWidth = sideDeck ? deckRect.left - rect.left : w;
+          sx = Math.max(halfW + 12, Math.min(availableWidth - halfW - 12, sx));
+          if (AdventureGame.currentStation === 9 && window.innerWidth <= 599 && window.innerHeight <= 640) sx = halfW + 10;
+          var headerBottom = header ? header.getBoundingClientRect().bottom - rect.top : 64;
+          var deckTop = deckRect && !sideDeck ? deckRect.top - rect.top : h;
+          var minTop = headerBottom + 8 + bubbleHeight;
+          var maxTop = Math.max(minTop, Math.min(h * 0.42, deckTop - 10));
           sy = Math.max(minTop, Math.min(maxTop, sy));
+          if (AdventureGame.currentStation === 9 && w / h >= 1.4 && h <= 540) sy = h - 18;
 
           bubbleEl.style.left = sx + 'px';
           bubbleEl.style.top = sy + 'px';
@@ -3233,6 +3808,8 @@
 
           // 4. ANIMACIONES VIVAS EN 3D
           var time = now * 0.002;
+          if (this.sawBladeMesh && !this.sawStopped) this.sawBladeMesh.rotation.y = now * 0.018;
+          if (this.mixerMesh && !this.mixerStopped) this.mixerMesh.rotation.y = now * 0.0015;
           if (this.craneHookGroup && !this.craneWobble) {
             this.craneHookGroup.rotation.y = Math.sin(time * 0.6) * 0.06;
           }
@@ -3266,7 +3843,7 @@
           }
           this.workersList.forEach(function (w, idx) {
             var yBase = (w.userData && w.userData.yBase !== undefined) ? w.userData.yBase : 0;
-            w.position.y = yBase + Math.sin(time * 1.5 + idx) * 0.015;
+            if (!w.userData.consequenceAnimated) w.position.y = yBase + Math.sin(time * 1.5 + idx) * 0.015;
           });
 
           // 5. EFECTO VISUAL DE SIRENAS Y ALERTA EN JORNADA TRÁGICA
@@ -3276,6 +3853,7 @@
             if (this.blueLight) this.blueLight.intensity = 3.5 - Math.sin(now * 0.012) * 2.2;
           }
 
+          ConsequenceDirector.update(now);
           this.renderer.render(this.scene, this.camera);
         },
 
@@ -3315,271 +3893,172 @@
         },
 
         resetSceneState: function () {
+          ConsequenceDirector.reset();
           this.isEmergency = false;
           this.isCelebration = false;
           this.craneWobble = false;
+          this.craneTargetY = undefined;
+          this.sawStopped = false;
+          this.mixerStopped = false;
           this.scene.background = new THREE.Color(0x6aa6db);
           if (this.scene.fog) {
             this.scene.fog.color.setHex(0x8cbbe6);
             this.scene.fog.near = 26;
             this.scene.fog.far = 95;
           }
-          if (this.redLight) this.redLight.intensity = 0;
-          if (this.blueLight) this.blueLight.intensity = 0;
-          if (this.hemiLight) this.hemiLight.color.setHex(0xdff0ff);
-          if (this.ambientLight) this.ambientLight.color.setHex(0xffffff);
-          if (this.sunLight) this.sunLight.color.setHex(0xfffaea);
-
-          if (this.station1Paper) this.station1Paper.material.color.setHex(0xFFFFFF);
-          if (this.residentWorker) this.residentWorker.rotation.y = 0;
-          if (this.capatazWorker) this.capatazWorker.rotation.y = 0;
-          if (this.railingPost) this.railingPost.rotation.z = 0;
-          if (this.railingBar) {
-            this.railingBar.rotation.z = 0;
-            this.railingBar.position.y = 1.0;
-          }
-          if (this.scaffoldPlank) {
-            this.scaffoldPlank.rotation.z = 0;
-            this.scaffoldPlank.position.set(0, 0, 0);
-          }
-          if (this.electricSparkGroup) this.electricSparkGroup.visible = false;
-          if (this.panicWorker) {
-            this.panicWorker.rotation.z = 0;
-            this.panicWorker.userData.yBase = 0;
-          }
-          if (this.hydraulicLeakMesh) this.hydraulicLeakMesh.visible = false;
-          if (this.columnCrackMesh) this.columnCrackMesh.visible = false;
         },
 
-                // TRANSFORMACIÓN REAL DEL ENTORNO 3D ANTE CADA DECISIÓN
         applyDecisionVisuals: function (stationId, choice, isCorrect) {
-          var self = this;
-          if (stationId === 1) {
-            if (isCorrect) {
-              if (this.station1Paper) {
-                this.station1Paper.material.color.setHex(0x10B981);
-              }
-              if (!this.station1CheckMesh && this.clipboardGroup) {
-                var stamp = new THREE.Mesh(
-                  new THREE.RingGeometry(0.06, 0.10, 16),
-                  new THREE.MeshBasicMaterial({ color: 0x10B981, side: THREE.DoubleSide })
-                );
-                stamp.position.set(0, 0.92, 0.16);
-                stamp.rotation.x = -Math.PI / 3;
-                this.clipboardGroup.add(stamp);
-                this.station1CheckMesh = stamp;
-              }
-              if (this.residentWorker) {
-                this.residentWorker.rotation.y = 0.40;
-              }
-            } else {
-              if (this.station1Paper) {
-                this.station1Paper.material.color.setHex(0xEF4444);
-              }
-              if (this.residentWorker) {
-                this.residentWorker.rotation.y = -0.75;
-              }
-            }
-          } else if (stationId === 2) {
-            var led3D = this.handRadioGroup ? this.handRadioGroup.getObjectByName('radioLed3D') : null;
-            if (isCorrect) {
-              if (led3D) led3D.material.color.setHex(0x10B981);
-              if (!this.radioSignalWave) {
-                var wave = new THREE.Mesh(
-                  new THREE.RingGeometry(0.08, 0.14, 20),
-                  new THREE.MeshBasicMaterial({ color: 0x10B981, side: THREE.DoubleSide, transparent: true, opacity: 0.9 })
-                );
-                wave.position.set(-2.55, 1.46, -3.55);
-                wave.rotation.x = Math.PI / 2;
-                this.scene.add(wave);
-                this.radioSignalWave = wave;
-              }
-              if (this.capatazWorker) {
-                this.capatazWorker.rotation.y = 0.35;
-              }
-            } else {
-              if (led3D) led3D.material.color.setHex(0xEF4444);
-              if (this.capatazWorker) {
-                this.capatazWorker.rotation.y = -0.85;
-              }
-              if (this.radioSignalWave) {
-                this.radioSignalWave.material.color.setHex(0xEF4444);
-              }
-            }
-          } else if (stationId === 3) {
-            if (isCorrect) {
-              this.craneTargetY = 0.35;
-              this.craneWobble = false;
-              if (this.craneDangerZone) {
-                this.craneDangerZone.material.color.setHex(0x10B981);
-              }
-              if (!this.craneConesGroup) {
-                var cones = new THREE.Group();
-                var coneMat = new THREE.MeshStandardMaterial({ color: 0xF97316, roughness: 0.4 });
-                [[-1.4, -1.4], [1.4, -1.4], [-1.4, 1.4], [1.4, 1.4]].forEach(function (cp) {
-                  var cone = new THREE.Mesh(new THREE.ConeGeometry(0.18, 0.6, 12), coneMat);
-                  cone.position.set(2.0 + cp[0], 0.3, -9.5 + cp[1]);
-                  cones.add(cone);
-                });
-                this.scene.add(cones);
-                this.craneConesGroup = cones;
-              }
-              if (this.craneCrew && this.craneCrew.length) {
-                this.craneCrew[0].position.set(0.2, 0, -8.2);
-                this.craneCrew[1].position.set(2.0, 0, -11.2);
-                this.craneCrew[2].position.set(3.8, 0, -8.2);
-              }
-            } else {
-              this.craneWobble = true;
-              this.craneTargetY = 0.85;
-              if (this.craneDangerZone) {
-                this.craneDangerZone.material.color.setHex(0xFF0000);
-              }
-              if (this.craneCrew && this.craneCrew.length) {
-                this.craneCrew[0].position.set(-0.8, 0, -6.8);
-                this.craneCrew[1].position.set(2.0, 0, -12.5);
-                this.craneCrew[2].position.set(4.5, 0, -7.0);
-              }
-            }
-          } else if (stationId === 4) {
-            if (isCorrect) {
-              if (this.railingPost) {
-                this.railingPost.rotation.z = 0;
-                this.railingPost.material.color.setHex(0xF59E0B);
-              }
-              if (this.railingBar) {
-                this.railingBar.rotation.x = 0;
-                this.railingBar.rotation.z = 0;
-                this.railingBar.position.y = 1.0;
-                this.railingBar.material.color.setHex(0xF59E0B);
-              }
-              if (this.hazardOrb) {
-                this.hazardOrb.visible = false;
-              }
-              if (!this.railingSafetyNet) {
-                var net = new THREE.Mesh(
-                  new THREE.BoxGeometry(0.04, 0.65, 3.2),
-                  new THREE.MeshStandardMaterial({ color: 0xF97316, wireframe: true })
-                );
-                net.position.set(17.8, 0.5, 0.0);
-                this.scene.add(net);
-                this.railingSafetyNet = net;
-              }
-              if (this.hazardWorker) {
-                this.hazardWorker.position.x = 14.8;
-              }
-            } else {
-              if (this.railingPost) this.railingPost.rotation.z = -0.92;
-              if (this.railingBar) {
-                this.railingBar.rotation.z = -0.92;
-                this.railingBar.position.y = 0.55;
-              }
-              if (this.hazardOrb) {
-                this.hazardOrb.visible = true;
-                this.hazardOrb.material.color.setHex(0xFF0000);
-                this.hazardOrb.scale.set(2.4, 2.4, 2.4);
-              }
-            }
-          } else if (stationId === 5) {
-            // Estación 5: Andamio voladizo y coacción
-            if (isCorrect) {
-              if (this.scaffoldTagMesh) this.scaffoldTagMesh.material.color.setHex(0x10B981);
-              if (this.scaffoldPlank) {
-                this.scaffoldPlank.rotation.z = 0;
-                this.scaffoldPlank.position.set(0, 0, 0);
-                this.scaffoldPlank.material.color.setHex(0x9C6634);
-              }
-              if (this.scaffoldContractor) this.scaffoldContractor.position.set(-7.5, 0, 1.8);
-            } else {
-              if (this.scaffoldTagMesh) this.scaffoldTagMesh.material.color.setHex(0xEF4444);
-              if (this.scaffoldPlank) {
-                this.scaffoldPlank.rotation.z = -0.58;
-                this.scaffoldPlank.position.y -= 0.35;
-              }
-            }
-          } else if (stationId === 6) {
-            // Estación 6: Caseta eléctrica y fatiga
-            if (isCorrect) {
-              if (this.lotoLockMesh) this.lotoLockMesh.visible = true;
-              if (this.exhaustedWorker) {
-                this.exhaustedWorker.position.set(-8.0, 0, -6.5);
-                this.exhaustedWorker.rotation.y = 0.5;
-                this.exhaustedWorker.rotation.x = 0;
-              }
-            } else {
-              if (this.electricSparkGroup) {
-                this.electricSparkGroup.visible = true;
-                this.electricSparkGroup.scale.set(2.8, 2.8, 2.8);
-              }
-              if (this.exhaustedWorker) {
-                this.exhaustedWorker.rotation.x = 0.55;
-                this.exhaustedWorker.position.y = -0.15;
-              }
-            }
-          } else if (stationId === 7) {
-            // Estación 7: Viga voladiza y pánico en altura
-            if (isCorrect) {
-              if (this.panicAuraRing) this.panicAuraRing.material.color.setHex(0x38BDF8);
-              if (this.panicWorker) {
-                this.panicWorker.position.set(6.2, 0, -15.8);
-                this.panicWorker.userData.yBase = 0;
-                this.panicWorker.rotation.y = Math.PI;
-                this.panicWorker.rotation.z = 0;
-              }
-            } else {
-              if (this.panicWorker) {
-                this.panicWorker.position.y = 0.08;
-                this.panicWorker.userData.yBase = 0.08;
-                this.panicWorker.rotation.z = 1.15;
-              }
-              if (this.panicAuraRing) {
-                this.panicAuraRing.material.color.setHex(0xEF4444);
-                this.panicAuraRing.scale.set(1.6, 1.6, 1.6);
-              }
-            }
-          } else if (stationId === 8) {
-            // Estación 8: Taller de corte y sierra circular
-            if (isCorrect) {
-              if (this.sawBladeGuard) this.sawBladeGuard.material.color.setHex(0x10B981);
-              if (this.sawOperatorWorker) this.sawOperatorWorker.position.set(5.0, 0, 6.0);
-            } else {
-              if (this.hydraulicLeakMesh) {
-                this.hydraulicLeakMesh.visible = true;
-                this.hydraulicLeakMesh.scale.set(2.2, 2.2, 2.2);
-              }
-            }
-          } else if (stationId === 9) {
-            // Estación 9: Laboratorio y reporte de resistencia
-            if (isCorrect) {
-              if (this.shoringJackMesh) this.shoringJackMesh.visible = true;
-              if (this.inspectorWorker) this.inspectorWorker.position.set(-1.2, 0, -5.4);
-            } else {
-              if (this.columnCrackMesh) {
-                this.columnCrackMesh.visible = true;
-                this.columnCrackMesh.scale.set(1.5, 1.5, 1.5);
-              }
-            }
-          } else if (stationId === 10) {
-            // Estación 10: Asamblea general de cuadrilla
-            if (isCorrect) {
-              this.scene.background = new THREE.Color(0xF59E0B);
-              if (this.scene.fog) this.scene.fog.color.setHex(0xF59E0B);
-              if (this.voceroWorker) this.voceroWorker.rotation.y = 0.3;
-            } else {
-              this.scene.background = new THREE.Color(0x7F1D1D);
-              if (this.scene.fog) this.scene.fog.color.setHex(0x7F1D1D);
-              if (this.voceroWorker) this.voceroWorker.rotation.y = -0.8;
-            }
-          }
+          return ConsequenceDirector.play(stationId, choice, isCorrect);
         }
       };
 
-      /* ------------------------------------------------------------------
-         4. CONTROLADOR NARRATIVO: BURBUJAS FLOTANTES DE RESPUESTA DE TEXTO
-         ------------------------------------------------------------------ */
+
+      // Diálogo original por frases, anclado al personaje y sin resumen superior.
+      var DialogueBubble = {
+        pages: [],
+        index: 0,
+        timer: null,
+        onComplete: null,
+
+        stop: function () {
+          clearTimeout(this.timer);
+          this.timer = null;
+          this.onComplete = null;
+        },
+
+        play: function (text, onComplete) {
+          this.stop();
+          this.pages = [];
+          var words = String(text).trim().replace(/^["“]|["”]$/g, '').split(/\s+/);
+          var phrase = '';
+          words.forEach(function (word) {
+            if (phrase && (phrase.length + word.length + 1 > 72 || (phrase.length >= 35 && /[.!?…;:]$/.test(phrase)))) {
+              DialogueBubble.pages.push(phrase);
+              phrase = '';
+            }
+            phrase += (phrase ? ' ' : '') + word;
+          });
+          if (phrase) this.pages.push(phrase);
+          this.index = 0;
+          this.onComplete = onComplete || null;
+          this.show();
+        },
+
+        show: function () {
+          clearTimeout(this.timer);
+          var self = this;
+          var text = this.pages[this.index] || '';
+          document.getElementById('bubbleText').textContent = text;
+          document.getElementById('dialoguePagination').hidden = this.pages.length <= 1;
+          document.getElementById('dialoguePageCount').textContent = 'Frase ' + (this.index + 1) + '/' + this.pages.length;
+          document.getElementById('dialoguePreviousBtn').disabled = this.index === 0;
+          document.getElementById('dialogueNextBtn').textContent = this.index < this.pages.length - 1 ? 'Siguiente ›' : (this.onComplete ? 'Continuar ›' : 'Releer ↺');
+          var readingTime = Math.max(3200, Math.min(6500, text.split(/\s+/).length * 380 + 800));
+          this.timer = setTimeout(function () {
+            if (self.index < self.pages.length - 1) {
+              self.index++;
+              self.show();
+            } else if (self.onComplete) {
+              var complete = self.onComplete;
+              self.stop();
+              complete();
+            }
+          }, readingTime);
+        },
+
+        next: function () {
+          if (this.index < this.pages.length - 1) {
+            this.index++;
+            this.show();
+          } else if (this.onComplete) {
+            var complete = this.onComplete;
+            this.stop();
+            complete();
+          } else {
+            this.index = 0;
+            this.show();
+          }
+        },
+
+        previous: function () {
+          this.index = Math.max(0, this.index - 1);
+          this.show();
+        }
+      };
+
+      // Preguntas breves; los diálogos completos se conservan en stationsData.
+      var ConsequenceNarration = [
+  {
+    "safe": "La mezcla y el sector quedaron confirmados antes de fundir. La bitácora firmada evita órdenes ambiguas y el equipo puede trabajar con una misma instrucción.",
+    "A": "Al descargar sin verificar, la mezcla se vierte en un vaciado incorrecto. La formaleta falla y el concreto se desperdicia: hay que detener el trabajo y rehacerlo.",
+    "C": "Delegaste la autorización sin revisión técnica. El vaciado se ejecuta sin control, falla la formaleta y la cuadrilla debe detenerse ante el derrame de concreto."
+  },
+  {
+    "safe": "Confirmaste la tarea y pusiste un límite al maltrato. El capataz baja la tensión y el ayudante organiza el traslado sin correr ni exponerse a los parales.",
+    "A": "El miedo a perder el empleo hizo que el ayudante se apresurara. Un paral cae en el pasillo y lo golpea; la cuadrilla debe detener el traslado para auxiliarlo.",
+    "B": "Responder con insultos intensifica la discusión. El capataz avanza de forma intimidante y el ayudante se aparta; el canal queda ocupado por el conflicto y se pierde la coordinación."
+  },
+  {
+    "safe": "La orden de alto permite despejar el área y bajar la carga de forma controlada. Nadie permanece bajo la formaleta: la coordinación evita un golpe o atrapamiento.",
+    "B": "La carga siguió bajando mientras el ayudante intentaba apartarse. Una eslinga se suelta y la formaleta golpea el suelo: el personal tiene que escapar del área de impacto.",
+    "C": "Al no intervenir, la maniobra continúa sin señales coordinadas. La eslinga se suelta, la formaleta cae y los compañeros se apartan de emergencia para evitar el aplastamiento."
+  },
+  {
+    "safe": "El reporte permite suspender el paso y asegurar la baranda. El compañero se retira del borde: hablar a tiempo corta la exposición al riesgo de caída.",
+    "A": "El amarre improvisado no sostiene la baranda. Esta cede cuando el compañero se aproxima y él cae por el borde. La emergencia exige detener el frente y activar el rescate.",
+    "C": "El castigo desplazó la atención del peligro hacia la culpa. La baranda sigue sin asegurar, cede y el compañero cae por el borde: ahora hay una emergencia de rescate."
+  },
+  {
+    "safe": "Pusiste un límite a la orden insegura y pediste intervención. El oficial baja de la plataforma y el contratista se aparta; la tarea queda suspendida hasta controlar el riesgo.",
+    "A": "Por temor al despido, el oficial permanece sobre una plataforma insegura. El tablón cede y pierde el apoyo: cae sobre la losa y requiere atención antes de cualquier reinicio.",
+    "C": "El enfrentamiento físico desestabiliza a los trabajadores junto al andamio. El tablón cede y el oficial cae; responder con violencia aumenta el peligro que buscabas denunciar."
+  },
+  {
+    "safe": "El bloqueo y etiquetado deja visible la suspensión de la operación. El compañero se retira del tablero hacia el descanso y se solicita el relevo antes de continuar.",
+    "A": "La bebida no resolvió el agotamiento. El operador pierde estabilidad junto al tablero, se produce una descarga con chispas y cae: la operación debe suspenderse de inmediato.",
+    "C": "Reducir el ritmo no recuperó la atención del operador. Pierde estabilidad frente al tablero y se produce una falla eléctrica; continuar trabajando convirtió la fatiga en una emergencia."
+  },
+  {
+    "safe": "El acompañamiento calmado permite que el compañero recupere control. El rescatista se aproxima y lo guía hacia la losa, con una salida coordinada y sin movimientos bruscos.",
+    "A": "Los gritos aumentan el pánico. El compañero pierde equilibrio y se desliza sobre la viga; el rescatista debe intervenir de urgencia para impedir una caída.",
+    "B": "El intento de sacarlo de un tirón agrava su desequilibrio. El compañero se desliza sobre la viga y el rescatista debe estabilizarlo antes de intentar moverlo de nuevo."
+  },
+  {
+    "safe": "La sierra queda detenida y el operador se aparta del banco. Hablar en privado permite organizar el relevo y la valoración sin exponerlo ni humillarlo.",
+    "B": "Añadir un ayudante no elimina la descoordinación del operador. La tabla sale despedida del banco y ambos retroceden para evitar el golpe; aumentaste el número de personas expuestas.",
+    "C": "El café y el silencio no controlan el riesgo. La tabla sale despedida de la sierra y el operador pierde estabilidad: la falsa protección del empleo termina exponiéndolo a una lesión."
+  },
+  {
+    "safe": "El resultado real queda reportado y se instala el puntal preventivo. El inspector coordina la revisión: reconocer la no conformidad permite intervenir antes de seguir cargando la estructura.",
+    "A": "El dato falso permitió continuar sin controlar la baja resistencia. Aparece una fisura y se desprende material de la columna; los trabajadores deben retirarse y detener el frente.",
+    "B": "Descartar la evidencia aplazó la intervención sobre la columna. La fisura crece y cae material frente al laboratorio: ocultar el resultado dejó avanzar el deterioro sin control."
+  },
+  {
+    "safe": "La cuadrilla baja los brazos y recupera distancia para conversar. Escuchar y convocar acuerdos verificables abre una salida al conflicto sin amenazas ni agresiones.",
+    "A": "La amenaza de despido intensifica la confrontación. Los trabajadores avanzan exaltados y derriban una barrera; la coordinación de la obra se transforma en una emergencia de convivencia.",
+    "C": "El silencio del líder deja el reclamo sin una vía de diálogo. La cuadrilla avanza exaltada y derriba una barrera; el conflicto escala mientras se pierde el control del frente."
+  }
+];
+
+      var StationBriefs = [
+        {"question": "¿Qué comunicas antes de autorizar el vaciado?"},
+        {"question": "¿Cómo confirmas la tarea sin aceptar el maltrato?"},
+        {"question": "¿Qué orden das para proteger a la cuadrilla?"},
+        {"question": "¿Cómo reportas el peligro ante la presión del equipo?"},
+        {"question": "¿Cómo respondes a la amenaza del contratista?"},
+        {"question": "¿Cómo respondes al compañero que reporta agotamiento?"},
+        {"question": "¿Cómo lo acompañas sin aumentar su angustia?"},
+        {"question": "¿Cómo intervienes cuando te piden encubrir el riesgo?"},
+        {"question": "¿Qué le respondes al contratista?"},
+        {"question": "¿Cómo abres un diálogo para desescalar el conflicto?"}
+      ];
+
       var AdventureGame = {
         currentStation: 1,
         score: 0,
+        feedbackTimer: null,
+        pendingFeedback: null,
         dom: {},
 
         stationsData: [
@@ -3595,7 +4074,7 @@
             choices: [
               {
                 letter: 'A',
-                text: 'Autorizar el inicio del vaciado de inmediato para evitar la penalización por tiempo de espera del mixer y revisar las especificaciones de resistencia mientras descarga.',
+                text: "«Comiencen a descargar para evitar el cobro de espera. Mientras avanza el vaciado, revisamos la remisión y completamos la bitácora con el maestro».",
                 correct: false,
                 reactionSpeaker: 'RESIDENTE DE OBRA',
                 reactionText: '"¡Grave error! Fundir por afán económico provocó vaciar concreto Tipo 2 en vez de Estructural Tipo 1. La columna quedó sentenciada a demolición obligatoria y sobrecostos millonarios."',
@@ -3603,7 +4082,7 @@
               },
               {
                 letter: 'B',
-                text: 'Detener la descarga 3 minutos, verificar remisión con el maestro: 50 bultos de Cemento Estructural Tipo 1 en Sector Norte Piso 5 con firma responsable y verificar el asentamiento de la mezcla.',
+                text: "«Paremos tres minutos. Maestro, verifiquemos la mezcla, el sector y su asentamiento; dejamos la bitácora firmada y confirmamos a la cuadrilla antes de fundir».",
                 correct: true,
                 reactionSpeaker: 'RESIDENTE DE OBRA',
                 reactionText: '"¡Impecable! 50 bultos verificados, asentamiento conforme y bitácora firmada. Cero dudas técnicas y la cuadrilla sabe con certeza qué fundir sin estrés ni reprocesos."',
@@ -3611,7 +4090,7 @@
               },
               {
                 letter: 'C',
-                text: 'Delegar la firma de la remisión al ayudante del mixer para no frenar la jornada y comenzar el vibrado en las formaletas sin supervisión técnica.',
+                text: "«Que el ayudante del mixer firme la remisión y autorice el inicio. Nosotros adelantamos el vibrado y después revisamos los datos con el responsable técnico».",
                 correct: false,
                 reactionSpeaker: 'RESIDENTE DE OBRA',
                 reactionText: '"¡Inadmisible! La delegación informal destruye la trazabilidad técnica. La mezcla llegó contaminada y el laboratorio rechazó el vaciado entero."',
@@ -3631,7 +4110,7 @@
             choices: [
               {
                 letter: 'A',
-                text: 'Guardar silencio por radio para evitar confrontación directa, pero apurar a los muchachos por debajo para que corran por las rampas y no despidan a nadie.',
+                text: "No responder por radio para evitar una discusión y decirle a la cuadrilla: «Apúrense con los parales; hagámoslo rápido para que no nos despidan».",
                 correct: false,
                 reactionSpeaker: 'CAPATAZ POR RADIO (CH-2)',
                 reactionText: '"¡Correr a ciegas por pánico provocó un golpe por caída de parales en la rampa! La sumisión pasiva y el afán trasladaron una angustia insoportable a la cuadrilla."',
@@ -3639,7 +4118,7 @@
               },
               {
                 letter: 'B',
-                text: 'Presionar el PTT y responder con insultos: "¡Venga y cárguelos usted si es tan bravo, aquí nadie se va a dejar pisotear ni humillar por radio!"',
+                text: "Presionar el PTT y responder: «Si tiene tanta prisa, venga y cargue usted los parales. No voy a recibir órdenes de alguien que solo sabe gritar».",
                 correct: false,
                 reactionSpeaker: 'CAPATAZ POR RADIO (CH-2)',
                 reactionText: '"¡La contraagresividad paralizó el canal! Se desató un altercado verbal que bloqueó las comunicaciones de emergencia y justificó sanciones disciplinarias."',
@@ -3647,7 +4126,7 @@
               },
               {
                 letter: 'C',
-                text: 'Aplicar \'Repetir para Validar\': "Copiado: Confirmamos traslado técnico de 20 parales a Torre B en 15 minutos con cuadrilla completa. Le recuerdo que en este canal coordinamos con respeto."',
+                text: "«Copiado: trasladamos los parales a Torre B con la cuadrilla completa y confirmamos el tiempo. Le pido coordinar con respeto, sin gritos ni amenazas».",
                 correct: true,
                 reactionSpeaker: 'CAPATAZ POR RADIO (CH-2)',
                 reactionText: '"¡Copiado con respeto! La técnica \'Repetir para Validar\' fijó un límite ético infranqueable (Ley 1010/2006), calmó la tensión y mantuvo el canal operativo sin humillaciones."',
@@ -3667,7 +4146,7 @@
             choices: [
               {
                 letter: 'A',
-                text: '"¡Alto total a la maniobra! Unificamos Canal 3 exclusivo: aparejador dirige con silbato al operador, alejamos al personal a 10 metros y estabilizamos la carga con vientos guía."',
+                text: "«¡Alto a la maniobra! Alejemos al personal de la carga y confirmemos un único canal con el aparejador. Reanudamos cuando la carga y el área estén aseguradas».",
                 correct: true,
                 reactionSpeaker: 'MAESTRO Y GRUISTA',
                 reactionText: '"¡Carga asegurada en suelo y radio unificado! Gracias por frenar a tiempo: la calma del novato y la vida de la cuadrilla van por encima de cualquier afán de izaje."',
@@ -3675,7 +4154,7 @@
               },
               {
                 letter: 'B',
-                text: 'Gritarle al ayudante por megáfono que corra rápido mientras la grúa sigue bajando la carga para no perder el ciclo de vaciado del piso 5.',
+                text: "«¡Salga rápido de ahí y deje de quedarse quieto! Operador, continúe bajando la formaleta; necesitamos terminar este ciclo antes de que se retrase el vaciado».",
                 correct: false,
                 reactionSpeaker: 'MAESTRO DE OBRA',
                 reactionText: '"¡La formaleta osciló y casi aplasta al ayudante al tropezar en el suelo! Presionar a un trabajador novato bajo carga suspendida es una negligencia crítica que causa fatalidades."',
@@ -3683,7 +4162,7 @@
               },
               {
                 letter: 'C',
-                text: 'Apartarse de la línea de tiro para no asumir responsabilidad y dejar que el operador de grúa resuelva la maniobra a ciegas con el carpintero.',
+                text: "Apartarme y decir: «Yo no estoy a cargo de la grúa. Resuélvanlo entre el operador y el carpintero; prefiero no intervenir en esa maniobra».",
                 correct: false,
                 reactionSpeaker: 'RESIDENTE SISO',
                 reactionText: '"¡Omisión de socorro laboral! Guardar silencio cuando una maniobra está fuera de control casi provoca un siniestro múltiple con aplastamiento."',
@@ -3703,7 +4182,7 @@
             choices: [
               {
                 letter: 'A',
-                text: 'Hacer un amarre provisional con alambre recocido a la columna para continuar la labor y prometer que al terminar el turno se soldará el anclaje definitivo.',
+                text: "«Amarremos la baranda con alambre y sigamos por ahora. No reportemos todavía; al terminar el turno buscamos quién pueda reparar el anclaje sin afectar el bono».",
                 correct: false,
                 reactionSpeaker: 'SUPERVISOR SISO',
                 reactionText: '"¡El alambre cedió de inmediato al apoyarse otro obrero! Los remiendos improvisados en bordes de losa generan una falsa sensación de seguridad que causa caídas mortales."',
@@ -3711,7 +4190,7 @@
               },
               {
                 letter: 'B',
-                text: 'Activar reporte preventivo por radio a SISO: "Alerta preventiva Torre B Piso 5: baranda este desanclada. Pausamos tránsito perimetral y delimitamos a 2 metros con cinta y conos."',
+                text: "«SISO, reporto baranda suelta en el borde este del piso 5. Suspendemos el paso y delimitamos la zona. Compañeros, reportar este riesgo nos protege a todos».",
                 correct: true,
                 reactionSpeaker: 'SUPERVISOR SISO',
                 reactionText: '"¡Reporte preventivo recibido! Tránsito perimetral suspendido y cuadrilla de mantenimiento asegurando pernos de anclaje sin ninguna sanción para el equipo."',
@@ -3719,7 +4198,7 @@
               },
               {
                 letter: 'C',
-                text: 'Suspender de palabra el bono de productividad a toda la cuadrilla por no haber advertido la falla antes y exigirles reparar el anclaje sin elementos de bloqueo.',
+                text: "«Por no avisar antes, todos pierden el bono. Reparen ustedes mismos la baranda de inmediato; no voy a aceptar más retrasos ni excusas de esta cuadrilla».",
                 correct: false,
                 reactionSpeaker: 'RESIDENTE DE OBRA',
                 reactionText: '"¡El castigo colectivo desató rabia y resentimiento! El equipo aprendió a ocultar peligros futuros por miedo a perder dinero, deteriorando la seguridad psicológica."',
@@ -3739,7 +4218,7 @@
             choices: [
               {
                 letter: 'A',
-                text: 'Subir con precaución sujetándose con una mano para evitar el despido y terminar rápido antes de que pase el inspector SISO.',
+                text: "«Entiendo que debemos terminar y no quiero perder el empleo. Subiré sujetándome con cuidado; cuando acabemos hablamos del arnés para que esto no vuelva a pasar».",
                 correct: false,
                 reactionSpeaker: 'OFICIAL EN ANDAMIO',
                 reactionText: '"¡Un tablón cedió al vacío! El trabajador estuvo a un segundo de una caída mortal a 18 metros por ceder a la extorsión laboral. Ningún empleo vale la vida."',
@@ -3747,7 +4226,7 @@
               },
               {
                 letter: 'B',
-                text: 'Detener la orden con firmeza: "La Ley 1010 de Acoso Laboral y la Res. 4272 prohíben subir sin línea de vida certificada. Paro la labor y convoco de inmediato al Inspector SISO y al Comité de Convivencia."',
+                text: "«Entiendo la urgencia, pero no subiré sin protección contra caídas. Suspendamos la tarea y llamemos a SISO. La amenaza de despido la reportaré por convivencia laboral».",
                 correct: true,
                 reactionSpeaker: 'INSPECTOR SISO',
                 reactionText: '"¡Intervención legal respaldada! Inspector SISO en sitio: labor suspendida al subcontratista y trabajadores protegidos sin ninguna represalia contractual."',
@@ -3755,7 +4234,7 @@
               },
               {
                 letter: 'C',
-                text: 'Enfrentar físicamente al contratista en la plataforma empujándolo para hacer respetar la dignidad del trabajador por la fuerza.',
+                text: "Acercarme al contratista, empujarlo y decirle: «A mí no me amenaza nadie. Si quiere que lo respeten, aprenda primero a respetar a los trabajadores».",
                 correct: false,
                 reactionSpeaker: 'RESIDENTE DE OBRA',
                 reactionText: '"¡Peligroso altercado en altura! La agresión física deslegitima el reclamo, genera causal de despido con justa causa y casi provoca la caída de ambos al vacío."',
@@ -3775,7 +4254,7 @@
             choices: [
               {
                 letter: 'A',
-                text: 'Darle una bebida energizante con dos pastillas estimulantes y pedirle que aguante una hora más para entregar la fundición sin reclamos del residente.',
+                text: "«Sé que estás agotado, pero falta poco para entregar. Toma una bebida energizante y aguanta una hora más; después le pedimos al residente que te releve».",
                 correct: false,
                 reactionSpeaker: 'SUPERVISOR ELÉCTRICO',
                 reactionText: '"¡Arco eléctrico en tablero! El operador sufrió un microsueño de 3 segundos mientras manipulaba el cable de 440V. Estimular con químicos a un operario agotado multiplica el riesgo de paro o quemaduras mortales."',
@@ -3783,7 +4262,7 @@
               },
               {
                 letter: 'B',
-                text: 'Aplicar bloqueo y etiquetado LOTO al interruptor general de 440V, sentar al operador en hidratación y solicitar al residente su relevo inmediato por fatiga crítica.',
+                text: "«Gracias por avisar que estás agotado. Detengamos la operación y coordinemos el bloqueo y etiquetado con el responsable. Descansa e hidrátate; solicitaré tu relevo al residente».",
                 correct: true,
                 reactionSpeaker: 'RESIDENTE DE OBRA',
                 reactionText: '"¡Candado LOTO instalado y compañero a salvo! Relevo autorizado de inmediato. La vida del operador y el respeto a los límites biológicos (Res. 0312/2019) son prioridad absoluta."',
@@ -3791,7 +4270,7 @@
               },
               {
                 letter: 'C',
-                text: 'Bajar la velocidad del tambor a la mitad y pedirle que se lave la cara con agua fría para que termine las últimas placas por su cuenta.',
+                text: "«Bajemos la velocidad del tambor para que trabajes más tranquilo. Lávate la cara y termina las últimas placas; mientras tanto yo adelanto las otras tareas».",
                 correct: false,
                 reactionSpeaker: 'MEDICINA LABORAL',
                 reactionText: '"¡El operador colapsó por fatiga extrema sobre la faja de transmisión! La resistencia física tiene límites neurológicos que no se solucionan con agua fría."',
@@ -3811,7 +4290,7 @@
             choices: [
               {
                 letter: 'A',
-                text: 'Gritarle desde el pasillo: "¡Camine que no le va a pasar nada, no sea flojo que todos lo están mirando y va a atrasar el cronograma de la losa!"',
+                text: "«¡Camine, que no le va a pasar nada! Todos lo están mirando y el trabajo está detenido. Necesito que se controle y salga de esa viga ya».",
                 correct: false,
                 reactionSpeaker: 'COMPAÑERO EN CRISIS',
                 reactionText: '"¡El obrero entró en hiperventilación convulsiva y casi resbala de la viga! Invalidar o humillar el pánico agrava el colapso autonómico y dispara la parálisis motora."',
@@ -3819,7 +4298,7 @@
               },
               {
                 letter: 'B',
-                text: 'Jalonearlo violentamente del arnés hacia atrás de un solo tirón para sacarlo rápido de la viga sin hablarle.',
+                text: "Acercarme y decirle: «No piense más, yo lo saco de aquí». Tirar de su arnés de una vez, sin comprobar antes que ambos estemos asegurados.",
                 correct: false,
                 reactionSpeaker: 'INSPECTOR DE RESCATE',
                 reactionText: '"¡Peligroso forcejeo al borde del vacío! El movimiento brusco casi desestabiliza a ambos obreros sobre la viga angosta. Jamás se jalonea a una persona en crisis sin asegurar la línea."',
@@ -3827,7 +4306,7 @@
               },
               {
                 letter: 'C',
-                text: 'Asegurar doble eslinga a la línea de vida, hacer contacto visual sereno a su nivel, guiar respiración diafragmática 4x4 (inhalar 4s, exhalar 4s) y coordinar extracción asistida con la brigada SISO.',
+                text: "Asegurar la línea de vida y decir con calma: «Estoy aquí contigo; no necesitas apresurarte. Respiremos despacio mientras la brigada coordina cómo ayudarte a salir».",
                 correct: true,
                 reactionSpeaker: 'BRIGADA DE RESCATE',
                 reactionText: '"¡Compañero estabilizado y guiado a plataforma segura! Su ritmo cardíaco bajó gracias al contacto calmado y la respiración guiada. Excelente aplicación del protocolo PAP."',
@@ -3847,7 +4326,7 @@
             choices: [
               {
                 letter: 'A',
-                text: 'Desconectar la sierra circular, hablar en privado con el compañero con respeto, relevarlo de la labor y remitirlo a valoración médica preventiva en SST.',
+                text: "Desconectar la sierra y hablar en privado: «Noto que te cuesta coordinar los movimientos. Vamos a relevarte y pedir valoración en SST para cuidarte y aclarar qué ocurre».",
                 correct: true,
                 reactionSpeaker: 'MÉDICO LABORAL SST',
                 reactionText: '"¡Sierra desenergizada y trabajador protegido! Se activó la ruta médica preventiva de SST sin exponer al compañero al peligro inminente de mutilación ni al escarnio público."',
@@ -3855,7 +4334,7 @@
               },
               {
                 letter: 'B',
-                text: 'Asignarle un ayudante que sostenga la madera por él para que el operador solo guíe el corte sin manipular directamente la hoja circular.',
+                text: "«Para ayudarle sin reportarlo, pongamos a otro compañero a sostener la madera. Así el operador solo guía el corte y podemos terminar el trabajo entre los dos».",
                 correct: false,
                 reactionSpeaker: 'OFICIAL DE CORTE',
                 reactionText: '"¡La madera pateó con violencia reventando la manguera hidráulica y rozando los dedos del ayudante! Delegar el riesgo duplica las potenciales víctimas de amputación."',
@@ -3863,7 +4342,7 @@
               },
               {
                 letter: 'C',
-                text: 'Aceptar el pacto de silencio, pasarle café caliente y pedirle que corte despacio para que no lo sapeen con el inspector y no pierda el empleo.',
+                text: "«Entiendo que tiene familia y no queremos perjudicarlo. Démosle café y pidámosle que corte despacio; mantengamos esto entre nosotros para que no pierda el empleo».",
                 correct: false,
                 reactionSpeaker: 'COMITÉ DE CONVIVENCIA',
                 reactionText: '"¡Estuvo a milímetros de una amputación traumática de mano! El falso compañerismo que encubre la alteración psicomotora en máquinas de alta velocidad es complicidad en una tragedia."',
@@ -3883,7 +4362,7 @@
             choices: [
               {
                 letter: 'A',
-                text: 'Poner 28 MPa en la planilla preliminar para no frenar la fundición del piso superior, asumiendo que el concreto ganará resistencia con el tiempo.',
+                text: "«Pondré 28 MPa en la planilla preliminar para no detener la obra. Más adelante verificamos si el concreto ganó resistencia y ajustamos el registro si hace falta».",
                 correct: false,
                 reactionSpeaker: 'INTERVENTOR DE ESTRUCTURA',
                 reactionText: '"¡Fisura diagonal crítica en la columna del piso inferior! La sobrecarga estructural no perdona: falsear datos es un delito penal que casi causa el colapso del edificio sobre los trabajadores."',
@@ -3891,7 +4370,7 @@
               },
               {
                 letter: 'B',
-                text: 'Romper la probeta aduciendo defecto de curado y solicitar un ensayo de esclerometría para la próxima semana sin alertar a la interventoría.',
+                text: "«Digamos que la probeta quedó mal curada y descartémosla. Pedimos otro ensayo la próxima semana; por ahora no informemos a interventoría para evitar problemas con el proyecto».",
                 correct: false,
                 reactionSpeaker: 'AUDITORÍA TÉCNICA',
                 reactionText: '"¡Las cámaras registraron la destrucción del espécimen! Proceso penal abierto por fraude y adulteración de control de calidad bajo la norma sismorresistente NSR-10."',
@@ -3899,7 +4378,7 @@
               },
               {
                 letter: 'C',
-                text: 'Rechazar la alteración con rigor técnico: "La ley y mi ética me impiden alterar datos. Registro los 18 MPa reales, emito No Conformidad técnica formal y ordeno apuntalamiento preventivo de la losa."',
+                text: "«Comprendo la preocupación por la obra, pero no alteraré el resultado. Registraré los 18 MPa y reportaré la no conformidad para coordinar las medidas de seguridad».",
                 correct: true,
                 reactionSpeaker: 'INGENIERO CALCULISTA',
                 reactionText: '"¡Puntal de soporte instalado a tiempo y columna asegurada! Gracias por su valentía técnica: falsear el dato hubiera provocado el colapso del piso en semanas."',
@@ -3919,7 +4398,7 @@
             choices: [
               {
                 letter: 'A',
-                text: 'Amenazar con llamar al escuadrón de policía para desalojarlos a la fuerza y redactar cartas de despido con justa causa para todos los manifestantes.',
+                text: "«Si no vuelven a trabajar, llamaré a la policía y pediré el despido de todos. Las horas extra se revisarán cuando dejen de protestar y obedezcan».",
                 correct: false,
                 reactionSpeaker: 'VOCERO DE LA CUADRILLA',
                 reactionText: '"¡Estalló la batalla campal! Destrucción de instalaciones, heridos en la obra y clausura judicial preventiva de todo el proyecto con pérdidas millonarias."',
@@ -3927,7 +4406,7 @@
               },
               {
                 letter: 'B',
-                text: 'Escuchar la indignación sin juzgar, convocar mesa de concertación inmediata con Gerencia y Comité de Convivencia, y firmar acta formal de acuerdos y pagos verificables.',
+                text: "«Entiendo su indignación por los pagos y el trato recibido. Escuchemos los reclamos sin amenazas y convoquemos a Gerencia y Convivencia para acordar responsables, fechas y seguimiento».",
                 correct: true,
                 reactionSpeaker: 'GERENTE Y CUADRILLA',
                 reactionText: '"¡Acta de acuerdos firmada y jornada restablecida en paz! Se autorizó el pago justo de horas extra y se abrió proceso formal de convivencia bajo la Ley 1010."',
@@ -3935,7 +4414,7 @@
               },
               {
                 letter: 'C',
-                text: 'Encerrarse con llave en la caseta técnica del residente y esperar a que la cuadrilla se canse de gritar y se disperse sola.',
+                text: "Retirarme a la caseta y decir por radio: «No hablaré con nadie mientras estén alterados». Cerrar la puerta y esperar a que se cansen y se dispersen.",
                 correct: false,
                 reactionSpeaker: 'RESIDENTE DE OBRA',
                 reactionText: '"¡El vacío de liderazgo enfureció aún más a la cuadrilla! Tumbaron la puerta y saquearon el almacén de herramientas de precisión. La indiferencia directiva escala el caos."',
@@ -3969,6 +4448,7 @@
             questionStepBadge: document.getElementById('questionStepBadge'),
             questionHighlightTitle: document.getElementById('questionHighlightTitle'),
             questionPromptText: document.getElementById('questionPromptText'),
+            decisionContinueBtn: document.getElementById('decisionContinueBtn'),
             responseBubblesList: document.getElementById('responseBubblesList'),
             moveBtn: document.getElementById('moveBtn'),
             teachingModal: document.getElementById('teachingModal'),
@@ -4000,6 +4480,9 @@
 
         bindEvents: function () {
           var self = this;
+          document.getElementById('dialogueNextBtn').addEventListener('click', function () { DialogueBubble.next(); });
+          document.getElementById('dialoguePreviousBtn').addEventListener('click', function () { DialogueBubble.previous(); });
+          this.dom.decisionContinueBtn.addEventListener('click', function () { self.continueAfterDecision(); });
 
           this.dom.soundBtn.addEventListener('click', function () {
             var muted = SoundEngine.toggleMute();
@@ -4019,6 +4502,8 @@
             this.dom.replayVoiceBtn.addEventListener('click', function (e) {
               e.stopPropagation();
               VoiceEngine.replayCurrent();
+              DialogueBubble.index = 0;
+              DialogueBubble.show();
             });
           }
 
@@ -4085,6 +4570,8 @@
 
         executeAdvance: function () {
           if (Real3DEngine.isWalking) return;
+          DialogueBubble.stop();
+          document.getElementById('adventureApp').classList.add('is-travelling');
           VoiceEngine.stop();
           this.dom.moveBtn.disabled = true;
           this.dom.moveBtn.classList.remove('pulse-ready');
@@ -4108,6 +4595,8 @@
         // 4. SECUENCIA CINEMÁTICA Y NARRATIVA DE CIERRE DE JORNADA
         triggerShiftClosure: function () {
           if (Real3DEngine.isWalking) return;
+          DialogueBubble.stop();
+          document.getElementById('adventureApp').classList.add('is-travelling');
           VoiceEngine.stop();
           this.dom.moveBtn.disabled = true;
           this.dom.moveBtn.classList.remove('pulse-ready');
@@ -4127,6 +4616,9 @@
         },
 
         onShiftClosureReached: function () {
+          document.getElementById('adventureApp').classList.remove('inspection-mode');
+          document.getElementById('adventureApp').classList.remove('is-travelling');
+          this.dom.responseBubblesList.hidden = false;
           this.currentStation = 11;
           var passed = (this.score >= 80);
 
@@ -4138,7 +4630,7 @@
             if (this.dom.questionPromptText) this.dom.questionPromptText.textContent = '¡Jornada completada con maestría técnica y psicosocial!';
 
             this.dom.bubbleSpeaker.textContent = 'RESIDENTE DE OBRA • BALANCE DE CUADRILLA';
-            this.dom.bubbleText.textContent = '"¡Atención toda la cuadrilla! Baranda perimetral asegurada, maniobras coordinadas, respeto total en radio y bitácora al día. Hoy demostramos que la salud mental y la seguridad salvan vidas. ¡Jornada ejemplar!"';
+            DialogueBubble.play('¡Atención toda la cuadrilla! Baranda perimetral asegurada, maniobras coordinadas, respeto total en radio y bitácora al día. Hoy demostramos que la salud mental y la seguridad salvan vidas. ¡Jornada ejemplar!');
             this.dom.speechBubble.className = 'character-speech-bubble active success-style';
             this.dom.speechBubble.style.display = 'block';
 
@@ -4158,7 +4650,7 @@
             if (this.dom.questionPromptText) this.dom.questionPromptText.textContent = 'La jornada cerró con incidentes graves. Consulta el reporte:';
 
             this.dom.bubbleSpeaker.textContent = 'INSPECTOR SISO • COMITÉ DE CRISIS';
-            this.dom.bubbleText.textContent = '"¡Paren todo! La prisa comercial, la hostilidad por radio y la fatiga desatendida causaron un accidente grave y el paro de la cuadrilla. Se ordena investigación judicial y clausura preventiva del frente de obra."';
+            DialogueBubble.play('¡Paren todo! La prisa comercial, la hostilidad por radio y la fatiga desatendida causaron un accidente grave y el paro de la cuadrilla. Se ordena investigación judicial y clausura preventiva del frente de obra.');
             this.dom.speechBubble.className = 'character-speech-bubble active alert-style';
             this.dom.speechBubble.style.display = 'block';
 
@@ -4200,8 +4692,18 @@
         },
 
         loadStation: function (num) {
+          this.clearDecisionTransition();
+          ConsequenceDirector.finish();
+          if (this.dom.speechBubble.contains(document.activeElement)) document.activeElement.blur();
+          document.getElementById('adventureApp').scrollTop = 0;
+          document.getElementById('adventureApp').classList.toggle('inspection-mode', num === 9);
           this.currentStation = num;
+          var viewport = Real3DEngine.container.getBoundingClientRect();
+          Real3DEngine.updateCameraFov(viewport.width, viewport.height);
           var data = this.stationsData[num - 1];
+          var brief = StationBriefs[num - 1];
+          this.decisionTaken = false;
+          document.getElementById('adventureApp').classList.remove('is-travelling');
 
           this.dom.locationText.textContent = data.location;
 
@@ -4213,12 +4715,12 @@
             this.dom.questionHighlightTitle.textContent = '¿CUÁL ES LA MEJOR RESPUESTA?';
           }
           if (this.dom.questionPromptText) {
-            this.dom.questionPromptText.textContent = data.question || '¿Cuál es la mejor respuesta para esta situación?';
+            this.dom.questionPromptText.textContent = brief.question;
           }
 
           // Bocadillo de diálogo proyectado en 3D
           this.dom.bubbleSpeaker.textContent = data.speaker;
-          this.dom.bubbleText.textContent = '"' + data.bubbleText + '"';
+          DialogueBubble.play(data.bubbleText);
           this.dom.speechBubble.className = 'character-speech-bubble active ' + (data.bubbleStyle || '');
           SoundEngine.playPopBubble();
 
@@ -4232,22 +4734,23 @@
               if (led3D) led3D.material.color.setHex(0xE63946);
             }
             setTimeout(function () {
-              VoiceEngine.play('station2');
+              if (AdventureGame.currentStation === num && !AdventureGame.decisionTaken) VoiceEngine.play('station2');
             }, 320);
           } else if (num === 4) {
             var self = this;
             setTimeout(function () {
+              if (self.currentStation !== num || self.decisionTaken) return;
               SoundEngine.playCameraShutter();
               self.dom.flashOverlay.classList.add('active');
               setTimeout(function () {
                 self.dom.flashOverlay.classList.remove('active');
-                VoiceEngine.play('station4');
+                if (AdventureGame.currentStation === num && !AdventureGame.decisionTaken) VoiceEngine.play('station4');
               }, 200);
             }, 550);
           } else {
             SoundEngine.playRogerBeep();
             setTimeout(function () {
-              VoiceEngine.play('station' + num);
+              if (AdventureGame.currentStation === num && !AdventureGame.decisionTaken) VoiceEngine.play('station' + num);
             }, 220);
           }
 
@@ -4259,6 +4762,7 @@
           var self = this;
           var wrap = this.dom.responseBubblesList;
           wrap.innerHTML = '';
+          wrap.hidden = false;
 
           data.choices.forEach(function (c) {
             var bubble = document.createElement('button');
@@ -4278,6 +4782,11 @@
 
         handleChoiceSelection: function (choice, data, bubbleEl) {
           var self = this;
+          if (this.decisionTaken) return;
+          this.decisionTaken = true;
+          this.dom.flashOverlay.classList.remove('active');
+          this.dom.responseBubblesList.hidden = true;
+          this.dom.questionPromptText.textContent = choice.correct ? 'Acción segura. Observa la obra.' : 'Acción riesgosa. Observa qué ocurre.';
 
           // Deshabilitar clics adicionales en las opciones de respuesta
           var allBubbles = document.querySelectorAll('.text-response-bubble');
@@ -4291,17 +4800,16 @@
             this.updateMeter();
             SoundEngine.playSuccess();
             ScormAPI.setScore(this.score);
-            VoiceEngine.play('correct');
+
 
             bubbleEl.style.borderColor = '#2A9D8F';
             bubbleEl.style.background = 'rgba(224, 245, 242, 0.92)';
 
             this.dom.speechBubble.className = 'character-speech-bubble active success-style';
             this.dom.bubbleSpeaker.textContent = choice.reactionSpeaker || 'ACCIÓN CONFIRMADA';
-            this.dom.bubbleText.textContent = choice.reactionText || '"Acción correcta confirmada. Clima de cuadrilla fortalecido."';
           } else {
             SoundEngine.playHazard();
-            VoiceEngine.play('alert');
+
 
             // Sacudida visual de pantalla ante peligro
             var app = document.getElementById('adventureApp') || document.body;
@@ -4314,16 +4822,37 @@
 
             this.dom.speechBubble.className = 'character-speech-bubble active alert-style';
             this.dom.bubbleSpeaker.textContent = choice.reactionSpeaker || 'CONSECUENCIA EN OBRA';
-            this.dom.bubbleText.textContent = choice.reactionText || '"Esa acción genera conflicto o riesgo de accidente. En obra nos comunicamos con respeto y claridad."';
           }
 
           // Afectar el entorno 3D de forma real
-          Real3DEngine.applyDecisionVisuals(this.currentStation, choice, choice.correct);
+          var consequenceDuration = Real3DEngine.applyDecisionVisuals(this.currentStation, choice, choice.correct);
+          var narrative = ConsequenceNarration[this.currentStation - 1];
+          var directConsequence = choice.correct ? narrative.safe : narrative[choice.letter];
+          VoiceEngine.speakConsequence(directConsequence);
+          // El diálogo sigue por frases, sin bloquear el avance de la actividad.
+          DialogueBubble.play(directConsequence);
+          this.pendingFeedback = {
+            isCorrect: choice.correct,
+            text: choice.correct ? data.summaryText : (choice.wrongText || data.wrongText)
+          };
+          this.dom.decisionContinueBtn.hidden = false;
+          this.feedbackTimer = setTimeout(function () {
+            self.continueAfterDecision();
+          }, consequenceDuration);
+        },
 
-          // Pausa interactiva para ver la reacción del entorno 3D y leer la respuesta directa antes de abrir el modal
-          setTimeout(function () {
-            self.showTeachingModal(choice.correct, choice.correct ? data.summaryText : (choice.wrongText || data.wrongText));
-          }, 1100);
+        clearDecisionTransition: function () {
+          clearTimeout(this.feedbackTimer);
+          this.feedbackTimer = null;
+          this.pendingFeedback = null;
+          this.dom.decisionContinueBtn.hidden = true;
+        },
+
+        continueAfterDecision: function () {
+          if (!this.pendingFeedback) return;
+          var feedback = this.pendingFeedback;
+          this.clearDecisionTransition();
+          this.showTeachingModal(feedback.isCorrect, feedback.text);
         },
 
         showTeachingModal: function (isCorrect, explanationText) {
@@ -4347,6 +4876,8 @@
         },
 
         showFinalScreen: function () {
+          this.clearDecisionTransition();
+          DialogueBubble.stop();
           var passed = (this.score >= 80);
           ScormAPI.setScore(this.score);
           ScormAPI.setStatus(passed ? 'passed' : 'failed');
@@ -4401,6 +4932,8 @@
         },
 
         resetAdventure: function () {
+          this.clearDecisionTransition();
+          DialogueBubble.stop();
           VoiceEngine.stop();
           this.currentStation = 1;
           this.score = 0;

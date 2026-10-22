@@ -881,6 +881,21 @@
       font-size: 13px !important;
       margin-bottom: 6px !important;
     }
+    /* Opciones siempre visibles al llegar; se retiran solo al decidir. */
+    .decision-deck { background: none; backdrop-filter: none; -webkit-backdrop-filter: none; gap: 5px; }
+    .situation-card { padding: 7px 10px; gap: 2px; }
+    .situation-dialogue { font-size: 13px; line-height: 1.3; margin: 3px 0 0; color: #FFF; }
+    .situation-question { display: none; }
+    .choice-card-btn { min-height: 44px; padding: 7px 10px; font-family: inherit; }
+    .choice-text-label { font-size: 14px; line-height: 1.3; }
+    #choicesList[hidden] { display: none; }
+    .feedback-modal-overlay { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
+    .feedback-drawer { max-height: 42%; overflow-y: auto; padding: 12px 14px; }
+    .feedback-single-text { font-size: 14px; line-height: 1.4; }
+    @media (max-height: 540px) and (min-width: 600px) {
+      .architect-app { max-width: none; width: 100%; height: 100dvh; max-height: none; border: 0; border-radius: 0; }
+      .decision-deck { left: auto; right: 0; width: 44%; }
+    }
   </style>
 </head>
 <body>
@@ -2865,6 +2880,13 @@
       /* ------------------------------------------------------------------
          4. CONTROLADOR NARRATIVO: LAS 4 RONDAS CONCRETAS DE DECISIÓN
          ------------------------------------------------------------------ */
+      var RoundBriefs = [
+        { situation: 'Residente y maestro dan órdenes distintas. El mixer espera.', choices: ['Seguir al maestro para evitar el conflicto.', 'Pausar, revisar planos y unificar la orden.', 'Dejar que el operador elija dónde descargar.'] },
+        { situation: 'El viento sacude la carga. Te presionan para seguir.', choices: ['Detener, evacuar y asegurar la carga.', 'Jalar las manilas contra el viento.', 'Seguir bajando y esperar a que calme.'] },
+        { situation: 'Es hora de salir. El borde a 18 m quedó abierto.', choices: ['Dejarlo abierto y salir a tiempo.', 'Gritar y castigar con horas extra.', 'Delimitar el borde y registrar el relevo.'] },
+        { situation: 'El pasillo de evacuación está lleno de escombros.', choices: ['Dejarlo así y quejarme del otro turno.', 'Organizar al equipo y despejar la ruta.', 'Tirar los escombros al foso del ascensor.'] }
+      ];
+
       var GameApp = {
         currentRound: 1,
         score: 0,
@@ -3118,7 +3140,7 @@
 
           // Actualizar diálogo integrado en la consola (sin tapar el 3D)
           if (this.dom.bannerSpeakerText) this.dom.bannerSpeakerText.textContent = data.speaker;
-          if (this.dom.bannerDialogueText) this.dom.bannerDialogueText.innerHTML = data.dialogue;
+          if (this.dom.bannerDialogueText) this.dom.bannerDialogueText.textContent = RoundBriefs[roundNum - 1].situation;
 
           // Enfocar cámara y spotlight en el frente de obra correspondiente
           Isometric3DEngine.focusActiveFront(data.frontIndex);
@@ -3131,16 +3153,18 @@
           var self = this;
           var wrap = this.dom.choicesList;
           wrap.innerHTML = '';
+          wrap.hidden = false;
 
           data.choices.forEach(function (c, idx) {
-            var btn = document.createElement('div');
+            var btn = document.createElement('button');
+            btn.type = 'button';
             btn.className = 'choice-card-btn';
             btn.setAttribute('data-choice-index', idx);
             btn.setAttribute('role', 'button');
             btn.setAttribute('tabindex', '0');
             btn.innerHTML = [
               '<div class="choice-letter-badge">' + c.letter + '</div>',
-              '<span class="choice-text-label">' + c.title + '</span>'
+              '<span class="choice-text-label">' + RoundBriefs[data.id - 1].choices[idx] + '</span>'
             ].join('');
 
             btn.addEventListener('click', function () {
@@ -3154,7 +3178,9 @@
 
         handleChoice: function (choice, data, buttonEl) {
           var self = this;
+          if (!this.roundActive) return;
           this.roundActive = false;
+          this.dom.choicesList.hidden = true;
 
           // Deshabilitar clics adicionales
           var allBtns = document.querySelectorAll('.choice-card-btn');
@@ -3170,28 +3196,16 @@
             SoundEngine.playSuccess();
             ScormAPI.setScore(this.score);
             if (buttonEl) buttonEl.classList.add('correct-state');
-            var succFeedback = [
-              'Liderazgo unificado: pausaste el vaciado 3 min, revisaste planos y diste una sola orden clara.',
-              'Decisión preventiva: paraste la maniobra a tiempo, aseguraste la carga y protegiste a la cuadrilla.',
-              'Cierre seguro: acordonaste el borde a 2 metros y entregaste el turno sin caer en el afán.',
-              'Trabajo en equipo: 10 minutos de aseo colectivo despejaron la vía con respeto mutuo.'
-            ];
             if (this.dom.situationFeedbackInline) {
-              this.dom.situationFeedbackInline.textContent = succFeedback[this.currentRound - 1] || 'Decisión acertada.';
+              this.dom.situationFeedbackInline.textContent = 'Acción segura. Observa cómo responde el equipo.';
               this.dom.situationFeedbackInline.className = 'situation-feedback-inline active success';
             }
           } else {
             this.mentalLoad = Math.min(100, this.mentalLoad + 25);
             SoundEngine.playAlert();
             if (buttonEl) buttonEl.classList.add('wrong-state');
-            var wrongFeedback = [
-              '¡COLAPSO ESTRUCTURAL Y DERRAME! El vaciado sin orden técnica dañó el encofrado, agrietó la columna y desató caos en la cuadrilla.',
-              '¡ACCIDENTE FATAL! La ráfaga de viento cortó la eslinga; la formaleta de 1.8 toneladas cayó al vacío aplastando al señalero.',
-              '¡CAÍDA MORTAL AL VACÍO (18 METROS)! Por el afán de terminar el turno sin baranda perimetral, el oficial tropezó y cayó al abismo.',
-              '¡ATRAPAMIENTO POR ESCOMBROS! El trabajador tropezó a oscuras con la carretilla; las cajas de escombros colapsaron encima de él.'
-            ];
             if (this.dom.situationFeedbackInline) {
-              this.dom.situationFeedbackInline.textContent = wrongFeedback[this.currentRound - 1] || 'Acción riesgosa con consecuencias graves.';
+              this.dom.situationFeedbackInline.textContent = 'Acción riesgosa. Observa la consecuencia en la obra.';
               this.dom.situationFeedbackInline.className = 'situation-feedback-inline active error';
             }
           }

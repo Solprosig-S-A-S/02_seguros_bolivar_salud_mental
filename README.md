@@ -3,6 +3,8 @@
 
 Repositorio de simulaciones interactivas en 3D desarrolladas con **Three.js**, listas para su despliegue inmediato en **GitHub Pages** y empaquetadas como Objetos Virtuales de Aprendizaje compatibles con **SCORM 1.2** para plataformas LMS empresariales.
 
+Documentación técnica inicial y pendientes: [documentacion/README.md](documentacion/README.md). Esta carpeta se actualizará únicamente cuando el usuario lo solicite.
+
 ---
 
 ## 🌐 Acceso en GitHub Pages
