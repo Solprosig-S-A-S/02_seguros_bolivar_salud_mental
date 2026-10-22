@@ -3,8 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#082f49">
+<meta name="theme-color" content="#023047">
 <title>El Solitario de la Quincena · Unidad 4 | Seguros Bolívar ARL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{--navy:#082f49;--yellow:#ffbf36;--teal:#25bda4;--red:#ef7374;--ink:#f5f4eb;--muted:#c2d6dc;--edge:rgba(255,255,255,.2);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:#07131a;color-scheme:dark}
 *{box-sizing:border-box}body{margin:0;overflow:hidden;height:100vh;height:100dvh;display:grid;place-items:center}button,a,input{font:inherit}button{cursor:pointer}button:disabled{cursor:default;opacity:.45}button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:3px solid #ffcf58;outline-offset:3px}button{touch-action:manipulation}button svg,a svg{width:19px;height:19px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}[hidden]{display:none!important}
@@ -58,6 +61,50 @@
 @media(max-height:680px){#scene{top:123px}.world-controls,.result-mode .world-controls,.top-actions{top:78px}.guide-panel{max-height:51%}.guide-panel h2{font-size:16px}.answer-option{font-size:11.5px;padding:8px 9px}.guide-scroll{padding:9px 11px}.guide-top{padding:8px 11px}}
 @media(max-height:480px) and (min-width:600px){#scene{top:128px;left:10px;right:52%;bottom:12px;min-height:80px}.guide-panel{left:auto;width:49%;right:10px;max-height:calc(100% - 20px)}.world-controls{top:83px}.top-actions{top:83px;right:53%}.world-hint,.result-mode .world-hint{left:20px;right:53%;bottom:18px}.result-overlay .sheet{max-height:96%}}
 @media(prefers-reduced-motion:reduce){.scene-enter{animation:none}}
+
+/* Identidad compartida con juegos 1–3; se conserva el viewport independiente. */
+:root{--navy:#023047;--yellow:#FFB703;--teal:#2A9D8F;--red:#E63946;--ink:#F8FAFC;--muted:#CBD5E1;--edge:rgba(255,255,255,.2);font-family:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',sans-serif;background:#03080F}
+#app{max-width:430px;background:#011E2D}
+#scene{border-color:rgba(203,213,225,.3);background:#E8F1F5}
+.hud{background:linear-gradient(180deg,rgba(2,48,71,.96),rgba(10,73,107,.78));border-bottom-color:rgba(255,255,255,.2);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.brand{background:var(--yellow);border:1.5px solid white;color:var(--navy);box-shadow:0 2px 7px #0003}
+.brand-copy{min-width:0}.brand-copy .eyebrow{font-size:10px;letter-spacing:.25px;color:white;font-weight:800}.hud h1{font-size:12px;line-height:1.35;color:var(--yellow);font-weight:600}
+.icon-btn{border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.08)}
+.meter-row{font-weight:600}.meter-track{background:rgba(0,28,43,.6);box-shadow:inset 0 1px 3px #0004}
+.world-button,.budget-btn{background:rgba(2,48,71,.9);border-color:rgba(255,255,255,.3);color:#F8FAFC;border-radius:10px;font-weight:600}
+.world-hint,.result-mode .world-hint{background:rgba(2,48,71,.72);color:#F8FAFC;font-size:9px;text-shadow:none}
+.guide-panel{background:linear-gradient(145deg,#0A496B,#023047);border:1px solid rgba(255,183,3,.4);border-radius:14px;box-shadow:0 4px 16px #0004}
+.guide-top{background:rgba(0,28,43,.28);border-bottom-color:rgba(255,255,255,.12)}
+.guide-top span{color:#F1F5F9;font-weight:600}.guide-top strong{padding:3px 6px;border-radius:5px;color:var(--navy);background:var(--yellow);font-size:10px;font-weight:800}
+.guide-panel h2{color:var(--yellow);font-weight:700;font-size:16px;line-height:1.35;letter-spacing:-.2px}
+.answer-option{background:rgba(255,255,255,.97);color:#1E293B;border:1px solid #CBD5E1;border-radius:12px 12px 4px 12px;font-weight:500;box-shadow:0 3px 10px #0003;transition:background .15s,border-color .15s,transform .15s}
+.answer-letter{background:var(--navy);color:white;width:24px;height:24px;font-weight:800;box-shadow:0 2px 4px #0002}
+.answer-option:active{background:#FFF4D6;border-color:var(--yellow);transform:scale(.985)}
+.primary{background:linear-gradient(180deg,#FFB703,#F59E0B);border:1.5px solid #D49000;border-radius:12px;color:#011E2D;font-weight:800;font-size:13px;box-shadow:0 4px 14px #0004}
+.secondary{border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.09);border-radius:12px;font-weight:700}
+.primary:active,.secondary:active{transform:translateY(1px)}
+button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline-color:var(--yellow)}
+.sheet,.result-overlay .sheet{background:linear-gradient(145deg,#0A496B,#011E2D);border-color:rgba(255,255,255,.25);border-radius:16px;box-shadow:0 8px 24px #0005}
+.sheet h2{font-weight:700;line-height:1.25}.sheet p,.feedback-content p{color:#F1F5F9}.feedback-content .chosen-response{color:#CBD5E1;border-left-color:var(--yellow)}
+.simple-tip,.budget-heading{color:var(--yellow)!important}.score{color:var(--yellow)}.score small{color:#CBD5E1}
+.result-overlay .sheet{border-top:3px solid var(--teal)}.result-overlay.crisis .sheet{border-top-color:var(--red)}
+.budget-modal{background:rgba(2,48,71,.82);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}.budget-modal .sheet-top{background:#023047;border-radius:8px;padding:10px}
+.intro{background:rgba(2,48,71,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);padding:20px 16px;text-align:center}
+.intro .sheet{max-width:370px;max-height:100%;padding:10px 4px;background:none;border:0;border-radius:0;box-shadow:none}
+.intro-badge{display:grid;place-items:center;width:54px;height:54px;margin:0 auto 12px;border:3px solid var(--yellow);border-radius:50%;background:rgba(255,183,3,.16);color:var(--yellow)}
+.intro-badge svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.unit{background:rgba(255,183,3,.08);border-color:rgba(255,183,3,.3);color:var(--yellow);font-size:10px;font-weight:700;letter-spacing:.6px}
+.intro h2{font-size:24px;line-height:1.25;margin:12px 0 8px;letter-spacing:-.3px}
+.intro .subtitle{max-width:none;color:#CBD5E1;font-size:13px;line-height:1.45}
+.intro .briefing{padding:11px 12px;background:rgba(255,183,3,.08);border:1px solid rgba(255,183,3,.3);border-radius:12px;text-align:left;font-size:12px;line-height:1.5;margin:14px 0}
+.resume-note{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.16);color:#F1F5F9;text-align:left;font-size:12px}
+.intro .primary,.intro .secondary{text-transform:uppercase;letter-spacing:.35px;font-size:12px;min-height:48px}.intro .primary{margin-top:14px}
+.toast{background:#023047;border-color:var(--yellow);color:#F8FAFC}.closure,.loading{background:#011E2D}.closure-mark{border-color:var(--teal);color:var(--teal)}
+@media(hover:hover){.answer-option:hover{background:#FFF4D6;border-color:var(--yellow)}.world-button:hover,.budget-btn:hover,.icon-btn:hover{background:#0A496B}.primary:hover{filter:brightness(1.06)}}
+@media(min-width:500px) and (min-height:650px){#app{max-height:880px;border-radius:28px;border:3px solid rgba(255,255,255,.15);box-shadow:0 0 50px rgba(0,0,0,.9)}}
+@media(max-width:360px){.brand-copy .eyebrow{font-size:9px}.hud h1{font-size:11px}.hud-top{gap:6px}}
+@media(max-height:680px){.guide-panel h2{font-size:15px}.intro h2{font-size:22px}.intro-badge{width:46px;height:46px;margin-bottom:8px}}
+@media(max-height:480px) and (min-width:600px){#app{max-width:none;max-height:none}.intro .sheet{max-width:440px}.intro-badge{display:none}}
 </style>
 </head>
 <body>
@@ -72,7 +119,7 @@
 <symbol id="i-check" viewBox="0 0 24 24"><path d="m4 12 5 5L20 6"/></symbol>
 </defs></svg>
 <main id="app">
-  <div id="scene" aria-label="Mesa de presupuesto en primera persona, con celular, sobre de pago y efectivo"></div><div id="vignette"></div>
+  <div id="scene" aria-label="Casa interactiva en 3D: nevera, imprevistos, ahorro y decisiones en familia"></div><div id="vignette"></div>
   <header class="hud"><div class="hud-top"><div class="brand" aria-hidden="true">B</div><div class="brand-copy"><div class="eyebrow">Seguros Bolívar ARL · Unidad 4</div><h1>El Solitario de la Quincena</h1></div><a class="icon-btn" href="index.html" aria-label="Volver al portal"><svg><use href="#i-home"/></svg></a><button id="soundBtn" class="icon-btn" aria-label="Silenciar sonidos" aria-pressed="false"><svg><use id="soundUse" href="#i-audio"/></svg></button></div><div class="meter-row"><span>TRANQUILIDAD FAMILIAR</span><strong id="calmLabel">AJUSTADO · 70%</strong></div><div class="meter-track" role="progressbar" aria-label="Tranquilidad familiar en la simulación" aria-valuemin="0" aria-valuemax="100" aria-valuenow="70" id="calmMeter"><span id="calmFill"></span></div></header>
   <div class="wallet"><small>Por asignar</small><b id="remaining">$1.000.000</b><em>COP</em></div><div class="top-actions"><button id="helpBtn" class="budget-btn">Mi plan</button></div>
 
@@ -88,11 +135,11 @@
 
   <div class="world-controls"><button id="worldAction" class="world-button">Abrir la nevera</button><button id="worldCenter" class="world-button" aria-label="Volver a mirar la situación actual">↺</button></div><div id="worldHint" class="world-hint">Toca los objetos · desliza para mirar</div>
   <div id="toast" class="toast" role="status" hidden></div>
-  <section id="welcome" role="dialog" aria-modal="true" class="overlay intro" aria-labelledby="welcomeTitle"><div class="sheet"><span class="unit">TU QUINCENA</span><h2 id="welcomeTitle">Decide y mira<br>qué pasa.</h2><p class="subtitle">6 situaciones: la casa, el ahorro, un préstamo y tus gustos.</p><p>Toca los objetos y desliza para mirar. Elige qué harías y observa lo que cambia en casa.</p><div id="resumeNote" class="resume-note" hidden></div><button id="startBtn" class="primary">Jugar →</button><button id="newBtn" class="secondary" hidden>Empezar de nuevo</button></div></section>
+  <section id="welcome" role="dialog" aria-modal="true" class="overlay intro" aria-labelledby="welcomeTitle"><div class="sheet"><div class="intro-badge" aria-hidden="true"><svg><use href="#i-home"/></svg></div><span class="unit">UNIDAD 4 · TU QUINCENA</span><h2 id="welcomeTitle">El Solitario de la Quincena</h2><p class="subtitle">6 situaciones: la casa, el ahorro, un préstamo y tus gustos.</p><p class="briefing">Toca los objetos y desliza para mirar. Elige qué harías y observa lo que cambia en casa.</p><div id="resumeNote" class="resume-note" hidden></div><button id="startBtn" class="primary">Jugar →</button><button id="newBtn" class="secondary" hidden>Empezar de nuevo</button></div></section>
  <section id="helpModal" class="overlay budget-modal" role="dialog" aria-modal="true" aria-labelledby="helpTitle" hidden><div class="sheet"><div class="sheet-top"><div><div class="eyebrow">Lo importante, de un vistazo</div><h2 id="helpTitle">Mi plan.</h2></div><button class="close-btn" data-close="helpModal" aria-label="Cerrar mi plan">×</button></div><div id="budgetContent"></div><button class="primary" data-close="helpModal">Seguir jugando</button></div></section>
  <section id="resultModal" class="overlay result-overlay" role="dialog" aria-modal="true" aria-labelledby="resultTitle" hidden><div class="sheet"><div class="result-top"><div><div class="eyebrow" id="resultState"></div><h2 id="resultTitle"></h2></div><div class="score"><span id="resultScore">0</span><small>/100</small></div></div><p class="result-message" id="resultMessage"></p><button id="resultBudgetBtn" class="secondary budget-result-btn">Ver mi plan</button><div class="result-actions"><button id="retryBtn" class="secondary">Repetir quincena</button><button id="finishBtn" class="primary">Terminar</button></div></div></section>
   <section id="closure" class="overlay closure" aria-labelledby="closureTitle" hidden><div class="sheet"><div class="closure-mark" aria-hidden="true">✓</div><div class="eyebrow">Quincena completada</div><h2 id="closureTitle">Tu balance quedó guardado.</h2><p id="closureText"></p><a class="primary" href="index.html" style="text-decoration:none">Volver al portal</a></div></section>
-  <div id="loading" class="loading">Preparando tu mesa…</div><section id="fatal" class="fatal" hidden><div><h2>No pudimos abrir la escena 3D.</h2><p id="fatalText">Revisa la conexión para cargar Three.js y vuelve a intentar.</p><button class="primary" id="reloadBtn">Volver a cargar</button></div></section>
+  <div id="loading" class="loading">Preparando tu quincena…</div><section id="fatal" class="fatal" hidden><div><h2>No pudimos abrir la escena 3D.</h2><p id="fatalText">Revisa la conexión para cargar Three.js y vuelve a intentar.</p><button class="primary" id="reloadBtn">Volver a cargar</button></div></section>
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -159,11 +206,27 @@ const World={root:null,spots:{},actors:[],targets:[],coins:[],drops:[],elapsed:0
  box(parent,size,pos,color){return Scene.box(parent,size,pos,color);},
  sphere(parent,r,pos,color){const m=new THREE.Mesh(new THREE.SphereGeometry(r,12,8),Scene.material(color));m.position.set(...pos);m.castShadow=true;parent.add(m);return m;},
  text(parent,words,pos,w=1.2,color='#fff3c4'){const m=new THREE.Mesh(new THREE.PlaneGeometry(w,w*.25),new THREE.MeshBasicMaterial({map:Scene.label(words,color,'#173c49',512,128),side:THREE.DoubleSide}));m.position.set(...pos);parent.add(m);return m;},
- person(parent,x,z,color,scale=1){const g=new THREE.Group();g.position.set(x,0,z);g.scale.setScalar(scale);parent.add(g);this.box(g,[.38,.55,.22],[0,1.03,0],color);this.sphere(g,.17,[0,1.5,0],0xbc8966);this.sphere(g,.175,[0,1.59,-.025],0x382e2b);for(const x of [-.065,.065])this.sphere(g,.018,[x,1.52,.155],0x172936);const limbs=[];for(const side of [-1,1]){const arm=new THREE.Group();arm.position.set(side*.26,1.27,0);g.add(arm);this.box(arm,[.12,.45,.13],[0,-.2,0],color);this.sphere(arm,.065,[0,-.43,0],0xbc8966);const leg=new THREE.Group();leg.position.set(side*.11,.78,0);g.add(leg);this.box(leg,[.15,.63,.17],[0,-.31,0],0x29424e);this.box(leg,[.18,.1,.28],[0,-.66,.04],0x26313a);limbs.push(arm,leg);}const actor={g,limbs,base:new THREE.Vector3(x,0,z),seed:this.actors.length*.8,mode:'idle'};this.actors.push(actor);return actor;},
+ person(parent,x,z,color,scale=1){
+ const g=new THREE.Group();g.position.set(x,0,z);g.scale.setScalar(scale);parent.add(g);
+ this.box(g,[.38,.55,.22],[0,1.03,0],color);
+ this.sphere(g,.17,[0,1.5,0],0xD79A6D);
+ const hair=new THREE.Mesh(new THREE.SphereGeometry(.178,12,8,0,Math.PI*2,0,Math.PI*.5),Scene.material(0x382e2b));hair.position.set(0,1.56,0);hair.castShadow=true;g.add(hair);
+ for(const eyeX of [-.065,.065])this.sphere(g,.018,[eyeX,1.52,.155],0x1E293B);
+ const limbs=[];for(const side of [-1,1]){const arm=new THREE.Group();arm.position.set(side*.26,1.27,0);g.add(arm);this.box(arm,[.12,.45,.13],[0,-.2,0],color);this.sphere(arm,.065,[0,-.43,0],0xD79A6D);const leg=new THREE.Group();leg.position.set(side*.11,.78,0);g.add(leg);this.box(leg,[.15,.63,.17],[0,-.31,0],0x1E293B);this.box(leg,[.18,.1,.28],[0,-.66,.04],0x292524);limbs.push(arm,leg);}
+ const actor={g,limbs,base:new THREE.Vector3(x,0,z),seed:this.actors.length*.8,mode:'idle'};this.actors.push(actor);return actor;
+ },
+ workwear(actor){
+ const g=actor.g;
+ this.box(g,[.4,.49,.025],[0,1.04,.125],0xFFB703);
+ for(const side of [-1,1])this.box(g,[.045,.49,.03],[side*.12,1.04,.143],0xF8FAFC);
+ this.box(g,[.4,.045,.03],[0,.95,.145],0xF8FAFC);
+ const helmet=new THREE.Mesh(new THREE.SphereGeometry(.205,16,8,0,Math.PI*2,0,Math.PI*.5),Scene.material(0xF8FAFC));helmet.position.set(0,1.61,0);helmet.castShadow=true;g.add(helmet);
+ const brim=new THREE.Mesh(new THREE.CylinderGeometry(.24,.24,.035,16),Scene.material(0xF8FAFC));brim.position.set(0,1.61,.02);brim.castShadow=true;g.add(brim);
+ },
  touch(object,action,label){object.userData.action=action;object.userData.touchLabel=label;this.targets.push(object);return object;},
- init(){this.root=new THREE.Group();Scene.scene.add(this.root);this.box(this.root,[15,.15,15],[0,-.12,0],0xd4c8ad);this.box(this.root,[15,3.5,.16],[0,1.65,-6],0xb5c5b8);this.box(this.root,[.16,3.5,12],[-7.4,1.65,0],0x90ada9);for(let x=-7;x<8;x++)this.box(this.root,[.018,.006,14],[x,0,0],0xb8ad98);for(let z=-6;z<7;z++)this.box(this.root,[14,.006,.018],[0,.001,z],0xb8ad98);
+ init(){this.root=new THREE.Group();Scene.scene.add(this.root);this.box(this.root,[15,.15,15],[0,-.12,0],0xE8F1F5);this.box(this.root,[15,3.5,.16],[0,1.65,-6],0xCBD5E1);this.box(this.root,[.16,3.5,12],[-7.4,1.65,0],0x94A3B8);for(let x=-7;x<8;x++)this.box(this.root,[.018,.006,14],[x,0,0],0xCBD5E1);for(let z=-6;z<7;z++)this.box(this.root,[14,.006,.018],[0,.001,z],0xCBD5E1);
  const windowFrame=this.box(this.root,[3,1.5,.12],[-3,2,-5.87],0x254d59);this.box(this.root,[2.8,1.3,.04],[-3,2,-5.78],0x87c9df);this.box(this.root,[.07,1.4,.08],[-3,2,-5.72],0xf3e4bd);this.box(this.root,[2.9,.06,.08],[-3,2,-5.72],0xf3e4bd);for(let i=0;i<5;i++)this.box(this.root,[.35,.4+i*.16,.03],[-4+i*.48,1.55+i*.08,-5.7],0x6f9da5);
- for(const [id,x,z,label]of [['home',-4,-2.5,'LA CASA'],['emergency',0,-2.5,'UN IMPREVISTO'],['storage',4,-2.5,'TU RESERVA'],['loan',4,2.5,'EL CELULAR'],['beer',0,2.5,'LA CUADRILLA'],['recreation',-4,2.5,'EN FAMILIA']]){const g=new THREE.Group();g.position.set(x,0,z);this.root.add(g);this.spots[id]=g;this.box(g,[3,.015,2.8],[0,.015,0],id==='recreation'?0x739f91:0x929e89);}
+ for(const [id,x,z,label]of [['home',-4,-2.5,'LA CASA'],['emergency',0,-2.5,'UN IMPREVISTO'],['storage',4,-2.5,'TU RESERVA'],['loan',4,2.5,'EL CELULAR'],['beer',0,2.5,'LA CUADRILLA'],['recreation',-4,2.5,'EN FAMILIA']]){const g=new THREE.Group();g.position.set(x,0,z);this.root.add(g);this.spots[id]=g;this.box(g,[3,.015,2.8],[0,.015,0],id==='recreation'?0xA8CFC9:0xCBD5E1);}
  this.buildHome();this.buildRepair();this.buildSavings();this.buildPhone();this.buildFriends();this.buildFamily();
  const canvas=Scene.renderer.domElement;canvas.style.touchAction='none';canvas.addEventListener('pointerdown',e=>{if(!$('welcome').hidden)return;this.gesture={id:e.pointerId,x:e.clientX,y:e.clientY,lastX:e.clientX,lastY:e.clientY,moved:false};canvas.setPointerCapture(e.pointerId);});canvas.addEventListener('pointermove',e=>{const g=this.gesture;if(!g||e.pointerId!==g.id)return;if(Math.hypot(e.clientX-g.x,e.clientY-g.y)>7)g.moved=true;if(g.moved){this.orbit=Math.max(-.5,Math.min(.5,this.orbit+(e.clientX-g.lastX)*.0025));this.pitch=Math.max(-.2,Math.min(.35,this.pitch+(e.clientY-g.lastY)*.0015));}g.lastX=e.clientX;g.lastY=e.clientY;});canvas.addEventListener('pointerup',e=>{const g=this.gesture;this.gesture=null;if(!g||g.moved)return;const r=canvas.getBoundingClientRect(),ray=new THREE.Raycaster();ray.setFromCamera(new THREE.Vector2((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1),Scene.camera);const hit=ray.intersectObjects(this.targets,true).find(h=>{let o=h.object;while(o){if(!o.visible)return false;o=o.parent;}return true;});if(hit){let o=hit.object;while(o&&!o.userData.action)o=o.parent;if(o)this.interact(o.userData.action);}});canvas.addEventListener('pointercancel',()=>this.gesture=null);
  $('worldAction').addEventListener('click',()=>this.interact(this.activeId));$('worldCenter').addEventListener('click',()=>{this.focus((state.feedback?feedbackStep():currentStep())?.id||this.activeId);});this.look=new THREE.Vector3();this.goal=new THREE.Vector3();this.reset();this.layoutObserver=new ResizeObserver(()=>this.layout());this.layoutObserver.observe($('app'));this.layoutObserver.observe($('hand'));this.layoutObserver.observe($('resultModal').querySelector('.sheet'));this.layout();},
@@ -188,7 +251,7 @@ const World={root:null,spots:{},actors:[],targets:[],coins:[],drops:[],elapsed:0
  this.box(g,[1.05,.1,.7],[.78,.76,.1],0xaa7e4e);for(const x of [.34,1.2])this.box(g,[.08,.74,.08],[x,.37,.1],0x6e6550);
  this.bill=this.text(g,'POR PAGAR',[.78,1.08,.25],.85);this.parent=this.person(g,.85,-.75,0x4a8794);
  },
- buildRepair(){const g=this.spots.emergency;this.washer=this.box(g,[1,.95,.8],[-.35,.5,0],0xc5d6d0);this.sphere(g,.29,[-.35,.52,.43],0x355f70);this.touch(this.washer,'emergency','Revisar la fuga');this.box(g,[.8,.12,.2],[-.35,.94,.36],0x8ea7a6);this.puddle=new THREE.Mesh(new THREE.CircleGeometry(.65,24),new THREE.MeshBasicMaterial({color:0x57b9dc,transparent:true,opacity:.65,depthWrite:false}));this.puddle.rotation.x=-Math.PI/2;this.puddle.position.set(-.35,.035,.65);g.add(this.puddle);for(let i=0;i<12;i++){const d=this.sphere(g,.025,[-.35,.4,.55],0x80d9ee);this.drops.push(d);}this.toolbox=new THREE.Group();this.toolbox.position.set(.65,.1,.3);g.add(this.toolbox);this.box(this.toolbox,[.55,.28,.32],[0,.14,0],0xd78a38);this.box(this.toolbox,[.25,.035,.035],[0,.32,0],0x243c43);this.touch(this.toolbox,'emergency','Usar la herramienta');this.repairer=this.person(g,.8,-.5,0x597eab);},
+ buildRepair(){const g=this.spots.emergency;this.washer=this.box(g,[1,.95,.8],[-.35,.5,0],0xc5d6d0);this.sphere(g,.29,[-.35,.52,.43],0x355f70);this.touch(this.washer,'emergency','Revisar la fuga');this.box(g,[.8,.12,.2],[-.35,.94,.36],0x8ea7a6);this.puddle=new THREE.Mesh(new THREE.CircleGeometry(.65,24),new THREE.MeshBasicMaterial({color:0x57b9dc,transparent:true,opacity:.65,depthWrite:false}));this.puddle.rotation.x=-Math.PI/2;this.puddle.position.set(-.35,.035,.65);g.add(this.puddle);for(let i=0;i<12;i++){const d=this.sphere(g,.025,[-.35,.4,.55],0x80d9ee);this.drops.push(d);}this.toolbox=new THREE.Group();this.toolbox.position.set(.65,.1,.3);g.add(this.toolbox);this.box(this.toolbox,[.55,.28,.32],[0,.14,0],0xd78a38);this.box(this.toolbox,[.25,.035,.035],[0,.32,0],0x243c43);this.touch(this.toolbox,'emergency','Usar la herramienta');this.repairer=this.person(g,.8,-.5,0x0284C7);this.workwear(this.repairer);},
  buildSavings(){const g=this.spots.storage;this.box(g,[1.8,.12,.85],[0,.68,0],0xa47c50);for(const x of [-.7,.7])this.box(g,[.08,.65,.1],[x,.32,0],0x645845);this.safe=this.box(g,[.8,.55,.55],[0,.99,0],0x397e78);this.lid=new THREE.Group();this.lid.position.set(-.42,1.27,-.28);g.add(this.lid);this.box(this.lid,[.84,.06,.58],[.42,0,.28],0x5db09b);this.touch(this.safe,'storage','Abrir la reserva');this.touch(this.lid,'storage','Abrir la reserva');this.text(g,'RESERVA',[0,1.05,.285],.65);this.bars=new THREE.Group();g.add(this.bars);for(let i=0;i<4;i++)this.box(this.bars,[.025,.6,.035],[-.3+i*.2,1.02,.32],0x263c46);for(let i=0;i<14;i++){const coin=new THREE.Mesh(new THREE.CylinderGeometry(.065,.065,.025,12),Scene.material(0xf6c64c));g.add(coin);this.coins.push({mesh:coin,base:new THREE.Vector3((i%4-1.5)*.13,.77+Math.floor(i/4)*.04,(Math.floor(i/4)%2)*.12),index:i});}this.plant(g,1,-.5);},
  plant(g,x,z){this.box(g,[.3,.3,.3],[x,.16,z],0xb2734d);for(let i=0;i<5;i++){const leaf=this.sphere(g,.16,[x+Math.sin(i*2)*.12,.4+i*.08,z+Math.cos(i*2)*.09],0x4d9361);leaf.scale.y=1.5;}},
  buildPhone(){const g=this.spots.loan;this.box(g,[1.4,.12,.8],[0,.75,.25],0xb18c61);for(const x of [-.55,.55])this.box(g,[.08,.73,.08],[x,.35,.25],0x655b4c);Scene.phone.parent.remove(Scene.phone);g.add(Scene.phone);Scene.phone.position.set(0,.84,.35);Scene.phone.rotation.set(.32,0,0);Scene.phone.scale.setScalar(1.35);this.touch(Scene.phone,'loan','Prender el celular');this.doorPivot=new THREE.Group();this.doorPivot.position.set(-.9,0,-.65);g.add(this.doorPivot);this.box(this.doorPivot,[1.25,2,.09],[.625,1,0],0x90704f);this.sphere(this.doorPivot,.045,[1.12,1,.08],0xe6c268);this.touch(this.doorPivot,'loan','Atender la puerta');this.collector=this.person(g,.4,-1.05,0xa45755);this.notice=this.text(g,'LLAMADA',[0,1.4,.45],1);this.notices=[];for(let i=0;i<5;i++){const n=this.box(g,[.25,.02,.17],[-.5+i*.23,.85,.2],0xdcb4a1);this.notices.push(n);}},
@@ -273,7 +336,7 @@ function restore(){let raw=LMS.get('cmi.suspend_data');let saved=validateSnapsho
 function toast(text){clearTimeout(toastTimer);$('toast').textContent=text;$('toast').hidden=false;toastTimer=setTimeout(()=>$('toast').hidden=true,3200);}
 function showModal(id){returnFocus=document.activeElement;$(id).hidden=false;$(id).querySelector('button,a,[tabindex="0"]')?.focus({preventScroll:true});}
 function hideModal(id){$(id).hidden=true;if(returnFocus?.isConnected&&returnFocus.getClientRects().length)returnFocus.focus({preventScroll:true});}
-function setMeter(){const level=calm();$('calmFill').style.width=level+'%';$('calmFill').style.background=level>=80?'#58d8ab':level>=45?'#ffbf36':'#ef7374';$('calmLabel').style.color=level>=80?'#82e6c0':level>=45?'#ffcf68':'#ff9a9a';$('calmLabel').textContent=level>=80?'TRANQUILIDAD':level>=45?'ATENCIÓN':'EN RIESGO';$('calmMeter').setAttribute('aria-valuenow',level);}
+function setMeter(){const level=calm();$('calmFill').style.width=level+'%';$('calmFill').style.background=level>=80?'#2A9D8F':level>=45?'#FFB703':'#E63946';$('calmLabel').style.color=level>=80?'#8AD9CD':level>=45?'#FFB703':'#FDA4AF';$('calmLabel').textContent=level>=80?'TRANQUILIDAD':level>=45?'ATENCIÓN':'EN RIESGO';$('calmMeter').setAttribute('aria-valuenow',level);}
 function paragraph(parent,text,className=''){const p=document.createElement('p');p.textContent=text;if(className)p.className=className;parent.append(p);return p;}
 function feedbackStep(){return guideSteps()[state.answers.length-1];}
 
