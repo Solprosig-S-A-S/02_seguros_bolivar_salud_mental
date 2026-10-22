@@ -6,9 +6,9 @@
   <metadata><schema>ADL SCORM</schema><schemaversion>2004 4th Edition</schemaversion></metadata>
   <organizations default="ORG-U4">
     <organization identifier="ORG-U4" structure="hierarchical">
-      <title>El Solitario de la Quincena · Finanzas y salud mental</title>
+      <title>La Ruta de tu Quincena 3D · Finanzas y salud mental</title>
       <item identifier="ITEM-U4" identifierref="SCO-U4" isvisible="true">
-        <title>Unidad 4 · El Solitario de la Quincena</title>
+        <title>Unidad 4 · La Ruta de tu Quincena 3D</title>
         <imsss:sequencing>
           <imsss:objectives>
             <imsss:primaryObjective objectiveID="U4-PASS" satisfiedByMeasure="true">

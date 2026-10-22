@@ -5,9 +5,9 @@
   <metadata><schema>ADL SCORM</schema><schemaversion>1.2</schemaversion></metadata>
   <organizations default="ORG-U4">
     <organization identifier="ORG-U4">
-      <title>El Solitario de la Quincena · Finanzas y salud mental</title>
+      <title>La Ruta de tu Quincena 3D · Finanzas y salud mental</title>
       <item identifier="ITEM-U4" identifierref="SCO-U4" isvisible="true">
-        <title>Unidad 4 · El Solitario de la Quincena</title>
+        <title>Unidad 4 · La Ruta de tu Quincena 3D</title>
         <adlcp:masteryscore>80</adlcp:masteryscore>
       </item>
     </organization>
