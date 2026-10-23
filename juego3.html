@@ -1401,7 +1401,8 @@
             <polyline points="9 22 9 12 15 12 15 22"></polyline>
           </svg>
         </a>
-        <button id="soundToggleBtn" class="icon-chip-btn" aria-label="Audio" title="Sonido">
+        <button id="voiceGuideBtn" class="icon-chip-btn" aria-label="Desactivar voz guía" aria-pressed="true" title="Voz guía tranquila" style="font-size:11px">Voz</button>
+        <button id="soundToggleBtn" class="icon-chip-btn" aria-label="Silenciar voz y ambiente" aria-pressed="false" title="Voz y ambiente de playa">
           <svg id="soundIconOn" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
             <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
             <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
@@ -1759,21 +1760,69 @@
         ctx: null,
         muted: false,
 
+        master:null,effectsBus:null,beachBus:null,beachNodes:[],beachRunning:false,ducked:false,
+        setMix:function(){
+          if(!this.ctx||!this.master)return;
+          var now=this.ctx.currentTime,quiet=this.muted||document.hidden;
+          this.master.gain.cancelScheduledValues(now);this.master.gain.setTargetAtTime(quiet?0:1,now,.18);
+          this.effectsBus.gain.cancelScheduledValues(now);this.effectsBus.gain.setTargetAtTime(this.ducked?.10:.25,now,.3);
+          this.beachBus.gain.cancelScheduledValues(now);this.beachBus.gain.setTargetAtTime(this.beachRunning?(this.ducked?.13:.32):0,now,1.2);
+        },
+        duck:function(value){this.ducked=value;this.setMix();},
+        startBeach:function(){
+          this.init();if(!this.ctx)return;
+          if(this.beachNodes.length){this.beachRunning=true;this.setMix();return;}
+          var ctx=this.ctx,self=this;
+          function surf(duration,cutoff,level,rate,pan){
+            var buffer=ctx.createBuffer(2,Math.floor(ctx.sampleRate*duration),ctx.sampleRate);
+            for(var channel=0;channel<2;channel++){
+              var data=buffer.getChannelData(channel),brown=0;
+              for(var i=0;i<data.length;i++){brown=(brown+.025*(Math.random()*2-1))/1.025;data[i]=brown*5;}
+              // Fundir el final con el inicio para que el bucle no haga clic.
+              var fade=Math.floor(ctx.sampleRate*.12);
+              for(var j=0;j<fade;j++){var blend=j/(fade-1);data[data.length-fade+j]=data[data.length-fade+j]*(1-blend)+data[j]*blend;}
+            }
+            var source=ctx.createBufferSource();source.buffer=buffer;source.loop=true;source.loopStart=.12;
+            var filter=ctx.createBiquadFilter();filter.type='lowpass';filter.frequency.value=cutoff;filter.Q.value=.35;
+            var swell=ctx.createGain();swell.gain.value=level;
+            var lfo=ctx.createOscillator(),depth=ctx.createGain();lfo.frequency.value=rate;depth.gain.value=level*.72;lfo.connect(depth);depth.connect(swell.gain);
+            source.connect(filter);filter.connect(swell);
+            var stereo=ctx.createStereoPanner?ctx.createStereoPanner():null;
+            if(stereo){stereo.pan.value=pan;swell.connect(stereo);stereo.connect(self.beachBus);}else swell.connect(self.beachBus);
+            source.start();lfo.start();self.beachNodes.push(source,filter,swell,lfo,depth);if(stereo)self.beachNodes.push(stereo);
+          }
+          surf(13,1050,.55,.095,-.35);
+          surf(17,2200,.18,.073,.4);
+          surf(19,3100,.045,.041,0);
+          this.beachRunning=true;this.setMix();
+        },
+        stopBeach:function(){
+          this.beachRunning=false;
+          this.beachNodes.forEach(function(node){try{if(node.stop)node.stop();node.disconnect();}catch(e){}});
+          this.beachNodes=[];this.setMix();
+        },
+
         init: function () {
           if (!this.ctx) {
             var AudioContextClass = window.AudioContext || window.webkitAudioContext;
             if (AudioContextClass) {
               this.ctx = new AudioContextClass();
+              this.master=this.ctx.createGain();this.master.gain.value=this.muted||document.hidden?0:1;
+              var limiter=this.ctx.createDynamicsCompressor();limiter.threshold.value=-14;limiter.knee.value=18;limiter.ratio.value=5;limiter.attack.value=.01;limiter.release.value=.35;
+              this.master.connect(limiter);limiter.connect(this.ctx.destination);
+              this.effectsBus=this.ctx.createGain();this.effectsBus.gain.value=.25;this.effectsBus.connect(this.master);
+              this.beachBus=this.ctx.createGain();this.beachBus.gain.value=0;this.beachBus.connect(this.master);
             }
           }
           if (this.ctx && this.ctx.state === 'suspended') {
-            this.ctx.resume();
+            this.ctx.resume().catch(function(){});
           }
         },
 
         toggleMute: function () {
           this.muted = !this.muted;
-          return this.muted;
+          if(this.muted)CalmGuide.cancel();else{this.init();if(CalmGuide.active)CalmGuide.say(CalmGuide.lastText);}
+          this.setMix();return this.muted;
         },
 
         playTone: function (freq, type, duration, gainVal) {
@@ -1788,7 +1837,7 @@
             gain.gain.setValueAtTime(gainVal || 0.2, this.ctx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
             osc.connect(gain);
-            gain.connect(this.ctx.destination);
+            gain.connect(this.effectsBus);
             osc.start();
             osc.stop(this.ctx.currentTime + duration);
           } catch (e) {}
@@ -1817,7 +1866,7 @@
               gain.gain.setValueAtTime(0.12, now + i * 0.08);
               gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.07);
               osc.connect(gain);
-              gain.connect(this.ctx.destination);
+              gain.connect(this.effectsBus);
               osc.start(now + i * 0.08);
               osc.stop(now + i * 0.08 + 0.07);
             }
@@ -1835,14 +1884,15 @@
             var gain = this.ctx.createGain();
             var baseFreq = pitchUp ? 432 : 324;
             osc.type = 'sine';
-            osc2.type = 'triangle';
+            osc2.type = 'sine';
             osc.frequency.setValueAtTime(baseFreq, this.ctx.currentTime);
             osc2.frequency.setValueAtTime(baseFreq * 1.5, this.ctx.currentTime);
-            gain.gain.setValueAtTime(0.22, this.ctx.currentTime);
+            gain.gain.setValueAtTime(.001,this.ctx.currentTime);
+            gain.gain.linearRampToValueAtTime(.10,this.ctx.currentTime+.12);
             gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 1.2);
             osc.connect(gain);
             osc2.connect(gain);
-            gain.connect(this.ctx.destination);
+            gain.connect(this.effectsBus);
             osc.start();
             osc2.start();
             osc.stop(this.ctx.currentTime + 1.2);
@@ -1864,7 +1914,7 @@
             gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.15);
             osc.connect(gain);
-            gain.connect(this.ctx.destination);
+            gain.connect(this.effectsBus);
             osc.start();
             osc.stop(this.ctx.currentTime + 0.15);
           } catch (e) {}
@@ -1883,7 +1933,7 @@
             gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.06);
             osc.connect(gain);
-            gain.connect(this.ctx.destination);
+            gain.connect(this.effectsBus);
             osc.start();
             osc.stop(this.ctx.currentTime + 0.06);
           } catch (e) {}
@@ -1909,51 +1959,52 @@
           });
         },
 
-        playCelebrationFanfare: function () {
-          var self = this;
-          var seq = [[523.25, 0], [659.25, 140], [783.99, 280], [1046.5, 420], [783.99, 640], [1046.5, 780], [1318.5, 940]];
-          seq.forEach(function (n) {
-            setTimeout(function () {
-              self.playTone(n[0], 'triangle', 0.3, 0.22);
-            }, n[1]);
-          });
-          setTimeout(function () {
-            [523.25, 659.25, 783.99, 1046.5].forEach(function (f) {
-              self.playTone(f, 'sine', 0.9, 0.14);
-            });
-          }, 1150);
-        },
-
-        playFireworkPop: function () {
-          if (this.muted) return;
-          this.init();
-          if (!this.ctx) return;
-          try {
-            var t = this.ctx.currentTime;
-            var osc = this.ctx.createOscillator();
-            var gain = this.ctx.createGain();
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(900 + Math.random() * 500, t);
-            osc.frequency.exponentialRampToValueAtTime(90, t + 0.22);
-            gain.gain.setValueAtTime(0.1, t);
-            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
-            osc.connect(gain);
-            gain.connect(this.ctx.destination);
-            osc.start(t);
-            osc.stop(t + 0.26);
-          } catch (e) {}
-        },
+        playCelebrationFanfare: function () { this.playBreatheChime(true); },
+        // Mantener la celebración visual sin estallidos que interrumpan el descanso.
+        playFireworkPop: function () {},
 
         playFinaleFailure: function () {
           var self = this;
           var notes = [330, 293.66, 246.94, 196.00];
           notes.forEach(function (freq, idx) {
             setTimeout(function () {
-              self.playTone(freq, 'sawtooth', 0.35, 0.16);
+              self.playTone(freq, 'sine', .5, .08);
             }, idx * 180);
           });
         }
       };
+
+      // Ambiente de playa sintetizado localmente: olas lentas, espuma y brisa estéreo.
+      var CalmGuide = {
+        enabled:true, active:false, voice:null, utterance:null, token:0, lastText:'',
+        selectVoice:function(){
+          if(!('speechSynthesis' in window))return;
+          var voices=window.speechSynthesis.getVoices().filter(function(v){return /^es([-_]|$)/i.test(v.lang);});
+          function rank(v){return (/es-(CO|MX|US)/i.test(v.lang)?8:0)+(/Natural|Online|Google|Paulina|Monica|Mónica|Sabina|Elvira|Dalia|Salome|Salomé/i.test(v.name)?4:0)+(v.default?1:0);}
+          voices.sort(function(a,b){return rank(b)-rank(a);});this.voice=voices[0]||null;
+        },
+        cancel:function(){this.token++;if('speechSynthesis' in window)window.speechSynthesis.cancel();this.utterance=null;SoundEngine.duck(false);},
+        say:function(text){
+          this.lastText=text;this.cancel();
+          if(!this.active||!this.enabled||SoundEngine.muted||document.hidden||!('speechSynthesis' in window)||!('SpeechSynthesisUtterance' in window))return;
+          this.selectVoice();var self=this,id=this.token,u=new SpeechSynthesisUtterance(text);
+          u.lang=this.voice?this.voice.lang:'es-CO';if(this.voice)u.voice=this.voice;
+          u.rate=.86;u.pitch=1;u.volume=.88;
+          u.onstart=function(){if(id===self.token)SoundEngine.duck(true);};
+          var end=function(){if(id!==self.token)return;self.utterance=null;SoundEngine.duck(false);};
+          u.onend=end;u.onerror=end;this.utterance=u;
+          try{window.speechSynthesis.speak(u);}catch(e){end();}
+        },
+        station:function(id){this.active=true;SoundEngine.startBeach();this.say([
+          'Bienvenido. Este momento es para ti. Camina hacia la caseta. Cuando llegues, toma agua con calma, en pequeños sorbos.',
+          'Vamos a respirar con calma. Mantén presionado el círculo y acompaña mi voz. Respira sin forzar. Puedes soltarlo y volver a tu ritmo cuando lo necesites.',
+          'El turno termina. Guarda tus cosas, silencia las alertas y cierra el casillero. Hazlo a tu ritmo.',
+          'Ahora prepara tu descanso. Apaga el celular, cierra las cortinas y baja la luz. Deja que este espacio se vuelva tranquilo.'
+        ][id-1]);},
+        phase:function(phase){this.say(['Inhala, suave.','Mantén el aire, sin forzar.','Suelta el aire, despacio.'][phase]);},
+        stop:function(){this.active=false;this.cancel();SoundEngine.stopBeach();}
+      };
+      if('speechSynthesis' in window){CalmGuide.selectVoice();window.speechSynthesis.addEventListener('voiceschanged',function(){CalmGuide.selectVoice();});}
 
       /* ------------------------------------------------------------------
          3. MOTOR 3D SANTUARIO DE RECARGA (THREE.JS)
@@ -3606,6 +3657,19 @@
 
         bindEvents: function () {
           var self = this;
+          var voiceButton=document.getElementById('voiceGuideBtn');
+          if(!('speechSynthesis' in window)){voiceButton.disabled=true;voiceButton.setAttribute('aria-pressed','false');voiceButton.title='La voz no está disponible en este navegador';}
+          voiceButton.addEventListener('click',function(){
+            CalmGuide.enabled=!CalmGuide.enabled;voiceButton.setAttribute('aria-pressed',String(CalmGuide.enabled));voiceButton.setAttribute('aria-label',CalmGuide.enabled?'Desactivar voz guía':'Activar voz guía');voiceButton.style.opacity=CalmGuide.enabled?'1':'.55';
+            if(CalmGuide.enabled)CalmGuide.say(CalmGuide.lastText);else CalmGuide.cancel();
+          });
+          document.addEventListener('visibilitychange',function(){
+            if(document.hidden){if(self.pauseBreathing)self.pauseBreathing();CalmGuide.cancel();}
+            else if(CalmGuide.active)SoundEngine.init();
+            SoundEngine.setMix();
+          });
+          window.addEventListener('pagehide',function(){CalmGuide.resumeAfterPage=CalmGuide.active;if(self.pauseBreathing)self.pauseBreathing();CalmGuide.stop();if(SoundEngine.ctx)SoundEngine.ctx.suspend().catch(function(){});});
+          window.addEventListener('pageshow',function(event){if(event.persisted&&CalmGuide.resumeAfterPage){CalmGuide.active=true;SoundEngine.startBeach();}});
 
           this.dom.startBtn.addEventListener('click', function () {
             SoundEngine.init();
@@ -3624,6 +3688,8 @@
             var muted = SoundEngine.toggleMute();
             self.dom.soundIconOn.style.display = muted ? 'none' : 'block';
             self.dom.soundIconOff.style.display = muted ? 'block' : 'none';
+            self.dom.soundToggleBtn.setAttribute('aria-pressed',String(muted));
+            self.dom.soundToggleBtn.setAttribute('aria-label',muted?'Activar voz y ambiente':'Silenciar voz y ambiente');
           });
 
           this.dom.feedbackAdvanceBtn.addEventListener('click', function () {
@@ -3648,7 +3714,7 @@
           });
 
           this.dom.finishScormBtn.addEventListener('click', function () {
-            SoundEngine.playVictory();
+            CalmGuide.stop();
             ScormAPI.finish();
             self.dom.finalScreen.classList.remove('minimized');
             self.dom.finalScreen.style.display = 'none';
@@ -3676,12 +3742,15 @@
           });
 
           this.dom.closeWindowBtn.addEventListener('click', function () {
+            CalmGuide.stop();
             try { window.close(); } catch (e) {}
             window.location.href = 'index.html';
           });
         },
 
         loadStation: function (stationNum) {
+          if(this.breathCleanup){this.breathCleanup();this.breathCleanup=null;}
+          CalmGuide.cancel();
           this.currentStation = stationNum;
           this.stationActive = true;
           var appRoot = document.getElementById('rechargeApp');
@@ -3713,6 +3782,7 @@
 
           // Construir controles interactivos de la estación
           this.renderStationControls(stationNum, data);
+          CalmGuide.station(stationNum);
         },
 
         renderStationControls: function (stationNum, data) {
@@ -3736,6 +3806,7 @@
 
               Santuario3DEngine.walkPlayerToCooler(function () {
                 Santuario3DEngine.drinkWaterStation1();
+                CalmGuide.say('Toma un sorbo de agua, despacio. Suelta los hombros. No hay prisa.');
                 self.score += data.scoreAdd;
                 self.vitalBattery = data.batteryTarget;
                 self.updateBatteryMeter();
@@ -3864,6 +3935,7 @@
               phaseTime = 0;
               currentPhase = 0;
 
+              CalmGuide.phase(0);
               SoundEngine.playBreatheChime(true);
               if (navigator.vibrate) navigator.vibrate([30]);
 
@@ -3885,6 +3957,7 @@
                   if (phaseTime >= 4.0) {
                     currentPhase = 1;
                     phaseTime = 0;
+                    CalmGuide.phase(1);
                     SoundEngine.playBreatheChime(false);
                     if (navigator.vibrate) navigator.vibrate([40, 60, 40]);
                   }
@@ -3902,6 +3975,7 @@
                   if (phaseTime >= 7.0) {
                     currentPhase = 2;
                     phaseTime = 0;
+                    CalmGuide.phase(2);
                     SoundEngine.playBreatheChime(false);
                   }
                 }
@@ -3924,6 +3998,7 @@
                       // Fin del ciclo intermedio (1 o 2 de 3)
                       currentPhase = 0;
                       phaseTime = 0;
+                      CalmGuide.phase(0);
                       SoundEngine.playSuccess();
                       if (navigator.vibrate) navigator.vibrate([40, 70, 40]);
                       circleBar.style.strokeDashoffset = circumference.toString();
@@ -3954,6 +4029,7 @@
                       phaseLabel.textContent = '¡3 CICLOS COMPLETADOS: 68 BPM!';
                       subInst.textContent = 'Excelente regulación neurovegetativa';
                       self.showInlineFeedback('¡3 ciclos de respiración completados! Ritmo cardíaco y estrés regulados.');
+                      CalmGuide.say('Muy bien. Vuelve a tu respiración natural. Quédate un momento con esta pausa.');
 
                       setTimeout(function () {
                         self.showFeedback(data.feedback);
@@ -3969,6 +4045,7 @@
                 clearInterval(breatheTimer);
                 breatheTimer = null;
                 isHolding = false;
+                CalmGuide.say('Respira a tu ritmo. Cuando quieras, continuamos.');
                 wrapper.classList.remove('active');
                 circleBtn.className = 'breathe-circle-btn';
                 circleBar.style.strokeDashoffset = circumference.toString();
@@ -3988,6 +4065,11 @@
             circleBtn.addEventListener('pointerdown', startBreathe);
             window.addEventListener('pointerup', stopBreathe);
             window.addEventListener('pointercancel', stopBreathe);
+            self.pauseBreathing=stopBreathe;
+            self.breathCleanup=function(){
+              if(breatheTimer)clearInterval(breatheTimer);breatheTimer=null;isHolding=false;
+              window.removeEventListener('pointerup',stopBreathe);window.removeEventListener('pointercancel',stopBreathe);self.pauseBreathing=null;
+            };
 
             container.appendChild(phaseLabel);
             container.appendChild(trackerRow);
@@ -4020,6 +4102,7 @@
                 if (!self.stationActive || st.done) return;
                 st.done = true;
                 card.classList.add('completed');
+                CalmGuide.say({helmet:'Guarda el casco. Por hoy, terminaste.',boots:'Deja las botas. Afloja los hombros.',phone:'Las alertas quedan en silencio.',locker:'Cierra el casillero. Este tiempo es para ti.'}[st.id]);
                 SoundEngine.playTone(480, 'triangle', 0.1, 0.15);
 
                 if (st.id === 'helmet') {
@@ -4076,6 +4159,7 @@
                 if (!self.stationActive || st.done) return;
                 st.done = true;
                 card.classList.add('completed');
+                CalmGuide.say({blueLight:'Deja el celular a un lado.',curtains:'Cierra las cortinas, con calma.',lamp:'Baja la luz. Es momento de descansar.'}[st.id]);
 
                 if (st.id === 'blueLight') {
                   if (Santuario3DEngine.phoneScreenMesh) Santuario3DEngine.phoneScreenMesh.material.color.setHex(0x0F172A);
@@ -4203,6 +4287,7 @@
         },
 
         showFinalScreen: function () {
+          CalmGuide.say('Has terminado. Lleva contigo estas pequeñas pausas. Gracias por dedicarte este momento.');
           var passed = (this.score >= 75);
           ScormAPI.setScore(this.score);
           ScormAPI.setStatus(passed ? 'passed' : 'failed');
