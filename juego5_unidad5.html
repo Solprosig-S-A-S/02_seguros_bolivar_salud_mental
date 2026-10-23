@@ -405,7 +405,7 @@ class World{
  box(w,h,d,x,y,z,color,parent=this.scene){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),this.mat(color));m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;}
  cylinder(r,h,x,y,z,color,parent=this.scene){const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,10),this.mat(color));m.position.set(x,y,z);m.castShadow=true;parent.add(m);return m;}
  beam(a,b,r,color,parent=this.scene){const av=new THREE.Vector3(...a),bv=new THREE.Vector3(...b),d=bv.clone().sub(av);const mesh=new THREE.Mesh(new THREE.CylinderGeometry(r,r,d.length(),8),this.mat(color));mesh.position.copy(av.clone().add(bv).multiplyScalar(.5));mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize());mesh.castShadow=true;parent.add(mesh);return mesh;}
- label(text,color='#ffffff',background='#023047'){const c=document.createElement('canvas');c.width=512;c.height=96;const ctx=c.getContext('2d');ctx.fillStyle=background;ctx.fillRect(0,0,512,96);ctx.fillStyle=color;ctx.font='bold 38px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(text,256,49,480);const texture=new THREE.CanvasTexture(c);const sprite=new THREE.Sprite(new THREE.SpriteMaterial({map:texture,depthTest:true}));sprite.scale.set(2.35,.44,1);return sprite;}
+ label(text,color='#ffffff',background='#023047'){const c=document.createElement('canvas');c.width=512;c.height=96;const ctx=c.getContext('2d');ctx.fillStyle=background;ctx.fillRect(0,0,512,96);ctx.fillStyle=color;ctx.font='bold 38px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(text,256,49,480);const texture=new THREE.CanvasTexture(c);const sprite=new THREE.Sprite(new THREE.SpriteMaterial({map:texture,depthTest:true}));sprite.scale.set(1.45,.27,1);return sprite;}
  actor(id,name,color,hat=0xfacc15){
   const group=new THREE.Group();this.scene.add(group);
   const torso=this.box(.68,.85,.42,0,1.12,0,color,group);
@@ -418,14 +418,15 @@ class World{
   const ball=(radius,x,y,z,color,parent=head)=>{const mesh=new THREE.Mesh(new THREE.SphereGeometry(radius,12,10),this.mat(color));mesh.position.set(x,y,z);mesh.castShadow=true;parent.add(mesh);return mesh;};
   ball(.065,-.33,-.015,0,0xd89b6e);ball(.065,.33,-.015,0,0xd89b6e);
   const nose=ball(.047,0,-.035,.328,0xd49669);nose.scale.set(.8,1.25,1);
-  const eyes=[],pupils=[],brows=[];
+  const eyes=[],pupils=[],brows=[],lids=[];
   for(const sign of [-1,1]){
    const eye=new THREE.Group();eye.position.set(sign*.125,.05,.283);head.add(eye);
    const white=ball(.064,0,0,0,0xf9fafb,eye);white.scale.set(1,.7,.32);
    const iris=ball(.03,0,0,.017,0x475e68,eye);iris.scale.z=.3;
    const pupil=ball(.018,0,0,.026,0x101b24,eye);pupil.scale.z=.3;
-   ball(.005,-.007,.009,.032,0xffffff,eye);eyes.push(eye);pupils.push(pupil);
-   const brow=this.box(.145,.027,.025,sign*.125,.16,.3,0x493226,head);brows.push(brow);
+   ball(.004,-.007,.009,.032,0xffffff,eye);eyes.push(eye);pupils.push(pupil);
+   const lid=ball(.063,0,.034,.004,0xe7ae7c,eye);lid.scale.set(1,.24,.34);lids.push(lid);
+   const brow=this.box(.135,.023,.016,sign*.125,.14,this.faceDepth(sign*.125,.14)+.009,0x493226,head);brow.rotation.y=sign*.38;brows.push(brow);
   }
   // Ambas formas siguen la curvatura del rostro y nunca se dibujan juntas.
   const mouthGeometry=new THREE.CircleGeometry(1,24);
@@ -434,17 +435,17 @@ class World{
   const mouth=new THREE.Mesh(mouthGeometry,mouthMaterial);head.add(mouth);
   if(!this.lipShapes){
    this.lipShapes={};
-   for(const expression of ['calm','worried']){
+   for(const expression of ['serious','worried','relieved']){
     const points=[];
     for(let i=0;i<=20;i++){
-     const u=i/10-1,x=u*.073,y=-.16+(expression==='worried'?.023:-.018)*(1-u*u);
+     const u=i/10-1,x=u*.073,y=-.16+(expression==='worried'?.027:expression==='relieved'?-.013:.003)*(1-u*u);
      points.push(new THREE.Vector3(x,y,this.faceDepth(x,y)+.005));
     }
     this.lipShapes[expression]=new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points),20,.006,6,false);
    }
   }
   const lipMaterial=new THREE.MeshBasicMaterial({color:0x784232});lipMaterial.color.convertSRGBToLinear();
-  const smile=new THREE.Mesh(this.lipShapes.calm,lipMaterial);head.add(smile);
+  const smile=new THREE.Mesh(this.lipShapes.serious.clone(),lipMaterial);head.add(smile);
   const dome=new THREE.Mesh(new THREE.SphereGeometry(.355,20,12,0,Math.PI*2,0,Math.PI/2),this.mat(hat));dome.position.y=.2;dome.castShadow=true;head.add(dome);
   this.cylinder(.4,.045,0,.2,.035,hat,head);this.box(.055,.19,.5,0,.36,0,hat,head);
   const legs=[],knees=[],arms=[],forearms=[];
@@ -461,24 +462,44 @@ class World{
   }
   const tag=this.label(name);tag.position.y=2.77;tag.scale.set(1.65,.31,1);group.add(tag);
   const phone=this.box(.19,.32,.05,0,-.36,.14,0x0f172a,forearms[1]);const phoneScreen=this.box(.155,.24,.01,0,-.35,.17,0x38bdf8,forearms[1]);phone.visible=phoneScreen.visible=false;
-  const actor={id,group,torso,head,eyes,pupils,brows,mouth,mouthShape,smile,legs,knees,arms,forearms,tag,phone,phoneScreen,base:new THREE.Vector3(),mood:null};this.actors[id]=actor;this.mood(actor,'calm');return actor;
+  const actor={id,group,torso,head,eyes,pupils,brows,lids,face:{worried:0,angry:0,tired:0,relieved:0},mouth,mouthShape,smile,legs,knees,arms,forearms,tag,phone,phoneScreen,base:new THREE.Vector3(),mood:null};this.actors[id]=actor;this.mood(actor,'calm');return actor;
  }
  faceDepth(x,y){return .3234*Math.sqrt(Math.max(.01,1-(x/.33)**2-(y/.3564)**2));}
  mood(actor,mood){
-  if(this.effectStyle&&this.effectTime<1.8&&actor.id!=='supervisor'&&mood==='calm')return;
-  actor.mood=mood;
-  const angry=mood==='angry',worried=mood==='worried',tired=mood==='tired';
-  actor.brows.forEach((b,i)=>{b.rotation.z=(i===0?1:-1)*(angry?-.42:worried?.38:0);b.position.y=worried?.18:angry?.125:.16;});
-  actor.smile.geometry=this.lipShapes[worried?'worried':'calm'];
-  this.updateMouth(actor,!!actor.isTalking,this.sceneTime);
+  if(this.effectStyle&&this.visualActionTime()<1.8&&actor.id!=='supervisor'&&mood==='calm')return;
+  // Neutral is attentive and serious. Relief follows support, never the initial problem.
+  actor.mood=mood==='calm'?(this.effectStyle==='protective'&&this.visualActionTime()>5.5?'relieved':'serious'):mood;
+ }
+ updateExpression(actor,dt,time){
+  const face=actor.face,blend=1-Math.exp(-dt*4);
+  Object.keys(face).forEach(key=>face[key]+=((actor.mood===key?1:0)-face[key])*blend);
+  actor.brows.forEach((b,index)=>{
+   b.rotation.z=(index===0?1:-1)*(.34*face.worried-.3*face.angry+.1*face.tired);
+   b.position.y=.137+face.worried*.026-face.angry*.015-face.tired*.012;
+   b.position.z=this.faceDepth(b.position.x,b.position.y)+.009;
+  });
+  const blink=(time+Object.keys(this.actors).indexOf(actor.id)*.37)%4.2;
+  actor.eyes.forEach((eye,index)=>{
+   eye.scale.y=blink<.13?.08:.76+face.worried*.14-face.angry*.19-face.tired*.36;
+   actor.lids[index].position.y=.029+face.worried*.009-face.angry*.009;
+   actor.pupils[index].position.x=face.worried*Math.sin(time*.85)*.006;
+   actor.pupils[index].position.y=-face.worried*.007-face.tired*.008;
+  });
+  const positions=actor.smile.geometry.attributes.position,neutral=this.lipShapes.serious.attributes.position;
+  const concern=this.lipShapes.worried.attributes.position,relief=this.lipShapes.relieved.attributes.position;
+  const worry=Math.min(1,face.worried+face.angry*.4+face.tired*.35);
+  for(let i=0;i<positions.count;i++){
+   positions.setXYZ(i,neutral.getX(i),neutral.getY(i)+(concern.getY(i)-neutral.getY(i))*worry+(relief.getY(i)-neutral.getY(i))*face.relieved,neutral.getZ(i)+(concern.getZ(i)-neutral.getZ(i))*worry+(relief.getZ(i)-neutral.getZ(i))*face.relieved);
+  }
+  positions.needsUpdate=true;
  }
  updateMouth(actor,talking,time){
   actor.isTalking=talking;
-  const useLine=!talking&&(actor.mood==='calm'||actor.mood==='worried');
+  const useLine=!talking;
   actor.smile.visible=useLine;
   actor.mouth.visible=!useLine;
   if(!useLine){
-   const height=talking?.012+Math.abs(Math.sin(time*7))*(actor.mood==='angry'?.045:.027):actor.mood==='angry'?.03:.008;
+   const height=.007+Math.abs(Math.sin(time*6.5))*(.018+actor.face.angry*.008);
    const positions=actor.mouth.geometry.attributes.position;
    for(let i=0;i<positions.count;i++){
     const x=actor.mouthShape[i*3]*.067,y=-.16+actor.mouthShape[i*3+1]*height;
@@ -496,14 +517,14 @@ class World{
  this.pump=new THREE.Group();this.pump.position.set(6,0,-3);this.scene.add(this.pump);this.box(2,1.4,1.2,0,.8,0,0xffb703,this.pump);this.box(1,.8,.8,.3,1.7,0,0x075985,this.pump);for(const x of [-.7,.7])for(const z of [-.6,.6])this.cylinder(.3,.18,x,.3,z,0x111827,this.pump).rotation.x=Math.PI/2;
  this.hose=new THREE.Group();this.pump.add(this.hose);const curve=new THREE.CatmullRomCurve3([new THREE.Vector3(-.6,1,0),new THREE.Vector3(-2,.4,0),new THREE.Vector3(-3,.18,2),new THREE.Vector3(-4,.18,2.5)]);const tube=new THREE.Mesh(new THREE.TubeGeometry(curve,22,.11,8,false),this.mat(0x142638));this.hose.add(tube);
  this.spray=new THREE.Group();this.pump.add(this.spray);this.drops=[];for(let i=0;i<24;i++){const p=new THREE.Mesh(new THREE.SphereGeometry(.055,5,4),new THREE.MeshBasicMaterial({color:0xc1d9df,transparent:true,opacity:.6}));this.spray.add(p);this.drops.push(p);}
- this.barrier=new THREE.Group();this.scene.add(this.barrier);for(const x of [3.8,7.8]){this.cylinder(.1,1,x,.5,-.8,0xf97316,this.barrier);this.box(.6,.08,.6,x,.04,-.8,0xf97316,this.barrier);}this.beam([3.8,.85,-.8],[7.8,.85,-.8],.05,0xffb703,this.barrier);const sign=this.label('ÁREA AISLADA','#011e2d','#ffb703');sign.position.set(5.8,1.1,-.8);this.barrier.add(sign);
+ this.barrier=new THREE.Group();this.scene.add(this.barrier);for(const x of [3.8,7.8]){this.cylinder(.1,1,x,.5,-.8,0xf97316,this.barrier);this.box(.6,.08,.6,x,.04,-.8,0xf97316,this.barrier);}this.beam([3.8,.85,-.8],[7.8,.85,-.8],.05,0xffb703,this.barrier);const sign=this.label('ÁREA AISLADA','#011e2d','#ffb703');sign.position.set(5.8,.65,-.8);sign.scale.set(.95,.18,1);this.barrier.add(sign);
  this.props=new THREE.Group();this.scene.add(this.props);this.boards=[];for(let i=0;i<5;i++){const b=this.box(2.5,.14,.38,-1+i*.4,.1+i*.15,-1.4+i*.25,0xb88240,this.props);b.rotation.y=i%2?.5:-.6;this.boards.push(b);}this.tools=[];for(let i=0;i<4;i++){const t=this.box(.12,.15,.65,-1+i*.6,.2,-.2,0xe66c25,this.props);this.box(.4,.15,.16,0,0,.22,0x374151,t);t.position.y=.09;this.tools.push(t);}this.routeLine=this.box(.2,.02,6,0,.04,-1,0x34d399);this.routeLine.visible=false;
  this.parals=new THREE.Group();this.scene.add(this.parals);for(const x of [-2,0,2]){this.beam([x,0,-3.8],[x,3.5,-3.8],.09,0x64748b,this.parals);this.box(2,.18,.6,x,3.5,-3.8,0xb88240,this.parals);}
  this.caseta=new THREE.Group();this.caseta.position.set(5,0,4);this.scene.add(this.caseta);this.box(4,.13,3,0,2.8,0,0x0284c7,this.caseta);for(const x of [-1.8,1.8])for(const z of [-1.2,1.2])this.beam([x,0,z],[x,2.8,z],.06,0xcbd5e1,this.caseta);this.box(2,.12,.5,0,.4,.65,0xb88240,this.caseta);this.cylinder(.25,.6,1,.9,-.5,0x38bdf8,this.caseta);const tag=this.label('PAUSA / SST');tag.position.set(0,2.5,1.3);this.caseta.add(tag);
  this.fatigueTool=this.box(.1,.45,.1,-8.5,.55,-1.8,0xb88240);this.box(.4,.13,.16,0,.2,0,0x64748b,this.fatigueTool);
  this.edgeAnchor=this.box(.3,.14,.3,-7.5,.2,-2,0x34d399);this.lanyard=new THREE.Mesh(new THREE.CylinderGeometry(.018,.018,1,6),this.mat(0xef4444));this.scene.add(this.lanyard);this.hazard=new THREE.Mesh(new THREE.RingGeometry(.65,.78,28),new THREE.MeshBasicMaterial({color:0xffb703,side:THREE.DoubleSide,transparent:true,opacity:.9}));this.hazard.rotation.x=-Math.PI/2;this.hazard.position.y=.04;this.scene.add(this.hazard);
  this.drawing=this.box(.65,.02,.8,0,1,0,0xfaf0ce);this.drawing.visible=false;for(let i=0;i<3;i++)this.box(.4,.005,.015,0,.015,-.2+i*.17,0x0284c7,this.drawing);
- this.auditBoard=new THREE.Group();this.auditBoard.position.set(0,0,-4);this.scene.add(this.auditBoard);this.box(4.6,2.5,.12,0,2.1,0,0x023047,this.auditBoard);for(const x of [-1.8,1.8])this.beam([x,0,0],[x,1,0],.05,0x94a3b8,this.auditBoard);this.auditText=this.label('HECHOS · ACUERDOS · SEGUIMIENTO','#ffdb70');this.auditText.position.set(0,2.2,.1);this.auditText.scale.set(4.4,.8,1);this.auditBoard.add(this.auditText);this.auditCells=[];for(let i=0;i<10;i++){const cell=this.box(.3,.22,.03,-1.8+i*.4,1.35,.1,0x475569,this.auditBoard);cell.material=cell.material.clone();this.auditCells.push(cell);}
+ this.auditBoard=new THREE.Group();this.auditBoard.position.set(0,0,-4);this.scene.add(this.auditBoard);this.box(3,1.1,.12,0,1.4,0,0x023047,this.auditBoard);for(const x of [-1.8,1.8])this.beam([x,0,0],[x,1,0],.05,0x94a3b8,this.auditBoard);this.auditText=this.label('HECHOS · ACUERDOS · SEGUIMIENTO','#ffdb70');this.auditText.position.set(0,1.65,.1);this.auditText.scale.set(2.7,.22,1);this.auditBoard.add(this.auditText);this.auditCells=[];for(let i=0;i<10;i++){const cell=this.box(.2,.16,.03,-1.17+i*.26,1.2,.1,0x475569,this.auditBoard);cell.material=cell.material.clone();this.auditCells.push(cell);}
  for(const a of [['supervisor','TÚ · DIRECTOR',0xffb703,0xf8fafc],['pedro','PEDRO',0xf97316],['residente','RESIDENTE',0x0284c7,0xf8fafc],['siso','SST',0x22c55e,0xf8fafc],['oficial','OFICIAL',0xdc2626],['ayudante','AYUDANTE',0x0284c7],['mecanico','MECÁNICO',0x64748b],['carpintero','CARPINTERÍA',0xf97316],['electricista','ELECTRICIDAD',0x0284c7],['roberto','ROBERTO',0xf97316],['carlos','CARLOS',0x22c55e],['mario','MARIO',0x0284c7],['auditor','COMITÉ / ARL',0x14b8a6,0xf8fafc]])this.actor(...a);
  this.actor('apoyoAcero','APOYO - ACERO',0xf97316);this.actor('apoyoObra','APOYO - VACIADO',0x0284c7);
  this.construction=new THREE.Group();this.scene.add(this.construction);
@@ -516,8 +537,9 @@ class World{
  this.box(2.3,.02,1.4,0,.025,0,0x145849,this.careZone);
  this.box(1.8,.12,.5,0,.4,0,0xb88240,this.careZone);
  for(const x of [-.7,.7])this.box(.09,.34,.35,x,.17,0,0x334155,this.careZone);
- this.privacyScreen=this.box(2.3,1.7,.06,0,1,-.7,0x285565,this.careZone);
- const careLabel=this.label('ZONA SEGURA','#bbf7d0','#064e3b');careLabel.scale.set(1.6,.3,1);careLabel.position.set(0,.9,-.55);this.careZone.add(careLabel);
+ 
+ // Low floor markings keep the rest area visible without blocking people.
+ for(const z of [-.65,.65])this.box(2.15,.015,.035,0,.045,z,0x34b399,this.careZone);
  this.statusLamp=new THREE.Mesh(new THREE.SphereGeometry(.15,12,10),this.mat(0xffb703).clone());this.statusLamp.position.set(3.3,1.4,-1.8);this.scene.add(this.statusLamp);
  this.statusStand=this.beam([3.3,0,-1.8],[3.3,1.3,-1.8],.045,0x334155);
  this.resetActors();
@@ -537,7 +559,7 @@ class World{
  case 9:this.place('auditor',-1.8,-1,.5);this.place('siso',1.8,-1,-.5);this.place('pedro',-3,-2,.5);this.place('carlos',3,-2,-.5);break;}
  const sector=SECTORS[index];Object.values(this.actors).forEach(actor=>actor.group.visible=false);
  sector.layout.forEach(layout=>this.place(...layout));this.caseta.visible=false;
- this.careZone.visible=!!sector.pause;this.privacyScreen.visible=index===5;if(sector.pause)this.careZone.position.set(sector.pause[0],0,sector.pause[1]);
+ this.careZone.visible=!!sector.pause;if(sector.pause)this.careZone.position.set(sector.pause[0],0,sector.pause[1]);
  this.statusLamp.visible=this.statusStand.visible=index===1;this.statusLamp.material.color.setHex(0xffb703);
  this.nearView=false;this.walkTime=0;this.walk=null;$('moveBtn').textContent='Acercarme';$('moveBtn').setAttribute('aria-pressed','false');$('moveBtn').hidden=false;this.actors.supervisor.group.traverse(node=>node.layers.set(1));this.edgeAnchor.position.set(-8.65,.12,-1.65);this.edgeAnchor.visible=index===0;this.inspected=false;this.actionBeat=-1;this.toolDropFrom=null;
  this.hazard.position.set(sector.point[0],.04,sector.point[2]);
@@ -671,11 +693,11 @@ class World{
    const partner=this.actors[partnerId];
    let yaw=Math.atan2(partner.group.position.x-actor.group.position.x,partner.group.position.z-actor.group.position.z)-actor.group.rotation.y;
    while(yaw>Math.PI)yaw-=Math.PI*2;while(yaw<-Math.PI)yaw+=Math.PI*2;
-   actor.head.rotation.set((actor.mood==='tired'?.22:actor.mood==='worried'?.1:0)+Math.sin(t*1.6+index)*.025,clamp(yaw,-.65,.65),tense?Math.sin(t*.8)*.025:0);
-   actor.torso.position.y=1.12+Math.sin(t*2+index)*.006;
+   const expressionBlend=1-Math.exp(-dt*5);actor.head.rotation.x+=(actor.face.tired*.22+actor.face.worried*.12+Math.sin(t*1.6+index)*.015-actor.head.rotation.x)*expressionBlend;actor.head.rotation.y+=(clamp(yaw,-.65,.65)-actor.head.rotation.y)*expressionBlend;actor.head.rotation.z+=((tense?Math.sin(t*.8)*.018:0)-actor.head.rotation.z)*expressionBlend;
+   actor.torso.position.y=1.12+Math.sin(t*(2+actor.face.worried*.6)+index)*(.006+actor.face.worried*.004);actor.arms.forEach(arm=>arm.position.y=1.5+actor.face.worried*.025);
    actor.arms[0].rotation.set(talking?-.35:0,0,tense?-.12:0);actor.arms[1].rotation.set(talking?-.45:0,0,tense?.12:0);
    actor.forearms[0].rotation.set(talking?-.3-Math.max(0,Math.sin(t*2))*.2:0,0,0);actor.forearms[1].rotation.set(talking?-.35:0,0,0);
-   const blink=(t+index*.37)%4.2;actor.eyes.forEach(eye=>eye.scale.y=blink<.13?.08:actor.mood==='tired'?.4:1);
+   this.updateExpression(actor,dt,t);
    actor.group.rotation.z=0;this.updateMouth(actor,talking,t);
   });
   if(this.final){
