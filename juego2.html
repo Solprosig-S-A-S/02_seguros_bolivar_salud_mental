@@ -1403,6 +1403,9 @@
         craneCable: null,
         craneBeacon: null,
         craneStopped: false,
+        craneFall: null,
+        craneImpacted: false,
+        craneFallDuration: 3.2,
         rainGroup: null,
         ambientDustGroup: null,
         workersList: [],
@@ -1672,13 +1675,16 @@
             clip.position.set(0, -0.26, 0.08);
             rArm.add(clip);
           } else if (role === 'crane_signaler') {
-            // Radio transmisor dos vías en mano izquierda
-            var radio = new THREE.Mesh(
-              new THREE.BoxGeometry(0.06, 0.14, 0.04),
-              new THREE.MeshBasicMaterial({ color: 0x0F172A })
-            );
-            radio.position.set(0, -0.24, 0.06);
-            lArm.add(radio);
+            var phone = new THREE.Group();
+            var phoneBody = new THREE.Mesh(new THREE.BoxGeometry(.19,.29,.035),new THREE.MeshStandardMaterial({color:0x0F172A,roughness:.4}));
+            phoneBody.castShadow=true;phone.add(phoneBody);
+            var phoneScreen = new THREE.Mesh(new THREE.PlaneGeometry(.155,.235),new THREE.MeshBasicMaterial({color:0x38BDF8}));
+            phoneScreen.position.z=.02;phone.add(phoneScreen);
+            for(var message=0;message<3;message++){
+              var line=new THREE.Mesh(new THREE.PlaneGeometry(message===1?.09:.12,.024),new THREE.MeshBasicMaterial({color:message===1?0xA7F3D0:0xF8FAFC}));
+              line.position.set(message===1?.018:0,.065-message*.06,.023);phone.add(line);
+            }
+            phone.position.set(.025,.94,.32);phone.rotation.x=-.8;w.add(phone);
           } else if (role === 'rebar') {
             // Caja de herramientas portátil
             var tbox = new THREE.Mesh(
@@ -1703,6 +1709,7 @@
             torso: torso,
             lArm: lArm,
             rArm: rArm,
+            phone: (role === 'crane_signaler' ? phone : null),
             tbox: (role === 'rebar' ? tbox : null)
           };
 
@@ -1842,8 +1849,8 @@
           group.add(beacon);
           this.craneBeacon = beacon;
 
-          // Señalero de grúa alertando con radio en mano
-          this.craneWorker = this.createWorkerMesh(2.2, -3.8, Math.PI, 0x10B981, 0x2563EB, 'crane_signaler');
+          // Trabajador distraído mirando el teléfono bajo la zona de carga.
+          this.craneWorker = this.createWorkerMesh(2.2, -3.8, -.35, 0x10B981, 0x2563EB, 'crane_signaler');
 
           this.scene.add(group);
           this.front2Crane = group;
@@ -2184,6 +2191,8 @@
             }
           } else if (roundId === 2) {
             if (isCorrect) {
+              this.craneFall = null;
+              this.craneImpacted = false;
               this.craneStopped = true;
               this.craneError = false;
               this.stormEnded = true;
@@ -2219,36 +2228,20 @@
                 this.craneConesGroup = cones;
               }
             } else {
-              // ¡DESASTRE FATAL DE GRÚA: CAÍDA LIBRE Y APLASTAMIENTO!
+              // Caída ralentizada: mostrar el recorrido completo antes del impacto.
               this.craneError = true;
-              this.cameraShake = 0.70;
-              SoundEngine.playCrash();
-              setTimeout(function () { SoundEngine.playSiren(); }, 450);
+              this.craneImpacted = false;
+              this.cameraShake = 0;
+              this.craneFall = {
+                started:performance.now(),
+                from:this.craneLoad.position.clone(),
+                rotation:this.craneLoad.rotation.clone()
+              };
+              this.targetLookAt.set(2.2,1.8,-4.5);
+              this.baseTargetRadius=13.5;
+              this.targetPitch=.48;
+              if(this.craneCable){this.craneCable.scale.y=.15;this.craneCable.position.set(2.2,8.2,-5.5);}
 
-              this.targetLookAt.set(2.2, 0.6, -3.5);
-              this.baseTargetRadius = 13.5;
-              this.targetPitch = 0.48;
-
-              // Cable roto se dispara hacia arriba
-              if (this.craneCable) {
-                this.craneCable.scale.y = 0.15;
-                this.craneCable.position.set(2.2, 8.2, -5.5);
-              }
-              // La pesada formaleta cae y aplasta la zona del señalero
-              if (this.craneLoad) {
-                this.craneLoad.position.set(2.2, 0.35, -3.8);
-                this.craneLoad.rotation.set(-0.25, 0.15, 0.35);
-              }
-              // El señalero cae fulminado boca arriba bajo el impacto
-              if (this.craneWorker) {
-                this.craneWorker.position.set(2.2, 0.12, -3.2);
-                this.craneWorker.rotation.set(-Math.PI / 2, 0, 0.4);
-                if (this.craneWorker.userData && this.craneWorker.userData.helmet) {
-                  this.craneWorker.userData.helmet.position.set(0.8, -1.2, 1.2);
-                  this.craneWorker.userData.helmet.rotation.set(1.4, 0.2, 0.8);
-                }
-              }
-              this.triggerImpactDust(2.2, 0.4, -3.8);
             }
           } else if (roundId === 3) {
             if (isCorrect) {
@@ -2556,6 +2549,8 @@
 
           this.craneStopped = false;
           this.craneError = false;
+          this.craneFall = null;
+          this.craneImpacted = false;
           this.stormEnded = false;
           if (this.craneLoad) {
             this.craneLoad.position.set(2.2, 3.8, -5.5);
@@ -2569,7 +2564,7 @@
           if (this.craneBeacon) this.craneBeacon.material.color.setHex(0xEF4444);
           if (this.craneWorker) {
             this.craneWorker.position.set(2.2, 0, -3.8);
-            this.craneWorker.rotation.set(0, Math.PI, 0);
+            this.craneWorker.rotation.set(0, -.35, 0);
           }
           if (this.craneConesGroup && this.craneConesGroup.parent) {
             this.craneConesGroup.parent.remove(this.craneConesGroup);
@@ -2755,7 +2750,7 @@
           if (this.craneJib && !this.craneStopped) {
             this.craneJib.rotation.y = Math.sin(time * 0.6) * 0.14;
           }
-          if (this.craneLoad && !this.craneStopped) {
+          if (this.craneLoad && !this.craneStopped && !this.craneError) {
             this.craneLoad.rotation.z = Math.sin(time * 2.8) * stormIntensity;
             this.craneLoad.rotation.x = Math.cos(time * 2.2) * (stormIntensity * 0.65);
             if (this.craneCable) {
@@ -2766,6 +2761,25 @@
           if (this.craneBeacon && !this.craneStopped) {
             var blink = (Math.sin(time * 8) > 0);
             this.craneBeacon.material.color.setHex(blink ? 0xEF4444 : 0x450A0A);
+          }
+
+          if(this.craneFall && !this.finaleMode){
+            var fallProgress=Math.min(1,(now-this.craneFall.started)/(this.craneFallDuration*1000));
+            var descent=fallProgress*fallProgress;
+            this.craneLoad.position.lerpVectors(this.craneFall.from,new THREE.Vector3(2.2,.35,-3.8),descent);
+            this.craneLoad.rotation.set(
+              THREE.MathUtils.lerp(this.craneFall.rotation.x,-.25,fallProgress),
+              THREE.MathUtils.lerp(this.craneFall.rotation.y,.15,fallProgress),
+              THREE.MathUtils.lerp(this.craneFall.rotation.z,.35,fallProgress));
+            if(fallProgress===1){
+              this.craneFall=null;this.craneImpacted=true;this.cameraShake=.70;
+              SoundEngine.playCrash();SoundEngine.playSiren();
+              this.triggerImpactDust(2.2,.4,-3.8);
+              if(this.craneWorker.userData.helmet){
+                this.craneWorker.userData.helmet.position.set(.8,-1.2,1.2);
+                this.craneWorker.userData.helmet.rotation.set(1.4,.2,.8);
+              }
+            }
           }
 
           // 4. Lluvia y viento dinámico
@@ -2842,7 +2856,7 @@
 
               // Respiración base solo si no está en estado de colapso o caída
               var isWorkerDown = (!selfEngine.finaleMode) && (
-                                 (u.role === 'crane_signaler' && selfEngine.craneError) ||
+                                 (u.role === 'crane_signaler' && selfEngine.craneImpacted) ||
                                  (u.role === 'rebar' && selfEngine.front3Error) ||
                                  (u.role === 'corridor' && selfEngine.front4Error));
               if (!isWorkerDown) {
@@ -2912,12 +2926,14 @@
 
               // FRENTE 2: Señalero de grúa (Peligro inminente en altura)
               else if (u.role === 'crane_signaler') {
+                if(u.phone)u.phone.visible=!selfEngine.craneStopped&&!selfEngine.craneImpacted;
                 if (selfEngine.craneStopped) {
                   // Carga asegurada en tierra: señal de OK y pulgar arriba
                   if (u.lArm) u.lArm.rotation.x = 0.05;
                   if (u.rArm) u.rArm.rotation.x = -0.85; // pulgar arriba
                   if (u.head) u.head.rotation.x = 0;
-                } else if (selfEngine.craneError) {
+                  if (u.helmet) u.helmet.rotation.x = 0;
+                } else if (selfEngine.craneImpacted) {
                   // ¡ACCIDENTE FATAL: Señalero derribado boca arriba por aplastamiento!
                   w.position.set(2.2, 0.12, -3.2);
                   w.rotation.set(-Math.PI / 2, 0, 0.4);
@@ -2925,10 +2941,12 @@
                   if (u.rArm) u.rArm.rotation.set(-0.2, 0, -0.6);
                   if (u.head) u.head.rotation.set(0.2, 0.3, 0);
                 } else {
-                  // Emergencia climática activa: agitando brazos en cruz de peligro "¡STOP!"
-                  if (u.lArm) u.lArm.rotation.x = -1.25 + Math.sin(time * 6) * 0.45;
-                  if (u.rArm) u.rArm.rotation.x = -1.25 + Math.cos(time * 6) * 0.45;
-                  if (u.head) u.head.rotation.x = -0.48 + Math.sin(time * 3) * 0.15; // mirando arriba
+                  // Mira la pantalla y mueve el brazo derecho como si escribiera.
+                  if(u.lArm)u.lArm.rotation.set(-1.05,0,-.18);
+                  if(u.rArm)u.rArm.rotation.set(-1.12+Math.sin(time*5)*.045,0,.28);
+                  if(u.head)u.head.rotation.set(.5,Math.sin(time*.7)*.04,0);
+                  if(u.helmet)u.helmet.rotation.x=.25;
+                  if(u.phone)u.phone.rotation.z=Math.sin(time*1.3)*.025;
                 }
               }
 
@@ -3028,7 +3046,7 @@
          ------------------------------------------------------------------ */
       var RoundBriefs = [
         { situation: 'Residente y maestro dan órdenes distintas. El mixer espera.', choices: ['Seguir al maestro para evitar el conflicto.', 'Pausar, revisar planos y unificar la orden.', 'Dejar que el operador elija dónde descargar.'] },
-        { situation: 'El viento sacude la carga. Te presionan para seguir.', choices: ['Detener, evacuar y asegurar la carga.', 'Jalar las manilas contra el viento.', 'Seguir bajando y esperar a que calme.'] },
+        { situation: 'El viento sacude la carga. El trabajador de abajo mira el celular y te presionan para seguir.', choices: ['Detener, evacuar y asegurar la carga.', 'Jalar las manilas contra el viento.', 'Seguir bajando y esperar a que calme.'] },
         { situation: 'Es hora de salir. El borde a 18 m quedó abierto.', choices: ['Dejarlo abierto y salir a tiempo.', 'Gritar y castigar con horas extra.', 'Delimitar el borde y registrar el relevo.'] },
         { situation: 'El pasillo de evacuación está lleno de escombros.', choices: ['Dejarlo así y quejarme del otro turno.', 'Organizar al equipo y despejar la ruta.', 'Tirar los escombros al foso del ascensor.'] }
       ];
@@ -3543,7 +3561,7 @@
           this.updateMentalMeter();
 
           // Pausa cinematográfica interactiva para observar la consecuencia física en el 3D antes del drawer
-          var delayMs = isCorrect ? 2000 : 2800;
+          var delayMs = this.currentRound===2&&!isCorrect ? Isometric3DEngine.craneFallDuration*1000+1200 : (isCorrect ? 2000 : 2800);
           setTimeout(function () {
             self.showFeedback(isCorrect, isCorrect ? data.summaryText : (choice.wrongText || data.wrongText));
           }, delayMs);
