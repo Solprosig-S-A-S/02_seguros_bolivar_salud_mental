@@ -1798,7 +1798,7 @@
         setMix:function(){
           if(!this.ctx||!this.master)return;
           var now=this.ctx.currentTime,quiet=this.muted||document.hidden;
-          this.master.gain.cancelScheduledValues(now);this.master.gain.setTargetAtTime(quiet?0:1,now,.18);
+          this.master.gain.cancelScheduledValues(now);this.master.gain.setTargetAtTime(quiet?0:.75,now,.18);
           this.effectsBus.gain.cancelScheduledValues(now);this.effectsBus.gain.setTargetAtTime(this.ducked?.10:.25,now,.3);
           this.beachBus.gain.cancelScheduledValues(now);this.beachBus.gain.setTargetAtTime(this.beachRunning?(this.ducked?.13:.32):0,now,1.2);
         },
@@ -1841,7 +1841,7 @@
             var AudioContextClass = window.AudioContext || window.webkitAudioContext;
             if (AudioContextClass) {
               this.ctx = new AudioContextClass();
-              this.master=this.ctx.createGain();this.master.gain.value=this.muted||document.hidden?0:1;
+              this.master=this.ctx.createGain();this.master.gain.value=this.muted||document.hidden?0:.75;
               var limiter=this.ctx.createDynamicsCompressor();limiter.threshold.value=-14;limiter.knee.value=18;limiter.ratio.value=5;limiter.attack.value=.01;limiter.release.value=.35;
               this.master.connect(limiter);limiter.connect(this.ctx.destination);
               this.effectsBus=this.ctx.createGain();this.effectsBus.gain.value=.25;this.effectsBus.connect(this.master);
@@ -2023,7 +2023,7 @@
           if(!this.active||!this.enabled||SoundEngine.muted||document.hidden||!('speechSynthesis' in window)||!('SpeechSynthesisUtterance' in window))return;
           this.selectVoice();var self=this,id=this.token,u=new SpeechSynthesisUtterance(text);
           u.lang=this.voice?this.voice.lang:'es-CO';if(this.voice)u.voice=this.voice;
-          u.rate=.86;u.pitch=1;u.volume=.88;
+          u.rate=.86;u.pitch=1;u.volume=.66;
           u.onstart=function(){if(id===self.token)SoundEngine.duck(true);};
           var end=function(){if(id!==self.token)return;self.utterance=null;SoundEngine.duck(false);};
           u.onend=end;u.onerror=end;this.utterance=u;
