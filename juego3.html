@@ -2532,22 +2532,35 @@
            ------------------------------------------------------------------ */
         buildAdministrativeOffice: function () {
           var group=new THREE.Group();
+          var parent=group;
           function box(w,h,d,x,y,z,color){
             var mesh=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),new THREE.MeshStandardMaterial({color:color,roughness:.65}));
-            mesh.position.set(x,y,z);mesh.castShadow=true;mesh.receiveShadow=true;group.add(mesh);return mesh;
+            mesh.position.set(x,y,z);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh;
           }
           box(10,.2,8,0,-.1,0,0x334155);box(10,4.5,.2,0,2.15,-3.3,0x17364A);
           box(2.4,1.6,.08,-2.5,2.5,-3.15,0x38BDF8);
           box(.08,1.6,.1,-2.5,2.5,-3.05,0xE2E8F0);box(2.4,.08,.1,-2.5,2.5,-3.05,0xE2E8F0);
+          var furniture=new THREE.Group();group.add(furniture);parent=furniture;this.officeFurniture=furniture;
           box(3.4,.14,1.5,0,1.25,-1,0xC58A42);
           [-1.4,1.4].forEach(function(x){box(.12,1.2,.12,x,.6,-1.5,0x0F172A);box(.12,1.2,.12,x,.6,-.5,0x0F172A);});
           box(1.1,.05,.7,0,1.35,-1.1,0x0F172A);
-          var lid=new THREE.Group();lid.position.set(0,1.38,-1.4);group.add(lid);
+          var lid=new THREE.Group();lid.position.set(0,1.38,-1.4);furniture.add(lid);
           var screen=new THREE.Mesh(new THREE.BoxGeometry(1.1,.75,.05),new THREE.MeshStandardMaterial({color:0x38BDF8,emissive:0x075985,emissiveIntensity:.4}));
           screen.position.y=.375;lid.add(screen);this.officeLaptop=lid;
           this.officePhone=box(.25,.035,.43,1.15,1.35,-.7,0x38BDF8);
           this.officeTasks=[];
           for(var i=0;i<3;i++)this.officeTasks.push(box(.36,.035,.3,-1.1+i*.42,1.36,-.65,0xF59E0B));
+          var meeting=new THREE.Group();group.add(meeting);parent=meeting;this.meetingFurniture=meeting;
+          box(3.6,.16,1.9,0,1.05,-.8,0xA76635);box(.3,1,.3,0,.5,-.8,0x0F172A);
+          [-1.1,1.1].forEach(function(x){[-2,.5].forEach(function(z){box(.65,.15,.65,x,.55,z,0x0369A1);box(.65,.7,.1,x,.9,z+(z<0?-.3:.3),0x0284C7);box(.15,.5,.15,x,.25,z,0x0F172A);});});
+          box(.6,.035,.4,0,1.16,-.8,0xFACC15);
+          var home=new THREE.Group();group.add(home);parent=home;this.homeFurniture=home;
+          box(3,.45,1.15,-.3,.45,-1.2,0x0369A1);box(3,1.05,.25,-.3,.9,-1.8,0x0284C7);
+          [-1.85,1.25].forEach(function(x){box(.25,.7,1.2,x,.65,-1.2,0x075985);});
+          box(1.6,.12,.9,.2,.5,.4,0xC58A42);box(.18,.45,.18,.2,.22,.4,0x0F172A);
+          this.homeNotification=box(.25,.04,.42,.2,.59,.4,0x38BDF8);
+          box(.12,1.8,.12,2.3,.9,-1.4,0xE2E8F0);box(.65,.4,.65,2.3,1.9,-1.4,0xFACC15);
+          parent=group;
           var canvas=document.createElement('canvas');canvas.width=1024;canvas.height=512;
           var texture=new THREE.CanvasTexture(canvas);
           var display=new THREE.Mesh(new THREE.PlaneGeometry(3.5,1.75),new THREE.MeshBasicMaterial({map:texture}));
@@ -2792,7 +2805,7 @@
         },
 
         setPlayerDestination: function (x, z, isDragging) {
-          if(this.currentStationId===3||(GameApp.workRoute==='administrative'&&this.currentStationId===1))return;
+          if(this.currentStationId===3||GameApp.isAdministrativeOffice())return;
           var b = this.getCurrentWalkBounds();
           var clampedX = Math.max(b.minX, Math.min(b.maxX, x));
           var clampedZ = Math.max(b.minZ, Math.min(b.maxZ, z));
@@ -2850,7 +2863,7 @@
         updatePlayer: function (delta) {
           if (!this.playerAvatar || !this.playerAvatar.visible) return;
           if (this.finaleMode) return;
-          if(GameApp.workRoute==='administrative'&&(this.currentStationId===1||this.currentStationId===3)){
+          if(GameApp.isAdministrativeOffice()){
             this.officeLaptop.rotation.x+=(this.officeCloseProgress-this.officeLaptop.rotation.x)*Math.min(1,delta*3);
             return;
           }
@@ -3162,10 +3175,10 @@
           if (this.station2Group) this.station2Group.visible = (stationId === 2);
           if (this.station3Group) this.station3Group.visible = (stationId === 3);
           if (this.station4Group) this.station4Group.visible = (stationId === 4);
-          var office=GameApp.workRoute==='administrative'&&(stationId===1||stationId===3);
+          var office=GameApp.isAdministrativeOffice();
           if(this.officeGroup)this.officeGroup.visible=office;
           if(office){
-            this.station1Group.visible=false;this.station3Group.visible=false;
+            this.station1Group.visible=false;this.station2Group.visible=false;this.station3Group.visible=false;this.station4Group.visible=false;
             this.playerAvatar.visible=true;
             this.playerHatParts.forEach(function(part){part.visible=false;});
             this.playerAvatar.scale.setScalar(1.4);
@@ -3179,7 +3192,12 @@
             if(this.beaconMesh)this.beaconMesh.visible=false;if(this.targetMarkerMesh)this.targetMarkerMesh.visible=false;
             this.officeLaptop.rotation.x=0;this.officeCloseProgress=0;this.officePhone.material.color.setHex(0x38BDF8);
             this.officeTasks.forEach(function(task){task.material.color.setHex(0xF59E0B);});
-            this.setOfficeMessage(stationId===1?'08:00 · PLANIFICA':'17:00 · CIERRA TU JORNADA',stationId===1?'Tres pendientes. Un paso a la vez.':'Lo pendiente puede tener un plan.');
+            this.officeFurniture.visible=GameApp.currentStation!==2&&GameApp.currentStation!==7;
+            this.meetingFurniture.visible=GameApp.currentStation===2;
+            this.homeFurniture.visible=GameApp.currentStation===7;
+            this.homeNotification.material.color.setHex(0x38BDF8);
+            this.playerAvatar.position.set(GameApp.currentStation===7?-1.3:-1.8,0,.3);
+            this.setOfficeMessage(stationId===1?'08:00 · PLANIFICA':'17:00 · CIERRA TU JORNADA','Elige c?mo actuar en esta situaci?n.');
             return;
           }
 
@@ -3630,7 +3648,7 @@
           }
 
           // La cámara sigue suavemente al trabajador en escena
-          if (this.playerAvatar && this.playerAvatar.visible && this.currentStationId !== 2 && this.currentStationId !== 3 && !(GameApp.workRoute==='administrative'&&this.currentStationId===1) && !this.finaleMode) {
+          if (this.playerAvatar && this.playerAvatar.visible && this.currentStationId !== 2 && this.currentStationId !== 3 && !GameApp.isAdministrativeOffice() && !this.finaleMode) {
             this.targetLookAt.x = this.playerAvatar.position.x * 0.35;
             this.targetLookAt.z = this.playerAvatar.position.z * 0.35;
           }
@@ -3781,6 +3799,9 @@
          4. CONTROLADOR NARRATIVO: LAS 4 ESTACIONES DE RECARGA
          ------------------------------------------------------------------ */
       var GameApp = {
+        stationCount: function(){return this.workRoute==='administrative'?8:4;},
+        isAdministrativeOffice: function(){return this.workRoute==='administrative'&&this.currentStation!==5&&this.currentStation!==8;},
+        administrativeTitles: ['PLANIFICA TU DÍA','REUNIONES CON PROPÓSITO','MENSAJES E INTERRUPCIONES','CARGA DE TRABAJO REALISTA','PAUSA Y RESPIRACIÓN','CIERRA TUS PENDIENTES','EN CASA: FUERA DE HORARIO','PREPARA TU DESCANSO'],
         workRoute: null,
         currentStation: 1,
         score: 0,
@@ -3929,7 +3950,7 @@
           });
 
           var routeRules=document.querySelector('#welcomeScreen .rules-grid');
-          routeRules.textContent='Selecciona una ruta para ver las cuatro estaciones.';
+          routeRules.textContent='Selecciona una ruta para ver sus escenarios.';
           document.querySelectorAll('input[name="workRoute"]').forEach(function(input){
             input.addEventListener('change',function(){
               self.workRoute=this.value;
@@ -4018,19 +4039,17 @@
           document.getElementById('breathingReflection').hidden = true;
           CalmGuide.cancel();
           this.currentStation = stationNum;
-          document.getElementById('voiceGuideBtn').style.display=stationNum===2?'':'none';
+          var sceneStation=this.workRoute==='administrative'?(stationNum===5?2:stationNum===8?4:stationNum):stationNum;
+          document.getElementById('voiceGuideBtn').style.display=(this.workRoute==='administrative'?stationNum===5:stationNum===2)?'':'none';
           this.stationActive = true;
           var appRoot = document.getElementById('rechargeApp');
           if (appRoot) appRoot.classList.remove('finale-mode');
-          var data = Object.assign({},this.stationsData[stationNum - 1]);
-          if(this.workRoute==='administrative'){
-            data.location=['ORGANIZA TU TIEMPO','PAUSA Y RESPIRACIÓN','CIERRA TU JORNADA','TU TIEMPO PERSONAL'][stationNum-1];
-            data.feedback=[
-              'Priorizaste una entrega, reservaste un bloque de concentración y protegiste una pausa. Organizar el tiempo también implica acordar qué puede esperar.',
-              'Terminaste la pausa de respiración a tu ritmo.',
-              'Dejaste pendientes con siguiente paso y fecha, comunicaste tu disponibilidad y cerraste el computador. Desconectarte no exige terminarlo todo hoy.',
-              'Preparaste un espacio para descansar y dejaste las notificaciones de trabajo fuera de tu tiempo personal.'
-            ][stationNum-1];
+          var data = Object.assign({},this.stationsData[(sceneStation===2?2:sceneStation===4?4:1)-1]);
+          if(this.workRoute!=='administrative')data=Object.assign({},this.stationsData[stationNum-1]);
+          else{
+            data.location=this.administrativeTitles[stationNum-1];
+            data.scoreAdd=12.5;data.batteryTarget=Math.round(15+85*stationNum/8);
+            data.feedback=stationNum===8?'Preparaste tu espacio de descanso y dejaste las notificaciones laborales fuera de tu tiempo personal.':'Completaste esta parte de tu jornada. Avanza a tu ritmo.';
           }
 
           // Limpiar feedback inline previo
@@ -4039,40 +4058,35 @@
             this.dom.stationFeedbackInline.textContent = '';
           }
 
-          this.dom.stationTag.textContent = 'PASO ' + stationNum + ' DE 4';
-          this.dom.stepChip.textContent = 'PASO ' + stationNum + ' DE 4';
+          this.dom.stationTag.textContent = 'PASO ' + stationNum + ' DE '+this.stationCount();
+          this.dom.stepChip.textContent = 'PASO ' + stationNum + ' DE '+this.stationCount();
           this.dom.locationLabel.textContent = data.location;
           this.dom.stationCard.classList.remove('station-complete');
-          this.dom.stationDialogue.style.display = stationNum === 2 ? 'none' : '';
+          this.dom.stationDialogue.style.display = (this.workRoute==='administrative'?stationNum===5:stationNum===2) ? 'none' : '';
           this.dom.stationDialogue.textContent = [
             'Lleva al trabajador a la caseta y bebe agua.',
             'Mantén el círculo durante los tres ciclos.',
             'Guarda tus cosas y silencia el trabajo.',
             'Prepara la habitación para descansar.'
           ][stationNum - 1];
-          if(this.workRoute==='administrative')this.dom.stationDialogue.textContent=[
-            'Organiza tu jornada sin intentar hacerlo todo a la vez.',
-            'Haz una pausa. Respira sin afán.',
-            'El horario termina: deja un plan y cierra el trabajo.',
-            'Tu descanso también necesita un límite con el trabajo.'
-          ][stationNum-1];
+          if(this.workRoute==='administrative')this.dom.stationDialogue.textContent=this.administrativeTitles[stationNum-1];
           this.dom.stationPrompt.textContent = data.prompt || '';
           this.dom.stationPrompt.style.display = data.prompt ? 'block' : 'none';
 
           // Enfocar cámara y entorno 3D
-          Santuario3DEngine.focusStation(stationNum);
+          Santuario3DEngine.focusStation(sceneStation);
 
           // Construir controles interactivos de la estación
-          this.renderStationControls(stationNum, data);
-          CalmGuide.station(stationNum);
+          this.renderStationControls(sceneStation, data);
+          CalmGuide.station(this.workRoute==='administrative'?(stationNum===5?2:0):stationNum);
         },
 
         renderStationControls: function (stationNum, data) {
           var self = this;
           var zone = this.dom.actionZone;
           zone.innerHTML = '';
-          if(this.workRoute==='administrative'&&(stationNum===1||stationNum===3)){
-            this.renderAdministrativeDecisions(stationNum,data);return;
+          if(this.isAdministrativeOffice()){
+            this.renderAdministrativeDecisions(this.currentStation,data);return;
           }
 
           if (stationNum === 1) {
@@ -4510,6 +4524,60 @@
               'Cierro la sesión, guardo el computador y silencio las notificaciones laborales según los acuerdos de mi equipo.'
             ],correct:1,advice:'Revisar el chat por costumbre mantiene abierto el trabajo. Una vez coordinado el cierre, prepara tus dispositivos para respetar tu tiempo personal.',title:'JORNADA CERRADA',detail:'Pendientes organizados. Ahora, tiempo personal.'}
           ];
+          function decision(question,good,bad,advice,title,detail,correct){
+            return {question:question,options:correct===0?[good,bad]:[bad,good],correct:correct,advice:advice,title:title,detail:detail};
+          }
+          var additional={
+            2:[
+              decision('Te invitan a una reunión de una hora sin agenda y coincide con una entrega. ¿Qué haces?',
+                'Pregunto qué decisión se necesita y si mi presencia es indispensable. Propongo enviar el avance o participar solo en el punto que me corresponde.',
+                'Acepto la reunión completa y después recupero esa hora fuera de mi jornada.',
+                'Antes de llenar la agenda, aclara el propósito y tu aporte. Una reunión también ocupa tiempo de trabajo.',
+                'REUNIÓN CON OBJETIVO','Agenda y participación confirmadas.',0),
+              decision('La reunión se alarga y nadie define responsables. ¿Cómo intervienes?',
+                'Propongo cerrar con acuerdos, responsables y fechas, y dejar los temas nuevos para un espacio con propósito definido.',
+                'Espero sin decir nada, aunque se pierda el bloque reservado para mi entrega.',
+                'Un cierre concreto ayuda a que la reunión no se prolongue ni genere tareas ambiguas.',
+                'ACUERDOS VISIBLES','Responsable, siguiente paso y fecha.',1)
+            ],
+            3:[
+              decision('Cada mensaje del chat te hace cambiar de tarea. ¿Qué harías?',
+                'Acuerdo momentos para revisar mensajes, reduzco avisos durante mi bloque de trabajo y mantengo el canal definido para lo urgente.',
+                'Contesto inmediatamente todos los mensajes mientras intento terminar el informe.',
+                'Estar disponible no exige interrumpir cada tarea. Acuerda cómo distinguir lo urgente de lo que puede esperar.',
+                'CONCENTRACIÓN PROTEGIDA','Chat por bloques; urgencias por el canal acordado.',1),
+              decision('Un compañero insiste en que revises algo “rapidito” y ya tienes una prioridad acordada. ¿Qué respondes?',
+                'Ahora estoy con la entrega acordada. Puedo revisarlo después de este bloque; si vence antes, confirmemos qué prioridad debemos cambiar.',
+                'Dejo mi tarea sin avisar y asumo que puedo recuperar el tiempo después.',
+                'Expresar cuándo puedes ayudar evita prometer dos entregas al mismo tiempo.',
+                'INTERRUPCIÓN COORDINADA','Ayuda con un momento concreto, sin doble compromiso.',0)
+            ],
+            4:[
+              decision('Dos responsables te asignan entregas para la misma hora. No alcanzas a hacer ambas. ¿Cómo lo manejas?',
+                'Hago visible el tiempo disponible y los compromisos. Pido acordar el orden, el alcance o el apoyo necesario antes de confirmar.',
+                'Prometo ambas para evitar molestias y luego trabajo durante la noche.',
+                'Una carga que no cabe en la jornada necesita coordinación, no horas extra ocultas.',
+                'CARGA REVISADA','Prioridad, alcance y apoyo acordados.',0),
+              decision('El exceso de trabajo se repite cada semana y estás dejando de hacer pausas. ¿Qué decides?',
+                'Registro las tareas y el tiempo que requieren, y converso con mi responsable para ajustar la carga y proteger las pausas.',
+                'Sigo compensando con mi descanso y espero que el problema desaparezca.',
+                'Una dificultad recurrente necesita un ajuste de organización. No depende solo de que te esfuerces más.',
+                'AJUSTE DE CAPACIDAD','La carga se conversa con información concreta.',1)
+            ],
+            7:[
+              decision('Estás cenando y llega un mensaje laboral sin urgencia explicada. Tu jornada ya terminó. ¿Qué haces?',
+                'Respeto el acuerdo de desconexión y lo reviso al iniciar mi siguiente jornada. Las situaciones urgentes usan el canal previsto.',
+                'Abro el computador por costumbre, aunque no me hayan pedido atender una urgencia.',
+                'Recibir un mensaje no convierte automáticamente la tarea en urgente. Apóyate en los acuerdos del equipo.',
+                'TIEMPO PERSONAL PROTEGIDO','El mensaje habitual espera a la siguiente jornada.',1),
+              decision('Ya silenciaste el chat, pero sigues pensando que olvidarás el pendiente de mañana. ¿Qué harías?',
+                'Lo anoto brevemente con el siguiente paso y el momento de retomarlo; después vuelvo a mi actividad personal sin abrir los sistemas de trabajo.',
+                'Entro a revisar todos los correos para sentir que no dejo nada pendiente.',
+                'Una nota concreta puede ayudarte a dejar un recordatorio sin reabrir toda la jornada.',
+                'MAÑANA TIENE UN PLAN','Recordatorio listo. Ahora, tu tiempo personal.',0)
+            ]
+          };
+          if(additional[stationNum])situations=additional[stationNum];
           function draw(){
             zone.innerHTML='';
             var situation=situations[index];
@@ -4519,16 +4587,22 @@
             situation.options.forEach(function(option,choice){
               var button=document.createElement('button');button.className='touch-step-card';button.type='button';button.style.width='100%';button.style.marginBottom='7px';button.textContent=option;buttons.push(button);
               button.addEventListener('click',function(){
-                if(choice!==situation.correct){reply.textContent=situation.advice+' Prueba otra decisión.';SoundEngine.playTone(260,'sine',.08,.06);return;}
+                if(choice!==situation.correct){
+                  reply.textContent=situation.advice+' Prueba otra decisión.';
+                  Santuario3DEngine.officeTasks[index].material.color.setHex(0xEF4444);
+                  Santuario3DEngine.setOfficeMessage('REVISA TU DECISIÓN','El tiempo y el descanso también cuentan.');
+                  SoundEngine.playTone(260,'sine',.08,.06);return;
+                }
                 buttons.forEach(function(b){b.disabled=true;});button.classList.add('completed');
-                reply.textContent=situation.detail+' '+(stationNum===1?'Acordar prioridades te ayuda a trabajar dentro de tu jornada.':'Dejar acuerdos claros te permite cerrar sin seguir disponible por costumbre.');
+                reply.textContent=situation.detail;
                 Santuario3DEngine.officeTasks[index].material.color.setHex(0x10B981);
                 Santuario3DEngine.setOfficeMessage(situation.title,situation.detail);
-                if(stationNum===3&&index===1)Santuario3DEngine.officePhone.material.color.setHex(0x0F172A);
-                if(stationNum===3&&index===2)Santuario3DEngine.officeCloseProgress=Math.PI/2;
+                if(stationNum===3||stationNum===7){Santuario3DEngine.officePhone.material.color.setHex(0x0F172A);Santuario3DEngine.homeNotification.material.color.setHex(0x0F172A);}
+                if(stationNum===6&&index===1)Santuario3DEngine.officePhone.material.color.setHex(0x0F172A);
+                if(stationNum===6&&index===2)Santuario3DEngine.officeCloseProgress=Math.PI/2;
                 SoundEngine.playSuccess();
                 var next=document.createElement('button');next.type='button';next.className='action-btn-primary';next.textContent=index===situations.length-1?'Continuar a la siguiente estación':'Siguiente decisión';zone.appendChild(next);
-                if(stationNum===3&&index===2){
+                if(stationNum===6&&index===2){
                   next.disabled=true;next.textContent='Cerrando el computador…';
                   setTimeout(function(){if(next.isConnected){next.disabled=false;next.textContent='Continuar a la siguiente estación';}},1200);
                 }
@@ -4588,20 +4662,20 @@
           this.breathingReflectionOpen = false;
           document.getElementById('breathingReflection').hidden = true;
           this.dom.feedbackDrawer.classList.remove('breathing-reflection');
-          document.getElementById('drawerBadgeText').textContent = 'RECUPERACIÓN EFECTIVA (+25 PTS)';
+          document.getElementById('drawerBadgeText').textContent = this.workRoute==='administrative'?'ESTACIÓN COMPLETADA (+12,5 PTS)':'RECUPERACIÓN EFECTIVA (+25 PTS)';
           if (this.dom.stationFeedbackInline) {
             this.dom.stationFeedbackInline.className = 'station-feedback-inline';
             this.dom.stationFeedbackInline.textContent = '';
           }
           this.dom.drawerFeedbackText.textContent = messageText;
 
-          var isLast = (this.currentStation >= 4);
+          var isLast = (this.currentStation >= this.stationCount());
           var advanceBtnSpan = this.dom.feedbackAdvanceBtn.querySelector('span');
           if (advanceBtnSpan) {
             advanceBtnSpan.textContent = isLast ? 'VER INFORME FINAL' : 'CONTINUAR';
           }
           if (this.dom.transitionStepCounter) {
-            this.dom.transitionStepCounter.textContent = isLast ? 'ESTACIÓN FINAL (4/4)' : ('ESTACIÓN ' + this.currentStation + ' DE 4');
+            this.dom.transitionStepCounter.textContent = isLast ? ('ESTACIÓN FINAL ('+this.stationCount()+'/'+this.stationCount()+')') : ('ESTACIÓN ' + this.currentStation + ' DE '+this.stationCount());
           }
           if (this.dom.transitionAutoHint) {
             this.dom.transitionAutoHint.textContent = isLast ? 'Transición al informe...' : 'Siguiente estación en breve...';
@@ -4658,7 +4732,7 @@
             }, 1000);
           }
 
-          if (this.currentStation < 4) {
+          if (this.currentStation < this.stationCount()) {
             this.loadStation(this.currentStation + 1);
           } else {
             this.showFinalScreen();
@@ -4739,7 +4813,7 @@
           if(this.workRoute==='administrative'){
             this.dom.finalHeaderTag.textContent='RUTA ADMINISTRATIVA · TIEMPO Y DESCONEXIÓN';
             this.dom.finalTitle.textContent='Tu jornada tiene un cierre';
-            this.dom.finalDesc.textContent='Practicaste cómo priorizar, acordar la carga, hacer una pausa y cerrar el trabajo con un plan para mañana.';
+            this.dom.finalDesc.textContent='Recorriste ocho escenarios: planificación, reuniones, mensajes, carga de trabajo, respiración, cierre, desconexión en casa y descanso.';
             this.dom.finalDiagnosisGrid.innerHTML=[
               ['Organiza el día','Confirma la entrega prioritaria, reserva un bloque de concentración y acuerda qué puede esperar.'],
               ['Protege tus pausas','Deja anotado el siguiente paso antes de parar. En la respiración, sigue un ritmo cómodo para ti.'],
