@@ -10,7 +10,7 @@
 *{box-sizing:border-box}body{margin:0;background:#030b12;color:var(--text);font-family:system-ui,-apple-system,'Segoe UI',sans-serif}button,a,input{font:inherit}button,a{touch-action:manipulation}button{cursor:pointer}button:disabled{cursor:default;opacity:.5}button:focus-visible,a:focus-visible{outline:3px solid #38bdf8;outline-offset:3px}[hidden]{display:none!important}
 #app{max-width:540px;height:100vh;height:100dvh;margin:auto;display:flex;flex-direction:column;position:relative;overflow:hidden;background:var(--deep);border:2px solid #355361;border-radius:23px}
 header{padding:9px 11px 7px;background:linear-gradient(125deg,#082d40,#174b64);z-index:2;border-bottom:1px solid #486578;flex-shrink:0}.brand{display:flex;align-items:center;gap:8px}.logo{display:grid;place-items:center;background:var(--yellow);color:var(--navy);font-weight:900;width:30px;height:30px;border-radius:50%;flex-shrink:0}.brand div:nth-child(2){flex:1}.brand small{font-size:9px;letter-spacing:.6px;color:#b6d8e4}.brand h1{font-size:14px;margin:0}.icon{border:1px solid #7291a1;background:#ffffff0a;color:white;border-radius:50%;width:34px;height:34px;padding:0;font-size:16px;text-decoration:none;display:grid;place-items:center}.meters{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:7px}.meter label{display:flex;justify-content:space-between;font-size:9px;font-weight:750;gap:4px}.track{background:#001826;height:4px;border-radius:8px;margin-top:4px;overflow:hidden}.fill{height:100%;width:0;transition:width .9s;background:#38bdf8}#climateFill{background:var(--yellow)}
-#scene{flex:1;min-height:210px;position:relative;background:#284c66;overflow:hidden;touch-action:pan-y}canvas{width:100%;height:100%;display:block;touch-action:none}#sceneTop{position:absolute;top:8px;left:9px;right:9px;display:flex;justify-content:space-between;align-items:center;gap:6px;pointer-events:none}.tag{background:#012536e8;padding:5px 8px;border:1px solid #62818c;border-radius:8px;font-size:10px;font-weight:750}#score{color:var(--yellow)}#bubble{position:absolute;top:45px;left:12px;right:12px;max-width:360px;margin:auto;background:#fbfdff;color:#102838;border-radius:13px;padding:9px 11px;box-shadow:0 6px 16px #0005;pointer-events:auto}#bubble:after{content:'';position:absolute;bottom:-9px;left:48%;border-width:9px 9px 0;border-style:solid;border-color:#fbfdff transparent transparent}#speaker{font-size:10px;text-transform:uppercase;font-weight:850;color:#0c4a60}#speech{font-size:12px;line-height:1.4;margin:5px 0}#phraseControls{display:flex;align-items:center;justify-content:space-between;font-size:10px;color:#526878}#phraseControls button{border:1px solid #c2d2dd;color:#023047;background:#eef5f8;min-height:29px;border-radius:6px;padding:3px 9px}#cameraTools{position:absolute;bottom:8px;left:9px;right:9px;display:flex;justify-content:center;gap:5px}#cameraTools button{font-size:10px;border-radius:16px;border:1px solid #7291a1;background:#012536e8;color:#fff;padding:7px 10px;min-height:32px}#cameraTools button[aria-pressed=true]{color:var(--yellow);border-color:var(--yellow)}#sceneNotice{position:absolute;bottom:47px;left:12px;right:12px;text-align:center;font-size:11px;background:#011e2de8;padding:6px;border-radius:8px;border:1px solid #78909b;pointer-events:none}#sceneFlash{position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 45px transparent;transition:box-shadow .6s}#sceneFlash.bad{box-shadow:inset 0 0 45px #ef444488}#sceneFlash.good{box-shadow:inset 0 0 35px #34d39966}
+#scene{flex:1;min-height:210px;position:relative;background:#284c66;overflow:hidden;touch-action:pan-y}canvas{width:100%;height:100%;display:block;touch-action:none}#sceneTop{position:absolute;top:8px;left:9px;right:9px;display:flex;justify-content:space-between;align-items:center;gap:6px;pointer-events:none}.tag{background:#012536e8;padding:5px 8px;border:1px solid #62818c;border-radius:8px;font-size:10px;font-weight:750}#score{color:var(--yellow)}#bubble{position:absolute;top:45px;left:12px;right:12px;max-width:360px;margin:auto;background:#fbfdff;color:#102838;border-radius:13px;padding:9px 11px;box-shadow:0 6px 16px #0005;pointer-events:auto}#bubble:after{content:'';position:absolute;bottom:-9px;left:48%;border-width:9px 9px 0;border-style:solid;border-color:#fbfdff transparent transparent}#speaker{font-size:10px;text-transform:uppercase;font-weight:850;color:#0c4a60}#speech{font-size:12px;line-height:1.4;margin:5px 0}#phraseControls{display:flex;align-items:center;justify-content:space-between;font-size:10px;color:#526878}#phraseControls button{border:1px solid #c2d2dd;color:#023047;background:#eef5f8;min-height:29px;border-radius:6px;padding:3px 9px}#sceneNotice{position:absolute;bottom:47px;left:12px;right:12px;text-align:center;font-size:11px;background:#011e2de8;padding:6px;border-radius:8px;border:1px solid #78909b;pointer-events:none}#sceneFlash{position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 45px transparent;transition:box-shadow .6s}#sceneFlash.bad{box-shadow:inset 0 0 45px #ef444488}#sceneFlash.good{box-shadow:inset 0 0 35px #34d39966}
 #panel{flex-shrink:0;max-height:49%;overflow-y:auto;overscroll-behavior:contain;padding:9px 11px calc(10px + env(safe-area-inset-bottom));background:linear-gradient(135deg,#163d50,#062638);border-top:1px solid #4e7384}#missionTitle{font-size:14px;line-height:1.3;margin:0 0 5px}#question{font-size:12px;color:#ffdb70;margin:0 0 8px;line-height:1.4}.choices{display:grid;gap:6px}.choice{display:flex;align-items:center;gap:9px;text-align:left;background:#f8fafc;color:#102332;border:1px solid #d5e2e9;border-radius:11px;padding:9px 10px;font-size:12px;line-height:1.38;min-height:48px}.choice b{display:grid;place-items:center;border-radius:50%;background:var(--navy);color:white;width:23px;height:23px;flex-shrink:0;font-size:11px}.primary,.secondary{display:block;width:100%;border-radius:11px;border:0;padding:12px;font-weight:800;font-size:13px;min-height:44px}.primary{background:var(--yellow);color:var(--deep)}.secondary{background:#12394b;color:white;border:1px solid #5a7b8c;margin-top:8px}#resultBadge{font-size:10px;font-weight:850;letter-spacing:.4px}#resultText{font-size:13px;line-height:1.5;margin:7px 0}#lesson{color:#b9dbe6;font-size:12px;line-height:1.45;margin:7px 0}.actionRow{display:flex;gap:7px}.actionRow .secondary{width:auto;margin:0;white-space:nowrap}#watchTrack{height:3px;background:#426374;margin:8px 0}#watchFill{height:100%;background:var(--yellow);width:0}
 .overlay{position:absolute;inset:0;z-index:10;background:linear-gradient(150deg,#052b3f,#163e51 65%,#052b3f);overflow:auto;padding:24px 18px;padding-bottom:calc(24px + env(safe-area-inset-bottom))}.eyebrow{font-size:11px;color:var(--yellow);font-weight:850;letter-spacing:.7px}.overlay h2{font-size:27px;line-height:1.12;margin:20px 0 12px}.overlay p{font-size:14px;line-height:1.55;color:#d4e6ee}.introIcon{width:64px;height:64px;display:grid;place-items:center;border:3px solid var(--yellow);border-radius:50%;font-size:30px;color:var(--yellow);margin:22px auto}.steps{display:grid;gap:8px;margin:17px 0}.step{padding:11px;background:#ffffff09;border:1px solid #66839466;border-radius:10px;font-size:13px;line-height:1.5}.step strong{display:block;color:#ffda74}.small{font-size:11px!important;color:#adcbd7!important}.summaryScore{font-size:46px;color:var(--yellow);font-weight:900;margin:12px 0}.reportItem{border:1px solid #6b8b9c77;background:#ffffff07;padding:10px;border-radius:10px;margin:8px 0}.reportItem h3{font-size:13px;margin:0 0 4px}.reportItem p{font-size:12px;margin:3px 0}.outcomeTitle{color:#a7f3d0}.outcomeTitle.warn{color:#ffdb70}.outcomeTitle.bad{color:#fda4af}details{font-size:12px;color:#b9dbe6;margin:18px 0}details a{color:#7dd3fc}.error{background:#492033;color:white;border:1px solid #fb7185;padding:12px;border-radius:10px;font-size:13px;line-height:1.5}#help{z-index:12;background:#052b3ff5}#statusLine{font-size:10px;color:#b7d2df;margin-top:10px;text-align:center}#exitDone{z-index:15;display:grid;place-content:center;text-align:center}body.reduce-motion *{scroll-behavior:auto!important}
 @media(min-width:600px){#app{margin:8px auto;height:calc(100vh - 16px);height:calc(100dvh - 16px)}}@media(max-height:680px){header{padding:6px 9px}.brand h1{font-size:12px}#panel{max-height:50%;padding-top:7px}.choice{font-size:11px;padding:7px 9px}#bubble{padding:7px 9px}#speech{font-size:11px}#scene{min-height:170px}.overlay{padding-top:16px}.overlay h2{font-size:24px}.introIcon{margin:12px auto}}
@@ -30,7 +30,6 @@ header{padding:calc(7px + env(safe-area-inset-top)) 12px 8px}
 #bubble{top:42px;left:10px;right:10px;padding:8px 10px;max-width:350px;border-radius:12px}
 #speech{font-size:12px;line-height:1.4;margin:5px 0}#speaker{font-size:10px}
 #phraseControls{gap:6px}#phraseControls button{min-height:40px;min-width:40px;padding:5px 9px}#phraseIndex{white-space:nowrap}
-#cameraTools{bottom:7px;gap:6px}#cameraTools button{min-height:40px;flex:1;max-width:105px;font-size:11px;padding:7px}
 #sceneNotice{bottom:53px;font-size:10px;line-height:1.3;padding:5px 7px;left:10px;right:10px}
 .actionRow{display:grid;grid-template-columns:minmax(90px,.7fr) minmax(0,1.3fr)}.actionRow .secondary{width:100%;white-space:normal}
 .overlay{padding:calc(18px + env(safe-area-inset-top)) 18px calc(18px + env(safe-area-inset-bottom));overscroll-behavior:contain;scrollbar-width:thin}
@@ -51,17 +50,11 @@ header{padding:calc(7px + env(safe-area-inset-top)) 12px 8px}
 @media(max-height:700px){.welcomeArt{height:72px;margin-bottom:8px}.welcomeArt svg{height:76px}.welcomeBody{padding:10px 0}#welcome h2{font-size:30px;margin:7px 0}#welcome .welcomeLead{font-size:13px}.welcomeStats{margin:11px 0 9px}.welcomeBrief{padding:9px 11px;font-size:12px}.welcomeActions{padding-top:9px}#panel{max-height:50%}.choice{font-size:12px;padding:9px;line-height:1.4}#sceneNotice{display:none}#speech{font-size:12px}}
 @media(min-width:600px) and (min-height:551px){#app{width:min(430px,calc((100dvh - 24px)*.54));height:calc(100vh - 24px);height:calc(100dvh - 24px);max-height:900px;margin:12px auto;border:2px solid #355361;border-radius:24px;box-shadow:0 16px 50px #0008}}
 @media(orientation:landscape) and (max-height:550px){#app{max-width:960px;width:100%;height:100dvh;margin:auto;border:0;border-radius:0;display:grid;grid-template-columns:1.1fr 1fr;grid-template-rows:auto minmax(0,1fr)}header{grid-column:1/-1;padding-top:5px}.meters{margin-top:3px}#scene{height:100%;min-height:0}#panel{height:100%;max-height:none}.welcomeBody{display:grid;grid-template-columns:1fr 1fr;gap:7px 20px;max-width:680px;padding:10px 0}.welcomeArt{display:none}.welcomeBody>.eyebrow,.welcomeBody>h2,.welcomeLead{grid-column:1}.welcomeStats,.welcomeBrief{grid-column:2;margin:0}.welcomeStats{grid-row:1/3;align-self:center}.welcomeBrief{grid-row:3/5}.welcomeActions{max-width:500px;width:100%;margin:0 auto;padding:8px 0}.welcomeBrand{max-width:680px;width:100%;margin:auto}#welcome h2{font-size:27px;margin:0}#welcome .welcomeHint,#statusLine{margin-top:4px}.overlay{padding-top:12px}}
-/* Los cambios de plano quedan al alcance del pulgar, fuera de la imagen. */
-#cameraTools{position:static;margin:0 0 9px;justify-content:flex-start;gap:7px}
-#cameraTools button{min-height:44px;max-width:none;background:#062637;font-size:11px;border-radius:9px}
 #sceneNotice{bottom:8px}
-#panel.final-view>:not(#cameraTools){display:none}
 #panel.final-view{padding-bottom:calc(7px + env(safe-area-inset-bottom))}
-#panel.final-view #cameraTools{margin-bottom:0}
 /* Acción cercana: la consecuencia libera la mayor parte de la pantalla. */
 #panel{max-height:46%}
 #panel.in-consequence{max-height:29%;padding-top:8px}
-#panel.in-consequence #question,#panel.in-consequence #cameraTools,#panel.in-consequence #missionTitle{display:none}
 #panel.in-consequence.reading-result{max-height:52%}
 #resultText{font-size:13px;line-height:1.35;margin:5px 0 7px}
 #watchTrack{display:none}
@@ -71,8 +64,6 @@ header{padding:calc(7px + env(safe-area-inset-top)) 12px 8px}
 #sceneNotice{display:none}
 #bubble{top:39px;background:#fbfdfff2}
 #bubble:after{border-top-color:#fbfdfff2}
-#cameraTools{gap:5px;margin-bottom:6px}
-#cameraTools button{min-height:32px;padding:4px 7px;font-size:10px}
 #panel .choice{font-size:12px;line-height:1.35;padding:8px 10px}
 #welcomePreview{height:190px;flex-shrink:0;position:relative;overflow:hidden;border-radius:16px;border:1px solid #5d899b;margin-bottom:13px;background:#2c596e}
 #welcomePreview canvas{position:absolute;inset:0}
@@ -83,7 +74,26 @@ header{padding:calc(7px + env(safe-area-inset-top)) 12px 8px}
 @media(max-height:700px){#welcomePreview{height:145px;margin-bottom:10px}#welcome h2{font-size:27px}#welcome .welcomeBody{padding-top:7px}}
 @media(orientation:landscape) and (max-height:550px){#welcomePreview{grid-column:2;grid-row:1/5;height:170px;margin:0}.welcomeStats{display:none}.welcomeBody>h2{grid-row:2}.welcomeLead{grid-row:3}}
 @media(max-height:700px){#panel{max-height:48%}#panel.in-consequence{max-height:31%}#phraseControls button{min-height:32px}#bubble{padding:6px 9px}#panel.in-consequence.reading-result{max-height:54%}}
-@media(orientation:landscape) and (max-height:550px){#cameraTools{margin-bottom:7px}#cameraTools button{min-height:40px}}
+@media(orientation:landscape) and (max-height:550px){}
+/* Supervisión por sectores: una vista estable y una sola tarea visible. */
+#score,#question,.meters .meter:nth-child(2){display:none}
+.meters{grid-template-columns:1fr;margin-top:4px}
+.meter label{font-size:10px}.track{height:4px}
+#panel{max-height:47%;padding-top:9px}
+#missionTitle{font-size:13px;line-height:1.4;margin-bottom:8px;color:#ffdf87}
+#panel.in-consequence{max-height:27%}
+#sceneBeat{position:absolute;bottom:8px;left:10px;right:10px;background:#012536ea;color:#e3f4fa;padding:7px 9px;border-radius:9px;font-size:11px;text-align:center;pointer-events:none;border:1px solid #598294}
+#inspectBtn{position:absolute;z-index:2;max-width:155px;min-height:36px;border:1px solid #ffcd56;background:#023047ed;color:#ffe6a4;border-radius:18px;padding:7px 10px;font-size:10px;font-weight:750;transform:translate(-50%,-50%);box-shadow:0 3px 12px #0005}
+#inspectBtn:before{content:'⌖ ';color:#ffb703}
+#bubble{max-width:330px;padding:8px 10px}#speech{padding-right:0}
+#bubble.single-phrase{padding-right:53px}
+#bubble.single-phrase #phraseControls{position:absolute;top:4px;right:5px}
+#bubble.single-phrase #readBtn{min-height:32px;min-width:40px;padding:4px 6px}
+#panel.final-view>:not(#backReportBtn){display:none}
+#panel.final-view #backReportBtn:not([hidden]){display:block}
+#panel.in-consequence #missionTitle{display:none}
+canvas{touch-action:pan-y pinch-zoom}
+@media(max-height:700px){#panel{max-height:49%}#panel.in-consequence{max-height:30%}#sceneBeat{font-size:10px;padding:6px}#inspectBtn{min-height:32px}}
 </style>
 </head>
 <body>
@@ -96,9 +106,11 @@ header{padding:calc(7px + env(safe-area-inset-top)) 12px 8px}
   <div id="sceneTop"><span class="tag" id="missionTag">MISIÓN 1 DE 10 · 6:00</span><span class="tag" id="score">0 / 100 PTS</span></div>
   <div id="bubble" hidden><div id="speaker"></div><p id="speech"></p><div id="phraseControls"><button id="prevPhrase" aria-label="Frase anterior">‹</button><span id="phraseIndex"></span><button id="nextPhrase">Siguiente ›</button><button id="readBtn" aria-label="Leer esta frase en voz alta">Voz</button></div></div>
   <div id="sceneFlash"></div><div id="sceneNotice" hidden></div>
+  <button id="inspectBtn" type="button" aria-label="Observar el problema señalado">Ver riesgo</button>
+  <div id="sceneBeat" aria-live="polite">Observa el problema y elige tu intervención.</div>
 
  </section>
- <section id="panel" aria-label="Decisiones de mando"><nav id="cameraTools" aria-label="Cámara"><button data-camera="wide" aria-pressed="true">General</button><button data-camera="medium" aria-pressed="false">Diálogo</button><button data-camera="close" aria-pressed="false">Rostro</button></nav><h2 id="missionTitle"></h2><p id="question"></p><div id="choices" class="choices"></div><div id="consequence" hidden><span id="resultBadge"></span><p id="resultText" role="status" aria-live="polite"></p><details id="reasonDetails"><summary>Entender lo que pasó</summary><p id="resultFull"></p><p id="lesson"></p></details><div id="watchTrack"><div id="watchFill"></div></div><div class="actionRow"><button id="replayBtn" class="secondary">Ver de nuevo</button><button id="continueBtn" class="primary">Observa la consecuencia…</button></div></div></section>
+ <section id="panel" aria-label="Decisiones de mando"><button id="backReportBtn" class="primary" hidden>VOLVER A MI INFORME</button><h2 id="missionTitle"></h2><p id="question"></p><div id="choices" class="choices"></div><div id="consequence" hidden><span id="resultBadge"></span><p id="resultText" role="status" aria-live="polite"></p><details id="reasonDetails"><summary>Entender lo que pasó</summary><p id="resultFull"></p><p id="lesson"></p></details><div id="watchTrack"><div id="watchFill"></div></div><div class="actionRow"><button id="replayBtn" class="secondary">Ver de nuevo</button><button id="continueBtn" class="primary">CONTINUAR</button></div></div></section>
  <section class="overlay" id="welcome" aria-label="Inicio del juego">
   <div class="welcomeBrand"><span class="logo" aria-hidden="true">B</span><div><div class="eyebrow">SEGUROS BOLÍVAR · ARL</div><small>UNIDAD 5 · LIDERAZGO PROTECTOR</small></div></div>
   <div class="welcomeBody">
@@ -106,12 +118,20 @@ header{padding:calc(7px + env(safe-area-inset-top)) 12px 8px}
    <div class="eyebrow">UNA JORNADA. TÚ AL MANDO.</div><h2>El Director<br>de Obra</h2>
    <p class="welcomeLead">Escucha a tu cuadrilla, decide cómo liderar y mira lo que pasa en la obra.</p>
    <div class="welcomeStats"><span><strong>10</strong> misiones</span><span><strong>3</strong> respuestas</span><span>Obra <strong>3D</strong></span></div>
-   <div class="welcomeBrief"><strong>Cada decisión deja huella.</strong>Cuida al equipo ante la fatiga, los conflictos y el afán. Gana hasta 100 puntos; aprueba con 80.</div>
+ 
   </div>
-  <div class="welcomeActions"><p id="resumeNotice" class="small"></p><button class="primary" id="startBtn" disabled>INICIAR LA JORNADA →</button><button class="secondary" id="restartWelcome" hidden>Empezar una nueva jornada</button><div id="bootError" class="error" hidden></div><p class="welcomeHint">Toca para decidir · Desliza la escena para mirar</p><div id="statusLine">Cargando la escena 3D…</div></div>
+  <div class="welcomeActions"><p id="resumeNotice" class="small"></p><button class="primary" id="startBtn" disabled>INICIAR LA JORNADA →</button><button class="secondary" id="restartWelcome" hidden>Empezar una nueva jornada</button><div id="bootError" class="error" hidden></div><p class="welcomeHint">Observa el riesgo. Intervén. Comprueba el resultado.</p><div id="statusLine">Cargando la escena 3D…</div></div>
  </section>
  <section class="overlay" id="report" hidden aria-label="Informe de liderazgo"><div class="eyebrow">CIERRE DE JORNADA · AUDITORÍA FORMATIVA</div><h2 id="endingTitle"></h2><div class="summaryScore" id="finalScore"></div><p id="endingText"></p><p id="lmsResult"></p><div id="reportStats" class="steps"></div><div id="reportList"></div><button class="primary" id="finishBtn">TERMINAR Y GUARDAR</button><button class="secondary" id="retryBtn">Repetir la jornada</button><button class="secondary" id="changeViewBtn">Ver la cuadrilla</button><details><summary>Referencias y alcance de la actividad</summary><p class="small">Simulación educativa: los indicadores representan decisiones del juego; no son mediciones clínicas, una auditoría oficial ni una determinación de acoso o sanción.</p><p><a href="https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=18843" target="_blank" rel="noopener">Ley 1010 de 2006 · prevención del acoso laboral</a></p><p><a href="https://www.fondoriesgoslaborales.gov.co/riesgo-psicosocial-2/" target="_blank" rel="noopener">Factores psicosociales · Resoluciones 2646 de 2008 y 2764 de 2022</a></p></details></section>
- <section class="overlay" id="help" hidden aria-label="Ayuda"><div class="eyebrow">CÓMO JUGAR</div><h2>Observa, escucha y decide.</h2><p>Las burbujas muestran lo que dicen los personajes, por frases. Las tres tarjetas contienen respuestas completas: elige una sola.</p><p>Después verás la consecuencia y su explicación. Puedes repetir la animación antes de avanzar. Tu decisión queda guardada y no cambia al repetirla.</p><p>Cada decisión protectora suma 10 puntos. Las respuestas punitivas restan 10 al clima; las indiferentes o evasivas restan 5. El avance operativo es una simulación del trabajo coordinado.</p><p>La jornada se guarda después de cada decisión para retomarla. Si el navegador bloquea el guardado, mantén esta ventana abierta.</p><button class="primary" id="closeHelp">VOLVER AL JUEGO</button><button class="secondary" id="returnReport" hidden>Ver informe final</button><button class="secondary" id="homeBtn">Guardar y salir</button></section>
+ <section class="overlay" id="help" hidden aria-label="Ayuda">
+  <div class="eyebrow">SUPERVISA EL FRENTE</div><h2>Observa. Interv\u00e9n. Comprueba.</h2>
+  <p><strong>1. Observa:</strong> cada sector muestra un problema. Toca su aviso si necesitas entenderlo mejor. La c\u00e1mara permanece estable.</p>
+  <p><strong>2. Interv\u00e9n:</strong> elige qu\u00e9 dices y qu\u00e9 haces. Las tres respuestas est\u00e1n disponibles desde que llegas.</p>
+  <p><strong>3. Comprueba:</strong> ver\u00e1s tu intervenci\u00f3n, la reacci\u00f3n del trabajador y el resultado. Puedes repetir la secuencia o avanzar cuando quieras.</p>
+  <p>El clima se refleja en la cuadrilla. Cada decisi\u00f3n protectora suma 10 puntos; apruebas con 80. El informe conserva las diez decisiones.</p>
+  <p class="small">Tu avance se guarda despu\u00e9s de cada elecci\u00f3n. El bot\u00f3n Voz lee la frase visible.</p>
+  <button class="primary" id="closeHelp">VOLVER AL JUEGO</button><button class="secondary" id="returnReport" hidden>Ver informe final</button><button class="secondary" id="homeBtn">Guardar y salir</button>
+ </section>
  <section class="overlay" id="exitDone" hidden><div><div class="introIcon">✓</div><h2>Sesión terminada</h2><p id="exitText">Puedes cerrar esta ventana.</p><a class="secondary" href="index.html">Volver al portal</a></div></section>
 </main>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -154,6 +174,54 @@ const M=[
  good:'La cuadrilla y el comité revisan el tablero. Se registran los puntos por mejorar con responsables y fechas; el cierre reconoce las decisiones protectoras.',bad:'El comité pide verificar los hechos. La cuadrilla se aparta del supervisor y el tablero muestra las decisiones de riesgo que requieren intervención.',passive:'Las omisiones no resuelven los problemas. El comité contrasta el informe con la jornada y deja pendientes de verificación y seguimiento.',lesson:'La revisión formativa orienta mejoras. Una sanción o calificación jurídica corresponde a procedimientos y autoridades competentes, no a una puntuación automática.',notice:'Última decisión: el informe conserva toda la jornada, no solo los aciertos.'}
 ];
 
+const SECTORS=[
+ {center:[-6.3,1,-.8],width:8,goal:'Retira la exposición de Pedro y organiza un relevo seguro.',speaker:'Pedro',speech:'No dormí bien. Me cuesta concentrarme en este amarre.',risk:'Conexión sin asegurar',point:[-8.6,.2,-1.7],layout:[['supervisor',-4.3,1.5,Math.PI],['pedro',-8,-1.6,.5,'tired'],['siso',-5.2,-3.2,0]],pause:[-4.9,-.9],commands:['Pedro, salgamos del borde. Organizaremos un relevo.','Pedro, termine ese amarre. No podemos parar.','Que siga. Con un café se le pasará.'],results:['Pedro sale de la zona expuesta acompañado. El frente queda detenido hasta verificar el relevo.','Pedro pierde el equilibrio; SST tiene que detener la tarea y ayudarlo.','Pedro sigue fallando el amarre. Un compañero debe intervenir.'],options:[
+ '«Pedro, termine el amarre; no podemos parar». Le exijo que acelere y lo dejo trabajando en el borde.',
+ 'Asumo que el sueño se le pasará con un café y sigo el recorrido sin detener la tarea expuesta.',
+ '«Pedro, salgamos del borde». Detengo la tarea, lo acompaño a una zona segura y coordino la valoración y un relevo antes de continuar.']},
+ {center:[0,1,-1],width:8.6,goal:'Aclara quién verifica el frente antes de arrancar la bomba.',speaker:'Residente / SST',speech:'Residente: arranquen. SST: ¡faltan los apoyos por verificar!',risk:'Apoyos por verificar',point:[0,.3,-3.8],layout:[['supervisor',0,1.8,Math.PI],['residente',-2.1,-1.5,.5,'angry'],['siso',2.1,-1.8,-.5,'worried'],['pedro',0,-.5,Math.PI]],commands:['Una sola instrucción: verificamos y liberamos antes de arrancar.','Arranquen. Aquí se obedece al residente.','Decidan ustedes a quién hacerle caso.'],results:['SST verifica los apoyos. La cuadrilla recibe una sola instrucción antes de retomar.','Un apoyo se desplaza y la cuadrilla retrocede. El frente debe detenerse.','Unos avanzan y otros esperan: el trabajo queda descoordinado.'],options:[
+ 'Grito que obedezcan al residente y arranquen la bomba, aunque SST no haya terminado la verificación.',
+ 'Les digo que decidan a quién escuchar y me retiro sin aclarar la prioridad ni la condición de arranque.',
+ '«Primero verificamos». Pauso la bomba, acuerdo quién libera el frente y comunico una sola instrucción antes de retomar.']},
+ {center:[.2,1,-.6],width:7.8,goal:'Detén la humillación y ayuda al nuevo a aprender la tarea.',speaker:'Oficial / Ayudante',speech:'¡Incompetente! — Estoy aprendiendo; explíqueme cómo hacerlo.',risk:'Humillación pública',point:[1,.1,-1.8],layout:[['supervisor',0,1.5,Math.PI],['oficial',-1.8,-1.8,.6,'angry'],['ayudante',1,-1.8,-.5,'worried'],['carlos',3,-2.4,-.5]],commands:['Paramos la humillación. Aquí corregimos con respeto.','Así se aprende aquí. Si no aguanta, que se vaya.','No voy a meterme en ese problema.'],results:['El oficial deja de señalar. El ayudante recibe una explicación y acompañamiento.','El ayudante se aparta y deja de pedir ayuda. La burla recibe tu respaldo.','La humillación continúa mientras el ayudante se retira.'],options:[
+ 'Me río: «Así se aprende en obra». Respaldo la burla y dejo que el oficial siga humillando al ayudante.',
+ 'Miro hacia otro lado para evitar una discusión y dejo que ellos resuelvan la situación solos.',
+ '«Aquí corregimos con respeto». Detengo la humillación, apoyo al ayudante y hablo aparte con el oficial; activo el canal de convivencia si corresponde.']},
+ {center:[4.5,1,-.7],width:8.6,goal:'Aísla la bomba averiada y reorganiza el trabajo fuera del área.',speaker:'Operador de bomba',speech:'¡Hay una fuga con presión! El mixer está por llegar.',risk:'Fuga presurizada',point:[5.1,1,-3],layout:[['supervisor',2,2.3,Math.PI],['mecanico',3.1,-1.4,-.5,'worried'],['pedro',5.4,.6,Math.PI,'worried']],commands:['Detengan y aíslen. Nadie entra hasta la liberación técnica.','Amarren eso con alambre y sigan vaciando.','¡Que venga mantenimiento! Yo no sé qué hacer.'],results:['La fuga se detiene y se delimita el área. El mecánico puede revisar el equipo aislado.','La manguera sacude el arreglo improvisado y obliga a todos a retroceder.','La fuga continúa sin un responsable que controle el acceso.'],options:[
+ 'Ordeno amarrar la manguera con alambre y cinta para seguir vaciando sin esperar una reparación competente.',
+ 'Grito que mantenimiento responda, pero no defino quién detiene la presión ni quién controla el acceso.',
+ 'Detengo y aíslo según el procedimiento, alejo a la cuadrilla y delimito el área. Solicito reparación competente y coordino otro frente seguro.']},
+ {center:[0,1,-.5],width:8,goal:'Recupera el corredor y acuerda el turno de cada cuadrilla.',speaker:'Carpintería / Electricidad',speech:'¡Nos taparon el paso! — ¡Nadie nos avisó que iban a entrar!',risk:'Corredor bloqueado',point:[0,.15,-1],layout:[['supervisor',0,1.8,Math.PI],['carpintero',-2,-1.8,.5,'angry'],['electricista',2,-1.8,-.5,'angry']],commands:['Primero despejamos. Después acordamos quién pasa y cuándo.','O despejan ya o los suspendo a todos.','Arréglense entre ustedes. Yo sigo con el recorrido.'],results:['El corredor queda libre. Una cuadrilla pasa y la otra espera el turno acordado.','Las herramientas terminan en el suelo y el paso sigue cerrado.','Los dos equipos intentan pasar a la vez y deben frenarse.'],options:[
+ 'Amenazo con suspender a todos si no despejan inmediatamente, sin escuchar qué está bloqueando a cada cuadrilla.',
+ 'Les digo que se arreglen como puedan y continúo sin coordinar el acceso compartido.',
+ 'Detengo la discusión, escucho a ambos y acordamos secuencia, horarios y responsables. Verifico que retiren los obstáculos del corredor.']},
+ {center:[2.8,1,-.6],width:7.8,goal:'Escucha a Roberto y evita que asuma una tarea crítica distraído.',speaker:'Roberto',speech:'Me están amenazando por una deuda. No puedo concentrarme.',risk:'Distracción en izaje',point:[4,.2,-1.7],layout:[['supervisor',1.4,1.2,Math.PI],['roberto',4,-1.7,-.3,'worried'],['siso',1,-2,.4]],pause:[4.4,1],commands:['Hablemos en privado. Voy a coordinar un relevo seguro.','Sus problemas no me importan. Suba a operar.','Vuelva a su puesto. No tenemos tiempo.'],results:['Roberto conversa en privado. La maniobra espera un relevo habilitado.','Roberto pierde una señal. El señalero detiene la carga que oscila.','La distracción continúa y la maniobra queda suspendida.'],options:[
+ '«Sus problemas no me importan». Le exijo guardar el teléfono y subir a operar sin revisar su condición.',
+ 'Lo mando al puesto sin conversar ni valorar si puede concentrarse en la maniobra.',
+ '«Roberto, hablemos en privado». Suspendo su asignación crítica, coordino un relevo seguro y le ofrezco contacto con bienestar o el Fondo de Empleados disponible.']},
+ {center:[0,1,-.7],width:7.8,goal:'Escucha la propuesta de Carlos y verifica si puede probarse.',speaker:'Carlos',speech:'Dibujé cómo ordenar las formaletas y dejar el paso libre.',risk:'Acopio sobre el paso',point:[0,.15,-1],layout:[['supervisor',0,1.5,Math.PI],['carlos',-1.4,-1.8,.3],['carpintero',2,-2,-.5]],commands:['Revisemos el esquema y probemos un tramo seguro.','Aquí pienso yo. Usted solo cargue tablas.','Luego miro eso. Por ahora sigan igual.'],results:['Se revisa el plano y se organiza un tramo con el corredor libre.','Carlos baja el dibujo y deja de participar. El acopio sigue obstruyendo.','La propuesta queda sin revisar y se estrecha más el pasillo.'],options:[
+ '«Aquí pienso yo». Rechazo la propuesta sin revisar el dibujo y le ordeno limitarse a cargar tablas.',
+ 'Le digo «luego lo miro» y continúo con el mismo acopio sin revisar ni dar seguimiento a su idea.',
+ '«Gracias por proponerlo». Reviso estabilidad y circulación con el responsable, probamos un tramo seguro y Carlos participa con un papel claro.']},
+ {center:[-2.4,1,-.6],width:8.4,goal:'Impide el acceso a altura y activa una valoración respetuosa.',speaker:'Compañero de Mario',speech:'Mario camina inestable y quiere subir. ¿Lo acompañamos a SST?',risk:'Acceso de altura',point:[-5.5,.15,-2.8],layout:[['supervisor',-4.2,1.2,Math.PI],['mario',-4.2,-2,.3,'worried'],['siso',-1.4,-2,-.5]],pause:[-.5,.7],commands:['No subimos. Te acompañamos a SST para que te valoren.','Suba, pero responda si se cae.','Escóndase para que SST no lo vea.'],results:['Mario se aleja del acceso acompañado. SST recibe la situación sin acusaciones ni exposición pública.','Mario se tambalea hacia el acceso y un compañero tiene que detenerlo.','Mario queda aislado, sin la valoración ni el acompañamiento que necesitaba.'],options:[
+ 'Lo dejo subir y le advierto que responda por lo que pase. No activo ninguna medida de control.',
+ 'Le digo que se esconda en el almacén para que SST no lo vea y espero que se le pase.',
+ 'Suspendo su labor en altura sin diagnosticarlo ni acusarlo. Lo acompaño a una zona segura y activo con SST la valoración y el procedimiento establecido.']},
+ {center:[0,1,-.3],width:10.4,goal:'Reconoce el cuidado del equipo y acuerda una entrega segura.',speaker:'Cuadrilla',speech:'Terminamos este tramo. ¿Qué debemos dejar listo para mañana?',risk:'Entrega de pendientes',point:[2,.1,-.5],layout:[['supervisor',0,1.5,Math.PI],['pedro',-3.6,-1.8,0],['carlos',-1.8,-1.8,0],['carpintero',0,-1.8,0],['electricista',1.8,-1.8,0],['roberto',3.6,-1.8,0]],commands:['Gracias por cuidarse. Revisemos el cierre y los pendientes.','Cada uno verá cómo deja su puesto. Yo me voy.','Mañana los quiero más temprano. Eso es todo.'],results:['El equipo ordena el frente, acuerda los pendientes y reconoce el trabajo compartido.','La cuadrilla se dispersa y quedan herramientas sin entregar.','El turno termina sin reconocimiento ni revisión compartida.'],options:[
+ 'Me retiro sin escuchar a la cuadrilla ni revisar quién entrega el frente o qué queda pendiente.',
+ 'Solo digo «mañana más temprano» y no reconozco el esfuerzo ni coordino la entrega.',
+ 'Reconozco la coordinación y el cuidado mutuo. Revisamos el cierre seguro, registramos los pendientes y acordamos responsables para entregar la jornada.']},
+ {center:[0,1,-.7],width:9.8,goal:'Presenta los hechos y acuerda mejoras con seguimiento.',speaker:'Comité / Referente ARL',speech:'Revisemos los hechos, incluidos los problemas de la jornada.',risk:'Registro de la jornada',point:[0,1.4,-4],layout:[['supervisor',0,1.7,Math.PI],['auditor',-1.8,-1,.4],['siso',1.8,-1,-.4],['pedro',-3.6,-2.5,.4],['carlos',3.6,-2.5,-.4]],commands:['Estos son los hechos. Acordemos responsables y seguimiento.','La culpa es de los trabajadores. Castíguenlos.','No anotemos los problemas para evitar preguntas.'],results:['El comité registra acciones, responsables y fechas sin borrar lo que ocurrió.','La cuadrilla se aparta y el comité pide revisar las instrucciones del supervisor.','Las omisiones dejan problemas sin resolver y requieren verificación.'],options:[
+ 'Culpo a los trabajadores y pido castigos sin revisar mis instrucciones ni escuchar los hechos.',
+ 'Entrego un informe sin incidentes ni conflictos para evitar preguntas y dejo las mejoras para después.',
+ 'Presento los hechos y escucho a la cuadrilla. Reconozco mi responsabilidad y acordamos acciones con responsable, plazo y seguimiento por los canales correspondientes.']}
+];
+SECTORS.forEach((sector,index)=>{
+ sector.options.forEach((text,option)=>M[index].options[option].text=text);
+ sector.initialActor=['pedro','residente','oficial','pedro','carpintero','roberto','carlos','siso','carlos','auditor'][index];
+ sector.responseActor=['pedro','siso','ayudante','pedro','electricista','roberto','carlos','mario','carlos','auditor'][index];
+ sector.responseName=['Pedro','SST','Ayudante','Operador de bomba','Electricista','Roberto','Carlos','Mario','Cuadrilla','Comité / Referente ARL'][index];
+});
 const REACTIONS=[
  ['Necesitaba parar. Gracias por ayudarme a salir del borde.','¡Me fui de lado! ¡Ayúdeme!','Se me cayó la herramienta… no estoy bien.'],
  ['Bomba detenida. Primero revisamos los apoyos.','¡Pare la bomba! ¡Se está moviendo el apoyo!','¿Arrancamos o esperamos? Nadie nos está coordinando.'],
@@ -165,6 +233,18 @@ const REACTIONS=[
  ['Acompáñeme. No me siento seguro para subir.','¡Espere! No puedo mantener el equilibrio.','¿Me quedo solo aquí?'],
  ['Nos cuidamos entre todos. ¡Buen trabajo, equipo!','¿Quién entrega lo que queda pendiente?','Otra vez salimos sin hablar de cómo nos fue.'],
  ['Estos son los hechos. Acordemos quién mejora cada punto.','Escuchemos también a la cuadrilla.','Faltan hechos en este informe. Revisemos la jornada.']
+];
+const INSPECTIONS=[
+ 'Pedro está fatigado y su conexión al sistema de protección no está asegurada.',
+ 'Hay dos órdenes distintas y los apoyos todavía no han sido liberados.',
+ 'El oficial humilla al ayudante delante de sus compañeros.',
+ 'La línea sigue presurizada: nadie debe tocar ni improvisar una reparación.',
+ 'Tablas y herramientas bloquean el único corredor compartido.',
+ 'Roberto sigue mirando cobros amenazantes antes de una maniobra crítica.',
+ 'Carlos trae una propuesta; el acopio actual sigue invadiendo el paso.',
+ 'Mario camina inestable. Necesita salir de la exposición y ser valorado.',
+ 'Falta verificar el frente y dejar responsables para los pendientes.',
+ 'El registro debe incluir los problemas, no solo los aciertos.'
 ];
 
 // El mismo SCO reconoce SCORM 1.2 y 2004. Los paquetes cambian únicamente el manifiesto.
@@ -185,7 +265,7 @@ const LMS={api:null,edition:'',ready:false,ended:false,started:Date.now(),lastEr
  finish(complete){if(this.ended)return;save(complete);if(this.ready){const seconds=Math.max(0,Math.floor((Date.now()-this.started)/1000));if(this.edition==='2004')this.set('cmi.session_time','PT'+seconds+'S');else{const pad=n=>String(n).padStart(2,'0');this.set('cmi.core.session_time',pad(Math.floor(seconds/3600))+':'+pad(Math.floor(seconds%3600/60))+':'+pad(seconds%60)+'.00');}this.commit();try{this.api[this.edition==='2004'?'Terminate':'LMSFinish']('');}catch(_){} }this.ended=true;}
 };
 const fresh=(attempt=1)=>({v:1,mission:0,records:[],phase:'decision',attempt});
-let state=fresh(),ready3D=false,playing=false,phrase=0,phrases=[],speaker='',choiceOrder=[],outcomeClock=0,automaticCamera=0,lastFocus=null,voiceEnabled=false;
+let state=fresh(),ready3D=false,playing=false,phrase=0,phrases=[],speaker='',choiceOrder=[],voiceEnabled=false;
 function calculate(s){let score=0,climate=50,pour=0;for(let i=0;i<s.records.length;i++){const r=s.records[i];if(!r)continue;score+=r.style==='protective'?10:0;climate=clamp(climate+styles[r.style].delta,0,100);if(i<9)pour+=r.style==='protective'?12:r.style==='indifferent'?7:5;}return {score,climate,pour:clamp(pour,0,100)};}
 function valid(value){if(!value||value.v!==1||!Array.isArray(value.records)||value.records.length>10||!Number.isInteger(value.mission)||value.mission<0||value.mission>9)return false;let gap=false;for(let i=0;i<10;i++){const r=value.records[i];if(!r){gap=true;continue;}if(gap||!styles[r.style]||!Number.isInteger(r.option)||r.option<0||r.option>2||M[i].options[r.option].style!==r.style)return false;}return ['decision','consequence','final'].includes(value.phase)&&Number.isInteger(value.attempt)&&value.attempt>0;}
 function restore(){let raw='';if(LMS.api){if(LMS.ready)raw=LMS.get('cmi.suspend_data');}else{try{raw=localStorage.getItem(STORAGE)||'';}catch(_){}}if(raw){try{const candidate=JSON.parse(raw);if(valid(candidate)){state=candidate;const count=state.records.length;if(count===10&&state.phase==='final')state.mission=9;else if(state.phase==='consequence'&&count){state.mission=count-1;}else{state.mission=Math.min(count,9);state.phase=count===10?'final':'decision';}}}catch(_){}}}
@@ -208,23 +288,70 @@ function mountScene(container){
  if(W.observer){W.observer.disconnect();W.observer.observe(container);}W.resize();
 }
 function setDialogue(name,texts){speaker=name;phrases=[];texts.forEach(text=>{const sentences=text.match(/[^.!?]+[.!?]+|[^.!?]+$/g)||[text];sentences.forEach(sentence=>{let line='';sentence.trim().split(/\s+/).forEach(word=>{if(line.length+word.length>(window.innerWidth<480?70:95)&&line){phrases.push(line);line='';}line+=(line?' ':'')+word;});if(line)phrases.push(line);});});phrase=0;showPhrase();}
-function showPhrase(){ $('bubble').hidden=!phrases.length;$('speaker').textContent=speaker;$('speech').textContent=phrases[phrase]||'';$('phraseIndex').textContent=(phrase+1)+' / '+phrases.length;$('prevPhrase').disabled=phrase===0;$('nextPhrase').textContent=phrase===phrases.length-1?'Releer ↻':'Siguiente ›';if(voiceEnabled)Audio.speak(phrases[phrase]||'');}
-function updateHUD(){const s=calculate(state);$('climateValue').textContent=s.climate+' %';$('climateFill').style.width=s.climate+'%';$('climateFill').style.background=s.climate>=75?'#34d399':s.climate>=50?'#ffb703':'#fb7185';$('climateMeter').setAttribute('aria-valuenow',s.climate);$('pourValue').textContent=s.pour+' %';$('pourFill').style.width=s.pour+'%';$('pourMeter').setAttribute('aria-valuenow',s.pour);$('score').textContent=s.score+' / 100 PTS';W.setPour(s.pour);}
+function showPhrase(){
+ const single=phrases.length<=1;$('bubble').hidden=!phrases.length;$('bubble').classList.toggle('single-phrase',single);
+ $('speaker').textContent=speaker;$('speech').textContent=phrases[phrase]||'';
+ $('phraseIndex').textContent=(phrase+1)+' / '+phrases.length;$('prevPhrase').disabled=phrase===0;
+ $('prevPhrase').hidden=single;$('nextPhrase').hidden=single;$('phraseIndex').hidden=single;
+ $('nextPhrase').textContent=phrase===phrases.length-1?'Releer':'Siguiente';
+ if(voiceEnabled&&state.phase!=='consequence')Audio.speak(phrases[phrase]||'');
+}
+function updateHUD(){const s=calculate(state);$('climateValue').textContent=!state.records.length?'Por coordinar':s.climate>=75?'Coordinado':s.climate>=50?'En recuperaci\u00f3n':'Tenso';$('climateFill').style.width=s.climate+'%';$('climateFill').style.background=s.climate>=75?'#34d399':s.climate>=50?'#ffb703':'#fb7185';$('climateMeter').setAttribute('aria-valuenow',s.climate);$('pourValue').textContent=s.pour+' %';$('pourFill').style.width=s.pour+'%';$('pourMeter').setAttribute('aria-valuenow',s.pour);$('score').textContent=s.score+' / 100 PTS';W.setPour(s.pour);}
 function orderOptions(){choiceOrder=[0,1,2];let seed=state.attempt*17+(state.mission+1)*29;for(let i=2;i>0;i--){seed=(seed*1664525+1013904223)>>>0;const j=seed%(i+1);[choiceOrder[i],choiceOrder[j]]=[choiceOrder[j],choiceOrder[i]];}}
-function loadMission(){Audio.cancel();Audio.stopEffects();const m=M[state.mission];$('report').hidden=true;$('panel').classList.remove('final-view','in-consequence','reading-result');$('panel').hidden=false;$('consequence').hidden=true;$('choices').hidden=false;$('choices').replaceChildren();$('missionTitle').textContent=m.title;$('question').textContent=m.question;$('missionTag').textContent='MISIÓN '+(state.mission+1)+' DE 10 · '+m.time;$('sceneNotice').textContent=m.notice;$('sceneNotice').hidden=false;$('sceneFlash').className='';setDialogue(m.speaker,m.dialogue);W.setup(state.mission);updateHUD();if(state.mission===3&&state.phase==='decision')Audio.pressure();outcomeClock=0;lastFocus=m.focus;automaticCamera=0;orderOptions();
- choiceOrder.forEach((option,index)=>{const b=document.createElement('button');b.className='choice';const badge=document.createElement('b');badge.textContent='ABC'[index];const t=document.createElement('span');t.textContent=m.options[option].text;b.append(badge,t);b.onclick=()=>choose(option);$('choices').append(b);});
+function loadMission(){
+ Audio.cancel();Audio.stopEffects();const m=M[state.mission],sector=SECTORS[state.mission];
+ $('report').hidden=true;$('panel').classList.remove('final-view','in-consequence','reading-result');$('panel').hidden=false;
+ $('backReportBtn').hidden=true;$('consequence').hidden=true;$('choices').hidden=false;$('choices').replaceChildren();
+ $('missionTitle').textContent=sector.goal;$('question').textContent='';
+ $('missionTag').textContent='MISI\u00d3N '+(state.mission+1)+' DE 10 \u00b7 '+m.time;
+ $('sceneNotice').hidden=true;$('sceneFlash').className='';
+ $('inspectBtn').hidden=false;$('inspectBtn').textContent=sector.risk;
+ $('sceneBeat').textContent='Observa el problema y elige tu intervenci\u00f3n.';
+ W.setup(state.mission);setDialogue(sector.speaker,[sector.speech]);updateHUD();
+ if(state.mission===3&&state.phase==='decision')Audio.pressure();orderOptions();
+ choiceOrder.forEach((option,index)=>{
+  const button=document.createElement('button');button.className='choice';
+  const badge=document.createElement('b');badge.textContent='ABC'[index];
+  const text=document.createElement('span');text.textContent=m.options[option].text;
+  button.append(badge,text);button.onclick=()=>choose(option);$('choices').append(button);
+ });
  if(state.phase==='consequence'&&state.records[state.mission])showConsequence();else state.phase='decision';
+ $('panel').scrollTop=0;
 }
 function choose(option){if(!playing||state.phase!=='decision'||LMS.ended)return;const m=M[state.mission];state.records[state.mission]={option,style:m.options[option].style};state.phase='consequence';LMS.interaction(state.mission,state.records[state.mission],state);save(false);updateHUD();showConsequence();}
-function showConsequence(){Audio.stopEffects();W.setup(state.mission);updateHUD();const r=state.records[state.mission],m=M[state.mission],good=r.style==='protective';$('choices').hidden=true;$('consequence').hidden=false;$('question').textContent='Tu decisión: '+styles[r.style].name;$('resultBadge').textContent=(good?'+10 PUNTOS · +10 CLIMA':(r.style==='punitive'?'−10 CLIMA':'−5 CLIMA'))+' · '+calculate(state).score+'/100';$('resultBadge').style.color=styles[r.style].color;const full=good?m.good:r.style==='punitive'?m.bad:m.passive;$('resultFull').textContent=full;$('resultText').textContent=full.split(/(?<=[.!?])\s/)[0];$('reasonDetails').open=false;$('panel').classList.add('in-consequence');$('panel').classList.remove('reading-result');$('lesson').textContent=m.lesson;setDialogue(m.speaker,[REACTIONS[state.mission][good?0:r.style==='punitive'?1:2]]);outcomeClock=0;automaticCamera=0;$('continueBtn').disabled=false;$('continueBtn').textContent=state.mission===9?'VER MI INFORME':'CONTINUAR';$('sceneFlash').className=good?'good':'bad';$('sceneNotice').textContent=good?'Observa cómo cambia el frente con tu intervención.':'Observa el efecto de tu decisión en la cuadrilla.';W.beginConsequence(r.style);W.setCamera('medium');W.updateShot();Audio.tone(good);if(state.mission===3&&!good)Audio.pressure();$('panel').scrollTop=0;}
+function showConsequence(){
+ Audio.cancel();Audio.stopEffects();const r=state.records[state.mission],m=M[state.mission],sector=SECTORS[state.mission];
+ $('choices').hidden=true;$('consequence').hidden=false;$('inspectBtn').hidden=true;
+ $('resultBadge').textContent='INTERVENCI\u00d3N EN CURSO';$('resultBadge').style.color='#c5e1ec';
+ $('resultText').textContent='Observa la respuesta de la cuadrilla.';
+ $('resultFull').textContent=m.options[r.option].text;
+ $('lesson').textContent=m.lesson;$('reasonDetails').open=false;$('panel').classList.add('in-consequence');$('panel').classList.remove('reading-result');
+ $('continueBtn').disabled=false;$('continueBtn').textContent=state.mission===9?'VER MI INFORME':'SIGUIENTE MISI\u00d3N';
+ $('sceneFlash').className='';W.beginConsequence(r.style);W.actionBeat=-1;
+ updateActionTimeline();updateHUD();Audio.tone(r.style==='protective');if(state.mission===3&&r.style!=='protective')Audio.pressure();$('panel').scrollTop=0;
+}
+function updateActionTimeline(){
+ if(state.phase!=='consequence'||!W.effectStyle)return;
+ const sector=SECTORS[state.mission],record=state.records[state.mission],response=record.style==='protective'?0:record.style==='punitive'?1:2;
+ const beat=W.effectTime<.85?0:W.effectTime<3.3?1:2;
+ if(beat===W.actionBeat)return;W.actionBeat=beat;
+ $('sceneBeat').textContent=['1 / 3 \u00b7 Tu intervenci\u00f3n','2 / 3 \u00b7 Reacci\u00f3n de la cuadrilla','3 / 3 \u00b7 Resultado en el frente'][beat];
+ if(beat===0)setDialogue('T\u00da \u00b7 Supervisor',[sector.commands[response]]);
+ else if(beat===1)setDialogue(sector.responseName,[REACTIONS[state.mission][response]]);
+ else{
+  $('resultText').textContent=sector.results[response];
+  $('resultBadge').textContent=(record.style==='protective'?'+10 PUNTOS':'+0 PUNTOS')+' \u00b7 '+calculate(state).score+' / 100';
+  $('resultBadge').style.color=styles[record.style].color;
+ }
+}
 function nextMission(){if(state.phase!=='consequence')return;Audio.cancel();if(state.mission===9){state.phase='final';save(true);showReport();}else{state.mission++;state.phase='decision';save(false);loadMission();}}
 function ending(){const s=calculate(state);return s.score>=85?{title:'Director de Obra de Excelencia',text:'Tus decisiones priorizaron el cuidado y la coordinación. Conserva los aciertos y revisa las oportunidades del informe.',color:0xffd166}:s.score>=60?{title:'Mando con desgaste · Plan de mejora',text:'Combinaste acciones protectoras con decisiones que desgastan al equipo. Revisa cada situación y concreta un plan de mejora.',color:0xffb703}:{title:'Alerta por clima tóxico',text:'Varias decisiones expusieron a la cuadrilla o debilitaron el respeto. La revisión formativa propone intervenir el liderazgo y repetir la jornada.',color:0xef4444};}
-function showReport(){state.phase='final';playing=true;Audio.cancel();const s=calculate(state),e=ending();$('report').hidden=false;$('panel').classList.remove('final-view','in-consequence','reading-result');$('panel').hidden=true;$('bubble').hidden=true;$('sceneNotice').hidden=true;$('endingTitle').textContent=e.title;$('endingTitle').className=s.score>=85?'outcomeTitle':s.score>=60?'outcomeTitle warn':'outcomeTitle bad';$('finalScore').textContent=s.score+' / 100';$('endingText').textContent=e.text;$('lmsResult').textContent=(s.score>=80?'APROBADO':'NO APROBADO')+' · Se requieren 80 puntos. '+(s.score===80?'Aprobaste y el perfil de mando conserva oportunidades de mejora.':'');$('reportStats').replaceChildren();[['Clima de cuadrilla',s.climate+' %'],['Avance operativo simulado',s.pour+' %'],['Decisiones protectoras',state.records.filter(r=>r.style==='protective').length+' de 10']].forEach(([label,value])=>{const d=document.createElement('div');d.className='step';d.textContent=label+': '+value;$('reportStats').append(d);});$('reportList').replaceChildren();M.forEach((m,i)=>{const r=state.records[i];if(!r)return;const article=document.createElement('article');article.className='reportItem';const title=document.createElement('h3');title.textContent=(i+1)+'. '+m.title;const response=document.createElement('p');response.textContent='Elegiste: '+m.options[r.option].text;const result=document.createElement('p');result.textContent=styles[r.style].name+' · '+(r.style==='protective'?'+10 puntos':'+0 puntos');result.style.color=styles[r.style].color;const lesson=document.createElement('p');lesson.textContent=m.lesson;article.append(title,response,result,lesson);$('reportList').append(article);});$('returnReport').hidden=false;W.finalScene(e.color,s.score);save(true);$('report').scrollTop=0;}
+function showReport(){state.phase='final';playing=true;Audio.cancel();const s=calculate(state),e=ending();$('report').hidden=false;$('panel').classList.remove('final-view','in-consequence','reading-result');$('panel').hidden=true;$('bubble').hidden=true;$('sceneNotice').hidden=true;$('endingTitle').textContent=e.title;$('endingTitle').className=s.score>=85?'outcomeTitle':s.score>=60?'outcomeTitle warn':'outcomeTitle bad';$('finalScore').textContent=s.score+' / 100';$('endingText').textContent=e.text;$('lmsResult').textContent=(s.score>=80?'APROBADO':'NO APROBADO')+' · Se requieren 80 puntos. '+(s.score===80?'Aprobaste y el perfil de mando conserva oportunidades de mejora.':'');$('reportStats').replaceChildren();[['Clima de cuadrilla',s.climate+' %'],['Avance operativo simulado',s.pour+' %'],['Decisiones protectoras',state.records.filter(r=>r.style==='protective').length+' de 10']].forEach(([label,value])=>{const d=document.createElement('div');d.className='step';d.textContent=label+': '+value;$('reportStats').append(d);});$('reportList').replaceChildren();M.forEach((m,i)=>{const r=state.records[i];if(!r)return;const article=document.createElement('article');article.className='reportItem';const title=document.createElement('h3');title.textContent=(i+1)+'. '+m.title;const response=document.createElement('p');response.textContent='Elegiste: '+m.options[r.option].text;const result=document.createElement('p');result.textContent=styles[r.style].name+' · '+(r.style==='protective'?'+10 puntos':'+0 puntos');result.style.color=styles[r.style].color;const lesson=document.createElement('p');lesson.textContent=m.lesson;article.append(title,response,result,lesson);$('reportList').append(article);});$('returnReport').hidden=false;$('sceneBeat').textContent='Jornada terminada. Puedes revisar tu informe.';W.finalScene(e.color,s.score);save(true);$('report').scrollTop=0;}
 function resetGame(){mountScene($('scene'));W.preview=false;Audio.cancel();state=fresh(state.attempt+1);save(false);playing=true;$('welcome').hidden=true;$('report').hidden=true;loadMission();}
 
 // Geometría propia: obra, cuadrilla articulada, utilería y secuencias por misión.
 class World{
- constructor(container){this.container=container;this.scene=new THREE.Scene();this.scene.background=new THREE.Color(0x84b9d0);this.scene.fog=new THREE.Fog(0x84b9d0,28,90);this.camera=new THREE.PerspectiveCamera(46,1,.1,160);this.renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});this.renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));this.renderer.shadowMap.enabled=true;this.renderer.shadowMap.type=THREE.PCFSoftShadowMap;this.renderer.outputEncoding=THREE.sRGBEncoding;this.renderer.toneMapping=THREE.ACESFilmicToneMapping;this.renderer.toneMappingExposure=1.05;this.renderer.setClearColor(0x84b9d0);container.prepend(this.renderer.domElement);this.camera.position.set(15,13,22);this.look=new THREE.Vector3(0,1,0);this.targetLook=this.look.clone();this.targetPos=this.camera.position.clone();this.actors={};this.labels=[];this.materials=new Map();this.sceneTime=0;this.effectTime=0;this.effectStyle=null;this.final=false;this.cameraMode='wide';this.dragOffset=0;this.dragPitch=0;this.last=performance.now();this.paused=false;this.reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;this.assets();this.resize();this.bind();this.loop();}
+ constructor(container){this.container=container;this.scene=new THREE.Scene();this.scene.background=new THREE.Color(0x84b9d0);this.scene.fog=new THREE.Fog(0x84b9d0,28,90);this.camera=new THREE.OrthographicCamera(-4,4,4,-4,.1,160);this.renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});this.renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));this.renderer.shadowMap.enabled=true;this.renderer.shadowMap.type=THREE.PCFSoftShadowMap;this.renderer.outputEncoding=THREE.sRGBEncoding;this.renderer.toneMapping=THREE.ACESFilmicToneMapping;this.renderer.toneMappingExposure=1.05;this.renderer.setClearColor(0x84b9d0);container.prepend(this.renderer.domElement);this.camera.position.set(15,13,22);this.look=new THREE.Vector3(0,1,0);this.targetLook=this.look.clone();this.targetPos=this.camera.position.clone();this.actors={};this.labels=[];this.materials=new Map();this.sceneTime=0;this.effectTime=0;this.effectStyle=null;this.final=false;this.last=performance.now();this.paused=false;this.reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;this.assets();this.resize();this.bind();this.loop();}
  mat(color,metal=false){const key=color+':'+metal;if(!this.materials.has(key)){const material=new THREE.MeshStandardMaterial({color,roughness:metal?.45:.8,metalness:metal?.3:0});material.color.convertSRGBToLinear();this.materials.set(key,material);}return this.materials.get(key);}
  box(w,h,d,x,y,z,color,parent=this.scene){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),this.mat(color));m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;}
  cylinder(r,h,x,y,z,color,parent=this.scene){const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,10),this.mat(color));m.position.set(x,y,z);m.castShadow=true;parent.add(m);return m;}
@@ -289,6 +416,7 @@ class World{
  }
  faceDepth(x,y){return .3234*Math.sqrt(Math.max(.01,1-(x/.33)**2-(y/.3564)**2));}
  mood(actor,mood){
+  if(this.effectStyle&&this.effectTime<.85&&actor.id!=='supervisor'&&mood==='calm')return;
   actor.mood=mood;
   const angry=mood==='angry',worried=mood==='worried',tired=mood==='tired';
   actor.brows.forEach((b,i)=>{b.rotation.z=(i===0?1:-1)*(angry?-.42:worried?.38:0);b.position.y=worried?.18:angry?.125:.16;});
@@ -324,9 +452,9 @@ class World{
  this.parals=new THREE.Group();this.scene.add(this.parals);for(const x of [-2,0,2]){this.beam([x,0,-3.8],[x,3.5,-3.8],.09,0x64748b,this.parals);this.box(2,.18,.6,x,3.5,-3.8,0xb88240,this.parals);}
  this.caseta=new THREE.Group();this.caseta.position.set(5,0,4);this.scene.add(this.caseta);this.box(4,.13,3,0,2.8,0,0x0284c7,this.caseta);for(const x of [-1.8,1.8])for(const z of [-1.2,1.2])this.beam([x,0,z],[x,2.8,z],.06,0xcbd5e1,this.caseta);this.box(2,.12,.5,0,.4,.65,0xb88240,this.caseta);this.cylinder(.25,.6,1,.9,-.5,0x38bdf8,this.caseta);const tag=this.label('PAUSA / SST');tag.position.set(0,2.5,1.3);this.caseta.add(tag);
  this.fatigueTool=this.box(.1,.45,.1,-8.5,.55,-1.8,0xb88240);this.box(.4,.13,.16,0,.2,0,0x64748b,this.fatigueTool);
- this.edgeAnchor=this.box(.3,.14,.3,-7.5,.2,-2,0x34d399);this.lanyard=this.beam([-7.5,.3,-2],[-6.8,1.1,-2],.035,0xef4444);this.hazard=new THREE.Mesh(new THREE.RingGeometry(.65,.78,28),new THREE.MeshBasicMaterial({color:0xffb703,side:THREE.DoubleSide,transparent:true,opacity:.9}));this.hazard.rotation.x=-Math.PI/2;this.hazard.position.y=.04;this.scene.add(this.hazard);
+ this.edgeAnchor=this.box(.3,.14,.3,-7.5,.2,-2,0x34d399);this.lanyard=new THREE.Mesh(new THREE.CylinderGeometry(.018,.018,1,6),this.mat(0xef4444));this.scene.add(this.lanyard);this.hazard=new THREE.Mesh(new THREE.RingGeometry(.65,.78,28),new THREE.MeshBasicMaterial({color:0xffb703,side:THREE.DoubleSide,transparent:true,opacity:.9}));this.hazard.rotation.x=-Math.PI/2;this.hazard.position.y=.04;this.scene.add(this.hazard);
  this.drawing=this.box(.65,.02,.8,0,1,0,0xfaf0ce);this.drawing.visible=false;for(let i=0;i<3;i++)this.box(.4,.005,.015,0,.015,-.2+i*.17,0x0284c7,this.drawing);
- this.auditBoard=new THREE.Group();this.auditBoard.position.set(0,0,-4);this.scene.add(this.auditBoard);this.box(4.6,2.5,.12,0,2.1,0,0x023047,this.auditBoard);for(const x of [-1.8,1.8])this.beam([x,0,0],[x,1,0],.05,0x94a3b8,this.auditBoard);this.auditText=this.label('HECHOS · ACUERDOS · SEGUIMIENTO','#ffdb70');this.auditText.position.set(0,2.2,.1);this.auditText.scale.set(4.4,.8,1);this.auditBoard.add(this.auditText);
+ this.auditBoard=new THREE.Group();this.auditBoard.position.set(0,0,-4);this.scene.add(this.auditBoard);this.box(4.6,2.5,.12,0,2.1,0,0x023047,this.auditBoard);for(const x of [-1.8,1.8])this.beam([x,0,0],[x,1,0],.05,0x94a3b8,this.auditBoard);this.auditText=this.label('HECHOS · ACUERDOS · SEGUIMIENTO','#ffdb70');this.auditText.position.set(0,2.2,.1);this.auditText.scale.set(4.4,.8,1);this.auditBoard.add(this.auditText);this.auditCells=[];for(let i=0;i<10;i++){const cell=this.box(.3,.22,.03,-1.8+i*.4,1.35,.1,0x475569,this.auditBoard);cell.material=cell.material.clone();this.auditCells.push(cell);}
  for(const a of [['supervisor','TÚ · DIRECTOR',0xffb703,0xf8fafc],['pedro','PEDRO',0xf97316],['residente','RESIDENTE',0x0284c7,0xf8fafc],['siso','SST',0x22c55e,0xf8fafc],['oficial','OFICIAL',0xdc2626],['ayudante','AYUDANTE',0x0284c7],['mecanico','MECÁNICO',0x64748b],['carpintero','CARPINTERÍA',0xf97316],['electricista','ELECTRICIDAD',0x0284c7],['roberto','ROBERTO',0xf97316],['carlos','CARLOS',0x22c55e],['mario','MARIO',0x0284c7],['auditor','COMITÉ / ARL',0x14b8a6,0xf8fafc]])this.actor(...a);
  this.actor('apoyoAcero','APOYO - ACERO',0xf97316);this.actor('apoyoObra','APOYO - VACIADO',0x0284c7);
  this.construction=new THREE.Group();this.scene.add(this.construction);
@@ -335,11 +463,19 @@ class World{
  for(let i=0;i<6;i++)this.box(2.2,.14,.4,6,.2+i*.15,-5.2,0xb88240,this.construction);
  const coil=new THREE.Mesh(new THREE.TorusGeometry(.6,.075,8,28),this.mat(0x243749));coil.rotation.x=Math.PI/2;coil.position.set(-4,.16,1.2);this.construction.add(coil);
  const floorSign=this.label('PISO 10 - FRENTE DE LOSA','#ffdb70');floorSign.position.set(3,3.1,-6.1);this.construction.add(floorSign);
+ this.careZone=new THREE.Group();this.scene.add(this.careZone);
+ this.box(2.3,.02,1.4,0,.025,0,0x145849,this.careZone);
+ this.box(1.8,.12,.5,0,.4,0,0xb88240,this.careZone);
+ for(const x of [-.7,.7])this.box(.09,.34,.35,x,.17,0,0x334155,this.careZone);
+ this.privacyScreen=this.box(2.3,1.7,.06,0,1,-.7,0x285565,this.careZone);
+ const careLabel=this.label('ZONA SEGURA','#bbf7d0','#064e3b');careLabel.scale.set(1.6,.3,1);careLabel.position.set(0,.9,-.55);this.careZone.add(careLabel);
+ this.statusLamp=new THREE.Mesh(new THREE.SphereGeometry(.15,12,10),this.mat(0xffb703).clone());this.statusLamp.position.set(3.3,1.4,-1.8);this.scene.add(this.statusLamp);
+ this.statusStand=this.beam([3.3,0,-1.8],[3.3,1.3,-1.8],.045,0x334155);
  this.resetActors();
  }
  resetActors(){Object.values(this.actors).forEach(a=>{a.group.visible=false;a.group.position.set(0,0,0);a.group.rotation.set(0,0,0);a.head.rotation.set(0,0,0);a.arms.forEach(v=>v.rotation.set(0,0,0));a.legs.forEach(v=>v.rotation.set(0,0,0));a.forearms.forEach(v=>v.rotation.set(0,0,0));a.knees.forEach(v=>{v.rotation.set(0,0,0);v.scale.set(1,1,1);});a.isTalking=false;a.torso.position.y=1.12;a.phoneScreen.scale.setScalar(1);a.phone.visible=a.phoneScreen.visible=false;this.mood(a,'calm');});}
  place(id,x,z,yaw=0,mood='calm'){const a=this.actors[id];a.group.visible=true;a.group.position.set(x,0,z);a.group.rotation.y=yaw;a.base.copy(a.group.position);this.mood(a,mood);return a;}
- setup(index){this.index=index;this.final=false;this.effectStyle=null;this.effectTime=0;this.sceneTime=0;this.dragOffset=0;this.dragPitch=0;this.resetActors();this.spot.intensity=index===9?2:0;this.spot.target.position.set(0,0,-1);this.spot.color.setHex(0xffffff);const phase=index<3?0:index<6?1:index<9?2:3;this.sun.color.setHex([0xffdfb0,0xfffbeb,0xffaa60,0x91a8c4][phase]);this.sun.intensity=[1.15,1.3,1.1,.35][phase];this.sun.position.set(...[[-12,10,6],[2,22,3],[14,8,-1],[0,16,0]][phase]);this.hemi.intensity=[.72,.7,.65,.5][phase];const sky=[0x88bfd4,0x9ed5e6,0x7f8fa5,0x172d43][phase];this.scene.background.setHex(sky);this.scene.fog.color.setHex(sky);this.clouds.visible=index>=6;this.parals.visible=index===1;this.parals.rotation.z=0;this.props.visible=[4,6,8].includes(index);this.boards.forEach((b,i)=>{b.position.set(-1+i*.4,.1+i*.15,-1.4+i*.25);b.rotation.y=i%2?.5:-.6;});this.tools.forEach((b,i)=>b.position.set(-1+i*.6,.09,-.2));this.routeLine.visible=false;this.barrier.visible=false;this.spray.visible=index===3;this.hose.rotation.z=0;this.load.position.set(-2,4.1,-5);this.drawing.visible=false;this.auditBoard.visible=index===9;this.fatigueTool.visible=index===0;this.fatigueTool.position.set(-8.5,.55,-1.8);this.fatigueTool.rotation.set(0,0,0);this.lanyard.visible=index===0;this.lanyard.material=this.mat(0xef4444);this.place('supervisor',0,2,Math.PI);this.place('apoyoAcero',-4.5,-5,.6);this.place('apoyoObra',5,-5.4,-.5);this.actors.apoyoAcero.tag.visible=false;this.actors.apoyoObra.tag.visible=false;this.hazard.visible=index!==8&&index!==9;
+ setup(index){this.index=index;this.final=false;this.effectStyle=null;this.effectTime=0;this.sceneTime=0;this.resetActors();this.spot.intensity=index===9?2:0;this.spot.target.position.set(0,0,-1);this.spot.color.setHex(0xffffff);const phase=index<3?0:index<6?1:index<9?2:3;this.sun.color.setHex([0xffdfb0,0xfffbeb,0xffaa60,0x91a8c4][phase]);this.sun.intensity=[1.15,1.3,1.1,.35][phase];this.sun.position.set(...[[-12,10,6],[2,22,3],[14,8,-1],[0,16,0]][phase]);this.hemi.intensity=[.72,.7,.65,.5][phase];const sky=[0x88bfd4,0x9ed5e6,0x7f8fa5,0x172d43][phase];this.scene.background.setHex(sky);this.scene.fog.color.setHex(sky);this.clouds.visible=index>=6;this.parals.visible=index===1;this.parals.rotation.z=0;this.props.visible=[4,6,8].includes(index);this.boards.forEach((b,i)=>{b.position.set(-1+i*.4,.1+i*.15,-1.4+i*.25);b.rotation.y=i%2?.5:-.6;});this.tools.forEach((b,i)=>b.position.set(-1+i*.6,.09,-.2));this.routeLine.visible=false;this.barrier.visible=false;this.spray.visible=index===3;this.hose.rotation.z=0;this.load.position.set(-2,4.1,-5);this.drawing.visible=false;this.auditBoard.visible=index===9;this.fatigueTool.visible=index===0;this.fatigueTool.position.set(-8.5,.55,-1.8);this.fatigueTool.rotation.set(0,0,0);this.lanyard.visible=index===0;this.lanyard.material=this.mat(0xef4444);this.place('supervisor',0,2,Math.PI);this.place('apoyoAcero',-4.5,-5,.6);this.place('apoyoObra',5,-5.4,-.5);this.actors.apoyoAcero.tag.visible=false;this.actors.apoyoObra.tag.visible=false;this.hazard.visible=index!==8&&index!==9;
  switch(index){case 0:this.place('pedro',-8.7,-2,1,'tired');this.place('siso',-6,-1,-1);this.hazard.position.set(-8.7,.04,-2);break;
  case 1:this.place('residente',-1.5,-2,.3,'angry');this.place('siso',2,-2,-.5,'worried');this.place('pedro',0,0,Math.PI,'worried');this.hazard.position.set(0,.04,-3.8);break;
  case 2:this.place('oficial',-1.3,-2,.8,'angry');this.place('ayudante',1,-2,-.7,'worried');this.place('carlos',3,-2,-.6,'worried');this.hazard.position.set(1,.04,-2);break;
@@ -350,33 +486,40 @@ class World{
  case 7:this.place('mario',-5,-2,.4,'worried');this.place('siso',-3,-1,-.8);this.hazard.position.set(-6,.04,-2);break;
  case 8:['pedro','carlos','carpintero','electricista','roberto'].forEach((id,i)=>this.place(id,-4+i*2,-2,0));break;
  case 9:this.place('auditor',-1.8,-1,.5);this.place('siso',1.8,-1,-.5);this.place('pedro',-3,-2,.5);this.place('carlos',3,-2,-.5);break;}
- this.separateActors(true);this.hazard.material.color.setHex(0xffb703);this.setCamera(M[index].view==='wide'?'medium':M[index].view);this.camera.position.copy(this.targetPos);this.look.copy(this.targetLook);
+ const sector=SECTORS[index];Object.values(this.actors).forEach(actor=>actor.group.visible=false);
+ sector.layout.forEach(layout=>this.place(...layout));this.caseta.visible=false;
+ this.careZone.visible=!!sector.pause;this.privacyScreen.visible=index===5;if(sector.pause)this.careZone.position.set(sector.pause[0],0,sector.pause[1]);
+ this.statusLamp.visible=this.statusStand.visible=index===1;this.statusLamp.material.color.setHex(0xffb703);
+ this.edgeAnchor.position.set(-8.65,.12,-1.65);this.edgeAnchor.visible=index===0;this.inspected=false;this.actionBeat=-1;this.toolDropFrom=null;
+ this.hazard.position.set(sector.point[0],.04,sector.point[2]);
+ this.separateActors(true);this.hazard.material.color.setHex(0xffb703);this.updateShot();this.camera.position.copy(this.targetPos);this.look.copy(this.targetLook);
  }
- setPour(value){this.concrete.scale.x=Math.max(.001,value/100);this.concrete.position.x=-9+9*value/100;}
+ setPour(value){this.concrete.scale.x=Math.max(.001,value/100);this.concrete.position.x=-9+9*value/100;this.auditCells.forEach((cell,index)=>{const record=state.records[index],color=!record?0x475569:record.style==='protective'?0x34d399:record.style==='punitive'?0xef4444:0xffb703;cell.material.color.setHex(color).convertSRGBToLinear();});}
  focus(){const actor=this.actors[M[this.index].focus];return actor&&actor.group.visible?actor.group.position.clone().add(new THREE.Vector3(0,1.4,0)):new THREE.Vector3(0,1,-1);}
- setCamera(mode){this.cameraMode=mode;document.querySelectorAll('[data-camera]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.camera===mode)));this.dragOffset=0;this.dragPitch=0;this.updateShot();}
  updateShot(){
-  Object.values(this.actors).forEach(a=>{a.tag.visible=a.group.visible&&!a.id.startsWith('apoyo')&&this.cameraMode!=='close';});
-  const f=this.focus();let pos,target;
-  if(this.final){target=new THREE.Vector3(0,1.3,-1);pos=target.clone().add(new THREE.Vector3(2.2,3,11));}
-  else if(this.cameraMode==='wide'){target=new THREE.Vector3(0,.8,-1);pos=new THREE.Vector3(10,11,19);}
-  else if(this.cameraMode==='close'){target=f.clone().add(new THREE.Vector3(0,.42,0));pos=target.clone().add(new THREE.Vector3(.8,.2,3.2));}
-  else{
-   target=f.clone();target.y=1.15;
-   if(!this.effectStyle||this.effectTime<.3){
-    if([1,2,4,6,9].includes(this.index))target.set(0,1.15,-1.5);
-    if(this.index===3)target.set(4.8,1,-2);
-   }
-   const distance=this.index===8?10:this.index===3?7:5.9;
-   pos=target.clone().add(new THREE.Vector3(this.index===0?.9:1.5,1.5,distance));
-  }
-  const offset=pos.clone().sub(target);offset.applyAxisAngle(new THREE.Vector3(0,1,0),this.dragOffset);offset.y+=this.dragPitch;
-  this.targetPos.copy(target).add(offset);this.targetLook.copy(target);
-  const width=this.container.clientWidth,height=this.container.clientHeight;
-  if(width&&height)this.camera.setViewOffset(width,height,0,-height*(this.final?.02:this.cameraMode==='wide'?.03:.14),width,height);
+  const sector=SECTORS[this.index];if(!sector)return;
+  const target=new THREE.Vector3(...(this.final?[0,1,-1]:sector.center));
+  this.targetLook.copy(target);this.targetPos.copy(target).add(new THREE.Vector3(this.index===2?.8:3.4,5.4,9));
+  Object.values(this.actors).forEach(actor=>actor.tag.visible=false);
+  const width=this.container.clientWidth,height=this.container.clientHeight;if(!width||!height)return;
+  const aspect=width/height,span=this.final?11:sector.width,viewHeight=this.preview?Math.max(4.5,span/aspect):span/aspect;
+  this.camera.clearViewOffset();this.camera.left=-viewHeight*aspect/2;this.camera.right=viewHeight*aspect/2;
+  this.camera.top=viewHeight/2;this.camera.bottom=-viewHeight/2;
+  this.camera.setViewOffset(width,height,0,-height*(this.preview?.01:.1),width,height);this.camera.updateProjectionMatrix();
  }
- beginConsequence(style){this.effectStyle=style;this.effectTime=0;Object.values(this.actors).forEach(a=>{if(!a.group.visible)return;if(style==='protective')this.mood(a,'calm');else if(a.id==='supervisor')this.mood(a,style==='punitive'?'angry':'calm');else if(a.mood!=='angry')this.mood(a,'worried');});this.hazard.material.color.setHex(style==='protective'?0x34d399:0xef4444);}
- finalScene(color,score){this.setup(9);this.final=true;this.effectStyle=null;this.hazard.visible=false;this.spot.intensity=2.4;this.spot.color.setHex(color);this.sun.intensity=.45;this.auditBoard.visible=true;this.finalScore=score;this.actors.supervisor.group.position.set(0,0,1);this.actors.supervisor.group.rotation.y=0;['pedro','carlos','carpintero','electricista','roberto','ayudante'].forEach((id,i)=>this.place(id,-5+i*2,-2,0,score>=85?'calm':'worried'));this.setCamera('wide');}
+ updateRiskMarker(){
+  if(this.preview||this.final||this.inspected||state.phase!=='decision'){$('inspectBtn').hidden=true;return;}
+  const point=new THREE.Vector3(...SECTORS[this.index].point).project(this.camera);
+  const w=this.container.clientWidth,h=this.container.clientHeight;
+  $('inspectBtn').hidden=false;$('inspectBtn').style.left=clamp((point.x+1)*w/2,75,w-75)+'px';
+  $('inspectBtn').style.top=clamp((-point.y+1)*h/2,110,h-55)+'px';
+ }
+ beginConsequence(style){
+  this.effectStyle=style;this.effectTime=0;this.toolDropFrom=null;
+  this.mood(this.actors.supervisor,style==='punitive'?'angry':'calm');
+  this.hazard.material.color.setHex(style==='protective'?0xffb703:0xef4444);
+ }
+ finalScene(color,score){this.setup(9);this.final=true;this.effectStyle=null;this.hazard.visible=false;this.spot.intensity=2.4;this.spot.color.setHex(color);this.sun.intensity=.45;this.auditBoard.visible=true;this.finalScore=score;this.actors.supervisor.group.position.set(0,0,1);this.actors.supervisor.group.rotation.y=0;this.actors.auditor.group.visible=false;this.actors.siso.group.visible=false;['pedro','carlos','carpintero','electricista','roberto','ayudante'].forEach((id,i)=>this.place(id,-5+i*2,-2,0,score>=85?'calm':'worried'));this.updateShot();}
  sit(actor){
   actor.group.position.y=-.15;actor.group.rotation.y=0;
   actor.legs.forEach(leg=>leg.rotation.x=-Math.PI/2);
@@ -406,56 +549,153 @@ class World{
   const a=this.actors[id],target=new THREE.Vector3(...to);a.group.position.lerpVectors(a.base,target,clamp(progress,0,1));
   const walking=progress>0&&progress<1,swing=walking?Math.sin(this.effectTime*7)*.45:0;
   a.legs[0].rotation.x=swing;a.legs[1].rotation.x=-swing;
-  let yaw=walking?Math.atan2(target.x-a.base.x,target.z-a.base.z):Math.atan2(this.camera.position.x-target.x,this.camera.position.z-target.z);
+  let yaw=walking?Math.atan2(target.x-a.base.x,target.z-a.base.z):Math.atan2(this.actors[id==='supervisor'?M[this.index].focus:'supervisor'].group.position.x-target.x,this.actors[id==='supervisor'?M[this.index].focus:'supervisor'].group.position.z-target.z);
   let turn=yaw-a.group.rotation.y;while(turn>Math.PI)turn-=Math.PI*2;while(turn<-Math.PI)turn+=Math.PI*2;
   a.group.rotation.y+=turn*.15;
  }
- animateActors(dt){const t=this.sceneTime,et=this.effectTime,p=clamp(et/2.6,0,1),good=this.effectStyle==='protective',has=!!this.effectStyle;Object.values(this.actors).forEach(a=>{
-  if(!a.group.visible)return;const n=Object.keys(this.actors).indexOf(a.id),talking=!this.final&&a.id===M[this.index].focus;
-  const tense=a.mood==='angry'||a.mood==='worried';
-  a.head.rotation.x=Math.sin(t*2+n)*.045+(a.mood==='worried'?.12:0);
-  a.head.rotation.z=a.mood==='worried'?Math.sin(t*.9)*.08:0;
-  let gaze=Math.atan2(this.camera.position.x-a.group.position.x,this.camera.position.z-a.group.position.z)-a.group.rotation.y;
-  while(gaze>Math.PI)gaze-=Math.PI*2;while(gaze<-Math.PI)gaze+=Math.PI*2;
-  a.head.rotation.y=clamp(gaze,-.65,.65)*.7;
-  a.torso.position.y=1.12+Math.sin(t*(tense?4:2)+n)*.015;
-  a.arms[0].rotation.x=Math.sin(t*2+n)*.09;a.arms[1].rotation.x=-Math.sin(t*2+n)*.09;
-  a.arms[0].rotation.z=tense?-.15:0;a.arms[1].rotation.z=tense?.15:0;
-  a.forearms[0].rotation.x=talking?-.25-Math.max(0,Math.sin(t*2))*.45:0;
-  a.forearms[1].rotation.x=talking?-.3-Math.max(0,Math.sin(t*2+1))*.35:0;
-  const blink=(t+n*.37)%4.2;
-  a.eyes.forEach(eye=>eye.scale.y=blink<.13?.08:a.mood==='tired'?.35:1);
-  this.updateMouth(a,talking,t);
-  a.group.rotation.z=0;
- });
- if(this.final){this.actors.apoyoAcero.group.visible=false;this.actors.apoyoObra.group.visible=false;Object.values(this.actors).forEach((a,i)=>{if(!a.group.visible)return;if(this.finalScore>=85){this.clap(a,t,i);}else{a.head.rotation.x=.2;a.arms[0].rotation.x=0;a.arms[1].rotation.x=0;}});return;}
- for(const id of ['apoyoAcero','apoyoObra']){
-  const worker=this.actors[id];if(!worker.group.visible)continue;
-  worker.arms[1].rotation.x=-.7+Math.sin(t*3)*.35;worker.forearms[1].rotation.x=-.7+Math.sin(t*3+1)*.2;worker.head.rotation.x=.2;
+ updateHandProps(){
+  if(this.index===0){
+   const worker=this.actors.pedro;worker.group.updateMatrixWorld(true);
+   const wrist=worker.forearms[1].localToWorld(new THREE.Vector3(0,-.38,.05));
+   if(!this.effectStyle||this.effectTime<1.1||this.effectStyle==='protective'){
+    this.fatigueTool.position.copy(wrist);worker.forearms[1].getWorldQuaternion(this.fatigueTool.quaternion);
+    if(this.effectStyle==='protective'&&this.effectTime>3){const zone=SECTORS[0].pause;this.fatigueTool.position.set(zone[0]+.55,.52,zone[1]);this.fatigueTool.rotation.set(Math.PI/2,0,0);}
+   }else{
+    if(!this.toolDropFrom)this.toolDropFrom=wrist.clone();
+    const amount=clamp((this.effectTime-1.1)/.45,0,1);
+    this.fatigueTool.position.lerpVectors(this.toolDropFrom,new THREE.Vector3(-8.3,.09,-1.45),amount);this.fatigueTool.rotation.set(0,0,amount*1.3);
+   }
+   const start=worker.group.localToWorld(new THREE.Vector3(0,1.1,-.27)),end=start.clone().add(new THREE.Vector3(.12,-.65,.08));
+   this.lanyard.position.copy(start.clone().add(end).multiplyScalar(.5));this.lanyard.scale.y=start.distanceTo(end);this.lanyard.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),end.sub(start).normalize());
+  }
+  if(this.index===6&&(!this.effectStyle||this.effectStyle==='protective'||this.effectTime<.85)){
+   const worker=this.actors.carlos;worker.group.updateMatrixWorld(true);
+   this.drawing.position.copy(worker.forearms[0].localToWorld(new THREE.Vector3(.1,-.3,.25)));this.drawing.rotation.set(.95,0,0);
+  }
  }
- const director=this.actors.supervisor;
- if(has){director.arms[0].rotation.x=good?-.7:-1.1;director.forearms[0].rotation.x=good?-.4:-.9;if(!good){director.head.rotation.z=Math.sin(t*4)*.06;director.head.rotation.y=this.effectStyle==='indifferent'?.75:0;}}
- const a=this.actors[M[this.index].focus];if(this.index===0){const pedro=this.actors.pedro;pedro.head.rotation.x=.22;pedro.arms[1].rotation.x=-.8+(has?0:Math.sin(t*2)*.2);if(has&&good){this.tweenActor('pedro',[4.8,0,4.4],p);this.tweenActor('siso',[3.5,0,3.5],p);this.mood(pedro,'calm');if(p>.95)this.sit(pedro);this.lanyard.visible=false;this.fatigueTool.position.lerp(new THREE.Vector3(3.4,.2,3.5),Math.min(1,dt*2));}else if(has){this.fatigueTool.position.y=Math.max(.18,.55-Math.max(0,et-.7)*.7);this.fatigueTool.rotation.z=Math.min(1.3,et*1.2);pedro.group.rotation.z=Math.sin(Math.min(et,2)*2)*.22;pedro.head.rotation.x=.5;this.tweenActor('siso',[-7,0,-1.7],p);pedro.arms[0].rotation.z=-.85;}}
- if(this.index===1){this.actors.residente.arms[1].rotation.x=-1.4;this.actors.siso.arms[0].rotation.x=-1.3;if(has&&good){this.mood(this.actors.residente,'calm');this.actors.residente.arms[1].rotation.x=-.3;this.tweenActor('siso',[0,0,-3],p);}else if(has){this.parals.rotation.z=Math.sin(et*3)*.025;this.tweenActor('pedro',[0,0,1.3],p);this.mood(this.actors.pedro,'worried');}}
- if(this.index===2){this.actors.oficial.arms[1].rotation.x=has&&good?-.2:-1.4;this.actors.ayudante.head.rotation.x=has&&good?0:.4;if(has&&good){this.tweenActor('supervisor',[-.3,0,-.1],p);this.mood(this.actors.oficial,'calm');this.mood(this.actors.ayudante,'calm');}else if(has)this.tweenActor('ayudante',[3.8,0,.5],p);}
- if(this.index===3){this.barrier.visible=has&&good&&et>1;this.spray.visible=!has||!good||et<1;this.hose.rotation.z=has&&!good?Math.sin(et*14)*.1:0;if(has){this.tweenActor('pedro',[2,0,2],p);if(good)this.tweenActor('mecanico',[4.3,0,-2],clamp((et-1)/3,0,1));else this.tweenActor('mecanico',[2,0,2.5],p);}}
- if(this.index===4){for(const id of ['carpintero','electricista']){const actor=this.actors[id];actor.arms[1].rotation.x=has&&good?-.2:-1.25;if(has&&good)this.mood(actor,'calm');}if(has&&good){this.routeLine.visible=true;this.boards.forEach((b,i)=>{b.position.lerp(new THREE.Vector3(-3,.1+i*.15,-2),Math.min(1,dt*2));b.rotation.y*=.95;});this.tools.forEach((b,i)=>b.position.lerp(new THREE.Vector3(2.8+i*.35,.09,-2),Math.min(1,dt*2)));this.tweenActor('electricista',[2.5,0,-2],p);}else if(has)this.tools.forEach((b,i)=>{b.position.y=.09+Math.max(0,Math.sin(Math.min(et,1)*Math.PI))*(.3+i*.05);});}
- if(this.index===5){a.arms[1].rotation.x=has&&good?-.3:-1.65;a.head.rotation.x=has&&good?0:.3;if(has&&good){a.phone.visible=a.phoneScreen.visible=false;this.tweenActor('roberto',[4.8,0,4.4],p);this.tweenActor('supervisor',[3.5,0,3.5],p);this.mood(a,'calm');if(p>.95)this.sit(a);this.load.rotation.z=0;}else this.load.rotation.z=Math.sin(t*2)*(has?.22:.025);a.phoneScreen.scale.setScalar(1+Math.sin(t*5)*.05);}
- if(this.index===6){a.arms[0].rotation.x=-1.1;if(has&&good){this.mood(a,'calm');this.routeLine.visible=true;this.boards.forEach((b,i)=>{b.position.lerp(new THREE.Vector3(-3,.1+i*.15,-2),Math.min(1,dt*1.4));b.rotation.y*=.95;});this.drawing.position.lerp(new THREE.Vector3(-.7,1.5,-1.2),Math.min(1,dt));}else if(has){a.head.rotation.x=.35;this.drawing.position.y=Math.max(.2,1.2-et*.5);this.mood(a,'worried');}}
- if(this.index===7){a.group.rotation.z=has&&good?0:Math.sin(t*2)*.12;if(has&&good){this.tweenActor('mario',[4.5,0,4],p);this.tweenActor('siso',[3.5,0,3.4],p);}else if(has){this.tweenActor('mario',this.effectStyle==='indifferent'?[6.5,0,5]:[-7,0,-2],p);this.tweenActor('siso',[-5.3,0,-1.3],p);}}
- if(this.index===8&&has){Object.values(this.actors).forEach((actor,i)=>{if(!actor.group.visible)return;if(good){this.clap(actor,t,i);this.mood(actor,'calm');}else{actor.head.rotation.x=.3;this.tweenActor(actor.id,[actor.base.x,0,3+(i%2)],p);}});if(good)this.tools.forEach((b,i)=>b.position.lerp(new THREE.Vector3(3+i*.35,.09,-2),Math.min(1,dt*1.4)));}
- if(this.index===9&&has){this.actors.auditor.arms[1].rotation.x=-1.1;this.actors.supervisor.arms[0].rotation.x=good?-.8:0;this.spot.color.setHex(good?0xffd166:0xf87171);if(!good){this.actors.supervisor.head.rotation.x=.35;this.mood(this.actors.pedro,'worried');}}
- this.drops.forEach((drop,i)=>{const phase=(t*1.2+i/24)%1;drop.position.set(-.9-phase*2,1.05+Math.sin(phase*Math.PI)*.7-phase*.5,(i%5-2)*.045);drop.scale.setScalar(.6+phase*1.5);});
+ animateActors(dt){
+  const t=this.sceneTime,et=this.effectTime,has=!!this.effectStyle,good=this.effectStyle==='protective',punitive=this.effectStyle==='punitive';
+  const sector=SECTORS[this.index],smooth=value=>{value=clamp(value,0,1);return value*value*(3-2*value);};
+  const p=smooth((et-.85)/2.2),arrive=smooth(et/.85);
+  const focusId=M[this.index].focus;
+  this.speakingId=has?(et<.85?'supervisor':et<3.3?sector.responseActor:null):(t%5<2.8?sector.initialActor:null);
+  Object.values(this.actors).forEach((actor,index)=>{
+   if(!actor.group.visible)return;
+   const talking=actor.id===this.speakingId,tense=actor.mood==='angry'||actor.mood==='worried';
+   let partnerId=actor.id==='supervisor'?focusId:'supervisor';
+   if((!has||!good)&&this.index===2){if(actor.id==='oficial')partnerId='ayudante';if(actor.id==='ayudante')partnerId='oficial';}
+   if((!has||!good)&&this.index===4){if(actor.id==='carpintero')partnerId='electricista';if(actor.id==='electricista')partnerId='carpintero';}
+   if((!has||!good)&&this.index===1){if(actor.id==='residente')partnerId='siso';if(actor.id==='siso')partnerId='residente';}
+   const partner=this.actors[partnerId];
+   let yaw=Math.atan2(partner.group.position.x-actor.group.position.x,partner.group.position.z-actor.group.position.z)-actor.group.rotation.y;
+   while(yaw>Math.PI)yaw-=Math.PI*2;while(yaw<-Math.PI)yaw+=Math.PI*2;
+   actor.head.rotation.set((actor.mood==='tired'?.22:actor.mood==='worried'?.1:0)+Math.sin(t*1.6+index)*.025,clamp(yaw,-.65,.65),tense?Math.sin(t*.8)*.025:0);
+   actor.torso.position.y=1.12+Math.sin(t*2+index)*.006;
+   actor.arms[0].rotation.set(talking?-.35:0,0,tense?-.12:0);actor.arms[1].rotation.set(talking?-.45:0,0,tense?.12:0);
+   actor.forearms[0].rotation.set(talking?-.3-Math.max(0,Math.sin(t*2))*.2:0,0,0);actor.forearms[1].rotation.set(talking?-.35:0,0,0);
+   const blink=(t+index*.37)%4.2;actor.eyes.forEach(eye=>eye.scale.y=blink<.13?.08:actor.mood==='tired'?.4:1);
+   actor.group.rotation.z=0;this.updateMouth(actor,talking,t);
+  });
+  if(this.final){
+   Object.values(this.actors).forEach((actor,index)=>{if(!actor.group.visible)return;if(this.finalScore>=85)this.clap(actor,t,index);else actor.head.rotation.x=.16;});return;
+  }
+  const director=this.actors.supervisor,focus=this.actors[focusId];if(has&&good&&et>=3.3)this.hazard.visible=false;
+  if(has&&et<.85){director.arms[0].rotation.x=good?-.65:punitive?-1.1:0;director.forearms[0].rotation.x=good?-.4:punitive?-.8:0;}
+  if(has&&!good&&et>=.85&&this.effectStyle==='indifferent')director.head.rotation.y=.65;
+  const move=(id,target,amount=p)=>this.tweenActor(id,target,amount);
+  switch(this.index){
+   case 0:{
+    const pedro=this.actors.pedro,sst=this.actors.siso;
+    if(!has){pedro.arms[1].rotation.x=-.9+Math.sin(t*2)*.12;pedro.head.rotation.x=.24;}
+    else if(good){
+     move('supervisor',[-6.1,0,.7],arrive);move('pedro',[sector.pause[0],0,sector.pause[1]]);move('siso',[-6.7,0,-2.7]);
+     this.mood(pedro,p>.8?'calm':'tired');if(p>.98)this.sit(pedro);this.lanyard.visible=et<.85;
+     this.fatigueTool.position.lerp(new THREE.Vector3(-6,.12,-2),Math.min(1,dt*3));
+    }else{
+     move('siso',[-6.3,0,-1.6]);pedro.group.rotation.z=et>.85?Math.sin(Math.min(et-.85,1.6)*2)*.17:0;
+     pedro.arms[0].rotation.z=-.7;sst.arms[0].rotation.x=-.8;sst.forearms[0].rotation.x=-.6;
+     this.fatigueTool.position.y=Math.max(.09,.55-Math.max(0,et-1.1)*.6);this.fatigueTool.rotation.z=Math.min(1.1,Math.max(0,et-1)*1.2);
+    }break;
+   }
+   case 1:{
+    const resident=this.actors.residente,sst=this.actors.siso;
+    resident.arms[1].rotation.x=has&&good?-.25:-1.2;sst.arms[0].rotation.x=-.9;
+    if(has&&good){move('siso',[1.2,0,-3.4]);sst.head.rotation.x=.2;this.mood(resident,'calm');this.statusLamp.material.color.setHex(et<3.1?0xffb703:0x34d399);}
+    else if(has&&et>.85){this.parals.rotation.z=Math.sin((et-.85)*3)*.028;move('pedro',[-.7,0,.5]);this.statusLamp.material.color.setHex(0xef4444);}
+    break;
+   }
+   case 2:{
+    const official=this.actors.oficial,helper=this.actors.ayudante;
+    official.arms[1].rotation.x=has&&good?-.2:-1.3;
+    if(has&&good){move('supervisor',[-.1,0,.1],arrive);this.mood(official,'calm');this.mood(helper,'calm');helper.forearms[0].rotation.x=-.5;}
+    else if(has){move('ayudante',[2.5,0,.5]);helper.head.rotation.x=.3;this.mood(helper,'worried');}
+    break;
+   }
+   case 3:{
+    this.spray.visible=!has||!good||et<.95;this.barrier.visible=has&&good&&et>1;
+    this.hose.rotation.z=has&&!good&&et>.85?Math.sin(et*14)*.07:0;
+    if(has&&good){move('pedro',[5.6,0,2.2]);move('mecanico',[4.4,0,-2.2],smooth((et-1.35)/1.6));if(et>1.35){this.mood(this.actors.mecanico,'calm');this.mood(this.actors.pedro,'calm');}}
+    else if(has){move('mecanico',[3.5,0,1]);move('pedro',[6,0,2.2]);}
+    break;
+   }
+   case 4:{
+    const wood=this.actors.carpintero,electric=this.actors.electricista;
+    wood.arms[1].rotation.x=electric.arms[0].rotation.x=has&&good?-.2:-1.1;
+    if(has&&good){
+     this.mood(wood,'calm');this.mood(electric,'calm');this.routeLine.visible=et>1.3;
+     this.boards.forEach((board,index)=>{board.position.lerp(new THREE.Vector3(-3,.1+index*.15,-2),(et>.85?Math.min(1,dt*2):0));board.rotation.y*=et>.85?.94:1;});
+     this.tools.forEach((tool,index)=>tool.position.lerp(new THREE.Vector3(2.8+index*.35,.09,-2),(et>.85?Math.min(1,dt*2):0)));
+     move('carpintero',[-.9,0,.1],smooth((et-1.4)/1));move('electricista',[.9,0,-.2],smooth((et-2.4)/1));
+    }else if(has&&et>.85){this.tools.forEach((tool,index)=>tool.position.y=.09+Math.max(0,Math.sin(Math.min(et-.85,1)*Math.PI))*(.25+index*.03));}
+    break;
+   }
+   case 5:{
+    const worker=this.actors.roberto;
+    worker.arms[1].rotation.x=has&&good&&et>1.3?-.2:-1.25;worker.forearms[1].rotation.x=-.25;worker.head.rotation.x=.18;
+    if(has&&good){move('supervisor',[2.4,0,1.3],arrive);move('roberto',[sector.pause[0],0,sector.pause[1]]);worker.phone.visible=worker.phoneScreen.visible=et<1.3;this.mood(worker,p>.8?'calm':'worried');if(p>.98)this.sit(worker);this.load.rotation.z=0;}
+    else this.load.rotation.z=Math.sin(t*2)*(has&&et>.85?.17:.015);
+    break;
+   }
+   case 6:{
+    const worker=this.actors.carlos;worker.arms[0].rotation.x=-.9;worker.forearms[0].rotation.x=-.6;
+    if(has&&good){move('supervisor',[.1,0,.1],arrive);this.routeLine.visible=et>1.5;this.mood(worker,'calm');this.boards.forEach((board,index)=>{board.position.lerp(new THREE.Vector3(-3,.1+index*.15,-2),(et>.85?Math.min(1,dt*1.7):0));board.rotation.y*=et>.85?.94:1;});}
+    else if(has&&et>.85){worker.head.rotation.x=.3;this.drawing.position.y=Math.max(.1,1.2-(et-.85)*.7);this.mood(worker,'worried');}
+    break;
+   }
+   case 7:{
+    const worker=this.actors.mario;worker.group.rotation.z=has&&good?0:Math.sin(t*1.7)*.06;
+    if(has&&good){move('mario',[sector.pause[0],0,sector.pause[1]]);move('siso',[-2.2,0,.3]);if(p>.98)this.sit(worker);}
+    else if(has){move('mario',punitive?[-5.5,0,-2.7]:[-.5,0,1.9]);move('siso',[-3.5,0,-1.8]);this.actors.siso.arms[0].rotation.x=-.9;}
+    break;
+   }
+   case 8:{
+    if(has&&good){
+     this.tools.forEach((tool,index)=>tool.position.lerp(new THREE.Vector3(3+index*.35,.09,-2.8),(et>.85?Math.min(1,dt*2):0)));
+     if(et>1.5)Object.values(this.actors).forEach((actor,index)=>{if(actor.group.visible){this.mood(actor,'calm');this.clap(actor,t,index);}});
+    }else if(has){Object.values(this.actors).forEach(actor=>{if(actor.group.visible&&actor.id!=='supervisor'){move(actor.id,[actor.base.x,0,.3]);actor.head.rotation.x=.2;}});}
+    break;
+   }
+   case 9:{
+    this.actors.auditor.arms[1].rotation.x=has?-.9:-.3;
+    if(has){director.forearms[0].rotation.x=good?-.6:0;this.spot.color.setHex(good?0xffe2aa:0xffa39b);if(!good)director.head.rotation.x=.2;}
+    break;
+   }
+  }
+  this.drops.forEach((drop,index)=>{const phase=(t*1.2+index/24)%1;drop.position.set(-.9-phase*2,1.05+Math.sin(phase*Math.PI)*.7-phase*.5,(index%5-2)*.045);drop.scale.setScalar(.6+phase*1.5);});
  }
- resize(){const w=this.container.clientWidth,h=this.container.clientHeight;if(!w||!h)return;this.renderer.setSize(w,h);this.camera.aspect=w/h;this.camera.updateProjectionMatrix();if(this.index!==undefined)this.updateShot();}
- bind(){if('ResizeObserver'in window){this.observer=new ResizeObserver(()=>this.resize());this.observer.observe(this.container);}else window.addEventListener('resize',()=>this.resize());let drag=null;const canvas=this.renderer.domElement;canvas.addEventListener('pointerdown',e=>{if(!playing)return;drag={x:e.clientX,y:e.clientY};canvas.setPointerCapture(e.pointerId);automaticCamera=99;});canvas.addEventListener('pointermove',e=>{if(!drag)return;this.dragOffset=clamp(this.dragOffset+(e.clientX-drag.x)*.004,-.65,.65);this.dragPitch=clamp(this.dragPitch+(e.clientY-drag.y)*.012,-.5,2);drag={x:e.clientX,y:e.clientY};this.updateShot();});const stop=()=>drag=null;canvas.addEventListener('pointerup',stop);canvas.addEventListener('pointercancel',stop);canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();this.paused=true;$('bootError').hidden=false;$('bootError').textContent='Se interrumpió la imagen 3D. Tu última decisión permanece guardada. Recarga esta página para continuar.';$('welcome').hidden=false;$('startBtn').disabled=true;});canvas.addEventListener('webglcontextrestored',()=>location.reload());}
+ resize(){const w=this.container.clientWidth,h=this.container.clientHeight;if(!w||!h)return;this.renderer.setSize(w,h);if(this.index!==undefined)this.updateShot();}
+ bind(){
+  if('ResizeObserver'in window){this.observer=new ResizeObserver(()=>this.resize());this.observer.observe(this.container);}else window.addEventListener('resize',()=>this.resize());
+  const canvas=this.renderer.domElement;
+  canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();this.paused=true;$('bootError').hidden=false;$('bootError').textContent='La imagen 3D se interrumpio. Recarga para retomar tu progreso.';$('welcome').hidden=false;$('startBtn').disabled=true;});
+  canvas.addEventListener('webglcontextrestored',()=>location.reload());
+ }
  loop(){
   requestAnimationFrame(()=>this.loop());const now=performance.now(),dt=Math.min((now-this.last)/1000,.06);this.last=now;
   if(document.hidden||this.paused)return;
   if(playing||this.preview){
-   this.sceneTime+=dt;if(this.effectStyle)this.effectTime+=dt;this.animateActors(dt);this.separateActors();
-   if(!this.final&&this.cameraMode!=='wide')this.updateShot();
-   if(playing&&state.phase==='consequence')outcomeClock+=dt;
+   this.sceneTime+=dt;if(this.effectStyle)this.effectTime+=dt;this.animateActors(dt);this.separateActors();this.updateHandProps();if(playing)updateActionTimeline();this.updateRiskMarker();
+   
   }
   const smoothing=this.reduced?1:1-Math.exp(-dt*6);
   this.camera.position.lerp(this.targetPos,smoothing);this.look.lerp(this.targetLook,smoothing);this.camera.lookAt(this.look);
@@ -468,9 +708,9 @@ class World{
 // Navegación y ciclo de sesión: ninguna consecuencia avanza sin una acción del jugador.
 $('prevPhrase').onclick=()=>{phrase=Math.max(0,phrase-1);showPhrase();};$('nextPhrase').onclick=()=>{phrase=phrase===phrases.length-1?0:phrase+1;showPhrase();};$('readBtn').onclick=()=>{voiceEnabled=true;Audio.init();Audio.speak(phrases[phrase]||'');};$('soundBtn').onclick=()=>{Audio.muted=!Audio.muted;Audio.init();if(Audio.muted){Audio.cancel();Audio.stopEffects();}$('soundBtn').textContent=Audio.muted?'♩':'♫';$('soundBtn').setAttribute('aria-pressed',String(Audio.muted));$('soundBtn').setAttribute('aria-label',Audio.muted?'Activar sonidos':'Silenciar sonidos');};
 $('reasonDetails').ontoggle=()=>{$('panel').classList.toggle('reading-result',$('reasonDetails').open);};
-document.querySelectorAll('[data-camera]').forEach(b=>b.onclick=()=>{if(!ready3D)return;automaticCamera=99;W.setCamera(b.dataset.camera);});
-$('startBtn').onclick=()=>{if(!ready3D||LMS.ended)return;Audio.init();mountScene($('scene'));W.preview=false;playing=true;$('welcome').hidden=true;state.phase==='final'?showReport():loadMission();};$('restartWelcome').onclick=()=>{if(ready3D)resetGame();};$('continueBtn').onclick=nextMission;$('replayBtn').onclick=()=>{if(state.phase==='consequence')showConsequence();};$('retryBtn').onclick=resetGame;
-let helpWasPlaying=false;$('helpBtn').onclick=()=>{helpWasPlaying=playing;playing=false;Audio.cancel();Audio.stopEffects();$('help').hidden=false;};$('closeHelp').onclick=()=>{$('help').hidden=true;playing=helpWasPlaying;};$('changeViewBtn').onclick=()=>{$('report').hidden=true;$('panel').classList.add('final-view');$('panel').hidden=false;$('sceneNotice').hidden=false;$('sceneNotice').textContent='Jornada terminada. Abre ? para volver a tu informe.';$('cameraTools').hidden=false;};$('returnReport').onclick=()=>{$('help').hidden=true;playing=true;showReport();};
+$('backReportBtn').onclick=showReport;$('inspectBtn').onclick=()=>{if(state.phase==='decision'){setDialogue('Lo que observas',[INSPECTIONS[state.mission]]);W.inspected=true;$('sceneBeat').textContent='Riesgo identificado. Elige c\u00f3mo intervenir.';}};
+$('startBtn').onclick=()=>{if(!ready3D||LMS.ended)return;Audio.init();mountScene($('scene'));W.preview=false;playing=true;$('welcome').hidden=true;state.phase==='final'?showReport():loadMission();};$('restartWelcome').onclick=()=>{if(ready3D)resetGame();};$('continueBtn').onclick=nextMission;$('replayBtn').onclick=()=>{if(state.phase==='consequence'){W.setup(state.mission);showConsequence();}};$('retryBtn').onclick=resetGame;
+let helpWasPlaying=false;$('helpBtn').onclick=()=>{helpWasPlaying=playing;playing=false;Audio.cancel();Audio.stopEffects();$('help').hidden=false;};$('closeHelp').onclick=()=>{$('help').hidden=true;playing=helpWasPlaying;};$('changeViewBtn').onclick=()=>{$('report').hidden=true;$('panel').classList.add('final-view');$('panel').hidden=false;$('sceneNotice').hidden=false;$('sceneNotice').textContent='Jornada terminada. Abre ? para volver a tu informe.';$('backReportBtn').hidden=false;};$('returnReport').onclick=()=>{$('help').hidden=true;playing=true;showReport();};
 $('finishBtn').onclick=()=>{LMS.finish(true);playing=false;Audio.cancel();$('exitDone').hidden=false;$('exitText').textContent=LMS.ready?'Tu sesión LMS terminó. Puedes cerrar esta ventana.':$('statusLine').textContent+'. Puedes cerrar esta ventana.';};$('homeBtn').onclick=()=>{LMS.finish(state.phase==='final');playing=false;Audio.cancel();$('help').hidden=true;$('exitDone').hidden=false;$('exitText').textContent=state.phase==='final'?'La jornada terminó. Puedes cerrar esta ventana.':'Tu sesión terminó. Al volver podrás retomar desde el último guardado disponible.';};
 document.addEventListener('visibilitychange',()=>{if(document.hidden){Audio.cancel();Audio.stopEffects();save();if(Audio.ctx)Audio.ctx.suspend().catch(()=>{});}else if(Audio.ctx&&!Audio.muted&&playing)Audio.init();});window.addEventListener('pagehide',()=>{Audio.cancel();Audio.stopEffects();LMS.finish(state.phase==='final');});window.addEventListener('pageshow',e=>{if(e.persisted)location.reload();});
 try{LMS.init();restore();if(!window.THREE)throw new Error('No se pudo cargar el motor 3D. Revisa tu conexión y recarga la página.');W=new World($('scene'));W.setup(0);W.preview=true;mountScene($('welcomePreview'));ready3D=true;$('startBtn').disabled=false;if(matchMedia('(prefers-reduced-motion: reduce)').matches)document.body.classList.add('reduce-motion');updateHUD();if(state.records.length||state.mission){$('resumeNotice').textContent=state.phase==='final'?'Tienes un informe de jornada guardado.':'Tienes una jornada guardada. Retoma la misión '+(state.mission+1)+' sin repetir decisiones.';$('startBtn').textContent=state.phase==='final'?'VER MI INFORME GUARDADO':'CONTINUAR MI JORNADA';$('restartWelcome').hidden=false;}$('statusLine').textContent=LMS.ready?'Sesión SCORM '+LMS.edition+' conectada':LMS.api?'No se pudo iniciar el LMS. Conserva esta ventana abierta.':'Modo navegador · guardado local';if(LMS.ready&&!state.records.length)LMS.snapshot(state,false);}catch(error){$('bootError').hidden=false;$('bootError').textContent=error.message||'No se pudo iniciar la escena 3D. Recarga esta página.';$('startBtn').disabled=true;}
