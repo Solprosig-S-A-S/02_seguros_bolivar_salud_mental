@@ -124,12 +124,12 @@ canvas{touch-action:pan-y pinch-zoom}
  </section>
  <section class="overlay" id="report" hidden aria-label="Informe de liderazgo"><div class="eyebrow">CIERRE DE JORNADA · AUDITORÍA FORMATIVA</div><h2 id="endingTitle"></h2><div class="summaryScore" id="finalScore"></div><p id="endingText"></p><p id="lmsResult"></p><div id="reportStats" class="steps"></div><div id="reportList"></div><button class="primary" id="finishBtn">TERMINAR Y GUARDAR</button><button class="secondary" id="retryBtn">Repetir la jornada</button><button class="secondary" id="changeViewBtn">Ver la cuadrilla</button><details><summary>Referencias y alcance de la actividad</summary><p class="small">Simulación educativa: los indicadores representan decisiones del juego; no son mediciones clínicas, una auditoría oficial ni una determinación de acoso o sanción.</p><p><a href="https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=18843" target="_blank" rel="noopener">Ley 1010 de 2006 · prevención del acoso laboral</a></p><p><a href="https://www.fondoriesgoslaborales.gov.co/riesgo-psicosocial-2/" target="_blank" rel="noopener">Factores psicosociales · Resoluciones 2646 de 2008 y 2764 de 2022</a></p></details></section>
  <section class="overlay" id="help" hidden aria-label="Ayuda">
-  <div class="eyebrow">SUPERVISA EL FRENTE</div><h2>Observa. Interv\u00e9n. Comprueba.</h2>
-  <p><strong>1. Observa:</strong> cada sector muestra un problema. Toca su aviso si necesitas entenderlo mejor. La c\u00e1mara permanece estable.</p>
-  <p><strong>2. Interv\u00e9n:</strong> elige qu\u00e9 dices y qu\u00e9 haces. Las tres respuestas est\u00e1n disponibles desde que llegas.</p>
-  <p><strong>3. Comprueba:</strong> ver\u00e1s tu intervenci\u00f3n, la reacci\u00f3n del trabajador y el resultado. Puedes repetir la secuencia o avanzar cuando quieras.</p>
-  <p>El clima se refleja en la cuadrilla. Cada decisi\u00f3n protectora suma 10 puntos; apruebas con 80. El informe conserva las diez decisiones.</p>
-  <p class="small">Tu avance se guarda despu\u00e9s de cada elecci\u00f3n. El bot\u00f3n Voz lee la frase visible.</p>
+  <div class="eyebrow">SUPERVISA EL FRENTE</div><h2>Observa. Intervén. Comprueba.</h2>
+  <p><strong>1. Observa:</strong> cada sector muestra un problema. Toca su aviso si necesitas entenderlo mejor. La cámara permanece estable.</p>
+  <p><strong>2. Intervén:</strong> elige qué dices y qué haces. Las tres respuestas están disponibles desde que llegas.</p>
+  <p><strong>3. Comprueba:</strong> verás tu intervención, la reacción del trabajador y el resultado. Puedes repetir la secuencia o avanzar cuando quieras.</p>
+  <p>El clima se refleja en la cuadrilla. Cada decisión protectora suma 10 puntos; apruebas con 80. El informe conserva las diez decisiones.</p>
+  <p class="small">Tu avance se guarda después de cada elección. El botón Voz lee la frase visible.</p>
   <button class="primary" id="closeHelp">VOLVER AL JUEGO</button><button class="secondary" id="returnReport" hidden>Ver informe final</button><button class="secondary" id="homeBtn">Guardar y salir</button>
  </section>
  <section class="overlay" id="exitDone" hidden><div><div class="introIcon">✓</div><h2>Sesión terminada</h2><p id="exitText">Puedes cerrar esta ventana.</p><a class="secondary" href="index.html">Volver al portal</a></div></section>
@@ -296,17 +296,17 @@ function showPhrase(){
  $('nextPhrase').textContent=phrase===phrases.length-1?'Releer':'Siguiente';
  if(voiceEnabled&&state.phase!=='consequence')Audio.speak(phrases[phrase]||'');
 }
-function updateHUD(){const s=calculate(state);$('climateValue').textContent=!state.records.length?'Por coordinar':s.climate>=75?'Coordinado':s.climate>=50?'En recuperaci\u00f3n':'Tenso';$('climateFill').style.width=s.climate+'%';$('climateFill').style.background=s.climate>=75?'#34d399':s.climate>=50?'#ffb703':'#fb7185';$('climateMeter').setAttribute('aria-valuenow',s.climate);$('pourValue').textContent=s.pour+' %';$('pourFill').style.width=s.pour+'%';$('pourMeter').setAttribute('aria-valuenow',s.pour);$('score').textContent=s.score+' / 100 PTS';W.setPour(s.pour);}
+function updateHUD(){const s=calculate(state);$('climateValue').textContent=!state.records.length?'Por coordinar':s.climate>=75?'Coordinado':s.climate>=50?'En recuperación':'Tenso';$('climateFill').style.width=s.climate+'%';$('climateFill').style.background=s.climate>=75?'#34d399':s.climate>=50?'#ffb703':'#fb7185';$('climateMeter').setAttribute('aria-valuenow',s.climate);$('pourValue').textContent=s.pour+' %';$('pourFill').style.width=s.pour+'%';$('pourMeter').setAttribute('aria-valuenow',s.pour);$('score').textContent=s.score+' / 100 PTS';W.setPour(s.pour);}
 function orderOptions(){choiceOrder=[0,1,2];let seed=state.attempt*17+(state.mission+1)*29;for(let i=2;i>0;i--){seed=(seed*1664525+1013904223)>>>0;const j=seed%(i+1);[choiceOrder[i],choiceOrder[j]]=[choiceOrder[j],choiceOrder[i]];}}
 function loadMission(){
  Audio.cancel();Audio.stopEffects();const m=M[state.mission],sector=SECTORS[state.mission];
  $('report').hidden=true;$('panel').classList.remove('final-view','in-consequence','reading-result');$('panel').hidden=false;
  $('backReportBtn').hidden=true;$('consequence').hidden=true;$('choices').hidden=false;$('choices').replaceChildren();
  $('missionTitle').textContent=sector.goal;$('question').textContent='';
- $('missionTag').textContent='MISI\u00d3N '+(state.mission+1)+' DE 10 \u00b7 '+m.time;
+ $('missionTag').textContent='MISIÓN '+(state.mission+1)+' DE 10 · '+m.time;
  $('sceneNotice').hidden=true;$('sceneFlash').className='';
  $('inspectBtn').hidden=false;$('inspectBtn').textContent=sector.risk;
- $('sceneBeat').textContent='Observa el problema y elige tu intervenci\u00f3n.';
+ $('sceneBeat').textContent='Observa el problema y elige tu intervención.';
  W.setup(state.mission);setDialogue(sector.speaker,[sector.speech]);updateHUD();
  if(state.mission===3&&state.phase==='decision')Audio.pressure();orderOptions();
  choiceOrder.forEach((option,index)=>{
@@ -322,11 +322,11 @@ function choose(option){if(!playing||state.phase!=='decision'||LMS.ended)return;
 function showConsequence(){
  Audio.cancel();Audio.stopEffects();const r=state.records[state.mission],m=M[state.mission],sector=SECTORS[state.mission];
  $('choices').hidden=true;$('consequence').hidden=false;$('inspectBtn').hidden=true;
- $('resultBadge').textContent='INTERVENCI\u00d3N EN CURSO';$('resultBadge').style.color='#c5e1ec';
+ $('resultBadge').textContent='INTERVENCIÓN EN CURSO';$('resultBadge').style.color='#c5e1ec';
  $('resultText').textContent='Observa la respuesta de la cuadrilla.';
  $('resultFull').textContent=m.options[r.option].text;
  $('lesson').textContent=m.lesson;$('reasonDetails').open=false;$('panel').classList.add('in-consequence');$('panel').classList.remove('reading-result');
- $('continueBtn').disabled=false;$('continueBtn').textContent=state.mission===9?'VER MI INFORME':'SIGUIENTE MISI\u00d3N';
+ $('continueBtn').disabled=false;$('continueBtn').textContent=state.mission===9?'VER MI INFORME':'SIGUIENTE MISIÓN';
  $('sceneFlash').className='';W.beginConsequence(r.style);W.actionBeat=-1;
  updateActionTimeline();updateHUD();Audio.tone(r.style==='protective');if(state.mission===3&&r.style!=='protective')Audio.pressure();$('panel').scrollTop=0;
 }
@@ -335,12 +335,12 @@ function updateActionTimeline(){
  const sector=SECTORS[state.mission],record=state.records[state.mission],response=record.style==='protective'?0:record.style==='punitive'?1:2;
  const beat=W.effectTime<.85?0:W.effectTime<3.3?1:2;
  if(beat===W.actionBeat)return;W.actionBeat=beat;
- $('sceneBeat').textContent=['1 / 3 \u00b7 Tu intervenci\u00f3n','2 / 3 \u00b7 Reacci\u00f3n de la cuadrilla','3 / 3 \u00b7 Resultado en el frente'][beat];
- if(beat===0)setDialogue('T\u00da \u00b7 Supervisor',[sector.commands[response]]);
+ $('sceneBeat').textContent=['1 / 3 · Tu intervención','2 / 3 · Reacción de la cuadrilla','3 / 3 · Resultado en el frente'][beat];
+ if(beat===0)setDialogue('TÚ · Supervisor',[sector.commands[response]]);
  else if(beat===1)setDialogue(sector.responseName,[REACTIONS[state.mission][response]]);
  else{
   $('resultText').textContent=sector.results[response];
-  $('resultBadge').textContent=(record.style==='protective'?'+10 PUNTOS':'+0 PUNTOS')+' \u00b7 '+calculate(state).score+' / 100';
+  $('resultBadge').textContent=(record.style==='protective'?'+10 PUNTOS':'+0 PUNTOS')+' · '+calculate(state).score+' / 100';
   $('resultBadge').style.color=styles[record.style].color;
  }
 }
@@ -708,7 +708,7 @@ class World{
 // Navegación y ciclo de sesión: ninguna consecuencia avanza sin una acción del jugador.
 $('prevPhrase').onclick=()=>{phrase=Math.max(0,phrase-1);showPhrase();};$('nextPhrase').onclick=()=>{phrase=phrase===phrases.length-1?0:phrase+1;showPhrase();};$('readBtn').onclick=()=>{voiceEnabled=true;Audio.init();Audio.speak(phrases[phrase]||'');};$('soundBtn').onclick=()=>{Audio.muted=!Audio.muted;Audio.init();if(Audio.muted){Audio.cancel();Audio.stopEffects();}$('soundBtn').textContent=Audio.muted?'♩':'♫';$('soundBtn').setAttribute('aria-pressed',String(Audio.muted));$('soundBtn').setAttribute('aria-label',Audio.muted?'Activar sonidos':'Silenciar sonidos');};
 $('reasonDetails').ontoggle=()=>{$('panel').classList.toggle('reading-result',$('reasonDetails').open);};
-$('backReportBtn').onclick=showReport;$('inspectBtn').onclick=()=>{if(state.phase==='decision'){setDialogue('Lo que observas',[INSPECTIONS[state.mission]]);W.inspected=true;$('sceneBeat').textContent='Riesgo identificado. Elige c\u00f3mo intervenir.';}};
+$('backReportBtn').onclick=showReport;$('inspectBtn').onclick=()=>{if(state.phase==='decision'){setDialogue('Lo que observas',[INSPECTIONS[state.mission]]);W.inspected=true;$('sceneBeat').textContent='Riesgo identificado. Elige cómo intervenir.';}};
 $('startBtn').onclick=()=>{if(!ready3D||LMS.ended)return;Audio.init();mountScene($('scene'));W.preview=false;playing=true;$('welcome').hidden=true;state.phase==='final'?showReport():loadMission();};$('restartWelcome').onclick=()=>{if(ready3D)resetGame();};$('continueBtn').onclick=nextMission;$('replayBtn').onclick=()=>{if(state.phase==='consequence'){W.setup(state.mission);showConsequence();}};$('retryBtn').onclick=resetGame;
 let helpWasPlaying=false;$('helpBtn').onclick=()=>{helpWasPlaying=playing;playing=false;Audio.cancel();Audio.stopEffects();$('help').hidden=false;};$('closeHelp').onclick=()=>{$('help').hidden=true;playing=helpWasPlaying;};$('changeViewBtn').onclick=()=>{$('report').hidden=true;$('panel').classList.add('final-view');$('panel').hidden=false;$('sceneNotice').hidden=false;$('sceneNotice').textContent='Jornada terminada. Abre ? para volver a tu informe.';$('backReportBtn').hidden=false;};$('returnReport').onclick=()=>{$('help').hidden=true;playing=true;showReport();};
 $('finishBtn').onclick=()=>{LMS.finish(true);playing=false;Audio.cancel();$('exitDone').hidden=false;$('exitText').textContent=LMS.ready?'Tu sesión LMS terminó. Puedes cerrar esta ventana.':$('statusLine').textContent+'. Puedes cerrar esta ventana.';};$('homeBtn').onclick=()=>{LMS.finish(state.phase==='final');playing=false;Audio.cancel();$('help').hidden=true;$('exitDone').hidden=false;$('exitText').textContent=state.phase==='final'?'La jornada terminó. Puedes cerrar esta ventana.':'Tu sesión terminó. Al volver podrás retomar desde el último guardado disponible.';};
