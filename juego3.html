@@ -673,6 +673,8 @@
     .touch-step-card:active {
       transform: scale(0.97);
     }
+    .touch-step-card:disabled:not(.completed) { opacity: .5; cursor: default; }
+    .touch-step-card[aria-busy="true"] { opacity: 1; border-color: var(--bolivar-yellow); }
     .touch-step-card.completed {
       background: rgba(16, 185, 129, 0.25);
       border-color: #10B981;
@@ -2032,6 +2034,7 @@
         },
         cancel:function(){this.token++;if('speechSynthesis' in window)window.speechSynthesis.cancel();this.utterance=null;SoundEngine.duck(false);},
         say:function(text){
+          if(!this.active)return;
           this.lastText=text;this.cancel();
           if(!this.active||!this.enabled||SoundEngine.muted||document.hidden||!('speechSynthesis' in window)||!('SpeechSynthesisUtterance' in window))return;
           this.selectVoice();var self=this,id=this.token,u=new SpeechSynthesisUtterance(text);
@@ -2042,12 +2045,10 @@
           u.onend=end;u.onerror=end;this.utterance=u;
           try{window.speechSynthesis.speak(u);}catch(e){end();}
         },
-        station:function(id){this.active=true;SoundEngine.startRain();this.say([
-          'Bienvenido. Este momento es para ti. Camina hacia la caseta. Cuando llegues, toma agua con calma, en pequeños sorbos.',
-          'Este momento es para ti. No te afanes. Afloja los hombros. Mantén presionado el círculo y acompaña mi voz, sin forzar la respiración. Si el ritmo no te resulta cómodo, suelta el círculo y respira con naturalidad.',
-          'El turno termina. Guarda tus cosas, silencia las alertas y cierra el casillero. Hazlo a tu ritmo.',
-          'Ahora prepara tu descanso. Apaga el celular, cierra las cortinas y baja la luz. Deja que este espacio se vuelva tranquilo.'
-        ][id-1]);},
+        station:function(id){
+          this.stop();this.lastText='';this.active=id===2;
+          if(this.active)this.say('Este momento es para ti. No te afanes. Afloja los hombros. Mantén presionado el círculo y acompaña mi voz, sin forzar la respiración. Si el ritmo no te resulta cómodo, suelta el círculo y respira con naturalidad.');
+        },
         phase:function(phase){this.say(['Inhala, suave.','Mantén el aire, solo si estás cómodo.','Suelta el aire, despacio. No hay afán.'][phase]);},
         stop:function(){this.active=false;this.cancel();SoundEngine.stopRain();}
       };
@@ -2091,6 +2092,11 @@
         padlockMesh: null,
         helmetMesh: null,
         bootsMesh: null,
+        lockerPhone: null,
+        lockerPhoneScreen: null,
+        lockerAction: null,
+        playerHatParts: [],
+        playerBootParts: [],
         phoneScreenMesh: null,
         curtainLeftMesh: null,
         curtainRightMesh: null,
@@ -2364,24 +2370,32 @@
 
           // Batería de 3 casilleros metálicos
           var lockerMat = new THREE.MeshStandardMaterial({ color: 0x0284C7, roughness: 0.4, metalness: 0.3 });
-          var lockerFrame = new THREE.Mesh(new THREE.BoxGeometry(3.6, 4.6, 1.2), lockerMat);
-          lockerFrame.position.set(0, 2.3, -2.4);
-          lockerFrame.castShadow = true;
-          grp.add(lockerFrame);
-
-          // Interior hueco del casillero central
+          // Laterales separados: el centro queda realmente abierto y las repisas se ven.
+          function panel(w,h,d,x,y,z,mat){
+            var mesh=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);
+            mesh.position.set(x,y,z);mesh.castShadow=true;mesh.receiveShadow=true;grp.add(mesh);return mesh;
+          }
+          panel(1.15,3.2,1.2,-1.2,1.6,-2.4,lockerMat);
+          panel(1.15,3.2,1.2,1.2,1.6,-2.4,lockerMat);
           var hollowMat = new THREE.MeshStandardMaterial({ color: 0x0F172A, roughness: 0.8 });
-          var hollow = new THREE.Mesh(new THREE.BoxGeometry(1.0, 4.2, 1.05), hollowMat);
-          hollow.position.set(0, 2.3, -2.35);
-          grp.add(hollow);
+          panel(1.15,3.2,.08,0,1.6,-2.98,hollowMat);
+          panel(.08,3.2,1.2,-.59,1.6,-2.4,lockerMat);
+          panel(.08,3.2,1.2,.59,1.6,-2.4,lockerMat);
+          var shelfMat=new THREE.MeshStandardMaterial({color:0x94A3B8,roughness:.6});
+          [.16,.95,1.95,3.17].forEach(function(y){panel(1.1,.07,1.1,0,y,-2.4,shelfMat);});
+          [-1.2,1.2].forEach(function(x){
+            panel(.06,.26,.08,x+.35,1.55,-1.75,shelfMat);
+            for(var vent=0;vent<3;vent++)panel(.65,.035,.02,x,2.7-vent*.12,-1.79,hollowMat);
+          });
 
           // Puerta del casillero con pivote para abrir/cerrar
           var doorPivot = new THREE.Group();
-          doorPivot.position.set(-0.55, 2.3, -1.82);
+          doorPivot.position.set(-0.55, 1.6, -1.82);
           var doorMat = new THREE.MeshStandardMaterial({ color: 0x0369A1, metalness: 0.4, roughness: 0.35 });
-          var door = new THREE.Mesh(new THREE.BoxGeometry(1.1, 4.2, 0.06), doorMat);
+          var door = new THREE.Mesh(new THREE.BoxGeometry(1.1, 3.05, 0.06), doorMat);
           door.position.set(0.55, 0, 0);
           doorPivot.add(door);
+          door.castShadow=true;
           doorPivot.rotation.y = -1.45; // Abierto por defecto
           grp.add(doorPivot);
           this.lockerDoorPivot = doorPivot;
@@ -2389,22 +2403,35 @@
           // Candado de seguridad
           var lockMat = new THREE.MeshStandardMaterial({ color: 0xF59E0B, metalness: 0.6, roughness: 0.3 });
           var lock = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.22, 0.1), lockMat);
-          lock.position.set(0.5, 0, 0.08);
+          lock.position.set(.94, 0, .1);
           lock.visible = false;
           doorPivot.add(lock);
           this.padlockMesh = lock;
 
-          // Casco en la repisa interior
-          var helmet = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.22, 0.16, 16), new THREE.MeshStandardMaterial({ color: 0xFACC15 }));
-          helmet.position.set(0, 3.6, -2.35);
+          // Objetos móviles: aparecen en las manos antes de quedar en las repisas.
+          var helmet = new THREE.Group();
+          var cap=new THREE.Mesh(new THREE.CylinderGeometry(.425,.391,.238,16),new THREE.MeshStandardMaterial({color:0xFACC15,roughness:.35}));
+          var brim=new THREE.Mesh(new THREE.CylinderGeometry(.51,.51,.051,16),new THREE.MeshStandardMaterial({color:0xEAB308}));
+          brim.position.set(0,-.102,.068);helmet.add(cap,brim);
+          helmet.visible=false;
           grp.add(helmet);
           this.helmetMesh = helmet;
 
-          // Botas de seguridad en el fondo
-          var boots = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.28, 0.45), new THREE.MeshStandardMaterial({ color: 0x78350F }));
-          boots.position.set(0, 0.5, -2.35);
+          var boots = new THREE.Group();
+          var bootMat=new THREE.MeshStandardMaterial({color:0x451A03,roughness:.7});
+          [-.238,.238].forEach(function(x){
+            var shoe=new THREE.Mesh(new THREE.BoxGeometry(.289,.204,.408),bootMat);
+            shoe.position.set(x,0,.051);boots.add(shoe);
+          });
+          boots.visible=false;
           grp.add(boots);
           this.bootsMesh = boots;
+          var phone=new THREE.Group();
+          var body=new THREE.Mesh(new THREE.BoxGeometry(.22,.4,.045),hollowMat);
+          var screen=new THREE.Mesh(new THREE.PlaneGeometry(.18,.31),new THREE.MeshBasicMaterial({color:0x38BDF8}));
+          screen.position.z=.024;phone.add(body,screen);phone.visible=false;grp.add(phone);
+          this.lockerPhone=phone;this.lockerPhoneScreen=screen;
+          [helmet,boots,phone].forEach(function(item){item.traverse(function(part){if(part.isMesh)part.castShadow=true;});});
 
           grp.visible = false;
           this.scene.add(grp);
@@ -2532,6 +2559,7 @@
           var rim = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.03, 16), rimMat);
           rim.position.set(0, 1.23, 0.04);
           avatar.add(rim);
+          this.playerHatParts=[hardHat,rim];
 
           // Piernas articuladas
           var legMat = new THREE.MeshStandardMaterial({ color: 0x0369A1, roughness: 0.6 });
@@ -2564,6 +2592,7 @@
           rightLegGrp.add(rightBoot);
           avatar.add(rightLegGrp);
           this.playerRightLeg = rightLegGrp;
+          this.playerBootParts=[leftBoot,rightBoot];
 
           // Brazos articulados
           var armMat = new THREE.MeshStandardMaterial({ color: 0x0284C7, roughness: 0.5 });
@@ -2717,6 +2746,7 @@
         },
 
         setPlayerDestination: function (x, z, isDragging) {
+          if(this.currentStationId===3)return;
           var b = this.getCurrentWalkBounds();
           var clampedX = Math.max(b.minX, Math.min(b.maxX, x));
           var clampedZ = Math.max(b.minZ, Math.min(b.maxZ, z));
@@ -2774,6 +2804,7 @@
         updatePlayer: function (delta) {
           if (!this.playerAvatar || !this.playerAvatar.visible) return;
           if (this.finaleMode) return;
+          if(this.currentStationId===3){this.updateLockerAction(delta);return;}
 
           var currentPos = this.playerAvatar.position;
           var targetPos = this.playerTargetPos;
@@ -3064,6 +3095,9 @@
            CAMBIO FLUIDO DE ESCENARIOS Y LUZ SEGÚN LA ESTACIÓN
            ------------------------------------------------------------------ */
         focusStation: function (stationId) {
+          this.lockerAction=null;
+          if(this.playerAvatar)this.playerAvatar.scale.setScalar(stationId===3?1.7:1);
+          [this.playerLeftArm,this.playerRightArm].forEach(function(arm){if(arm){arm.rotation.set(0,0,0);arm.scale.set(1,1,1);}});
           this.currentStationId = stationId;
           this.finaleMode = false;
           if (this.celebrationGroup) this.celebrationGroup.visible = false;
@@ -3131,9 +3165,9 @@
           }
           else if (stationId === 3) {
             // Estación 3: Vestidores al atardecer dorado (5:30 PM)
-            this.targetLookAt.set(0, 1.4, -1.8);
+            this.targetLookAt.set(0, 1.55, -1.8);
             this.baseTargetRadius = 8.6;
-            this.targetYaw = -0.45;
+            this.targetYaw = 0.25;
             this.targetPitch = 0.28;
 
             if (this.hemiLight) this.hemiLight.color.setHex(0xF59E0B);
@@ -3145,12 +3179,12 @@
 
             if (this.playerAvatar) {
               this.playerAvatar.visible = true;
-              this.playerAvatar.position.set(0, 0, 1.8);
+              this.playerAvatar.position.set(.8, 0, -1.2);
               this.playerAvatar.rotation.set(0, Math.PI, 0);
-              this.playerTargetPos.set(0, 0, 1.8);
+              this.playerTargetPos.set(.8, 0, -1.2);
             }
             if (this.beaconMesh) this.beaconMesh.visible = false;
-            if (walkHint) walkHint.classList.remove('faded');
+            if (walkHint) walkHint.classList.add('faded');
           }
           else if (stationId === 4) {
             // Estación 4: Habitación nocturna (Higiene del sueño)
@@ -3215,15 +3249,100 @@
           }
         },
 
-        closeLockerStation3: function () {
-          if (this.lockerDoorPivot) {
-            this.lockerDoorPivot.rotation.y = 0; // Puerta cerrada
+        animateLockerStep: function (id, onComplete) {
+          if(this.lockerAction||this.currentStationId!==3)return;
+          this.playerAvatar.updateMatrixWorld(true);
+          var source=new THREE.Vector3();
+          var item=null,target=null;
+          if(id==='helmet'){
+            item=this.helmetMesh;
+            this.playerHatParts[0].getWorldPosition(source);
+            target=new THREE.Vector3(0,2.12,-2.35);
+          }else if(id==='boots'){
+            item=this.bootsMesh;
+            this.playerBootParts[0].getWorldPosition(source);
+            var other=new THREE.Vector3();this.playerBootParts[1].getWorldPosition(other);
+            source.add(other).multiplyScalar(.5);source.z+=.051;
+            target=new THREE.Vector3(0,.30,-2.35);
+          }else if(id==='phone'){
+            item=this.lockerPhone;
+            source.copy(this.playerAvatar.localToWorld(new THREE.Vector3(.32,.65,.15)));
+            target=new THREE.Vector3(.12,1.015,-2.35);
+            item.visible=true;this.lockerPhoneScreen.material.color.setHex(0x38BDF8);
           }
-          if (this.padlockMesh) {
-            this.padlockMesh.visible = true; // Candado asegurado
+          if(item){item.position.copy(source);item.rotation.set(0,id==='phone'?0:Math.PI,0);}
+          this.lockerAction={id:id,item:item,source:source,target:target,elapsed:0,duration:id==='locker'?2.8:4.6,onComplete:onComplete};
+        },
+
+        reachLockerItem: function (point, weight, left) {
+          var arm=left?this.playerLeftArm:this.playerRightArm;
+          var local=this.playerAvatar.worldToLocal(point.clone()).sub(arm.position);
+          var length=local.length();
+          var rotation=new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0,-1,0),local.normalize());
+          arm.quaternion.set(0,0,0,1).slerp(rotation,weight);
+          arm.scale.y=1+(Math.min(1.8,length/.4)-1)*weight;
+        },
+
+        updateLockerAction: function (delta) {
+          var action=this.lockerAction;
+          if(!action||document.hidden)return;
+          action.elapsed+=delta;
+          var t=Math.min(1,action.elapsed/action.duration);
+          function smooth(v){v=Math.max(0,Math.min(1,v));return v*v*(3-2*v);}
+          var reach=smooth(t/.18)*(1-smooth((t-.8)/.2));
+          var lean=Math.sin(Math.PI*smooth(t));
+          this.playerAvatar.position.set(.8-.12*lean,0,-1.2-.32*lean);
+          this.playerAvatar.rotation.x=.08*lean;
+          if(action.id==='boots'){
+            var bend=t<.38?Math.sin(Math.PI*Math.min(1,t/.38)):Math.sin(Math.PI*Math.max(0,Math.min(1,(t-.45)/.48)));
+            this.playerAvatar.position.y=-.24*bend;
+            this.playerAvatar.rotation.x=.4*bend;
+            this.playerLeftLeg.rotation.x=-.65*bend;
+            this.playerRightLeg.rotation.x=-.65*bend;
           }
-          SoundEngine.playLockerLock();
-          SoundEngine.playSuccess();
+          this.playerAvatar.updateMatrixWorld(true);
+          if(action.id==='locker'){
+            this.lockerDoorPivot.rotation.y=-1.45*(1-smooth((t-.15)/.6));
+            this.lockerDoorPivot.updateMatrixWorld(true);
+            var handle=this.lockerDoorPivot.localToWorld(new THREE.Vector3(.94,0,.1));
+            this.reachLockerItem(handle,reach,false);
+            this.padlockMesh.visible=t>=.84;
+          }else{
+            var item=action.item;
+            if(t<.18){
+              if(action.id==='helmet')this.playerHatParts[0].getWorldPosition(action.source);
+              if(action.id==='boots'){
+                this.playerBootParts[0].getWorldPosition(action.source);
+                var otherBoot=new THREE.Vector3();this.playerBootParts[1].getWorldPosition(otherBoot);
+                action.source.add(otherBoot).multiplyScalar(.5);action.source.z+=.051;
+              }
+            }
+            var lifted=action.source.clone();
+            lifted.y=action.id==='helmet'?2.65:action.id==='boots'?1.25:1.85;
+            lifted.x=action.id==='phone'?.12:0;lifted.z=-1.5;
+            if(t<.36)item.position.lerpVectors(action.source,lifted,smooth((t-.18)/.18));
+            else item.position.lerpVectors(lifted,action.target,smooth((t-.48)/.3));
+            if(t>=.18){
+              item.visible=true;
+              if(action.id==='helmet')this.playerHatParts.forEach(function(part){part.visible=false;});
+              if(action.id==='boots')this.playerBootParts.forEach(function(part){part.visible=false;});
+            }
+            if(action.id==='phone'){
+              if(t>.44)this.lockerPhoneScreen.material.color.setHex(0x0F172A);
+              item.rotation.x=-Math.PI/2*smooth((t-.48)/.3);
+            }
+            var grip=item.position.clone();
+            if(action.id==='boots')grip.x-=.238;
+            this.reachLockerItem(grip,reach,false);
+            if(action.id==='boots')this.reachLockerItem(item.position.clone().add(new THREE.Vector3(.238,0,0)),reach,true);
+          }
+          if(t===1){
+            this.playerAvatar.position.set(.8,0,-1.2);this.playerAvatar.rotation.x=0;
+            [this.playerLeftArm,this.playerRightArm,this.playerLeftLeg,this.playerRightLeg].forEach(function(limb){limb.rotation.set(0,0,0);limb.scale.set(1,1,1);});
+            this.lockerAction=null;
+            if(action.id==='locker')SoundEngine.playLockerLock();
+            if(action.onComplete)action.onComplete();
+          }
         },
 
         completeNightStation4: function () {
@@ -3296,6 +3415,9 @@
         },
 
         resetSceneState: function () {
+          this.lockerAction=null;
+          this.playerHatParts.concat(this.playerBootParts).forEach(function(part){part.visible=true;});
+          [this.helmetMesh,this.bootsMesh,this.lockerPhone].forEach(function(item){if(item)item.visible=false;});
           this.finaleMode = false;
           this.finaleType = null;
           if (this.celebrationGroup) this.celebrationGroup.visible = false;
@@ -3437,7 +3559,7 @@
           }
 
           // La cámara sigue suavemente al trabajador en escena
-          if (this.playerAvatar && this.playerAvatar.visible && this.currentStationId !== 2 && !this.finaleMode) {
+          if (this.playerAvatar && this.playerAvatar.visible && this.currentStationId !== 2 && this.currentStationId !== 3 && !this.finaleMode) {
             this.targetLookAt.x = this.playerAvatar.position.x * 0.35;
             this.targetLookAt.z = this.playerAvatar.position.z * 0.35;
           }
@@ -3718,7 +3840,7 @@
             SoundEngine.setMix();
           });
           window.addEventListener('pagehide',function(){CalmGuide.resumeAfterPage=CalmGuide.active;if(self.pauseBreathing)self.pauseBreathing();CalmGuide.stop();if(SoundEngine.ctx)SoundEngine.ctx.suspend().catch(function(){});});
-          window.addEventListener('pageshow',function(event){if(event.persisted&&CalmGuide.resumeAfterPage){CalmGuide.active=true;SoundEngine.startRain();}});
+          window.addEventListener('pageshow',function(event){if(event.persisted&&CalmGuide.resumeAfterPage){CalmGuide.active=true;SoundEngine.init();}});
 
           this.dom.startBtn.addEventListener('click', function () {
             SoundEngine.init();
@@ -3808,6 +3930,7 @@
           document.getElementById('breathingReflection').hidden = true;
           CalmGuide.cancel();
           this.currentStation = stationNum;
+          document.getElementById('voiceGuideBtn').style.display=stationNum===2?'':'none';
           this.stationActive = true;
           var appRoot = document.getElementById('rechargeApp');
           if (appRoot) appRoot.classList.remove('finale-mode');
@@ -3862,7 +3985,6 @@
 
               Santuario3DEngine.walkPlayerToCooler(function () {
                 Santuario3DEngine.drinkWaterStation1();
-                CalmGuide.say('Toma un sorbo de agua, despacio. Suelta los hombros. No hay prisa.');
                 self.score += data.scoreAdd;
                 self.vitalBattery = data.batteryTarget;
                 self.updateBatteryMeter();
@@ -3987,6 +4109,7 @@
               if (e.cancelable) e.preventDefault();
               if (!self.stationActive || isHolding) return;
               isHolding = true;
+              SoundEngine.startRain();
               wrapper.classList.add('active');
               phaseTime = 0;
               currentPhase = 0;
@@ -4067,6 +4190,7 @@
                       clearInterval(breatheTimer);
                       breatheTimer = null;
                       isHolding = false;
+                      SoundEngine.stopRain();
                       circleBtn.style.pointerEvents = 'none';
                       self.stationActive = false;
 
@@ -4097,6 +4221,7 @@
                 clearInterval(breatheTimer);
                 breatheTimer = null;
                 isHolding = false;
+                SoundEngine.stopRain();
                 CalmGuide.say('No te afanes. Respira con naturalidad. Puedes descansar; continuamos cuando quieras.');
                 wrapper.classList.remove('active');
                 circleBtn.className = 'breathe-circle-btn';
@@ -4119,6 +4244,7 @@
             window.addEventListener('pointercancel', stopBreathe);
             self.pauseBreathing=stopBreathe;
             self.breathCleanup=function(){
+              SoundEngine.stopRain();
               if(breatheTimer)clearInterval(breatheTimer);breatheTimer=null;isHolding=false;
               window.removeEventListener('pointerup',stopBreathe);window.removeEventListener('pointercancel',stopBreathe);self.pauseBreathing=null;
             };
@@ -4137,10 +4263,17 @@
             var steps = [
               { id: 'helmet', text: '1. Guardar Casco', done: false },
               { id: 'boots', text: '2. Guardar Botas', done: false },
-              { id: 'phone', text: '3. Silenciar Alertas', done: false },
+              { id: 'phone', text: '3. Silenciar y Guardar Celular', done: false },
               { id: 'locker', text: '4. Cerrar Candado', done: false }
             ];
 
+            var lockerBusy=false;
+            var lockerButtons=[];
+            function refreshLockerButtons(){
+              lockerButtons.forEach(function(button,index){
+                button.disabled=lockerBusy||steps[index].done||(index>0&&!steps[index-1].done);
+              });
+            }
             steps.forEach(function (st) {
               var card = document.createElement('button');
               card.type = 'button';
@@ -4151,40 +4284,35 @@
               ].join('');
 
               card.addEventListener('click', function () {
-                if (!self.stationActive || st.done) return;
-                st.done = true;
-                card.classList.add('completed');
-                CalmGuide.say({helmet:'Guarda el casco. Por hoy, terminaste.',boots:'Deja las botas. Afloja los hombros.',phone:'Las alertas quedan en silencio.',locker:'Cierra el casillero. Este tiempo es para ti.'}[st.id]);
-                SoundEngine.playTone(480, 'triangle', 0.1, 0.15);
-
-                if (st.id === 'helmet') {
-                  if (Santuario3DEngine.helmetMesh) Santuario3DEngine.helmetMesh.position.y = 3.2;
-                } else if (st.id === 'boots') {
-                  if (Santuario3DEngine.bootsMesh) Santuario3DEngine.bootsMesh.position.z = -2.7;
-                } else if (st.id === 'locker') {
-                  Santuario3DEngine.closeLockerStation3();
-                }
-
-                // Verificar si todos los 4 pasos están completados
-                var allCompleted = steps.every(function (s) { return s.done; });
-                if (allCompleted) {
-                  self.stationActive = false;
-                  self.score += data.scoreAdd;
-                  self.vitalBattery = data.batteryTarget;
-                  self.updateBatteryMeter();
-                  ScormAPI.setScore(self.score);
-
-                  self.showInlineFeedback('¡Desconexión laboral consumada! La obra queda resguardada y tu tiempo es libre.');
-
-                  setTimeout(function () {
-                    self.showFeedback(data.feedback);
-                  }, 1800);
-                }
+                if (!self.stationActive || st.done || lockerBusy || card.disabled) return;
+                lockerBusy=true;refreshLockerButtons();
+                card.setAttribute('aria-busy','true');
+                card.querySelector('.step-text-title').textContent={helmet:'Guardando el casco…',boots:'Guardando las botas…',phone:'Silenciando y guardando…',locker:'Cerrando el gabinete…'}[st.id];
+                Santuario3DEngine.animateLockerStep(st.id,function(){
+                  st.done=true;lockerBusy=false;
+                  card.removeAttribute('aria-busy');
+                  card.classList.add('completed');
+                  card.querySelector('.step-text-title').textContent=st.text;
+                  refreshLockerButtons();
+                  SoundEngine.playSuccess();
+                  if (steps.every(function (s) { return s.done; })) {
+                    self.stationActive = false;
+                    self.score += data.scoreAdd;
+                    self.vitalBattery = data.batteryTarget;
+                    self.updateBatteryMeter();
+                    ScormAPI.setScore(self.score);
+                    self.showInlineFeedback('Tus cosas quedaron guardadas. El turno terminó; este tiempo es para ti.');
+                    setTimeout(function () {
+                      if(self.currentStation===3)self.showFeedback(data.feedback);
+                    }, 1800);
+                  }
+                });
               });
 
+              lockerButtons.push(card);
               grid.appendChild(card);
             });
-
+            refreshLockerButtons();
             zone.appendChild(grid);
           }
           else if (stationNum === 4) {
@@ -4211,7 +4339,6 @@
                 if (!self.stationActive || st.done) return;
                 st.done = true;
                 card.classList.add('completed');
-                CalmGuide.say({blueLight:'Deja el celular a un lado.',curtains:'Cierra las cortinas, con calma.',lamp:'Baja la luz. Es momento de descansar.'}[st.id]);
 
                 if (st.id === 'blueLight') {
                   if (Santuario3DEngine.phoneScreenMesh) Santuario3DEngine.phoneScreenMesh.material.color.setHex(0x0F172A);
@@ -4372,7 +4499,7 @@
         },
 
         showFinalScreen: function () {
-          CalmGuide.say('Has terminado. Lleva contigo estas pequeñas pausas. Gracias por dedicarte este momento.');
+          CalmGuide.stop();
           var passed = (this.score >= 75);
           ScormAPI.setScore(this.score);
           ScormAPI.setStatus(passed ? 'passed' : 'failed');
