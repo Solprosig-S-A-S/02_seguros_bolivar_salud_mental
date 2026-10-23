@@ -1431,7 +1431,7 @@
           </svg>
         </a>
         <button id="voiceGuideBtn" class="icon-chip-btn" aria-label="Desactivar voz guía" aria-pressed="true" title="Voz guía tranquila" style="font-size:11px">Voz</button>
-        <button id="soundToggleBtn" class="icon-chip-btn" aria-label="Silenciar voz y ambiente" aria-pressed="false" title="Voz y ambiente de playa">
+        <button id="soundToggleBtn" class="icon-chip-btn" aria-label="Silenciar voz y ambiente" aria-pressed="false" title="Voz y lluvia suave">
           <svg id="soundIconOn" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
             <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
             <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
@@ -1794,46 +1794,59 @@
         ctx: null,
         muted: false,
 
-        master:null,effectsBus:null,beachBus:null,beachNodes:[],beachRunning:false,ducked:false,
+        master:null,effectsBus:null,rainBus:null,rainNodes:[],rainRunning:false,ducked:false,
         setMix:function(){
           if(!this.ctx||!this.master)return;
           var now=this.ctx.currentTime,quiet=this.muted||document.hidden;
           this.master.gain.cancelScheduledValues(now);this.master.gain.setTargetAtTime(quiet?0:.75,now,.18);
           this.effectsBus.gain.cancelScheduledValues(now);this.effectsBus.gain.setTargetAtTime(this.ducked?.10:.25,now,.3);
-          this.beachBus.gain.cancelScheduledValues(now);this.beachBus.gain.setTargetAtTime(this.beachRunning?(this.ducked?.05:.12):0,now,1.2);
+          this.rainBus.gain.cancelScheduledValues(now);this.rainBus.gain.setTargetAtTime(this.rainRunning?(this.ducked?.05:.12):0,now,1.2);
         },
         duck:function(value){this.ducked=value;this.setMix();},
-        startBeach:function(){
+        startRain:function(){
           this.init();if(!this.ctx)return;
-          if(this.beachNodes.length){this.beachRunning=true;this.setMix();return;}
+          if(this.rainNodes.length){this.rainRunning=true;this.setMix();return;}
           var ctx=this.ctx,self=this;
-          function surf(duration,cutoff,level,rate,pan){
+          function rainfall(duration,cutoff,level,pan){
             var buffer=ctx.createBuffer(2,Math.floor(ctx.sampleRate*duration),ctx.sampleRate);
             for(var channel=0;channel<2;channel++){
-              var data=buffer.getChannelData(channel),brown=0;
-              for(var i=0;i<data.length;i++){brown=(brown+.025*(Math.random()*2-1))/1.025;data[i]=brown*5;}
+              var data=buffer.getChannelData(channel),soft=0;
+              // Lluvia continua y ligera, sin las subidas y bajadas de las olas.
+              for(var i=0;i<data.length;i++){
+                var noise=Math.random()*2-1;
+                soft=soft*.85+noise*.15;
+                data[i]=noise*.18+soft*.6;
+              }
+              // Pequeñas gotas difusas, sin golpes fuertes ni truenos.
+              for(var drop=0;drop<duration*55;drop++){
+                var start=Math.floor(Math.random()*data.length);
+                var length=Math.floor(ctx.sampleRate*(.008+Math.random()*.016));
+                for(var k=0;k<length&&start+k<data.length;k++){
+                  var envelope=Math.sin(Math.PI*k/length)*Math.exp(-4*k/length);
+                  data[start+k]+=(Math.random()*2-1)*envelope*.12;
+                }
+              }
               // Fundir el final con el inicio para que el bucle no haga clic.
               var fade=Math.floor(ctx.sampleRate*.12);
               for(var j=0;j<fade;j++){var blend=j/(fade-1);data[data.length-fade+j]=data[data.length-fade+j]*(1-blend)+data[j]*blend;}
             }
             var source=ctx.createBufferSource();source.buffer=buffer;source.loop=true;source.loopStart=.12;
+            var highpass=ctx.createBiquadFilter();highpass.type='highpass';highpass.frequency.value=350;highpass.Q.value=.5;
             var filter=ctx.createBiquadFilter();filter.type='lowpass';filter.frequency.value=cutoff;filter.Q.value=.35;
-            var swell=ctx.createGain();swell.gain.value=level;
-            var lfo=ctx.createOscillator(),depth=ctx.createGain();lfo.frequency.value=rate;depth.gain.value=level*.72;lfo.connect(depth);depth.connect(swell.gain);
-            source.connect(filter);filter.connect(swell);
+            var layer=ctx.createGain();layer.gain.value=level;
+            source.connect(highpass);highpass.connect(filter);filter.connect(layer);
             var stereo=ctx.createStereoPanner?ctx.createStereoPanner():null;
-            if(stereo){stereo.pan.value=pan;swell.connect(stereo);stereo.connect(self.beachBus);}else swell.connect(self.beachBus);
-            source.start();lfo.start();self.beachNodes.push(source,filter,swell,lfo,depth);if(stereo)self.beachNodes.push(stereo);
+            if(stereo){stereo.pan.value=pan;layer.connect(stereo);stereo.connect(self.rainBus);}else layer.connect(self.rainBus);
+            source.start();self.rainNodes.push(source,highpass,filter,layer);if(stereo)self.rainNodes.push(stereo);
           }
-          surf(13,1050,.55,.095,-.35);
-          surf(17,2200,.18,.073,.4);
-          surf(19,3100,.045,.041,0);
-          this.beachRunning=true;this.setMix();
+          rainfall(13,2600,.4,-.25);
+          rainfall(17,4200,.12,.25);
+          this.rainRunning=true;this.setMix();
         },
-        stopBeach:function(){
-          this.beachRunning=false;
-          this.beachNodes.forEach(function(node){try{if(node.stop)node.stop();node.disconnect();}catch(e){}});
-          this.beachNodes=[];this.setMix();
+        stopRain:function(){
+          this.rainRunning=false;
+          this.rainNodes.forEach(function(node){try{if(node.stop)node.stop();node.disconnect();}catch(e){}});
+          this.rainNodes=[];this.setMix();
         },
 
         init: function () {
@@ -1845,7 +1858,7 @@
               var limiter=this.ctx.createDynamicsCompressor();limiter.threshold.value=-14;limiter.knee.value=18;limiter.ratio.value=5;limiter.attack.value=.01;limiter.release.value=.35;
               this.master.connect(limiter);limiter.connect(this.ctx.destination);
               this.effectsBus=this.ctx.createGain();this.effectsBus.gain.value=.25;this.effectsBus.connect(this.master);
-              this.beachBus=this.ctx.createGain();this.beachBus.gain.value=0;this.beachBus.connect(this.master);
+              this.rainBus=this.ctx.createGain();this.rainBus.gain.value=0;this.rainBus.connect(this.master);
             }
           }
           if (this.ctx && this.ctx.state === 'suspended') {
@@ -2008,7 +2021,7 @@
         }
       };
 
-      // Ambiente de playa sintetizado localmente: olas lentas, espuma y brisa estéreo.
+      // Lluvia suave sintetizada localmente, con volumen reducido durante la voz.
       var CalmGuide = {
         enabled:true, active:false, voice:null, utterance:null, token:0, lastText:'',
         selectVoice:function(){
@@ -2029,14 +2042,14 @@
           u.onend=end;u.onerror=end;this.utterance=u;
           try{window.speechSynthesis.speak(u);}catch(e){end();}
         },
-        station:function(id){this.active=true;SoundEngine.startBeach();this.say([
+        station:function(id){this.active=true;SoundEngine.startRain();this.say([
           'Bienvenido. Este momento es para ti. Camina hacia la caseta. Cuando llegues, toma agua con calma, en pequeños sorbos.',
           'Este momento es para ti. No te afanes. Afloja los hombros. Mantén presionado el círculo y acompaña mi voz, sin forzar la respiración. Si el ritmo no te resulta cómodo, suelta el círculo y respira con naturalidad.',
           'El turno termina. Guarda tus cosas, silencia las alertas y cierra el casillero. Hazlo a tu ritmo.',
           'Ahora prepara tu descanso. Apaga el celular, cierra las cortinas y baja la luz. Deja que este espacio se vuelva tranquilo.'
         ][id-1]);},
         phase:function(phase){this.say(['Inhala, suave.','Mantén el aire, solo si estás cómodo.','Suelta el aire, despacio. No hay afán.'][phase]);},
-        stop:function(){this.active=false;this.cancel();SoundEngine.stopBeach();}
+        stop:function(){this.active=false;this.cancel();SoundEngine.stopRain();}
       };
       if('speechSynthesis' in window){CalmGuide.selectVoice();window.speechSynthesis.addEventListener('voiceschanged',function(){CalmGuide.selectVoice();});}
 
@@ -3705,7 +3718,7 @@
             SoundEngine.setMix();
           });
           window.addEventListener('pagehide',function(){CalmGuide.resumeAfterPage=CalmGuide.active;if(self.pauseBreathing)self.pauseBreathing();CalmGuide.stop();if(SoundEngine.ctx)SoundEngine.ctx.suspend().catch(function(){});});
-          window.addEventListener('pageshow',function(event){if(event.persisted&&CalmGuide.resumeAfterPage){CalmGuide.active=true;SoundEngine.startBeach();}});
+          window.addEventListener('pageshow',function(event){if(event.persisted&&CalmGuide.resumeAfterPage){CalmGuide.active=true;SoundEngine.startRain();}});
 
           this.dom.startBtn.addEventListener('click', function () {
             SoundEngine.init();
