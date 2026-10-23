@@ -1020,7 +1020,7 @@
 
         <h1 class="screen-title">El Arquitecto del Tiempo</h1>
         <p class="screen-desc">
-          Asumes el rol de <strong>Supervisor SST / Líder de Obra</strong> en la losa del Piso 5. Ante 10 situaciones de coordinación y liderazgo, la cuadrilla te preguntará: <em>"¿Qué harías tú?"</em>
+          Eres el <strong>supervisor de la obra</strong>: decides cuándo detener, reorganizar o autorizar una actividad. Recorre 10 frentes, observa el problema y responde: <em>"¿Qué orden darías tú?"</em>
         </p>
 
         <!-- Briefing de la situación crítica -->
@@ -1504,7 +1504,7 @@
 
           this.scene = new THREE.Scene();
           this.scene.background = new THREE.Color(0x07131D);
-          this.scene.fog = new THREE.Fog(0x07131D, 28, 75);
+          this.scene.fog = new THREE.Fog(0x07131D, 45, 180);
 
           this.camera = new THREE.PerspectiveCamera(52, w / h, 0.1, 500);
           this.updateCameraPosition();
@@ -1974,6 +1974,7 @@
           this.targetPitch = (t.pitch !== undefined) ? t.pitch : 0.44;
 
           if (this.activeSpotlight) {
+            this.activeSpotlight.position.set(frontIndex>=5?t.lookAt.x:0,14,frontIndex>=5?t.lookAt.z:0);
             this.activeSpotlight.target.position.copy(t.pos || t.lookAt);
             this.activeSpotlight.color.setHex(t.color);
             this.scene.add(this.activeSpotlight.target);
@@ -2077,7 +2078,7 @@
           this.targetLookAt.set(0, 0.4, 0);
           this.baseTargetRadius = passed ? 25.0 : 28.0;
           this.targetPitch = passed ? 0.48 : 0.38;
-          if(this.leadershipActive){this.targetLookAt.set(0,.85,0);this.baseTargetRadius=8.0;}
+          if(this.leadershipActive){this.targetLookAt.set(0,.5,0);this.baseTargetRadius=Math.max(42,20/(Math.tan(THREE.MathUtils.degToRad(this.camera.fov/2))*Math.max(.4,this.camera.aspect)));this.targetPitch=.72;}
           if(this.activeBeacon)this.activeBeacon.visible=false;
 
           var flashEl = document.getElementById('cinematicFlash');
@@ -2359,138 +2360,179 @@
         },
 
         buildLeadershipScenes: function () {
-          this.leadershipScenes = {};
-          function box(parent, size, pos, color) {
-            var mesh = new THREE.Mesh(new THREE.BoxGeometry(size[0], size[1], size[2]), new THREE.MeshStandardMaterial({color:color, roughness:0.72}));
-            mesh.position.set(pos[0],pos[1],pos[2]);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh;
-          }
-          function label(parent, text, x, y, z, width) {
-            var canvas=document.createElement('canvas');canvas.width=512;canvas.height=128;
-            var ctx=canvas.getContext('2d');ctx.fillStyle='#023047';ctx.fillRect(0,0,512,128);ctx.fillStyle='#FFB703';ctx.font='bold 42px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(text,256,64,480);
-            var mesh=new THREE.Mesh(new THREE.PlaneGeometry(width,width/4),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(canvas),side:THREE.DoubleSide}));mesh.position.set(x,y,z);parent.add(mesh);return mesh;
-          }
-          var titles={5:'ORDEN DE TRABAJO',6:'PEDIDOS POR RADIO',7:'PAUSA Y RELEVO',8:'PRIMERA TAREA',9:'ENTREGA PENDIENTE',10:'BITÁCORA DE TURNO'};
+          var engine=this;
+          this.leadershipScenes={};
+          function box(g,size,pos,color){var m=new THREE.Mesh(new THREE.BoxGeometry(size[0],size[1],size[2]),new THREE.MeshStandardMaterial({color:color,roughness:.78}));m.position.set(pos[0],pos[1],pos[2]);m.castShadow=true;m.receiveShadow=true;g.add(m);return m;}
+          function beam(g,a,b,width,color){var start=new THREE.Vector3(a[0],a[1],a[2]),end=new THREE.Vector3(b[0],b[1],b[2]);var m=box(g,[width,start.distanceTo(end),width],[0,0,0],color);m.position.copy(start).add(end).multiplyScalar(.5);m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),end.sub(start).normalize());return m;}
+          function wheel(g,x,y,z){var m=new THREE.Mesh(new THREE.CylinderGeometry(.3,.3,.2,16),new THREE.MeshStandardMaterial({color:0x17202C}));m.rotation.x=Math.PI/2;m.position.set(x,y,z);m.castShadow=true;g.add(m);return m;}
+          function barrier(g,x,z,length){var b=new THREE.Group();g.add(b);b.position.set(x,0,z);box(b,[length,.16,.1],[0,.8,0],0xFFB703);box(b,[length,.1,.08],[0,.45,0],0x1E293B);[-1,1].forEach(function(side){box(b,[.1,1,.1],[side*length*.43,.5,0],0xF59E0B);box(b,[.4,.07,.45],[side*length*.43,.05,0],0x334155);});return b;}
+          function sign(g,id,x,z){var c=document.createElement('canvas');c.width=256;c.height=128;var ctx=c.getContext('2d');ctx.fillStyle='#023047';ctx.fillRect(0,0,256,128);ctx.fillStyle='#FFB703';ctx.font='bold 58px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('FRENTE '+id,128,64,235);var m=new THREE.Mesh(new THREE.PlaneGeometry(1.8,.9),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(c),side:THREE.DoubleSide}));m.position.set(x,.95,z);g.add(m);box(g,[.08,.8,.08],[x,.4,z],0x64748B);}
+          var zones={5:[-15,-11],6:[15,-11],7:[-15,0],8:[15,0],9:[-15,11],10:[15,11]};
+          // Pasarelas conectan los nuevos frentes con la losa original.
+          [-10.5,10.5].forEach(function(x){box(engine.scene,[5,.35,30],[x,-.2,0],0x253542);});
           for(var id=5;id<=10;id++){
-            var group=new THREE.Group();group.visible=false;this.scene.add(group);
-            var s={group:group,id:id,cards:[],pieces:[],decision:null};this.leadershipScenes[id]=s;
-            box(group,[5.4,.04,3.8],[0,.025,0],0x334155);
-            box(group,[5.4,.035,.06],[0,.06,1.85],0xFFB703);
-            s.worker=this.createWorkerMesh(-1.7,.15,.35,0xFFB703,0xFFFFFF,'training_'+id);group.add(s.worker);s.worker.userData.trainingId=id;
-            s.partner=this.createWorkerMesh(1.7,.15,-.35,0x0284C7,0xFFB703,'training_'+id);group.add(s.partner);s.partner.userData.trainingId=id;
-            s.board=new THREE.Group();group.add(s.board);
-            box(s.board,[2.6,1.2,.09],[0,1.25,-.65],0x475569);
-            for(var side=-1;side<=1;side+=2)box(s.board,[.07,1,.07],[side*1.1,.5,-.65],0x1E293B);
-            label(s.board,titles[id],0,2.02,-.59,2.35);
-            var words=id===5?['PRIMERO','DESPUÉS','PENDIENTE']:id===6?['AVISO 1','AVISO 2','AVISO 3']:id===9?['DISPONIBLE','ESPERA','REPROGRAMAR']:['TERMINADO','PENDIENTE','RESPONSABLE'];
-            for(var i=0;i<3;i++){
-              var card=new THREE.Group();s.board.add(card);card.position.set((i-1)*.78,1.25,-.57);
-              box(card,[.7,.7,.035],[0,0,0],0xF8FAFC);label(card,words[i],0,.19,.025,.66);
-              var mark=box(card,[.48,.055,.025],[0,-.08,.03],0xF59E0B);
-              box(card,[.48,.025,.025],[0,-.21,.03],0x64748B);s.cards.push({group:card,mark:mark});
+            var g=new THREE.Group();g.position.set(zones[id][0],0,zones[id][1]);this.scene.add(g);
+            var s={id:id,group:g,decision:null,decisionTime:0,impact:false,actors:[],moving:[]};this.leadershipScenes[id]=s;
+            if(id!==9)box(g,[9,.5,9],[0,-.27,0],0x2A3744);
+            if(id!==9){var grid=new THREE.GridHelper(8.8,8,0x38BDF8,0x1E3A52);grid.position.y=.012;g.add(grid);}
+            [-1,1].forEach(function(side){box(g,[9,.08,.12],[0,.02,side*4.4],0xF59E0B);});
+            sign(g,id,-3.4,-3.5);
+            s.gate=barrier(g,0,3.1,3.8);s.gate.visible=false;
+            function person(x,z,vest,helmet){var w=engine.createWorkerMesh(x,z,0,vest,helmet,'training_'+id);g.add(w);w.userData.trainingId=id;s.actors.push(w);return w;}
+            s.supervisor=person(-3,2.7,0x0284C7,0xFFFFFF);
+            s.worker=person(1.2,1.5,0xFFB703,0xFFB703);
+            s.partner=person(2.8,2.1,0xEA580C,0xFFFFFF);
+            if(id===5){
+              box(g,[7.5,.025,2.1],[0,.025,0],0x475569);
+              for(var stripe=0;stripe<6;stripe++)box(g,[.55,.03,.16],[.7,.045,-.8+stripe*.32],0xF8FAFC);
+              s.vehicle=new THREE.Group();g.add(s.vehicle);s.vehicle.position.set(-2.8,0,0);
+              box(s.vehicle,[1.8,.65,1.05],[0,.68,0],0xFFB703);box(s.vehicle,[.6,.55,.8],[-.5,1.23,0],0xF59E0B);
+              [-.65,.65].forEach(function(x){[-.55,.55].forEach(function(z){wheel(s.vehicle,x,.32,z);});});
+              [-.45,.45].forEach(function(z){box(s.vehicle,[.08,1.5,.08],[.2,1.6,z],0x1E293B);box(s.vehicle,[.1,2.05,.1],[.95,1.1,z],0x334155);box(s.vehicle,[1.1,.09,.1],[1.45,.3,z],0x64748B);});
+              box(s.vehicle,[1.25,.1,1.2],[0,2.3,0],0xF59E0B);
+              box(s.vehicle,[.32,.45,.32],[-.05,1.4,0],0x0284C7);
+              var driverHead=new THREE.Mesh(new THREE.SphereGeometry(.15,12,8),new THREE.MeshStandardMaterial({color:0xD79A6D}));driverHead.position.set(-.05,1.78,0);s.vehicle.add(driverHead);
+              var driverHelmet=new THREE.Mesh(new THREE.CylinderGeometry(.19,.19,.1,12),new THREE.MeshStandardMaterial({color:0xFFB703}));driverHelmet.position.set(-.05,1.91,0);s.vehicle.add(driverHelmet);
+              s.load=box(s.vehicle,[.8,.65,.85],[1.4,.68,0],0xB87530);
+              s.stop=barrier(g,-1.25,0,2.2);s.stop.rotation.y=Math.PI/2;s.stop.visible=false;
             }
             if(id===6){
-              s.radio=new THREE.Group();group.add(s.radio);s.radio.position.set(-.75,.82,.7);
-              box(group,[1.8,.08,.65],[0,.75,.7],0xB87530);
-              [-.7,.7].forEach(function(x){box(group,[.08,.75,.4],[x,.38,.7],0x1E293B);});
-              box(s.radio,[.28,.45,.16],[0,.22,0],0x1E293B);box(s.radio,[.035,.28,.035],[-.08,.55,0],0x334155);
-              s.radioLight=box(s.radio,[.08,.05,.015],[.06,.34,.09],0xEF4444);
-              s.sheet=box(group,[.65,.035,.4],[.45,.81,.7],0xF8FAFC);
-            }
-            if(id===7||id===8){
-              s.board.visible=false;
-              s.worker.position.x=-.85;s.worker.userData.baseX=-.85;
-              box(group,[1.8,.09,.8],[.4,.75,.15],0xB87530);
-              [-.3,1.1].forEach(function(x){box(group,[.09,.72,.55],[x,.36,.15],0x1E293B);});
-              label(group,titles[id],.4,.55,.57,1.5);
-              for(var j=0;j<3;j++)s.pieces.push(box(group,[.3,.18,.3],[-.15+j*.5,.89,.15],[0x0284C7,0xFFB703,0x16A34A][j]));
-              if(id===7){
-                box(group,[1,.12,.6],[-1.7,.45,-.75],0x0284C7);
-                box(group,[1,.55,.08],[-1.7,.75,-1.02],0x075985);
-                [-2.05,-1.35].forEach(function(x){box(group,[.08,.42,.45],[x,.21,-.75],0x1E293B);});
-                s.cup=box(group,[.13,.2,.13],[-1.25,.61,-.7],0xF8FAFC);
-              }else{
-                for(var slot=0;slot<3;slot++)box(group,[.38,.018,.38],[-.15+slot*.5,.81,.15],[0x075985,0xB45309,0x166534][slot]);
+              box(g,[2.2,.18,1.8],[0,.1,0],0x7C5638);s.stack=[];
+              for(var layer=0;layer<5;layer++)for(var block=0;block<3;block++){
+                var brick=box(g,[.58,.32,.7],[-.65+block*.65+layer*.06,.35+layer*.34,0],layer%2?0xCBD5E1:0xB87530);s.stack.push(brick);
               }
+              s.package=box(g,[1.85,.55,1.3],[0,2.9,0],0xEA580C);
+              var lift=new THREE.Group();g.add(lift);box(lift,[1.4,.4,1.1],[-2,.35,-.1],0xFFB703);box(lift,[.12,3,.12],[-1.15,1.5,-.1],0x64748B);box(lift,[1.3,.09,1.2],[-.55,2.55,-.1],0x64748B);
+            }
+            if(id===7){
+              s.scaffold=new THREE.Group();g.add(s.scaffold);
+              [-1,1].forEach(function(x){[-.65,.65].forEach(function(z){box(s.scaffold,[.09,3.1,.09],[x,1.75,z],0x94A3B8);wheel(s.scaffold,x,.3,z);});});
+              box(s.scaffold,[2.3,.12,1.5],[0,1.75,0],0xB87530);
+              [-.65,.65].forEach(function(z){beam(s.scaffold,[-1,.45,z],[1,1.65,z],.06,0x64748B);beam(s.scaffold,[1,.45,z],[-1,1.65,z],.06,0x64748B);box(s.scaffold,[2.2,.07,.07],[0,2.85,z],0xFFB703);});
+              for(var rung=0;rung<7;rung++)box(s.scaffold,[.05,.05,1.3],[1,.45+rung*.3,0],0xCBD5E1);
+              s.tool=box(s.scaffold,[.45,.24,.28],[.5,1.94,.2],0xDC2626);
+              box(g,[.5,.22,1.6],[2.2,.12,0],0x64748B);
+              s.worker.position.set(0,1.82,0);s.worker.userData.baseX=0;s.worker.userData.baseY=1.82;s.worker.userData.baseZ=0;
+            }
+            if(id===8){
+              box(g,[2.2,.15,1.2],[-.4,.9,0],0x475569);[-1.2,.4].forEach(function(x){box(g,[.12,.9,.9],[x,.45,0],0x64748B);});
+              box(g,[2.6,.14,.25],[-.3,1.07,0],0xCBD5E1);
+              s.disc=new THREE.Mesh(new THREE.CylinderGeometry(.36,.36,.08,24),new THREE.MeshStandardMaterial({color:0x64748B,metalness:.5}));s.disc.rotation.x=Math.PI/2;s.disc.position.set(.35,1.22,0);g.add(s.disc);
+              s.rubbish=new THREE.Group();g.add(s.rubbish);s.rubbish.position.set(1.9,0,-.5);
+              for(var waste=0;waste<5;waste++){var wasteMesh=box(s.rubbish,[.5,.25,.5],[(waste%2)*.5,.15+Math.floor(waste/2)*.22,(waste%3)*.28],0xA16207);wasteMesh.rotation.y=waste*.6;}
+              s.sparks=[];for(var spark=0;spark<18;spark++)s.sparks.push(box(g,[.035,.035,.15],[.35,1.25,0],0xFFB703));
+              s.fire=new THREE.Group();s.rubbish.add(s.fire);s.fire.visible=false;
+              s.flames=[];for(var flame=0;flame<7;flame++){var f=new THREE.Mesh(new THREE.ConeGeometry(.19,.9,7),new THREE.MeshBasicMaterial({color:flame%2?0xFFB703:0xEF4444,transparent:true,opacity:.85}));f.position.set((flame%3)*.25,.6,(flame%2)*.2);s.fire.add(f);s.flames.push(f);}
+              s.smoke=[];for(var cloud=0;cloud<7;cloud++){var smoke=new THREE.Mesh(new THREE.SphereGeometry(.3,8,6),new THREE.MeshStandardMaterial({color:0x334155,transparent:true,opacity:.6,depthWrite:false}));s.fire.add(smoke);s.smoke.push(smoke);}
             }
             if(id===9){
-              s.cart=new THREE.Group();group.add(s.cart);s.cart.position.set(0,.12,.85);
-              box(s.cart,[1.5,.1,.65],[0,.15,0],0x0284C7);
-              for(var wheel=0;wheel<4;wheel++){
-                var tire=new THREE.Mesh(new THREE.CylinderGeometry(.12,.12,.07,12),new THREE.MeshStandardMaterial({color:0x111827}));tire.rotation.x=Math.PI/2;tire.position.set(wheel<2?-.55:.55,0,wheel%2?-.33:.33);s.cart.add(tire);
-              }
-              label(s.cart,'MATERIAL SIN LLEGAR',0,.25,.36,1.45);
+              box(g,[3.3,.5,9],[-2.85,-.27,0],0x86603E);box(g,[3.3,.5,9],[2.85,-.27,0],0x86603E);
+              box(g,[2.4,.5,2.5],[0,-.27,-3.25],0x86603E);box(g,[2.4,.5,2.5],[0,-.27,3.25],0x86603E);
+              box(g,[2.4,.08,4],[0,-1.7,0],0x453629);box(g,[.12,1.7,4],[-1.2,-.85,0],0x735039);box(g,[.12,1.7,4],[1.2,-.85,0],0x735039);
+              s.earth=[];for(var soil=0;soil<10;soil++)s.earth.push(box(g,[.38,.35,.55],[1.35+(soil%2)*.32,-.1,-1.4+Math.floor(soil/2)*.6],soil%2?0xA4774B:0x735039));
+              s.heavy=box(g,[1,.65,1.3],[1.8,.36,.1],0x94A3B8);
+              for(var crack=0;crack<4;crack++){var fissure=box(g,[.025,.018,.7],[1.8+crack*.12,.01,-.9+crack*.5],0x292524);fissure.rotation.y=crack%2?.5:-.5;}
+              s.worker.position.set(-1.9,0,.5);s.worker.userData.baseX=-1.9;s.worker.userData.baseZ=.5;
             }
             if(id===10){
-              s.logbook=new THREE.Group();group.add(s.logbook);s.logbook.position.set(-1,.9,.55);
-              box(s.logbook,[.6,.06,.48],[0,0,0],0x0284C7);box(s.logbook,[.53,.018,.41],[0,.04,0],0xF8FAFC);
-              s.logLines=new THREE.Group();s.logbook.add(s.logLines);
-              for(var line=0;line<4;line++)box(s.logLines,[.38,.01,.018],[0,.054,-.12+line*.08],0x1E293B);
+              s.shoring=new THREE.Group();g.add(s.shoring);s.props=[];
+              [-1,1].forEach(function(x){[-.8,.8].forEach(function(z){var prop=box(s.shoring,[.11,2.3,.11],[x,1.15,z],0x38BDF8);s.props.push(prop);box(s.shoring,[.38,.06,.38],[x,.04,z],0x64748B);});});
+              s.deck=box(g,[3.1,.19,2.7],[0,2.4,0],0xB87530);
+              s.debris=[];for(var board=0;board<4;board++)s.debris.push(box(g,[.5,.11,2.6],[-.9+board*.6,2.56,0],0xD6B47F));
+              box(g,[1.8,.15,.8],[-2.6,.1,-1.5],0x64748B);
             }
-            this.frontTargets.push({lookAt:new THREE.Vector3(0,.85,0),pos:new THREE.Vector3(0,.85,0),speakerPos:new THREE.Vector3(-1.7,1.5,.15),radius:6.8,yaw:-.22,pitch:.42,color:0x38BDF8});
+            s.initial=[];g.traverse(function(o){s.initial.push({o:o,p:o.position.clone(),q:o.quaternion.clone(),scale:o.scale.clone(),visible:o.visible});});
+            this.frontTargets.push({lookAt:new THREE.Vector3(zones[id][0],1.05,zones[id][1]),pos:new THREE.Vector3(zones[id][0],1,zones[id][1]),speakerPos:new THREE.Vector3(zones[id][0]-3,1.8,zones[id][1]+2.7),radius:14.5,yaw:id%2?-.7:.65,pitch:.61,color:0xFFB703});
           }
         },
 
+        resetLeadershipScenes: function () {
+          Object.keys(this.leadershipScenes||{}).forEach(function(id){var s=this.leadershipScenes[id];s.decision=null;s.impact=false;s.workerDown=false;s.initial.forEach(function(item){item.o.position.copy(item.p);item.o.quaternion.copy(item.q);item.o.scale.copy(item.scale);item.o.visible=item.visible;});},this);
+        },
+
         prepareSituation: function (id) {
-          this.leadershipActive = id >= 5 ? id : null;
-          var original = id < 5;
-          [this.front1Concrete,this.front2Crane,this.front3Rebar,this.front4Corridor].forEach(function(g){if(g)g.visible=original;});
-          this.workersList.forEach(function(w){if(w.userData.role.indexOf('training_')!==0)w.visible=original;});
-          var scenes=this.leadershipScenes||{};
-          Object.keys(scenes).forEach(function(key){scenes[key].group.visible=Number(key)===id;});
-          var s=scenes[id];
-          if(s){
-            s.decision=null;
-            s.cards.forEach(function(c,i){c.group.position.set((i-1)*.25,1.2+i*.07,-.5+i*.05);c.group.rotation.z=(i-1)*.22;c.mark.material.color.setHex(0xF59E0B);});
-            s.pieces.forEach(function(p,i){p.position.set(-.15+i*.5,.89,.15);p.rotation.set(0,0,0);});
-            if(s.logbook){s.logbook.position.set(-1,.9,.55);s.logLines.visible=false;}
-          }
+          this.leadershipActive=id>=5?id:null;
+          // El conjunto permanece visible: la cámara viaja al frente activo.
         },
 
         applyLeadershipDecision: function (id, correct) {
           var s=this.leadershipScenes[id];if(!s)return;
-          s.decision=correct;s.decisionTime=performance.now();
-          s.cards.forEach(function(c){c.mark.material.color.setHex(correct?0x10B981:0xEF4444);});
-          if(s.logLines)s.logLines.visible=correct;
-          if(!correct)this.cameraShake=.08;
+          s.decision=correct;s.decisionTime=performance.now();s.impact=false;s.workerDown=false;
+          s.gate.visible=correct;
+          if(s.stop)s.stop.visible=correct;
         },
 
         animateLeadershipScenes: function (time) {
-          var s=this.leadershipScenes&&this.leadershipScenes[this.leadershipActive];if(!s||this.finaleMode)return;
-          var decided=s.decision!==null,good=s.decision===true,elapsed=decided?(performance.now()-s.decisionTime)*.001:0;
-          s.cards.forEach(function(c,i){
-            var x=good?(i-1)*.78:(i-1)*.25+Math.sin(time*2+i)*.07;
-            c.group.position.lerp(new THREE.Vector3(x,good?1.25:1.2+i*.07,good?-.57:-.5+i*.05),.06);
-            c.group.rotation.z+=( (good?0:(i-1)*.22)-c.group.rotation.z)*.06;
+          var engine=this;
+          Object.keys(this.leadershipScenes||{}).forEach(function(id){
+            var s=engine.leadershipScenes[id];if(engine.finaleMode)return;
+            var decided=s.decision!==null,good=s.decision===true,t=decided?(performance.now()-s.decisionTime)*.001:0;
+            var p=Math.min(1,Math.max(0,(t-.7)/3.4)),ease=p*p*(3-2*p),active=engine.leadershipActive===s.id;
+            function impact(after,x,y,z){if(!good&&decided&&t>after&&!s.impact){s.impact=true;var pt=s.group.localToWorld(new THREE.Vector3(x,y,z));if(active){engine.triggerImpactDust(pt.x,pt.y,pt.z);engine.cameraShake=.3;SoundEngine.playCrash();}}}
+            if(s.id===5){
+              s.vehicle.position.x=decided?(good?-2.8:-2.8+ease*2.8):-2.8+(active?Math.sin(time)*.08:0);
+              s.load.rotation.z=!good&&decided&&t>2.8?Math.min(.7,(t-2.8)*.55):0;
+              impact(2.8,.8,.2,0);s.workerDown=!good&&decided&&t>2.8;
+            }
+            if(s.id===6){
+              s.package.position.y=good?2.9:decided?2.9-Math.min(1,t/1.8)*.7:2.9;
+              s.stack.forEach(function(b,i){var layer=Math.floor(i/3),col=i%3,slide=!good&&decided?Math.min(1,Math.max(0,(t-1.8)/2)):0;b.position.set(-.65+col*.65+layer*.06+slide*(.6+layer*.3),Math.max(.16,.35+layer*.34-slide*layer*.4),slide*Math.sin(i*2)*.6);b.rotation.z=-slide*.6;});
+              if(!good&&decided&&t>2){s.package.position.y=Math.max(.35,2.2-(t-2)*.8);s.package.position.x=Math.min(1.6,(t-2)*.65);s.package.rotation.z=-Math.min(.5,(t-2)*.25);}
+              impact(2.8,1,.2,0);
+            }
+            if(s.id===7){
+              s.scaffold.position.x=good?0:decided?ease*1.2:active?Math.sin(time*2)*.045:0;
+              var tilt=!good&&decided?Math.min(.65,Math.max(0,t-2.6)*.45):0;s.scaffold.rotation.z=-tilt;
+              s.tool.position.y=!good&&decided&&t>3?Math.max(.15,1.94-(t-3)*1.5):1.94;
+              impact(3.2,1.5,.15,0);s.workerDown=!good&&decided&&t>3;
+            }
+            if(s.id===8){
+              var cutting=!good&&(active||decided);if(cutting)s.disc.rotation.y=time*16;
+              s.sparks.forEach(function(sp,i){sp.visible=cutting;var fly=(time*1.9+i*.073)%1;sp.position.set(.35+fly*2.2,1.25-fly*fly*1.1,-fly*.4+Math.sin(i)*.1);});
+              s.rubbish.position.x=good?1.9+ease*1.35:1.9;
+              s.fire.visible=!good&&decided&&t>1.8;
+              s.flames.forEach(function(f,i){f.scale.y=.7+Math.sin(time*7+i)*.3+Math.min(1,t/5);});
+              s.smoke.forEach(function(sm,i){var rise=(time*.55+i*.18)%1;sm.position.set(.3+rise*.4,.8+rise*2.5,.2);sm.scale.setScalar(.5+rise*1.8);sm.material.opacity=(1-rise)*.6;});
+              if(s.fire.visible&&!s.impact){s.impact=true;if(active)SoundEngine.playAlert();}
+            }
+            if(s.id===9){
+              var collapse=!good&&decided?Math.min(1,Math.max(0,(t-1)/2.8)):0;
+              s.earth.forEach(function(soil,i){soil.position.set(1.35+(i%2)*.32-collapse*(.7+(i%3)*.13),-.1-collapse*(.8+(i%2)*.35),-1.4+Math.floor(i/2)*.6);soil.rotation.z=collapse*.7;});
+              s.heavy.position.set(1.8-collapse, .36-collapse*1.3,.1);s.heavy.rotation.z=collapse*.65;
+              impact(2.6,.3,-.5,0);
+            }
+            if(s.id===10){
+              s.props.forEach(function(prop,i){prop.rotation.z=good?0:decided?(i<2?ease*1.4:-ease*.4):0;prop.position.y=1.15-(good?0:decided?ease*(i<2?.8:.2):0);});
+              var sag=!good&&decided?Math.min(1,Math.max(0,(t-1.5)/2.8)):0;
+              s.deck.rotation.z=sag*.48;s.deck.position.y=2.4-sag*1.3;
+              s.debris.forEach(function(b,i){b.position.y=2.56-sag*(1.2+i*.3);b.position.x=-.9+i*.6+sag*.6;b.rotation.z=sag*(i%2?.7:-.6);});
+              impact(3,0,.3,0);
+            }
           });
-          if(s.radio){s.radio.rotation.z=decided?(good?0:Math.sin(time*15)*.04):Math.sin(time*15)*.04;s.radioLight.material.color.setHex(good?0x10B981:Math.sin(time*6)>0?0xEF4444:0x450A0A);}
-          if(s.id===7)s.pieces.forEach(function(p,i){p.position.y=good?.89:.89+Math.abs(Math.sin(time*3+i))*.08;p.rotation.y=good?0:Math.sin(time*2+i)*.25;});
-          if(s.id===8)s.pieces.forEach(function(p,i){var slot=good?i:[2,0,1][i];p.position.lerp(new THREE.Vector3(-.15+slot*.5,.89+(decided&&!good?Math.abs(Math.sin(time*2+i))*.12:0),.15),.05);p.rotation.y=good?0:Math.sin(time*1.5+i)*.3;});
-          if(s.logbook)s.logbook.position.lerp(new THREE.Vector3(good?1.35:-1,.9+(good&&elapsed<2?Math.sin(elapsed*Math.PI/2)*.2:0),.55),.045);
         },
 
-        animateLeadershipWorker: function (worker,time) {
-          var u=worker.userData,s=this.leadershipScenes[u.trainingId];if(!s||!s.group.visible)return;
-          var good=s.decision===true,main=worker===s.worker;
-          worker.position.y=u.baseY+Math.sin(time*2)*.01;
-          worker.rotation.set(0,u.baseRotY,0);
-          u.head.rotation.set(good?.08:.3,Math.sin(time*(good?1:3))*(good?.08:.25),0);
-          u.torso.rotation.x=good?0:.09;
-          u.rArm.rotation.x=good?-.5+Math.sin(time*2)*.08:-.9+Math.sin(time*5)*.22;
-          u.lArm.rotation.x=good?-.2:-.7+Math.cos(time*4)*.18;
-          if(s.id===7&&main){
-            worker.position.x+=( (good?-1.7:u.baseX)-worker.position.x)*.05;
-            worker.position.z+=( (good?-.25:u.baseZ)-worker.position.z)*.05;
-            worker.position.y=u.baseY;
-            u.head.rotation.x=good?.1:.48;
-            u.torso.rotation.x=good?.06:.22;
-            u.rArm.rotation.x=good?-.2:-.8+Math.sin(time*3)*.1;
-            u.lArm.rotation.x=good?-.2:-.6;
-          }
-          if(s.id===8&&good){u.rArm.rotation.x=main?-.45:-.85+Math.sin(time*2)*.12;u.head.rotation.y=main?.3:-.3;}
-          if(s.id===10&&good){u.rArm.rotation.x=-.8;u.head.rotation.x=.18;}
+        animateLeadershipWorker: function (w,time) {
+          var u=w.userData,s=this.leadershipScenes[u.trainingId];if(!s)return;
+          var main=w===s.worker,supervisor=w===s.supervisor,good=s.decision===true,decided=s.decision!==null,t=decided?(performance.now()-s.decisionTime)*.001:0;
+          var retreat=decided?Math.min(1,Math.max(0,(t-(good?.15:1.9))/1.8)):0;
+          w.position.set(u.baseX,u.baseY,u.baseZ);w.rotation.set(0,u.baseRotY,0);
+          u.head.rotation.set(.08,Math.sin(time)*.12,0);u.torso.rotation.x=0;
+          u.lArm.rotation.set(-.2,0,0);u.rArm.rotation.set(supervisor?-.9:-.3+Math.sin(time*2)*.1,0,0);
+          if(supervisor){u.head.rotation.y=-.35;if(decided&&!good){u.rArm.rotation.x=-1.3;u.lArm.rotation.x=-1.2;u.head.rotation.x=.2;}return;}
+          if(s.id===5&&main){
+            w.position.set(.9,0,1.8-(good?Math.min(1,t/3)*3:decided?Math.min(1,t/2.8)*1.8:0));
+            if(s.workerDown){w.position.set(.95,.16,-.2);w.rotation.x=Math.min(Math.PI/2,(t-2.8)*3);}
+          }else if(s.id===7&&main){
+            if(good){var down=Math.min(1,t/1.8);w.position.set(down*2.8,1.82*(1-down),1.2*down);}
+            else if(decided){w.position.x=s.scaffold.position.x+.3;w.position.y=s.workerDown?Math.max(.15,1.82-(t-3)*2):1.82;w.rotation.z=s.workerDown?Math.min(1.4,(t-3)*1.7):s.scaffold.rotation.z;}
+          }else if(s.id===9){w.position.x=u.baseX+(u.baseX<0?-1:1)*retreat;w.position.z=u.baseZ+retreat*.5;}
+          else {w.position.z=u.baseZ+retreat*1.4;w.position.x=u.baseX+retreat*.35;}
+          if(retreat>0&&retreat<1){u.lArm.rotation.x=Math.sin(time*7)*.45;u.rArm.rotation.x=-Math.sin(time*7)*.45;}
+          if(s.workerDown&&main){u.lArm.rotation.x=-1.1;u.rArm.rotation.x=-1.2;}
         },
 
         resetSceneState: function () {
+          this.resetLeadershipScenes();
           this.prepareSituation(1);
           this.targetLookAt.set(0, -0.7, 0);
           this.baseTargetRadius = 28.0;
@@ -2837,6 +2879,10 @@
                   } else if (u.role === 'rebar') {
                     if (u.rArm) u.rArm.rotation.x = -1.3 + Math.sin(time * 4) * 0.25;
                     if (u.lArm) u.lArm.rotation.x = -0.3;
+                  } else if(u.role.indexOf('training_')===0){
+                    if(u.rArm)u.rArm.rotation.x=-1.15+Math.sin(time*3+i)*.2;
+                    if(u.lArm)u.lArm.rotation.x=-.7;
+                    if(u.head)u.head.rotation.x=0;
                   } else if (u.role === 'corridor') {
                     if (u.rArm) u.rArm.rotation.x = -1.1 + Math.sin(time * 3.8) * 0.3;
                     if (u.lArm) u.lArm.rotation.x = -1.1 + Math.cos(time * 3.8) * 0.3;
@@ -3174,177 +3220,165 @@
           },
 {
   "id": 5,
-  "speaker": "PLANIFICACIÓN • PRIORIDADES",
-  "situation": "Dos frentes piden apoyo y el residente quiere terminar ambos antes del descanso.",
-  "promptText": "El equipo no alcanza para todo al mismo tiempo. ¿Qué haces?",
-  "summaryText": "El tablero queda ordenado y la cuadrilla se concentra en una tarea a la vez. Acordar prioridades, responsables y tiempos evita cambiar de actividad sin terminar y permite avisar qué quedará pendiente.",
-  "wrongText": "Las tareas se cruzan en el tablero y el equipo va de un pedido a otro. Prometer todo sin revisar la capacidad aumenta las interrupciones y deja trabajos incompletos.",
+  "frontIndex": 5,
+  "speaker": "FRENTE 5 • CRUCE DE MONTACARGAS",
+  "zone": "FRENTE 5 • CRUCE DE MONTACARGAS",
+  "situation": "El montacargas lleva material al acopio. Dos trabajadores atraviesan su recorrido mientras te piden acelerar la entrega.",
+  "promptText": "Como supervisor, ¿qué autorizas en este cruce?",
+  "summaryText": "Detuviste la maniobra y separaste el paso de personas del recorrido del vehículo. El montacargas espera detrás de la barrera mientras la cuadrilla cruza; la entrega se retoma con la circulación coordinada.",
+  "wrongText": "El montacargas y el peatón coinciden en el cruce. El trabajador cae y parte de la carga se desplaza: acelerar sin controlar la circulación convirtió una entrega en un incidente.",
   "choices": [
     {
-      "title": "Acepto terminar ambos frentes en el mismo plazo y voy moviendo a la cuadrilla según quién insista más.",
-      "correct": false,
-      "wrongText": "Cambiar de frente con cada llamado deja tareas a medias. El equipo pierde claridad y aumenta la presión por cumplir dos promesas incompatibles.",
-      "letter": "A"
+      "letter": "A",
+      "title": "Pido al conductor que toque la bocina y continúe despacio. Mantengo el paso de la cuadrilla para no retrasar ninguno de los trabajos.",
+      "correct": false
     },
     {
-      "title": "Reviso qué es prioritario, acuerdo un orden con el residente y asigno responsables. Informo qué puede hacerse hoy y qué debe reprogramarse.",
-      "correct": true,
-      "letter": "B"
+      "letter": "B",
+      "title": "Detengo la maniobra, separo los recorridos y coordino el paso con el responsable de la operación. Solo autorizo continuar cuando la zona esté despejada.",
+      "correct": true
     },
     {
-      "title": "Reparto el personal entre ambos frentes sin revisar las necesidades. Espero que cada grupo resuelva cómo cumplir.",
-      "correct": false,
-      "wrongText": "Dividir al personal sin revisar recursos ni responsabilidades deja a ambos grupos tratando de resolver faltantes mientras corre el plazo.",
-      "letter": "C"
+      "letter": "C",
+      "title": "Envío a un ayudante a caminar delante del vehículo mientras los demás siguen cruzando por el mismo lugar.",
+      "correct": false
     }
-  ],
-  "frontIndex": 5,
-  "zone": "PLANIFICACIÓN • PRIORIDADES"
+  ]
 },
 {
   "id": 6,
-  "speaker": "COORDINACIÓN • INTERRUPCIONES",
-  "situation": "Estás revisando una entrega. Por radio llegan tres pedidos distintos y todos se presentan como urgentes.",
-  "promptText": "¿Cómo atiendes los pedidos sin perder lo que estabas revisando?",
-  "summaryText": "Los avisos dejan de superponerse y las solicitudes quedan en una fila. Comprobaste si había un peligro inmediato, registraste los otros pedidos y confirmaste a cada persona cuándo serían atendidos.",
-  "wrongText": "Los avisos se amontonan y la revisión queda incompleta. Cambiar de tarea con cada llamado, o ignorar todo, impide distinguir lo urgente de lo que puede esperar.",
+  "frontIndex": 6,
+  "speaker": "FRENTE 6 • ACOPIO INESTABLE",
+  "zone": "FRENTE 6 • ACOPIO INESTABLE",
+  "situation": "La pila de materiales está inclinada y una base se ha desplazado. El proveedor quiere descargar otro paquete encima.",
+  "promptText": "Tienes autoridad sobre la descarga. ¿Qué ordenas?",
+  "summaryText": "Suspendiste la descarga y delimitaste el acopio. La cuadrilla se retira y la pila queda sin nuevas cargas mientras se organiza una revisión y una forma segura de reacomodarla.",
+  "wrongText": "El nuevo paquete carga la pila inclinada. La base cede, los materiales se deslizan y caen sobre la zona de paso; el equipo debe retirarse de urgencia.",
   "choices": [
     {
-      "title": "Pregunto si hay un peligro inmediato. Registro los demás pedidos, confirmo su prioridad y acuerdo cuándo responder mientras cierro la revisión.",
-      "correct": true,
-      "letter": "A"
+      "letter": "A",
+      "title": "Suspendo la descarga, aparto al personal y delimito el acopio. Coordino la revisión de la base y del apilamiento antes de autorizar otra carga.",
+      "correct": true
     },
     {
-      "title": "Respondo cada llamado al instante y trato de continuar la revisión al mismo tiempo, confiando en recordar dónde iba.",
-      "correct": false,
-      "wrongText": "Los pedidos se mezclan con la revisión. Al depender de la memoria, dejas un dato sin comprobar y debes volver sobre el trabajo.",
-      "letter": "B"
+      "letter": "B",
+      "title": "Autorizo un paquete más porque el camión está esperando. Después reorganizamos todo cuando termine la descarga.",
+      "correct": false
     },
     {
-      "title": "Apago el radio hasta terminar sin avisar. Después averiguaré qué necesitaban y si algo era urgente.",
-      "correct": false,
-      "wrongText": "El radio queda sin respuesta y los pedidos siguen pendientes. Sin avisar ni comprobar su urgencia, el equipo no sabe cómo coordinarse contigo.",
-      "letter": "C"
+      "letter": "C",
+      "title": "Pido a dos ayudantes que sostengan la pila mientras se deja el paquete y luego buscamos cómo acomodarla.",
+      "correct": false
     }
-  ],
-  "frontIndex": 6,
-  "zone": "COORDINACIÓN • INTERRUPCIONES"
+  ]
 },
 {
   "id": 7,
-  "speaker": "CUADRILLA • FATIGA",
-  "situation": "Un compañero repite errores y dice: «Me cuesta concentrarme, pero puedo seguir para terminar».",
-  "promptText": "¿Qué haces al notar que la fatiga ya afecta su trabajo?",
-  "summaryText": "La tarea se detiene y el compañero se aparta para descansar. Revisas su estado con él y coordinas una pausa o relevo antes de continuar; el plazo se ajusta a la capacidad real del equipo.",
-  "wrongText": "El compañero sigue inclinado sobre el trabajo y las piezas vuelven a desordenarse. Mantener la misma exigencia cuando ya aparecen errores aumenta el reproceso y la sobrecarga.",
+  "frontIndex": 7,
+  "speaker": "FRENTE 7 • ANDAMIO MÓVIL",
+  "zone": "FRENTE 7 • ANDAMIO MÓVIL",
+  "situation": "El andamio se mueve cuando el trabajador se acomoda. Te dicen que falta poco y que pueden terminar sin bajarse.",
+  "promptText": "¿Cómo respondes a la presión por terminar desde ese andamio?",
+  "summaryText": "Suspendiste la actividad y coordinaste el descenso antes de cualquier ajuste. El andamio queda fuera de uso para revisión por personal competente; la cuadrilla espera en un punto separado.",
+  "wrongText": "El andamio rueda con el trabajador arriba, golpea un obstáculo y se inclina. Las herramientas caen y el trabajador pierde el equilibrio: el movimiento advertía que no era momento de continuar.",
   "choices": [
     {
-      "title": "Le pido un último esfuerzo porque falta poco. Prometo que podrá descansar cuando termine todo lo pendiente.",
-      "correct": false,
-      "wrongText": "El compañero continúa fatigado y repite el error. Posponer la pausa hasta terminar todo mantiene la misma condición que está dificultando el trabajo.",
-      "letter": "A"
+      "letter": "A",
+      "title": "Le digo que se quede en el centro de la plataforma y termine rápido. Revisaremos el movimiento cuando baje.",
+      "correct": false
     },
     {
-      "title": "Lo cambio a otra tarea que también exige atención y mantengo el plazo, sin hablar de cómo se siente.",
-      "correct": false,
-      "wrongText": "Cambiaste la actividad, pero no atendiste la fatiga. La dificultad para concentrarse continúa en la nueva tarea.",
-      "letter": "B"
+      "letter": "B",
+      "title": "Pido que un compañero sostenga la estructura desde abajo para que no se desplace mientras terminan.",
+      "correct": false
     },
     {
-      "title": "Detengo su tarea, hablo con él y coordino una pausa o un relevo. Ajusto el trabajo pendiente antes de pedirle que continúe.",
-      "correct": true,
-      "letter": "C"
+      "letter": "C",
+      "title": "Suspendo el trabajo, coordino que desciendan y retiro el andamio de uso. Solicito su revisión antes de autorizar que vuelvan a subir.",
+      "correct": true
     }
-  ],
-  "frontIndex": 7,
-  "zone": "CUADRILLA • FATIGA"
+  ]
 },
 {
   "id": 8,
-  "speaker": "EQUIPO • COMPAÑERO NUEVO",
-  "situation": "Llega un compañero nuevo. Le dicen: «Mira a los demás y arranca; hoy no hay tiempo para explicar».",
-  "promptText": "¿Cómo lo integras sin dejarlo adivinando lo que debe hacer?",
-  "summaryText": "El compañero observa una demostración y ordena las piezas con acompañamiento. Explicar la tarea, confirmar lo entendido y dejar un referente reduce las dudas y permite corregir antes de repetir un error.",
-  "wrongText": "Las piezas quedan en un orden equivocado y el compañero duda frente al puesto. Dar por entendido el trabajo tras una indicación rápida traslada la incertidumbre a quien acaba de llegar.",
+  "frontIndex": 8,
+  "speaker": "FRENTE 8 • TRABAJO EN CALIENTE",
+  "zone": "FRENTE 8 • TRABAJO EN CALIENTE",
+  "situation": "Las chispas del corte llegan a cajas y residuos cercanos. La limpieza se aplazó para cumplir la entrega.",
+  "promptText": "¿Qué decides antes de permitir que siga el corte?",
+  "summaryText": "Detuviste el corte y separaste los residuos de la zona. Las chispas cesan y el área queda delimitada mientras se verifican las condiciones y los controles para reanudar.",
+  "wrongText": "Las chispas alcanzan los residuos y aparece fuego con humo. La cuadrilla se retira y se interrumpe el frente completo; aplazar el orden dejó una fuente de ignición junto a material combustible.",
   "choices": [
     {
-      "title": "Le digo que copie al compañero más rápido. Si surge una duda importante, él sabrá cuándo preguntar.",
-      "correct": false,
-      "wrongText": "Observar sin conocer el objetivo ni tener un referente deja dudas sin resolver. El compañero empieza copiando una secuencia que no comprende.",
-      "letter": "A"
+      "letter": "A",
+      "title": "Pido que orienten las chispas hacia otro lado y continúen. Dejamos el retiro de residuos para el final.",
+      "correct": false
     },
     {
-      "title": "Explico qué debe hacer y con quién trabajará. Le pido que lo repita con sus palabras y acompaño el primer intento.",
-      "correct": true,
-      "letter": "B"
+      "letter": "B",
+      "title": "Detengo el corte, coordino el retiro de combustibles y la delimitación del área. Verifico con el responsable las condiciones de trabajo antes de autorizar el reinicio.",
+      "correct": true
     },
     {
-      "title": "Le doy todas las instrucciones de una sola vez y me voy a otro frente, para no retrasar al resto.",
-      "correct": false,
-      "wrongText": "La información llega junta y sin comprobar lo entendido. Al empezar solo, el compañero mezcla los pasos y necesita rehacer la tarea.",
-      "letter": "C"
+      "letter": "C",
+      "title": "Dejo a un ayudante mirando las cajas para que avise si empiezan a humear, mientras el corte continúa.",
+      "correct": false
     }
-  ],
-  "frontIndex": 8,
-  "zone": "EQUIPO • COMPAÑERO NUEVO"
+  ]
 },
 {
   "id": 9,
-  "speaker": "PROGRAMACIÓN • MATERIAL RETRASADO",
-  "situation": "El material no llegó. Te piden mantener la entrega de hoy aunque una parte del trabajo depende de ese suministro.",
-  "promptText": "¿Qué propones mientras confirman la llegada del material?",
-  "summaryText": "El espacio de material sigue vacío, pero el tablero separa lo pendiente de lo que sí puede avanzar. Comunicas el retraso, reorganizas tareas viables y acuerdas un plazo revisable sin prometer lo que no controlas.",
-  "wrongText": "El espacio sigue vacío y el tablero conserva tareas que no pueden empezar. Ocultar el faltante o improvisar para sostener el plazo añade presión sin resolver la dependencia.",
+  "frontIndex": 9,
+  "speaker": "FRENTE 9 • BORDE DE EXCAVACIÓN",
+  "zone": "FRENTE 9 • BORDE DE EXCAVACIÓN",
+  "situation": "Hay material pesado junto al borde y se ven grietas en el terreno. Te piden bajar a revisar para no detener la instalación.",
+  "promptText": "¿Qué orden das frente a estas señales en el terreno?",
+  "summaryText": "Restringiste el acceso y apartaste al equipo. El material no sigue avanzando y la zona queda delimitada para evaluación por personal competente antes de permitir nuevos trabajos.",
+  "wrongText": "El borde se desprende y el material se desliza hacia la excavación. La tierra ocupa parte de la zona de trabajo y el personal retrocede: las grietas y la carga próxima requerían detener la actividad.",
   "choices": [
     {
-      "title": "Confirmo el retraso, informo qué tareas afecta y acuerdo cuáles pueden avanzar con lo disponible. Actualizo el plazo con el responsable.",
-      "correct": true,
-      "letter": "A"
+      "letter": "A",
+      "title": "Detengo el acceso, retiro al personal de la zona expuesta y delimito. Solicito la evaluación del terreno y del acopio antes de autorizar la continuación.",
+      "correct": true
     },
     {
-      "title": "Mantengo la promesa de entrega y no aviso todavía. Confío en que el material llegue a tiempo para recuperar el retraso.",
-      "correct": false,
-      "wrongText": "El equipo espera junto al espacio vacío y el plazo no cambia. Avisar tarde reduce el margen para reorganizar el trabajo con los demás.",
-      "letter": "B"
+      "letter": "B",
+      "title": "Pido que un trabajador baje a mirar rápido mientras otro observa desde arriba y avisa si se mueve la tierra.",
+      "correct": false
     },
     {
-      "title": "Pido avanzar con otro material disponible sin consultar su uso, para mostrar progreso mientras llega el pedido.",
-      "correct": false,
-      "wrongText": "El pedido sigue sin llegar y empiezas un trabajo sin confirmar su viabilidad. Mostrar avance no resuelve la dependencia y puede generar reproceso.",
-      "letter": "C"
+      "letter": "C",
+      "title": "Dejo continuar la instalación y pido que alejen el material después, cuando se desocupe el equipo de transporte.",
+      "correct": false
     }
-  ],
-  "frontIndex": 9,
-  "zone": "PROGRAMACIÓN • MATERIAL RETRASADO"
+  ]
 },
 {
   "id": 10,
-  "speaker": "CIERRE • ENTREGA DE TURNO",
-  "situation": "Llega el relevo. Hay tareas terminadas, una pendiente y un cambio que todavía no quedó registrado.",
-  "promptText": "¿Cómo entregas el turno para que el siguiente equipo pueda continuar?",
-  "summaryText": "La bitácora pasa al relevo con las tareas ordenadas. Registras qué terminó, qué sigue pendiente y qué cambió; confirmas quién recibe cada asunto y das espacio para preguntas.",
-  "wrongText": "La bitácora queda sin completar y el relevo recibe tareas sueltas. Sin revisar pendientes y responsables, el nuevo turno tiene que reconstruir la información y puede repetir trabajo.",
+  "frontIndex": 10,
+  "speaker": "FRENTE 10 • RETIRO DE PUNTALES",
+  "zone": "FRENTE 10 • RETIRO DE PUNTALES",
+  "situation": "Otra cuadrilla necesita los puntales. Un ayudante empezó a soltarlos sin confirmar la autorización de retiro.",
+  "promptText": "Te corresponde autorizar el trabajo. ¿Qué haces?",
+  "summaryText": "Detuviste el retiro y restringiste el área. Los puntales permanecen en posición mientras confirmas la liberación y el procedimiento con el responsable técnico; reprogramas la necesidad de la otra cuadrilla.",
+  "wrongText": "Al retirar los apoyos, el tablero pierde estabilidad y se desplaza. Caen elementos y la cuadrilla se aparta de urgencia: necesitar los puntales en otro frente no reemplazaba la autorización técnica.",
   "choices": [
     {
-      "title": "Digo que todo está casi listo y me retiro. El relevo podrá descubrir los detalles al recorrer el frente.",
-      "correct": false,
-      "wrongText": "El relevo recibe una idea incompleta del avance. Tiene que descubrir los pendientes y el cambio que no registraste antes de organizarse.",
-      "letter": "A"
+      "letter": "A",
+      "title": "Autorizo retirar algunos puntales para resolver la urgencia. Si el tablero no se mueve, podrán quitar los demás.",
+      "correct": false
     },
     {
-      "title": "Dejo una nota general y envío los detalles en distintos mensajes, sin confirmar quién recibió la información.",
-      "correct": false,
-      "wrongText": "La información queda repartida y no hay un responsable confirmado. Un mensaje enviado no asegura que el siguiente turno haya entendido el pendiente.",
-      "letter": "B"
+      "letter": "B",
+      "title": "Pido retirar los apoyos de un extremo mientras llamo al responsable. Así adelantamos tiempo mientras confirma.",
+      "correct": false
     },
     {
-      "title": "Revisamos juntos avances, pendientes y cambios. Los dejo registrados, confirmamos responsables y respondo preguntas antes de retirarme.",
-      "correct": true,
-      "letter": "C"
+      "letter": "C",
+      "title": "Detengo el retiro y restrinjo el acceso. Confirmo con el responsable técnico la autorización y el procedimiento antes de liberar cualquier puntal.",
+      "correct": true
     }
-  ],
-  "frontIndex": 10,
-  "zone": "CIERRE • ENTREGA DE TURNO"
+  ]
 }
         ],
 
@@ -3561,7 +3595,7 @@
           this.updateMentalMeter();
 
           // Pausa cinematográfica interactiva para observar la consecuencia física en el 3D antes del drawer
-          var delayMs = this.currentRound===2&&!isCorrect ? Isometric3DEngine.craneFallDuration*1000+1200 : (isCorrect ? 2000 : 2800);
+          var delayMs = this.currentRound>=5 ? 5600 : this.currentRound===2&&!isCorrect ? Isometric3DEngine.craneFallDuration*1000+1200 : (isCorrect ? 2000 : 2800);
           setTimeout(function () {
             self.showFeedback(isCorrect, isCorrect ? data.summaryText : (choice.wrongText || data.wrongText));
           }, delayMs);
