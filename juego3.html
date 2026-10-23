@@ -833,33 +833,29 @@
       overflow-y: auto;
     }
     .breathing-reflection .transition-progress-track { display: none; }
-    .breathing-reflection-options {
-      display: grid;
-      gap: 7px;
-      margin-top: 10px;
-    }
-    .breathing-reflection-options button {
-      min-height: 44px;
+    #breathingReflectionText {
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      min-height: 110px;
       padding: 9px 12px;
       border: 1px solid rgba(148, 163, 184, .5);
       border-radius: 10px;
       background: #123b4c;
       color: #f8fafc;
       font: inherit;
-      font-size: 13px;
+      font-size: 16px;
+      line-height: 1.4;
       text-align: left;
-      cursor: pointer;
+      resize: vertical;
     }
-    .breathing-reflection-options button[aria-pressed="true"] {
-      border-color: var(--bolivar-yellow);
-      background: #284e58;
-    }
-    .breathing-reflection-options button:focus-visible {
+    #breathingReflectionText::placeholder { color: #b6c8d2; }
+    #breathingReflectionText:focus-visible {
       outline: 2px solid var(--bolivar-yellow);
       outline-offset: 2px;
     }
-    #breathingReflectionReply { margin-top: 10px; }
-    #breathingReflectionReply:empty { display: none; }
+    #breathingReflectionError { margin-top: 8px; color: #fecaca; }
+    #breathingReflectionError:empty { display: none; }
 
     .transition-actions-row {
       display: flex;
@@ -1511,13 +1507,8 @@
         </p>
 
         <div id="breathingReflection" hidden>
-          <div class="breathing-reflection-options" role="group" aria-label="Cómo te resultó la respiración">
-            <button type="button" data-feeling="calm" aria-pressed="false">Me siento más tranquilo/a.</button>
-            <button type="button" data-feeling="same" aria-pressed="false">Me siento igual que antes.</button>
-            <button type="button" data-feeling="difficult" aria-pressed="false">Me costó seguir el ritmo.</button>
-            <button type="button" data-feeling="uncomfortable" aria-pressed="false">Sentí incomodidad.</button>
-          </div>
-          <p class="drawer-text" id="breathingReflectionReply" role="status" aria-live="polite"></p>
+          <textarea id="breathingReflectionText" rows="3" maxlength="1000" required aria-labelledby="drawerFeedbackText" aria-describedby="breathingReflectionError" placeholder="Escribe con tus palabras cómo te sentiste…"></textarea>
+          <p class="drawer-text" id="breathingReflectionError" role="status" aria-live="polite"></p>
         </div>
 
         <div class="transition-actions-row">
@@ -3589,6 +3580,7 @@
         vitalBattery: 15, // Nivel de batería vital: 0 a 100%
         stationActive: false,
         breathingReflectionOpen: false,
+        breathingReflectionResponse: '',
         celebrationTimers: [],
         celebrationBatteryTimer: null,
         dom: {},
@@ -3740,24 +3732,9 @@
             self.advanceStation();
           });
 
-          document.getElementById('breathingReflection').addEventListener('click', function (e) {
-            var button = e.target.closest('button[data-feeling]');
-            if (!button || !self.breathingReflectionOpen) return;
-            var replies = {
-              calm: 'Qué bueno que esta pausa te haya resultado agradable. Quédate un momento con esa sensación y vuelve a tu respiración natural, sin afán.',
-              same: 'Gracias por contarlo. Está bien no notar un cambio. No tienes que sentir algo específico. Date un momento y respira a tu ritmo.',
-              difficult: 'Gracias por contarlo. No necesitas seguir los tiempos a la fuerza. Vuelve a tu respiración natural y deja los hombros sueltos. Esto no es una competencia.',
-              uncomfortable: 'Gracias por decirlo. Deja el ejercicio y vuelve a respirar con naturalidad. No hace falta retener el aire ni repetirlo. Continúa cuando te sientas cómodo.'
-            };
-            var reply = replies[button.dataset.feeling];
-            if (!reply) return;
-            document.querySelectorAll('#breathingReflection button').forEach(function (option) {
-              option.setAttribute('aria-pressed', String(option === button));
-            });
-            document.getElementById('breathingReflectionReply').textContent = reply;
-            self.dom.feedbackAdvanceBtn.querySelector('span').textContent = 'CONTINUAR';
-            self.dom.transitionAutoHint.textContent = 'Tómate el tiempo que necesites.';
-            CalmGuide.say(reply);
+          document.getElementById('breathingReflectionText').addEventListener('input', function () {
+            this.removeAttribute('aria-invalid');
+            document.getElementById('breathingReflectionError').textContent = '';
           });
 
           this.dom.feedbackModal.addEventListener('click', function (e) {
@@ -4285,19 +4262,18 @@
         },
 
         showBreathingReflection: function () {
-          this.showFeedback('Vuelve a tu respiración natural. ¿Cómo te resultó el ejercicio?', true);
+          this.showFeedback('¿Cómo te sentiste al respirar? Cuéntanos con tus palabras.', true);
           this.breathingReflectionOpen = true;
           this.dom.feedbackDrawer.classList.add('breathing-reflection');
           document.getElementById('drawerBadgeText').textContent = 'TU EXPERIENCIA';
           document.getElementById('breathingReflection').hidden = false;
-          document.getElementById('breathingReflectionReply').textContent = '';
-          document.querySelectorAll('#breathingReflection button').forEach(function (button) {
-            button.setAttribute('aria-pressed', 'false');
-          });
+          this.breathingReflectionResponse = '';
+          document.getElementById('breathingReflectionText').value = '';
+          document.getElementById('breathingReflectionText').removeAttribute('aria-invalid');
+          document.getElementById('breathingReflectionError').textContent = '';
           this.dom.transitionAutoHint.textContent = 'No hay una respuesta correcta.';
-          this.dom.feedbackAdvanceBtn.querySelector('span').textContent = 'OMITIR';
-          document.querySelector('#breathingReflection button').focus({ preventScroll: true });
-          CalmGuide.say('Terminaste los tres ciclos. Vuelve a tu respiración natural, sin afán. ¿Cómo te resultó el ejercicio? Puedes elegir una respuesta. No hay una respuesta correcta.');
+          this.dom.feedbackAdvanceBtn.querySelector('span').textContent = 'ENVIAR';
+          CalmGuide.say('Terminaste los tres ciclos. Vuelve a tu respiración natural, sin afán. ¿Cómo te sentiste al respirar? Escribe con tus palabras. Al pulsar Enviar, pasarás a la siguiente estación.');
         },
 
         showFeedback: function (messageText, waitForUser) {
@@ -4345,6 +4321,19 @@
         },
 
         advanceStation: function () {
+          if (this.breathingReflectionOpen) {
+            var reflectionInput = document.getElementById('breathingReflectionText');
+            var response = reflectionInput.value.trim();
+            if (!response) {
+              document.getElementById('breathingReflectionError').textContent = 'Escribe cómo te sentiste antes de enviar.';
+              reflectionInput.setAttribute('aria-invalid', 'true');
+              reflectionInput.focus();
+              return;
+            }
+            this.breathingReflectionResponse = response;
+            this.breathingReflectionOpen = false;
+            reflectionInput.blur();
+          }
           if (this.autoAdvanceTimer) {
             clearTimeout(this.autoAdvanceTimer);
             this.autoAdvanceTimer = null;
