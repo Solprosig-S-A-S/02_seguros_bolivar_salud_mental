@@ -88,7 +88,6 @@ header{padding:calc(7px + env(safe-area-inset-top)) 12px 8px}
 #bubble{max-width:330px;padding:8px 10px}#speech{padding-right:0}
 #bubble.single-phrase{padding-right:53px}
 #bubble.single-phrase #phraseControls{position:absolute;top:4px;right:5px}
-#bubble.single-phrase #readBtn{min-height:32px;min-width:40px;padding:4px 6px}
 #panel.final-view>:not(#backReportBtn){display:none}
 #panel.final-view #backReportBtn:not([hidden]){display:block}
 #panel.in-consequence #missionTitle{display:none}
@@ -97,6 +96,16 @@ canvas{touch-action:pan-y pinch-zoom}
 #scene canvas{transition:opacity .3s ease}#scene.changing-sector canvas{opacity:0}
 #scene.changing-sector #bubble,#scene.changing-sector #inspectBtn{visibility:hidden}
 @media(prefers-reduced-motion:reduce){#scene canvas{transition:none}}
+#bubble,#bubble.single-phrase{max-width:390px;left:12px;right:12px;padding:11px 13px;background:#fffdf8;color:#142c3a;border:1px solid #d2e0e5;box-shadow:0 5px 16px #001b3350}
+.bubbleHeader{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:36px}
+#speaker{font-size:11px;line-height:1.35;letter-spacing:.3px;color:#03506a;font-weight:850}
+#speech{font-size:15px;line-height:1.5;margin:5px 0 2px;font-weight:500;text-wrap:pretty}
+#bubble #phraseControls{position:static;margin-top:8px;gap:8px;justify-content:space-between}
+#bubble.single-phrase #phraseControls{display:none}
+#bubble #readBtn{position:static;flex-shrink:0;min-width:76px;min-height:36px;padding:6px 9px;border:1px solid #6b96a7;border-radius:8px;background:#e5f1f5;color:#01435a;font-size:11px;font-weight:750}
+#bubble #readBtn[aria-pressed=true]{background:#03506a;color:#fff;border-color:#03506a}
+#bubble #phraseControls button{font-size:11px;min-height:36px;background:#edf4f7;color:#123e50;border:1px solid #b9ced8;border-radius:7px;padding:6px 10px}
+@media(max-height:700px){#bubble,#bubble.single-phrase{padding:8px 11px}#speech{font-size:14px;line-height:1.45}.bubbleHeader{min-height:32px}}
 @media(max-height:700px){#panel{max-height:49%}#panel.in-consequence{max-height:30%}#sceneBeat{font-size:10px;padding:6px}#inspectBtn{min-height:32px}}
 </style>
 </head>
@@ -108,7 +117,7 @@ canvas{touch-action:pan-y pinch-zoom}
  </header>
  <section id="scene" aria-label="Obra tridimensional en el piso diez">
   <div id="sceneTop"><span class="tag" id="missionTag">MISIÓN 1 DE 10 · 6:00</span><span class="tag" id="score">0 / 100 PTS</span></div>
-  <div id="bubble" hidden><div id="speaker"></div><p id="speech"></p><div id="phraseControls"><button id="prevPhrase" aria-label="Frase anterior">‹</button><span id="phraseIndex"></span><button id="nextPhrase">Siguiente ›</button><button id="readBtn" aria-label="Leer esta frase en voz alta">Voz</button></div></div>
+  <div id="bubble" hidden><div class="bubbleHeader"><div id="speaker"></div><button id="readBtn" aria-label="Escuchar esta frase" aria-pressed="false">▶ Escuchar</button></div><p id="speech"></p><div id="phraseControls"><button id="prevPhrase" aria-label="Frase anterior">‹ Anterior</button><span id="phraseIndex"></span><button id="nextPhrase">Siguiente ›</button></div></div>
   <div id="sceneFlash"></div><div id="sceneNotice" hidden></div>
   <button id="inspectBtn" type="button" aria-label="Observar el problema señalado">Ver riesgo</button>
   <button id="moveBtn" type="button" aria-pressed="false">Acercarme</button>
@@ -134,7 +143,7 @@ canvas{touch-action:pan-y pinch-zoom}
   <p><strong>2. Intervén:</strong> elige qué dices y qué haces. Las tres respuestas están disponibles desde que llegas.</p>
   <p><strong>3. Comprueba:</strong> observa cómo responde la persona a tus palabras y qué cambia en el equipo. Practica corregir sin humillar, reconocer los aportes y acordar mejoras. Puedes repetir la secuencia o avanzar cuando quieras.</p>
   <p>El clima se refleja en la cuadrilla. Cada decisión protectora suma 10 puntos; apruebas con 80. El informe conserva las diez decisiones.</p>
-  <p class="small">Tu avance se guarda después de cada elección. El botón Voz lee la frase visible.</p>
+  <p class="small">Tu avance se guarda después de cada elección. Las voces se reproducen al iniciar la jornada. Usa Escuchar para repetir la frase o Detener para interrumpirla. Puedes silenciar todo desde el botón de sonido.</p>
   <button class="primary" id="closeHelp">VOLVER AL JUEGO</button><button class="secondary" id="returnReport" hidden>Ver informe final</button><button class="secondary" id="homeBtn">Guardar y salir</button>
  </section>
  <section class="overlay" id="exitDone" hidden><div><div class="introIcon">✓</div><h2>Sesión terminada</h2><p id="exitText">Puedes cerrar esta ventana.</p><a class="secondary" href="index.html">Volver al portal</a></div></section>
@@ -282,12 +291,45 @@ const LMS={api:null,edition:'',ready:false,ended:false,started:Date.now(),lastEr
  finish(complete){if(this.ended)return;save(complete);if(this.ready){const seconds=Math.max(0,Math.floor((Date.now()-this.started)/1000));if(this.edition==='2004')this.set('cmi.session_time','PT'+seconds+'S');else{const pad=n=>String(n).padStart(2,'0');this.set('cmi.core.session_time',pad(Math.floor(seconds/3600))+':'+pad(Math.floor(seconds%3600/60))+':'+pad(seconds%60)+'.00');}this.commit();try{this.api[this.edition==='2004'?'Terminate':'LMSFinish']('');}catch(_){} }this.ended=true;}
 };
 const fresh=(attempt=1)=>({v:1,mission:0,records:[],phase:'decision',attempt});
-let state=fresh(),ready3D=false,playing=false,phrase=0,phrases=[],speaker='',choiceOrder=[],voiceEnabled=false;
+let state=fresh(),ready3D=false,playing=false,phrase=0,phrases=[],speaker='',choiceOrder=[],voiceEnabled=true;
 function calculate(s){let score=0,climate=50,pour=0;for(let i=0;i<s.records.length;i++){const r=s.records[i];if(!r)continue;score+=r.style==='protective'?10:0;climate=clamp(climate+styles[r.style].delta,0,100);if(i<9)pour+=r.style==='protective'?12:r.style==='indifferent'?7:5;}return {score,climate,pour:clamp(pour,0,100)};}
 function valid(value){if(!value||value.v!==1||!Array.isArray(value.records)||value.records.length>10||!Number.isInteger(value.mission)||value.mission<0||value.mission>9)return false;let gap=false;for(let i=0;i<10;i++){const r=value.records[i];if(!r){gap=true;continue;}if(gap||!styles[r.style]||!Number.isInteger(r.option)||r.option<0||r.option>2||M[i].options[r.option].style!==r.style)return false;}return ['decision','consequence','final'].includes(value.phase)&&Number.isInteger(value.attempt)&&value.attempt>0;}
 function restore(){let raw='';if(LMS.api){if(LMS.ready)raw=LMS.get('cmi.suspend_data');}else{try{raw=localStorage.getItem(STORAGE)||'';}catch(_){}}if(raw){try{const candidate=JSON.parse(raw);if(valid(candidate)){state=candidate;const count=state.records.length;if(count===10&&state.phase==='final')state.mission=9;else if(state.phase==='consequence'&&count){state.mission=count-1;}else{state.mission=Math.min(count,9);state.phase=count===10?'final':'decision';}}}catch(_){}}}
 function save(complete=state.phase==='final'){let ok=false;if(LMS.api){ok=LMS.snapshot(state,complete);}else{try{localStorage.setItem(STORAGE,JSON.stringify(state));ok=true;}catch(_){}}$('statusLine').textContent=ok?(LMS.ready?'Progreso guardado en el LMS · SCORM '+LMS.edition:'Progreso guardado en este navegador'):'No fue posible guardar. Conserva esta ventana abierta.';return ok;}
-const Audio={ctx:null,muted:false,init(){if(!this.ctx){try{this.ctx=new(window.AudioContext||window.webkitAudioContext)();}catch(_){}}if(this.ctx&&this.ctx.state==='suspended')this.ctx.resume().catch(()=>{});},tone(good){if(this.muted||document.hidden||!this.ctx)return;const c=this.ctx,o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.value=good?523:196;g.gain.setValueAtTime(0,c.currentTime);g.gain.linearRampToValueAtTime(.025,c.currentTime+.03);g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+.45);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+.5);},cancel(){if('speechSynthesis'in window)speechSynthesis.cancel();},speak(text){this.cancel();if(this.muted||!voiceEnabled||document.hidden||!('speechSynthesis'in window))return;const u=new SpeechSynthesisUtterance(text);const voices=speechSynthesis.getVoices().filter(v=>/^es\b/i.test(v.lang));u.voice=voices.find(v=>/^es-(CO|MX)/i.test(v.lang))||voices[0]||null;u.lang=u.voice?u.voice.lang:'es-CO';u.rate=.94;u.volume=.65;speechSynthesis.speak(u);}};
+const Audio={ctx:null,muted:false,init(){if(!this.ctx){try{this.ctx=new(window.AudioContext||window.webkitAudioContext)();}catch(_){}}if(this.ctx&&this.ctx.state==='suspended')this.ctx.resume().catch(()=>{});},tone(good){if(this.muted||document.hidden||!this.ctx)return;const c=this.ctx,o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.value=good?523:196;g.gain.setValueAtTime(0,c.currentTime);g.gain.linearRampToValueAtTime(.025,c.currentTime+.03);g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+.45);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+.5);},active:null,serial:0,voiceList:[],
+ cancel(){
+  this.serial++;if(this.active){clearTimeout(this.active.timeout);this.active=null;}
+  if('speechSynthesis'in window)speechSynthesis.cancel();this.speechUI(false);
+ },
+ speechUI(active){
+  const button=$('readBtn');button.textContent=active?'■ Detener':'▶ Escuchar';button.setAttribute('aria-pressed',String(active));button.setAttribute('aria-label',active?'Detener la voz':'Escuchar esta frase');
+ },
+ speak(text,name=speaker,onComplete=null){
+  this.cancel();if(this.muted||!voiceEnabled||document.hidden||!text||!('speechSynthesis'in window))return;
+  const serial=this.serial,u=new SpeechSynthesisUtterance(text);
+  const voices=speechSynthesis.getVoices().filter(voice=>/^es\b/i.test(voice.lang));
+  this.voiceList=voices.length?voices:this.voiceList;
+  const preferred=this.voiceList.filter(voice=>/^es-(CO|MX)/i.test(voice.lang));
+  const available=preferred.length?preferred:this.voiceList;
+  const supervisor=/supervisor/i.test(name),narrator=/narrador/i.test(name);
+  const identity=['Pedro','SST','Ayudante','Operador de bomba','Electricista','Roberto','Carlos','Mario','Cuadrilla'].indexOf(name);
+  u.voice=available.length?available[(supervisor||narrator?0:Math.max(0,identity)+1)%available.length]:null;
+  u.lang=u.voice?u.voice.lang:'es-CO';u.rate=supervisor?.91:narrator?.92:.95;u.pitch=supervisor?.93:1+(Math.max(0,identity)%3-1)*.035;u.volume=.85;
+  const finish=()=>{
+   if(serial!==this.serial)return;clearTimeout(this.active?.timeout);this.active=null;this.speechUI(false);
+   if(onComplete&&playing&&!document.hidden)onComplete();
+  };
+  this.active={name,phaseKey:state.mission+':'+(W?.actionBeat??-1),started:false,timeout:null};
+  u.onstart=()=>{if(serial===this.serial&&this.active){this.active.started=true;this.speechUI(true);}};
+  u.onend=finish;u.onerror=()=>{if(serial===this.serial){clearTimeout(this.active?.timeout);this.active=null;this.speechUI(false);}};
+  this.active.timeout=setTimeout(()=>{if(serial===this.serial)this.cancel();},Math.min(45000,Math.max(12000,text.split(/\s+/).length/1.6*1000+7000)));
+  this.speechUI(true);try{speechSynthesis.speak(u);}catch(_){this.cancel();}
+ }};
+if('speechSynthesis'in window){
+ const cacheVoices=()=>Audio.voiceList=speechSynthesis.getVoices().filter(voice=>/^es\b/i.test(voice.lang));
+ cacheVoices();speechSynthesis.addEventListener('voiceschanged',cacheVoices);
+}
+
 
 Audio.effectNodes=[];
 Audio.footstep=function(alternate){
@@ -314,7 +356,7 @@ function mountScene(container){
  if(!W)return;W.container=container;container.prepend(W.renderer.domElement);
  if(W.observer){W.observer.disconnect();W.observer.observe(container);}W.resize();
 }
-function setDialogue(name,texts,whole=false){if(whole){speaker=name;phrases=texts;phrase=0;showPhrase();return;}speaker=name;phrases=[];texts.forEach(text=>{const sentences=text.match(/[^.!?]+[.!?]+|[^.!?]+$/g)||[text];sentences.forEach(sentence=>{let line='';sentence.trim().split(/\s+/).forEach(word=>{if(line.length+word.length>(window.innerWidth<480?70:95)&&line){phrases.push(line);line='';}line+=(line?' ':'')+word;});if(line)phrases.push(line);});});phrase=0;showPhrase();}
+function setDialogue(name,texts,whole=false){Audio.cancel();if(whole){speaker=name;phrases=texts;phrase=0;showPhrase();return;}speaker=name;phrases=[];texts.forEach(text=>{const sentences=text.match(/[^.!?]+[.!?]+|[^.!?]+$/g)||[text];sentences.forEach(sentence=>{let line='';sentence.trim().split(/\s+/).forEach(word=>{if(line.length+word.length>(window.innerWidth<480?70:95)&&line){phrases.push(line);line='';}line+=(line?' ':'')+word;});if(line)phrases.push(line);});});phrase=0;showPhrase();}
 let dialogueRevision=0;
 function showPhrase(){
  const revision=++dialogueRevision,bubble=$('bubble');
@@ -326,7 +368,10 @@ function showPhrase(){
  $('phraseIndex').textContent=(phrase+1)+' / '+phrases.length;$('prevPhrase').disabled=phrase===0;
  $('prevPhrase').hidden=single;$('nextPhrase').hidden=single;$('phraseIndex').hidden=single;
  $('nextPhrase').textContent=phrase===phrases.length-1?'Releer':'Siguiente';
- if(voiceEnabled&&state.phase!=='consequence')Audio.speak(phrases[phrase]||'');
+ if(voiceEnabled&&playing)Audio.speak(phrases[phrase]||'',speaker,()=>{
+  if(state.phase!=='decision'||phrase>=phrases.length-1)return;
+  const completedRevision=revision;setTimeout(()=>{if(playing&&dialogueRevision===completedRevision&&state.phase==='decision'){phrase++;showPhrase();}},650);
+ });
  if(!matchMedia('(prefers-reduced-motion: reduce)').matches)bubble._fade=bubble.animate([{opacity:0,transform:'translateY(5px)'},{opacity:1,transform:'translateY(0)'}],{duration:320,easing:'ease-out'});
  };
  if(!bubble.hidden&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
@@ -377,7 +422,7 @@ function updateActionTimeline(){
  if(beat===0)setDialogue('TÚ · Supervisor',[sector.commands[response]],true);
  else if(beat===1)setDialogue(sector.responseName,[REACTIONS[state.mission][response]],true);
  else{
-  $('resultText').textContent=sector.results[response];if(!W.reduced)$('resultText').animate([{opacity:0,transform:'translateY(5px)'},{opacity:1,transform:'translateY(0)'}],{duration:450,easing:'ease-out'});
+  Audio.speak(sector.results[response],'Narrador');$('resultText').textContent=sector.results[response];if(!W.reduced)$('resultText').animate([{opacity:0,transform:'translateY(5px)'},{opacity:1,transform:'translateY(0)'}],{duration:450,easing:'ease-out'});
   $('resultBadge').textContent=(record.style==='protective'?'+10 PUNTOS':'+0 PUNTOS')+' · '+calculate(state).score+' / 100';
   $('resultBadge').style.color=styles[record.style].color;
  }
@@ -682,7 +727,7 @@ class World{
   const sector=SECTORS[this.index],smooth=value=>{value=clamp(value,0,1);return value*value*(3-2*value);};
   const p=smooth((et-1.8)/4.7),arrive=smooth(et/1.8);
   const focusId=M[this.index].focus;
-  this.speakingId=has?(et<1.8?'supervisor':et<6.5?sector.responseActor:null):(t%5<2.8?sector.initialActor:null);
+  const voiced=!!Audio.active&&Audio.active.started;this.speakingId=voiced?(has?(this.actionBeat===0?'supervisor':this.actionBeat===1?sector.responseActor:null):sector.initialActor):null;
   Object.values(this.actors).forEach((actor,index)=>{
    if(!actor.group.visible)return;
    const talking=actor.id===this.speakingId,tense=actor.mood==='angry'||actor.mood==='worried';
@@ -798,7 +843,12 @@ class World{
   requestAnimationFrame(()=>this.loop());const now=performance.now(),dt=Math.min((now-this.last)/1000,.06);this.last=now;
   if(document.hidden||this.paused)return;
   if(playing||this.preview){
-   this.sceneTime+=dt;if(this.effectStyle)this.effectTime+=dt;this.animateActors(dt);this.separateActors();this.updateHandProps();if(playing)updateActionTimeline();this.updateRiskMarker();
+   this.sceneTime+=dt;if(this.effectStyle){
+    let next=this.effectTime+dt;
+    const boundary=this.actionBeat===0?this.commandDuration:this.actionBeat===1?this.commandDuration+this.reactionDuration:Infinity;
+    if(Audio.active&&Audio.active.phaseKey===state.mission+':'+this.actionBeat)next=Math.min(next,boundary-.001);
+    this.effectTime=Math.max(this.effectTime,next);
+   }this.animateActors(dt);this.separateActors();this.updateHandProps();if(playing)updateActionTimeline();this.updateRiskMarker();
    
   }
   const smoothing=this.reduced?1:1-Math.exp(-dt*2.2);
@@ -824,7 +874,7 @@ class World{
 }
 
 // Navegación y ciclo de sesión: ninguna consecuencia avanza sin una acción del jugador.
-$('prevPhrase').onclick=()=>{phrase=Math.max(0,phrase-1);showPhrase();};$('nextPhrase').onclick=()=>{phrase=phrase===phrases.length-1?0:phrase+1;showPhrase();};$('readBtn').onclick=()=>{voiceEnabled=true;Audio.init();Audio.speak(phrases[phrase]||'');};$('soundBtn').onclick=()=>{Audio.muted=!Audio.muted;Audio.init();if(Audio.muted){Audio.cancel();Audio.stopEffects();}$('soundBtn').textContent=Audio.muted?'♩':'♫';$('soundBtn').setAttribute('aria-pressed',String(Audio.muted));$('soundBtn').setAttribute('aria-label',Audio.muted?'Activar sonidos':'Silenciar sonidos');};
+$('prevPhrase').onclick=()=>{phrase=Math.max(0,phrase-1);showPhrase();};$('nextPhrase').onclick=()=>{phrase=phrase===phrases.length-1?0:phrase+1;showPhrase();};$('readBtn').onclick=()=>{if(Audio.active){Audio.cancel();return;}voiceEnabled=true;Audio.muted=false;Audio.init();$('soundBtn').textContent='♫';$('soundBtn').setAttribute('aria-pressed','false');$('soundBtn').setAttribute('aria-label','Silenciar sonidos');Audio.speak($('speech').textContent,speaker);};$('soundBtn').onclick=()=>{Audio.muted=!Audio.muted;Audio.init();if(Audio.muted){Audio.cancel();Audio.stopEffects();}$('soundBtn').textContent=Audio.muted?'♩':'♫';$('soundBtn').setAttribute('aria-pressed',String(Audio.muted));$('soundBtn').setAttribute('aria-label',Audio.muted?'Activar sonidos':'Silenciar sonidos');if(!Audio.muted&&playing&&!$('bubble').hidden)Audio.speak($('speech').textContent,speaker);};
 $('reasonDetails').ontoggle=()=>{$('panel').classList.toggle('reading-result',$('reasonDetails').open);};
 $('moveBtn').onclick=()=>W.toggleWalk();$('backReportBtn').onclick=showReport;$('inspectBtn').onclick=()=>{if(state.phase==='decision'){setDialogue('Lo que observas',[INSPECTIONS[state.mission]]);W.inspected=true;$('sceneBeat').textContent='Riesgo identificado. Elige cómo intervenir.';}};
 $('startBtn').onclick=()=>{if(!ready3D||LMS.ended)return;Audio.init();mountScene($('scene'));W.preview=false;playing=true;$('welcome').hidden=true;state.phase==='final'?showReport():loadMission();};$('restartWelcome').onclick=()=>{if(ready3D)resetGame();};$('continueBtn').onclick=nextMission;$('replayBtn').onclick=()=>{if(state.phase==='consequence'){const near=W.nearView;W.setup(state.mission);W.nearView=near;W.updateShot();$('moveBtn').textContent=near?'Volver un paso':'Acercarme';$('moveBtn').setAttribute('aria-pressed',String(near));showConsequence();}};$('retryBtn').onclick=resetGame;
