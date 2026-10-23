@@ -93,6 +93,7 @@ header{padding:calc(7px + env(safe-area-inset-top)) 12px 8px}
 #panel.in-consequence #missionTitle{display:none}
 canvas{touch-action:pan-y pinch-zoom}
 #moveBtn{position:absolute;bottom:43px;right:10px;z-index:3;min-height:44px;padding:9px 13px;background:#ffb703;color:#012536;border:0;border-radius:10px;font-size:12px;font-weight:800}
+#talkBtn{position:absolute;bottom:43px;left:10px;z-index:3;min-height:44px;max-width:57%;padding:8px 11px;border:1px solid #a4c8d5;border-radius:10px;background:#023047ed;color:#fff;font-size:11px;font-weight:750}
 #scene canvas{transition:opacity .3s ease}#scene.changing-sector canvas{opacity:0}
 #scene.changing-sector #bubble,#scene.changing-sector #inspectBtn{visibility:hidden}
 @media(prefers-reduced-motion:reduce){#scene canvas{transition:none}}
@@ -121,6 +122,7 @@ canvas{touch-action:pan-y pinch-zoom}
   <div id="sceneFlash"></div><div id="sceneNotice" hidden></div>
   <button id="inspectBtn" type="button" aria-label="Observar el problema señalado">Ver riesgo</button>
   <button id="moveBtn" type="button" aria-pressed="false">Acercarme</button>
+  <button id="talkBtn" type="button">Escuchar conversación</button>
   <div id="sceneBeat" aria-live="polite">Observa el problema y elige tu intervención.</div>
 
  </section>
@@ -236,6 +238,20 @@ SECTORS.forEach((sector,index)=>{
  sector.responseActor=['pedro','siso','ayudante','pedro','electricista','roberto','carlos','mario','carlos','auditor'][index];
  sector.responseName=['Pedro','SST','Ayudante','Operador de bomba','Electricista','Roberto','Carlos','Mario','Cuadrilla','Comité / Referente ARL'][index];
 });
+// Actor, interlocutor y frase: cada turno pertenece a una persona presente en el frente.
+const CONVERSATIONS=[
+ [['pedro','siso','No dormí bien. Ya he tenido que repetir este amarre dos veces.'],['siso','pedro','Te noto cansado, Pedro. ¿Te está costando mantener la atención?'],['pedro','siso','Sí. Me preocupa equivocarme aquí en el borde, pero no quiero atrasar al equipo.'],['siso','pedro','Gracias por avisarlo. Supervisor, necesitamos revisar su condición y organizar un relevo.']],
+ [['residente','siso','Necesito que arranquemos la bomba. El mixer ya está esperando.'],['siso','residente','Todavía no he verificado los apoyos. No puedo confirmar que el frente esté listo.'],['residente','siso','La cuadrilla está recibiendo dos instrucciones. Así nadie sabe qué hacer.'],['siso','residente','Acordemos una sola indicación y quién libera el frente. Supervisor, ayúdenos a coordinar.']],
+ [['oficial','ayudante','¡Otra vez mal! ¿Es que usted no sirve para este trabajo?'],['ayudante','oficial','Estoy aprendiendo. Si me muestra dónde fallé, puedo corregirlo.'],['oficial','ayudante','No tengo tiempo para explicarle todo de nuevo.'],['ayudante','oficial','Quiero hacerlo bien, pero con esos insultos me da miedo volver a preguntar.']],
+ [['pedro','mecanico','La manguera está botando fluido. ¿Podemos continuar mientras la revisa?'],['mecanico','pedro','No. Hay presión y necesito que se detenga y aísle el equipo según el procedimiento.'],['pedro','mecanico','El mixer está por llegar y nos están apurando. ¿Quién confirma la parada?'],['mecanico','pedro','Supervisor, necesitamos una instrucción clara y mantener a la cuadrilla fuera del área.']],
+ [['carpintero','electricista','Con esas herramientas nos bloquearon el paso. Tenemos que mover las formaletas.'],['electricista','carpintero','Nadie nos avisó que iban a entrar. Nosotros también tenemos una tarea pendiente.'],['carpintero','electricista','Si entramos los dos equipos al mismo tiempo, vamos a terminar chocando.'],['electricista','carpintero','Necesitamos despejar y acordar los turnos. Supervisor, escuche las dos necesidades.']],
+ [['siso','roberto','Roberto, te veo pendiente del teléfono. ¿Puedes concentrarte en la maniobra?'],['roberto','siso','Me están amenazando por una deuda. No dejo de pensar en esos mensajes.'],['siso','roberto','Podemos buscar un lugar reservado para hablar. No tienes que explicar todo aquí.'],['roberto','siso','Gracias. Necesito apoyo y que alguien me releve; ahora no me siento concentrado para operar.']],
+ [['carlos','carpintero','Dibujé una forma de ordenar las formaletas sin ocupar el corredor.'],['carpintero','carlos','Muéstrame. Ahora tenemos que esquivar ese acopio cada vez que pasamos.'],['carlos','carpintero','Podríamos revisar este tramo primero y comprobar si funciona antes de cambiar lo demás.'],['carpintero','carlos','Vale la pena que nos escuchen. Supervisor, Carlos tiene una propuesta para mejorar el frente.']],
+ [['siso','mario','Mario, te veo caminar inestable. Espera un momento antes de subir.'],['mario','siso','No me siento bien, pero no quiero que piensen que estoy evitando el trabajo.'],['siso','mario','Lo que importa ahora es que estés seguro. Podemos acompañarte a una valoración sin juzgarte.'],['mario','siso','Sí, acompáñenme. Necesito que el supervisor nos ayude a organizar la tarea.']],
+ [['carlos','pedro','Hoy avisamos a tiempo cuando algo no estaba claro. Eso nos ayudó a coordinarnos.'],['pedro','carlos','Sí. También necesitamos entregar las herramientas y decir qué queda pendiente para mañana.'],['carlos','pedro','Me gustaría que al cerrar pudiéramos contar qué salió bien y qué fue difícil.'],['pedro','carlos','Supervisor, ¿reunimos un momento a la cuadrilla antes de terminar el turno?']],
+ [['auditor','siso','Revisemos lo que ocurrió hoy. Necesitamos escuchar también a quienes estuvieron en el frente.'],['siso','auditor','Hay decisiones que ayudaron al equipo y situaciones que requieren seguimiento.'],['auditor','siso','El informe debe conservar los hechos y permitir acordar mejoras, sin buscar culpables de antemano.'],['siso','auditor','Supervisor, cuéntenos sus decisiones y acordemos responsables y fechas para revisar los compromisos.']]
+];
+const CHARACTER_NAMES={pedro:'Pedro',siso:'SST',residente:'Residente',oficial:'Oficial',ayudante:'Ayudante',mecanico:'Mecánico',carpintero:'Carpintero',electricista:'Electricista',roberto:'Roberto',carlos:'Carlos',mario:'Mario',auditor:'Comité'};
 const LEADERSHIP_PRACTICE=[
  'Pregunta a Pedro cómo se encuentra, escucha sin reprochar y acuerda un relevo. Comprueba después si pudo descansar y si el reemplazo entendió la tarea.',
  'Escucha a las dos partes sin desautorizar a nadie delante del equipo. Define una sola instrucción, confirma quién verifica y pide que la cuadrilla explique qué hará antes de retomar.',
@@ -310,15 +326,16 @@ const Audio={ctx:null,muted:false,init(){if(!this.ctx){try{this.ctx=new(window.A
   const voices=speechSynthesis.getVoices().filter(voice=>/^es\b/i.test(voice.lang));
   this.voiceList=voices.length?voices:this.voiceList;
   const preferred=this.voiceList.filter(voice=>/^es-(CO|MX)/i.test(voice.lang));
-  const available=preferred.length?preferred:this.voiceList;
+  const available=preferred.concat(this.voiceList.filter(voice=>!preferred.includes(voice)));
   const supervisor=/supervisor/i.test(name),narrator=/narrador/i.test(name);
-  const identity=['Pedro','SST','Ayudante','Operador de bomba','Electricista','Roberto','Carlos','Mario','Cuadrilla'].indexOf(name);
+  const identity=['Pedro','SST','Ayudante','Operador de bomba','Electricista','Roberto','Carlos','Mario','Cuadrilla','Residente','Oficial','Mecánico','Carpintero','Comité'].indexOf(name);
+  const voiceSlot=conversation?(conversation.actor===CONVERSATIONS[state.mission][0][0]?0:1):Math.max(0,identity)+1;
   // SpeechSynthesisVoice has no standard gender field: prefer named male Spanish voices.
   const masculine=/\b(male|masculino|hombre|jorge|alvaro|alonso|raul|pablo|diego|enrique|antonio|juan|andres|gonzalo|tomas|carlos|miguel|manuel|rodrigo|emilio|federico|gerardo|humberto|julio|leon|luis|marcelo|mario|roberto|sergio|santiago|nicolas|ricardo|martin)\b/i;
   const maleVoices=this.voiceList.filter(voice=>masculine.test((voice.name+' '+(voice.gender||'')).normalize('NFD').replace(/[\u0300-\u036f]/g,'')));
   const maleVoice=maleVoices.find(voice=>/^es-(CO|MX)/i.test(voice.lang))||maleVoices[0]||null;
-  u.voice=supervisor?(maleVoice||available[0]||null):(available.length?available[(narrator?0:Math.max(0,identity)+1)%available.length]:null);
-  u.lang=u.voice?u.voice.lang:'es-CO';u.rate=supervisor?.91:narrator?.92:.95;u.pitch=supervisor?(maleVoice?.96:.78):1+(Math.max(0,identity)%3-1)*.035;u.volume=.85;
+  u.voice=supervisor?(maleVoice||available[0]||null):(available.length?available[(narrator?0:voiceSlot)%available.length]:null);
+  u.lang=u.voice?u.voice.lang:'es-CO';u.rate=supervisor?.91:narrator?.92:.95;u.pitch=supervisor?(maleVoice?.96:.78):(conversation?(voiceSlot===0?.96:1.04):1+(Math.max(0,identity)%3-1)*.035);u.volume=.85;
   const finish=()=>{
    if(serial!==this.serial)return;clearTimeout(this.active?.timeout);this.active=null;this.speechUI(false);
    if(onComplete&&playing&&!document.hidden)onComplete();
@@ -355,7 +372,28 @@ Audio.pressure=function(){
  gain.gain.setValueAtTime(0,ctx.currentTime);gain.gain.linearRampToValueAtTime(.035,ctx.currentTime+.15);gain.gain.linearRampToValueAtTime(0,ctx.currentTime+2.5);
  source.connect(filter);filter.connect(gain);gain.connect(ctx.destination);source.start();source.stop(ctx.currentTime+2.5);this.effectNodes.push(source,filter,gain);
 };
-let W;
+let W,conversation=null;
+function stopConversation(){conversation=null;}
+function conversationTurn(turn){
+ if(!conversation)return;
+ conversation.turn=turn;conversation.elapsed=0;
+ const [actor,listener,text]=CONVERSATIONS[state.mission][turn];
+ conversation.actor=actor;conversation.listener=listener;conversation.duration=Math.max(4.5,text.split(/\s+/).length/2.4+1.1);
+ setDialogue(CHARACTER_NAMES[actor],[text],true);
+ $('sceneBeat').textContent='Escucha al equipo. Puedes intervenir cuando quieras.';
+}
+function startConversation(){
+ if(!playing||state.phase!=='decision')return;
+ conversation={mission:state.mission,turn:0,elapsed:0};
+ $('talkBtn').textContent='Repetir conversación';conversationTurn(0);
+}
+function updateConversation(dt){
+ if(!conversation||state.phase!=='decision'||conversation.mission!==state.mission)return;
+ conversation.elapsed+=dt;
+ if(conversation.elapsed<conversation.duration||Audio.active)return;
+ if(conversation.turn<CONVERSATIONS[state.mission].length-1)conversationTurn(conversation.turn+1);
+ // Keep the last turn available for replay without looping the conversation.
+}
 function mountScene(container){
  if(!W)return;W.container=container;container.prepend(W.renderer.domElement);
  if(W.observer){W.observer.disconnect();W.observer.observe(container);}W.resize();
@@ -367,13 +405,13 @@ function showPhrase(){
  if(bubble._fade)bubble._fade.cancel();
  const render=()=>{
  if(revision!==dialogueRevision)return;
- const single=phrases.length<=1;$('bubble').hidden=!phrases.length;$('bubble').classList.toggle('single-phrase',single);
+ const single=!conversation&&phrases.length<=1;$('bubble').hidden=!phrases.length;$('bubble').classList.toggle('single-phrase',single);
  $('speaker').textContent=speaker;$('speech').textContent=phrases[phrase]||'';
- $('phraseIndex').textContent=(phrase+1)+' / '+phrases.length;$('prevPhrase').disabled=phrase===0;
+ $('phraseIndex').textContent=conversation?('Turno '+(conversation.turn+1)+' / '+CONVERSATIONS[state.mission].length):(phrase+1)+' / '+phrases.length;$('prevPhrase').disabled=conversation?conversation.turn===0:phrase===0;
  $('prevPhrase').hidden=single;$('nextPhrase').hidden=single;$('phraseIndex').hidden=single;
- $('nextPhrase').textContent=phrase===phrases.length-1?'Releer':'Siguiente';
+ $('nextPhrase').textContent=conversation?(conversation.turn===CONVERSATIONS[state.mission].length-1?'Repetir':'Siguiente'):(phrase===phrases.length-1?'Releer':'Siguiente');
  if(voiceEnabled&&playing)Audio.speak(phrases[phrase]||'',speaker,()=>{
-  if(state.phase!=='decision'||phrase>=phrases.length-1)return;
+  if(conversation||state.phase!=='decision'||phrase>=phrases.length-1)return;
   const completedRevision=revision;setTimeout(()=>{if(playing&&dialogueRevision===completedRevision&&state.phase==='decision'){phrase++;showPhrase();}},650);
  });
  if(!matchMedia('(prefers-reduced-motion: reduce)').matches)bubble._fade=bubble.animate([{opacity:0,transform:'translateY(5px)'},{opacity:1,transform:'translateY(0)'}],{duration:320,easing:'ease-out'});
@@ -386,7 +424,7 @@ function showPhrase(){
 function updateHUD(){const s=calculate(state);$('climateValue').textContent=!state.records.length?'Por coordinar':s.climate>=75?'Coordinado':s.climate>=50?'En recuperación':'Tenso';$('climateFill').style.width=s.climate+'%';$('climateFill').style.background=s.climate>=75?'#34d399':s.climate>=50?'#ffb703':'#fb7185';$('climateMeter').setAttribute('aria-valuenow',s.climate);$('pourValue').textContent=s.pour+' %';$('pourFill').style.width=s.pour+'%';$('pourMeter').setAttribute('aria-valuenow',s.pour);$('score').textContent=s.score+' / 100 PTS';W.setPour(s.pour);}
 function orderOptions(){choiceOrder=[0,1,2];let seed=state.attempt*17+(state.mission+1)*29;for(let i=2;i>0;i--){seed=(seed*1664525+1013904223)>>>0;const j=seed%(i+1);[choiceOrder[i],choiceOrder[j]]=[choiceOrder[j],choiceOrder[i]];}}
 function loadMission(){
- Audio.cancel();Audio.stopEffects();const m=M[state.mission],sector=SECTORS[state.mission];
+ stopConversation();Audio.cancel();Audio.stopEffects();const m=M[state.mission],sector=SECTORS[state.mission];
  $('report').hidden=true;$('panel').classList.remove('final-view','in-consequence','reading-result');$('panel').hidden=false;
  $('backReportBtn').hidden=true;$('consequence').hidden=true;$('choices').hidden=false;$('choices').replaceChildren();
  $('missionTitle').textContent=sector.goal;$('question').textContent='';
@@ -394,7 +432,7 @@ function loadMission(){
  $('sceneNotice').hidden=true;$('sceneFlash').className='';
  $('inspectBtn').hidden=false;$('inspectBtn').textContent=sector.risk;
  $('sceneBeat').textContent='Observa el problema y elige tu intervención.';
- W.setup(state.mission);setDialogue(sector.speaker,[sector.speech]);updateHUD();
+ W.setup(state.mission);$('talkBtn').hidden=false;$('talkBtn').textContent='Escuchar conversación';if(state.phase==='decision'&&playing)startConversation();else setDialogue(sector.speaker,[sector.speech]);updateHUD();
  if(state.mission===3&&state.phase==='decision')Audio.pressure();orderOptions();
  choiceOrder.forEach((option,index)=>{
   const button=document.createElement('button');button.className='choice';
@@ -407,7 +445,7 @@ function loadMission(){
 }
 function choose(option){if(!playing||state.phase!=='decision'||LMS.ended)return;const m=M[state.mission];state.records[state.mission]={option,style:m.options[option].style};state.phase='consequence';LMS.interaction(state.mission,state.records[state.mission],state);save(false);updateHUD();showConsequence();}
 function showConsequence(){
- Audio.cancel();Audio.stopEffects();const r=state.records[state.mission],m=M[state.mission],sector=SECTORS[state.mission];
+ stopConversation();$('talkBtn').hidden=true;Audio.cancel();Audio.stopEffects();const r=state.records[state.mission],m=M[state.mission],sector=SECTORS[state.mission];
  $('choices').hidden=true;$('consequence').hidden=false;$('inspectBtn').hidden=true;
  $('resultBadge').textContent='INTERVENCIÓN EN CURSO';$('resultBadge').style.color='#c5e1ec';
  $('resultText').textContent='Observa la respuesta de la cuadrilla.';
@@ -440,11 +478,11 @@ function nextMission(){
  setTimeout(()=>{
   state.mission++;state.phase='decision';save(false);loadMission();
   W.camera.position.copy(W.targetPos);W.look.copy(W.targetLook);W.camera.lookAt(W.look);
-  requestAnimationFrame(()=>{$('scene').classList.remove('changing-sector');changingSector=false;playing=$('help').hidden;$('moveBtn').disabled=false;});
+  requestAnimationFrame(()=>{$('scene').classList.remove('changing-sector');changingSector=false;playing=$('help').hidden;$('moveBtn').disabled=false;if(playing)startConversation();});
  },W.reduced?0:320);
 }
 function ending(){const s=calculate(state);return s.score>=85?{title:'Director de Obra de Excelencia',text:'Tus decisiones priorizaron el cuidado y la coordinación. Conserva los aciertos y revisa las oportunidades del informe.',color:0xffd166}:s.score>=60?{title:'Mando con desgaste · Plan de mejora',text:'Combinaste acciones protectoras con decisiones que desgastan al equipo. Revisa cada situación y concreta un plan de mejora.',color:0xffb703}:{title:'Alerta por clima tóxico',text:'Varias decisiones expusieron a la cuadrilla o debilitaron el respeto. La revisión formativa propone intervenir el liderazgo y repetir la jornada.',color:0xef4444};}
-function showReport(){state.phase='final';playing=true;Audio.cancel();const s=calculate(state),e=ending();$('report').hidden=false;$('panel').classList.remove('final-view','in-consequence','reading-result');$('panel').hidden=true;$('bubble').hidden=true;$('sceneNotice').hidden=true;$('endingTitle').textContent=e.title;$('endingTitle').className=s.score>=85?'outcomeTitle':s.score>=60?'outcomeTitle warn':'outcomeTitle bad';$('finalScore').textContent=s.score+' / 100';$('endingText').textContent=e.text;$('lmsResult').textContent=(s.score>=80?'APROBADO':'NO APROBADO')+' · Se requieren 80 puntos. '+(s.score===80?'Aprobaste y el perfil de mando conserva oportunidades de mejora.':'');$('reportStats').replaceChildren();[['Clima de cuadrilla',s.climate+' %'],['Avance operativo simulado',s.pour+' %'],['Decisiones protectoras',state.records.filter(r=>r.style==='protective').length+' de 10']].forEach(([label,value])=>{const d=document.createElement('div');d.className='step';d.textContent=label+': '+value;$('reportStats').append(d);});$('reportList').replaceChildren();M.forEach((m,i)=>{const r=state.records[i];if(!r)return;const article=document.createElement('article');article.className='reportItem';const title=document.createElement('h3');title.textContent=(i+1)+'. '+m.title;const response=document.createElement('p');response.textContent='Elegiste: '+m.options[r.option].text;const result=document.createElement('p');result.textContent=styles[r.style].name+' · '+(r.style==='protective'?'+10 puntos':'+0 puntos');result.style.color=styles[r.style].color;const lesson=document.createElement('p');lesson.textContent=LEADERSHIP_PRACTICE[i];article.append(title,response,result,lesson);$('reportList').append(article);});$('returnReport').hidden=false;$('sceneBeat').textContent='Jornada terminada. Puedes revisar tu informe.';W.finalScene(e.color,s.score);save(true);$('report').scrollTop=0;}
+function showReport(){stopConversation();$('talkBtn').hidden=true;state.phase='final';playing=true;Audio.cancel();const s=calculate(state),e=ending();$('report').hidden=false;$('panel').classList.remove('final-view','in-consequence','reading-result');$('panel').hidden=true;$('bubble').hidden=true;$('sceneNotice').hidden=true;$('endingTitle').textContent=e.title;$('endingTitle').className=s.score>=85?'outcomeTitle':s.score>=60?'outcomeTitle warn':'outcomeTitle bad';$('finalScore').textContent=s.score+' / 100';$('endingText').textContent=e.text;$('lmsResult').textContent=(s.score>=80?'APROBADO':'NO APROBADO')+' · Se requieren 80 puntos. '+(s.score===80?'Aprobaste y el perfil de mando conserva oportunidades de mejora.':'');$('reportStats').replaceChildren();[['Clima de cuadrilla',s.climate+' %'],['Avance operativo simulado',s.pour+' %'],['Decisiones protectoras',state.records.filter(r=>r.style==='protective').length+' de 10']].forEach(([label,value])=>{const d=document.createElement('div');d.className='step';d.textContent=label+': '+value;$('reportStats').append(d);});$('reportList').replaceChildren();M.forEach((m,i)=>{const r=state.records[i];if(!r)return;const article=document.createElement('article');article.className='reportItem';const title=document.createElement('h3');title.textContent=(i+1)+'. '+m.title;const response=document.createElement('p');response.textContent='Elegiste: '+m.options[r.option].text;const result=document.createElement('p');result.textContent=styles[r.style].name+' · '+(r.style==='protective'?'+10 puntos':'+0 puntos');result.style.color=styles[r.style].color;const lesson=document.createElement('p');lesson.textContent=LEADERSHIP_PRACTICE[i];article.append(title,response,result,lesson);$('reportList').append(article);});$('returnReport').hidden=false;$('sceneBeat').textContent='Jornada terminada. Puedes revisar tu informe.';W.finalScene(e.color,s.score);save(true);$('report').scrollTop=0;}
 function resetGame(){mountScene($('scene'));W.preview=false;Audio.cancel();state=fresh(state.attempt+1);save(false);playing=true;$('welcome').hidden=true;$('report').hidden=true;loadMission();}
 
 // Geometría propia: obra, cuadrilla articulada, utilería y secuencias por misión.
@@ -731,18 +769,24 @@ class World{
   const sector=SECTORS[this.index],smooth=value=>{value=clamp(value,0,1);return value*value*(3-2*value);};
   const p=smooth((et-1.8)/4.7),arrive=smooth(et/1.8);
   const focusId=M[this.index].focus;
-  const voiced=!!Audio.active&&Audio.active.started;this.speakingId=voiced?(has?(this.actionBeat===0?'supervisor':this.actionBeat===1?sector.responseActor:null):sector.initialActor):null;
+  const voiced=!!Audio.active&&Audio.active.started;this.speakingId=voiced?(conversation?conversation.actor:has?(this.actionBeat===0?'supervisor':this.actionBeat===1?sector.responseActor:null):sector.initialActor):null;
   Object.values(this.actors).forEach((actor,index)=>{
    if(!actor.group.visible)return;
    const talking=actor.id===this.speakingId,tense=actor.mood==='angry'||actor.mood==='worried';
    let partnerId=actor.id==='supervisor'?focusId:'supervisor';
-   if((!has||!good)&&this.index===2){if(actor.id==='oficial')partnerId='ayudante';if(actor.id==='ayudante')partnerId='oficial';}
-   if((!has||!good)&&this.index===4){if(actor.id==='carpintero')partnerId='electricista';if(actor.id==='electricista')partnerId='carpintero';}
-   if((!has||!good)&&this.index===1){if(actor.id==='residente')partnerId='siso';if(actor.id==='siso')partnerId='residente';}
+   if(conversation&&[conversation.actor,conversation.listener].includes(actor.id))partnerId=actor.id===conversation.actor?conversation.listener:conversation.actor;
+   if(!conversation&&(!has||!good)&&this.index===2){if(actor.id==='oficial')partnerId='ayudante';if(actor.id==='ayudante')partnerId='oficial';}
+   if(!conversation&&(!has||!good)&&this.index===4){if(actor.id==='carpintero')partnerId='electricista';if(actor.id==='electricista')partnerId='carpintero';}
+   if(!conversation&&(!has||!good)&&this.index===1){if(actor.id==='residente')partnerId='siso';if(actor.id==='siso')partnerId='residente';}
    const partner=this.actors[partnerId];
+   if(conversation&&[conversation.actor,conversation.listener].includes(actor.id)){
+    let turn=Math.atan2(partner.group.position.x-actor.group.position.x,partner.group.position.z-actor.group.position.z)-actor.group.rotation.y;
+    while(turn>Math.PI)turn-=Math.PI*2;while(turn<-Math.PI)turn+=Math.PI*2;
+    actor.group.rotation.y+=turn*(1-Math.exp(-dt*1.7));
+   }
    let yaw=Math.atan2(partner.group.position.x-actor.group.position.x,partner.group.position.z-actor.group.position.z)-actor.group.rotation.y;
    while(yaw>Math.PI)yaw-=Math.PI*2;while(yaw<-Math.PI)yaw+=Math.PI*2;
-   const expressionBlend=1-Math.exp(-dt*5);actor.head.rotation.x+=(actor.face.tired*.22+actor.face.worried*.12+Math.sin(t*1.6+index)*.015-actor.head.rotation.x)*expressionBlend;actor.head.rotation.y+=(clamp(yaw,-.65,.65)-actor.head.rotation.y)*expressionBlend;actor.head.rotation.z+=((tense?Math.sin(t*.8)*.018:0)-actor.head.rotation.z)*expressionBlend;
+   const expressionBlend=1-Math.exp(-dt*5);actor.head.rotation.x+=(actor.face.tired*.22+actor.face.worried*.12+(conversation&&actor.id===conversation.listener?Math.max(0,Math.sin(t*2.4))*.04:0)+Math.sin(t*1.6+index)*.015-actor.head.rotation.x)*expressionBlend;actor.head.rotation.y+=(clamp(yaw,-.65,.65)-actor.head.rotation.y)*expressionBlend;actor.head.rotation.z+=((tense?Math.sin(t*.8)*.018:0)-actor.head.rotation.z)*expressionBlend;
    actor.torso.position.y=1.12+Math.sin(t*(2+actor.face.worried*.6)+index)*(.006+actor.face.worried*.004);actor.arms.forEach(arm=>arm.position.y=1.5+actor.face.worried*.025);
    actor.arms[0].rotation.set(talking?-.35:0,0,tense?-.12:0);actor.arms[1].rotation.set(talking?-.45:0,0,tense?.12:0);
    actor.forearms[0].rotation.set(talking?-.3-Math.max(0,Math.sin(t*2))*.2:0,0,0);actor.forearms[1].rotation.set(talking?-.35:0,0,0);
@@ -847,7 +891,7 @@ class World{
   requestAnimationFrame(()=>this.loop());const now=performance.now(),dt=Math.min((now-this.last)/1000,.06);this.last=now;
   if(document.hidden||this.paused)return;
   if(playing||this.preview){
-   this.sceneTime+=dt;if(this.effectStyle){
+   this.sceneTime+=dt;if(playing)updateConversation(dt);if(this.effectStyle){
     let next=this.effectTime+dt;
     const boundary=this.actionBeat===0?this.commandDuration:this.actionBeat===1?this.commandDuration+this.reactionDuration:Infinity;
     if(Audio.active&&Audio.active.phaseKey===state.mission+':'+this.actionBeat)next=Math.min(next,boundary-.001);
@@ -878,9 +922,9 @@ class World{
 }
 
 // Navegación y ciclo de sesión: ninguna consecuencia avanza sin una acción del jugador.
-$('prevPhrase').onclick=()=>{phrase=Math.max(0,phrase-1);showPhrase();};$('nextPhrase').onclick=()=>{phrase=phrase===phrases.length-1?0:phrase+1;showPhrase();};$('readBtn').onclick=()=>{if(Audio.active){Audio.cancel();return;}voiceEnabled=true;Audio.muted=false;Audio.init();$('soundBtn').textContent='♫';$('soundBtn').setAttribute('aria-pressed','false');$('soundBtn').setAttribute('aria-label','Silenciar sonidos');Audio.speak($('speech').textContent,speaker);};$('soundBtn').onclick=()=>{Audio.muted=!Audio.muted;Audio.init();if(Audio.muted){Audio.cancel();Audio.stopEffects();}$('soundBtn').textContent=Audio.muted?'♩':'♫';$('soundBtn').setAttribute('aria-pressed',String(Audio.muted));$('soundBtn').setAttribute('aria-label',Audio.muted?'Activar sonidos':'Silenciar sonidos');if(!Audio.muted&&playing&&!$('bubble').hidden)Audio.speak($('speech').textContent,speaker);};
+$('prevPhrase').onclick=()=>{if(conversation){conversationTurn(Math.max(0,conversation.turn-1));return;}phrase=Math.max(0,phrase-1);showPhrase();};$('nextPhrase').onclick=()=>{if(conversation){conversationTurn((conversation.turn+1)%CONVERSATIONS[state.mission].length);return;}phrase=phrase===phrases.length-1?0:phrase+1;showPhrase();};$('readBtn').onclick=()=>{if(Audio.active){Audio.cancel();return;}voiceEnabled=true;Audio.muted=false;Audio.init();$('soundBtn').textContent='♫';$('soundBtn').setAttribute('aria-pressed','false');$('soundBtn').setAttribute('aria-label','Silenciar sonidos');Audio.speak($('speech').textContent,speaker);};$('soundBtn').onclick=()=>{Audio.muted=!Audio.muted;Audio.init();if(Audio.muted){Audio.cancel();Audio.stopEffects();}$('soundBtn').textContent=Audio.muted?'♩':'♫';$('soundBtn').setAttribute('aria-pressed',String(Audio.muted));$('soundBtn').setAttribute('aria-label',Audio.muted?'Activar sonidos':'Silenciar sonidos');if(!Audio.muted&&playing&&!$('bubble').hidden)Audio.speak($('speech').textContent,speaker);};
 $('reasonDetails').ontoggle=()=>{$('panel').classList.toggle('reading-result',$('reasonDetails').open);};
-$('moveBtn').onclick=()=>W.toggleWalk();$('backReportBtn').onclick=showReport;$('inspectBtn').onclick=()=>{if(state.phase==='decision'){setDialogue('Lo que observas',[INSPECTIONS[state.mission]]);W.inspected=true;$('sceneBeat').textContent='Riesgo identificado. Elige cómo intervenir.';}};
+$('talkBtn').onclick=startConversation;$('moveBtn').onclick=()=>W.toggleWalk();$('backReportBtn').onclick=showReport;$('inspectBtn').onclick=()=>{if(state.phase==='decision'){stopConversation();setDialogue('Lo que observas',[INSPECTIONS[state.mission]]);W.inspected=true;$('sceneBeat').textContent='Riesgo identificado. Elige cómo intervenir.';}};
 $('startBtn').onclick=()=>{if(!ready3D||LMS.ended)return;Audio.init();mountScene($('scene'));W.preview=false;playing=true;$('welcome').hidden=true;state.phase==='final'?showReport():loadMission();};$('restartWelcome').onclick=()=>{if(ready3D)resetGame();};$('continueBtn').onclick=nextMission;$('replayBtn').onclick=()=>{if(state.phase==='consequence'){const near=W.nearView;W.setup(state.mission);W.nearView=near;W.updateShot();$('moveBtn').textContent=near?'Volver un paso':'Acercarme';$('moveBtn').setAttribute('aria-pressed',String(near));showConsequence();}};$('retryBtn').onclick=resetGame;
 let helpWasPlaying=false;$('helpBtn').onclick=()=>{helpWasPlaying=playing;playing=false;Audio.cancel();Audio.stopEffects();$('help').hidden=false;};$('closeHelp').onclick=()=>{$('help').hidden=true;playing=helpWasPlaying;};$('changeViewBtn').onclick=()=>{$('report').hidden=true;$('panel').classList.add('final-view');$('panel').hidden=false;$('sceneNotice').hidden=false;$('sceneNotice').textContent='Jornada terminada. Abre ? para volver a tu informe.';$('backReportBtn').hidden=false;};$('returnReport').onclick=()=>{$('help').hidden=true;playing=true;showReport();};
 $('finishBtn').onclick=()=>{LMS.finish(true);playing=false;Audio.cancel();$('exitDone').hidden=false;$('exitText').textContent=LMS.ready?'Tu sesión LMS terminó. Puedes cerrar esta ventana.':$('statusLine').textContent+'. Puedes cerrar esta ventana.';};$('homeBtn').onclick=()=>{LMS.finish(state.phase==='final');playing=false;Audio.cancel();$('help').hidden=true;$('exitDone').hidden=false;$('exitText').textContent=state.phase==='final'?'La jornada terminó. Puedes cerrar esta ventana.':'Tu sesión terminó. Al volver podrás retomar desde el último guardado disponible.';};
