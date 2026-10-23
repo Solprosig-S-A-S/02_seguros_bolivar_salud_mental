@@ -313,8 +313,12 @@ const Audio={ctx:null,muted:false,init(){if(!this.ctx){try{this.ctx=new(window.A
   const available=preferred.length?preferred:this.voiceList;
   const supervisor=/supervisor/i.test(name),narrator=/narrador/i.test(name);
   const identity=['Pedro','SST','Ayudante','Operador de bomba','Electricista','Roberto','Carlos','Mario','Cuadrilla'].indexOf(name);
-  u.voice=available.length?available[(supervisor||narrator?0:Math.max(0,identity)+1)%available.length]:null;
-  u.lang=u.voice?u.voice.lang:'es-CO';u.rate=supervisor?.91:narrator?.92:.95;u.pitch=supervisor?.93:1+(Math.max(0,identity)%3-1)*.035;u.volume=.85;
+  // SpeechSynthesisVoice has no standard gender field: prefer named male Spanish voices.
+  const masculine=/\b(male|masculino|hombre|jorge|alvaro|alonso|raul|pablo|diego|enrique|antonio|juan|andres|gonzalo|tomas|carlos|miguel|manuel|rodrigo|emilio|federico|gerardo|humberto|julio|leon|luis|marcelo|mario|roberto|sergio|santiago|nicolas|ricardo|martin)\b/i;
+  const maleVoices=this.voiceList.filter(voice=>masculine.test((voice.name+' '+(voice.gender||'')).normalize('NFD').replace(/[\u0300-\u036f]/g,'')));
+  const maleVoice=maleVoices.find(voice=>/^es-(CO|MX)/i.test(voice.lang))||maleVoices[0]||null;
+  u.voice=supervisor?(maleVoice||available[0]||null):(available.length?available[(narrator?0:Math.max(0,identity)+1)%available.length]:null);
+  u.lang=u.voice?u.voice.lang:'es-CO';u.rate=supervisor?.91:narrator?.92:.95;u.pitch=supervisor?(maleVoice?.96:.78):1+(Math.max(0,identity)%3-1)*.035;u.volume=.85;
   const finish=()=>{
    if(serial!==this.serial)return;clearTimeout(this.active?.timeout);this.active=null;this.speechUI(false);
    if(onComplete&&playing&&!document.hidden)onComplete();
