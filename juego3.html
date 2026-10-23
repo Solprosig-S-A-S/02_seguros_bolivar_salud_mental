@@ -828,6 +828,39 @@
       margin: 0;
     }
 
+    .feedback-drawer.breathing-reflection {
+      max-height: 78vh;
+      overflow-y: auto;
+    }
+    .breathing-reflection .transition-progress-track { display: none; }
+    .breathing-reflection-options {
+      display: grid;
+      gap: 7px;
+      margin-top: 10px;
+    }
+    .breathing-reflection-options button {
+      min-height: 44px;
+      padding: 9px 12px;
+      border: 1px solid rgba(148, 163, 184, .5);
+      border-radius: 10px;
+      background: #123b4c;
+      color: #f8fafc;
+      font: inherit;
+      font-size: 13px;
+      text-align: left;
+      cursor: pointer;
+    }
+    .breathing-reflection-options button[aria-pressed="true"] {
+      border-color: var(--bolivar-yellow);
+      background: #284e58;
+    }
+    .breathing-reflection-options button:focus-visible {
+      outline: 2px solid var(--bolivar-yellow);
+      outline-offset: 2px;
+    }
+    #breathingReflectionReply { margin-top: 10px; }
+    #breathingReflectionReply:empty { display: none; }
+
     .transition-actions-row {
       display: flex;
       align-items: center;
@@ -1477,6 +1510,16 @@
           Las pausas breves de sombra e hidratación restablecen la agudeza visual y eliminan el estrés térmico acumulado.
         </p>
 
+        <div id="breathingReflection" hidden>
+          <div class="breathing-reflection-options" role="group" aria-label="Cómo te resultó la respiración">
+            <button type="button" data-feeling="calm" aria-pressed="false">Me siento más tranquilo/a.</button>
+            <button type="button" data-feeling="same" aria-pressed="false">Me siento igual que antes.</button>
+            <button type="button" data-feeling="difficult" aria-pressed="false">Me costó seguir el ritmo.</button>
+            <button type="button" data-feeling="uncomfortable" aria-pressed="false">Sentí incomodidad.</button>
+          </div>
+          <p class="drawer-text" id="breathingReflectionReply" role="status" aria-live="polite"></p>
+        </div>
+
         <div class="transition-actions-row">
           <span class="transition-auto-hint" id="transitionAutoHint">Siguiente estación en breve...</span>
           <button class="transition-continue-btn" id="feedbackAdvanceBtn">
@@ -1997,11 +2040,11 @@
         },
         station:function(id){this.active=true;SoundEngine.startBeach();this.say([
           'Bienvenido. Este momento es para ti. Camina hacia la caseta. Cuando llegues, toma agua con calma, en pequeños sorbos.',
-          'Vamos a respirar con calma. Mantén presionado el círculo y acompaña mi voz. Respira sin forzar. Puedes soltarlo y volver a tu ritmo cuando lo necesites.',
+          'Este momento es para ti. No te afanes. Afloja los hombros. Mantén presionado el círculo y acompaña mi voz, sin forzar la respiración. Si el ritmo no te resulta cómodo, suelta el círculo y respira con naturalidad.',
           'El turno termina. Guarda tus cosas, silencia las alertas y cierra el casillero. Hazlo a tu ritmo.',
           'Ahora prepara tu descanso. Apaga el celular, cierra las cortinas y baja la luz. Deja que este espacio se vuelva tranquilo.'
         ][id-1]);},
-        phase:function(phase){this.say(['Inhala, suave.','Mantén el aire, sin forzar.','Suelta el aire, despacio.'][phase]);},
+        phase:function(phase){this.say(['Inhala, suave.','Mantén el aire, solo si estás cómodo.','Suelta el aire, despacio. No hay afán.'][phase]);},
         stop:function(){this.active=false;this.cancel();SoundEngine.stopBeach();}
       };
       if('speechSynthesis' in window){CalmGuide.selectVoice();window.speechSynthesis.addEventListener('voiceschanged',function(){CalmGuide.selectVoice();});}
@@ -3545,6 +3588,7 @@
         score: 0,
         vitalBattery: 15, // Nivel de batería vital: 0 a 100%
         stationActive: false,
+        breathingReflectionOpen: false,
         celebrationTimers: [],
         celebrationBatteryTimer: null,
         dom: {},
@@ -3696,8 +3740,28 @@
             self.advanceStation();
           });
 
+          document.getElementById('breathingReflection').addEventListener('click', function (e) {
+            var button = e.target.closest('button[data-feeling]');
+            if (!button || !self.breathingReflectionOpen) return;
+            var replies = {
+              calm: 'Qué bueno que esta pausa te haya resultado agradable. Quédate un momento con esa sensación y vuelve a tu respiración natural, sin afán.',
+              same: 'Gracias por contarlo. Está bien no notar un cambio. No tienes que sentir algo específico. Date un momento y respira a tu ritmo.',
+              difficult: 'Gracias por contarlo. No necesitas seguir los tiempos a la fuerza. Vuelve a tu respiración natural y deja los hombros sueltos. Esto no es una competencia.',
+              uncomfortable: 'Gracias por decirlo. Deja el ejercicio y vuelve a respirar con naturalidad. No hace falta retener el aire ni repetirlo. Continúa cuando te sientas cómodo.'
+            };
+            var reply = replies[button.dataset.feeling];
+            if (!reply) return;
+            document.querySelectorAll('#breathingReflection button').forEach(function (option) {
+              option.setAttribute('aria-pressed', String(option === button));
+            });
+            document.getElementById('breathingReflectionReply').textContent = reply;
+            self.dom.feedbackAdvanceBtn.querySelector('span').textContent = 'CONTINUAR';
+            self.dom.transitionAutoHint.textContent = 'Tómate el tiempo que necesites.';
+            CalmGuide.say(reply);
+          });
+
           this.dom.feedbackModal.addEventListener('click', function (e) {
-            if (e.target === self.dom.feedbackModal) {
+            if (e.target === self.dom.feedbackModal && !self.breathingReflectionOpen) {
               self.advanceStation();
             }
           });
@@ -3750,6 +3814,8 @@
 
         loadStation: function (stationNum) {
           if(this.breathCleanup){this.breathCleanup();this.breathCleanup=null;}
+          this.breathingReflectionOpen = false;
+          document.getElementById('breathingReflection').hidden = true;
           CalmGuide.cancel();
           this.currentStation = stationNum;
           this.stationActive = true;
@@ -4019,21 +4085,17 @@
                       circleBar.style.stroke = '#10B981';
                       circleBar.style.strokeDashoffset = '0';
                       titleSpan.textContent = '¡3 CICLOS!';
-                      counterSpan.textContent = '68 BPM';
+                      counterSpan.textContent = 'PAUSA';
 
                       self.score += data.scoreAdd;
                       self.vitalBattery = data.batteryTarget;
                       self.updateBatteryMeter();
                       ScormAPI.setScore(self.score);
 
-                      phaseLabel.textContent = '¡3 CICLOS COMPLETADOS: 68 BPM!';
-                      subInst.textContent = 'Excelente regulación neurovegetativa';
-                      self.showInlineFeedback('¡3 ciclos de respiración completados! Ritmo cardíaco y estrés regulados.');
-                      CalmGuide.say('Muy bien. Vuelve a tu respiración natural. Quédate un momento con esta pausa.');
-
-                      setTimeout(function () {
-                        self.showFeedback(data.feedback);
-                      }, 1800);
+                      phaseLabel.textContent = '¡3 CICLOS COMPLETADOS!';
+                      subInst.textContent = 'Vuelve a tu respiración natural, sin afán.';
+                      self.showInlineFeedback('Terminaste los tres ciclos. Tómate un momento para notar cómo te sientes.');
+                      self.showBreathingReflection();
                     }
                   }
                 }
@@ -4045,7 +4107,7 @@
                 clearInterval(breatheTimer);
                 breatheTimer = null;
                 isHolding = false;
-                CalmGuide.say('Respira a tu ritmo. Cuando quieras, continuamos.');
+                CalmGuide.say('No te afanes. Respira con naturalidad. Puedes descansar; continuamos cuando quieras.');
                 wrapper.classList.remove('active');
                 circleBtn.className = 'breathe-circle-btn';
                 circleBar.style.strokeDashoffset = circumference.toString();
@@ -4222,8 +4284,28 @@
           }
         },
 
-        showFeedback: function (messageText) {
+        showBreathingReflection: function () {
+          this.showFeedback('Vuelve a tu respiración natural. ¿Cómo te resultó el ejercicio?', true);
+          this.breathingReflectionOpen = true;
+          this.dom.feedbackDrawer.classList.add('breathing-reflection');
+          document.getElementById('drawerBadgeText').textContent = 'TU EXPERIENCIA';
+          document.getElementById('breathingReflection').hidden = false;
+          document.getElementById('breathingReflectionReply').textContent = '';
+          document.querySelectorAll('#breathingReflection button').forEach(function (button) {
+            button.setAttribute('aria-pressed', 'false');
+          });
+          this.dom.transitionAutoHint.textContent = 'No hay una respuesta correcta.';
+          this.dom.feedbackAdvanceBtn.querySelector('span').textContent = 'OMITIR';
+          document.querySelector('#breathingReflection button').focus({ preventScroll: true });
+          CalmGuide.say('Terminaste los tres ciclos. Vuelve a tu respiración natural, sin afán. ¿Cómo te resultó el ejercicio? Puedes elegir una respuesta. No hay una respuesta correcta.');
+        },
+
+        showFeedback: function (messageText, waitForUser) {
           var self = this;
+          this.breathingReflectionOpen = false;
+          document.getElementById('breathingReflection').hidden = true;
+          this.dom.feedbackDrawer.classList.remove('breathing-reflection');
+          document.getElementById('drawerBadgeText').textContent = 'RECUPERACIÓN EFECTIVA (+25 PTS)';
           if (this.dom.stationFeedbackInline) {
             this.dom.stationFeedbackInline.className = 'station-feedback-inline';
             this.dom.stationFeedbackInline.textContent = '';
@@ -4246,7 +4328,7 @@
             this.dom.transitionProgressFill.classList.remove('animating');
             this.dom.transitionProgressFill.style.width = '0%';
             void this.dom.transitionProgressFill.offsetWidth;
-            this.dom.transitionProgressFill.classList.add('animating');
+            if (!waitForUser) this.dom.transitionProgressFill.classList.add('animating');
           }
 
           this.dom.feedbackModal.classList.add('active');
@@ -4256,6 +4338,7 @@
             this.autoAdvanceTimer = null;
           }
 
+          if (waitForUser) return;
           this.autoAdvanceTimer = setTimeout(function () {
             self.advanceStation();
           }, 4500);
