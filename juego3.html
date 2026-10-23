@@ -1538,9 +1538,14 @@
         </div>
 
         <h1 class="screen-title">Santuario de Recarga 3D</h1>
-        <p class="screen-desc">
-          En labores de alto riesgo (Clase V), la agudeza visual y los reflejos dependen de la recuperación celular. Recorre las 4 estaciones táctiles para recargar tu <strong>Batería Vital al 100%</strong>.
+        <p class="screen-desc" id="routeDescription">
+          Elige tu tipo de trabajo. Recorrerás cuatro estaciones de autocuidado adaptadas a tu jornada.
         </p>
+        <fieldset style="border:0;padding:0;margin:12px 0;display:grid;gap:8px;text-align:left">
+          <legend style="color:#FACC15;font-weight:700;margin-bottom:8px">¿Cómo es tu jornada?</legend>
+          <label class="touch-step-card"><input type="radio" name="workRoute" value="operational"> Operativa · campo y cierre del turno</label>
+          <label class="touch-step-card"><input type="radio" name="workRoute" value="administrative"> Administrativa · tiempos y desconexión</label>
+        </fieldset>
 
         <!-- 3 Reglas de Oro -->
         <div class="rules-grid">
@@ -1575,7 +1580,7 @@
           </div>
         </div>
 
-        <button class="start-btn" id="startBtn">
+        <button class="start-btn" id="startBtn" disabled style="opacity:.5">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <polygon points="5 3 19 12 5 21 5 3"></polygon>
           </svg>
@@ -2068,6 +2073,12 @@
         station2Group: null,
         station3Group: null,
         station4Group: null,
+        officeGroup: null,
+        officeDisplay: null,
+        officeLaptop: null,
+        officePhone: null,
+        officeTasks: [],
+        officeCloseProgress: 0,
 
         // Personaje caminable e interactividad con el dedo
         playerAvatar: null,
@@ -2163,6 +2174,7 @@
           this.buildStation2Radio();
           this.buildStation3LockerRoom();
           this.buildStation4Bedroom();
+          this.buildAdministrativeOffice();
           this.buildPlayerCharacter();
           this.buildTargetMarker();
           this.buildCasetaBeacon();
@@ -2518,6 +2530,40 @@
         /* ------------------------------------------------------------------
            PERSONAJE 3D CAMINABLE (INTERACCIÓN TÁCTIL CON EL DEDO)
            ------------------------------------------------------------------ */
+        buildAdministrativeOffice: function () {
+          var group=new THREE.Group();
+          function box(w,h,d,x,y,z,color){
+            var mesh=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),new THREE.MeshStandardMaterial({color:color,roughness:.65}));
+            mesh.position.set(x,y,z);mesh.castShadow=true;mesh.receiveShadow=true;group.add(mesh);return mesh;
+          }
+          box(10,.2,8,0,-.1,0,0x334155);box(10,4.5,.2,0,2.15,-3.3,0x17364A);
+          box(2.4,1.6,.08,-2.5,2.5,-3.15,0x38BDF8);
+          box(.08,1.6,.1,-2.5,2.5,-3.05,0xE2E8F0);box(2.4,.08,.1,-2.5,2.5,-3.05,0xE2E8F0);
+          box(3.4,.14,1.5,0,1.25,-1,0xC58A42);
+          [-1.4,1.4].forEach(function(x){box(.12,1.2,.12,x,.6,-1.5,0x0F172A);box(.12,1.2,.12,x,.6,-.5,0x0F172A);});
+          box(1.1,.05,.7,0,1.35,-1.1,0x0F172A);
+          var lid=new THREE.Group();lid.position.set(0,1.38,-1.4);group.add(lid);
+          var screen=new THREE.Mesh(new THREE.BoxGeometry(1.1,.75,.05),new THREE.MeshStandardMaterial({color:0x38BDF8,emissive:0x075985,emissiveIntensity:.4}));
+          screen.position.y=.375;lid.add(screen);this.officeLaptop=lid;
+          this.officePhone=box(.25,.035,.43,1.15,1.35,-.7,0x38BDF8);
+          this.officeTasks=[];
+          for(var i=0;i<3;i++)this.officeTasks.push(box(.36,.035,.3,-1.1+i*.42,1.36,-.65,0xF59E0B));
+          var canvas=document.createElement('canvas');canvas.width=1024;canvas.height=512;
+          var texture=new THREE.CanvasTexture(canvas);
+          var display=new THREE.Mesh(new THREE.PlaneGeometry(3.5,1.75),new THREE.MeshBasicMaterial({map:texture}));
+          display.position.set(.8,2.8,-3.12);group.add(display);
+          this.officeDisplay={canvas:canvas,texture:texture};this.officeGroup=group;group.visible=false;this.scene.add(group);
+          this.setOfficeMessage('TU JORNADA','Prioriza · haz pausas · cierra a tiempo');
+        },
+
+        setOfficeMessage: function (title, detail) {
+          var display=this.officeDisplay;if(!display)return;
+          var ctx=display.canvas.getContext('2d');ctx.fillStyle='#062535';ctx.fillRect(0,0,1024,512);
+          ctx.fillStyle='#FACC15';ctx.font='bold 58px sans-serif';ctx.fillText(title,40,150,944);
+          ctx.fillStyle='#F8FAFC';ctx.font='36px sans-serif';ctx.fillText(detail,40,275,944);
+          display.texture.needsUpdate=true;
+        },
+
         buildPlayerCharacter: function () {
           var avatar = new THREE.Group();
           avatar.name = 'playerAvatar';
@@ -2746,7 +2792,7 @@
         },
 
         setPlayerDestination: function (x, z, isDragging) {
-          if(this.currentStationId===3)return;
+          if(this.currentStationId===3||(GameApp.workRoute==='administrative'&&this.currentStationId===1))return;
           var b = this.getCurrentWalkBounds();
           var clampedX = Math.max(b.minX, Math.min(b.maxX, x));
           var clampedZ = Math.max(b.minZ, Math.min(b.maxZ, z));
@@ -2804,6 +2850,10 @@
         updatePlayer: function (delta) {
           if (!this.playerAvatar || !this.playerAvatar.visible) return;
           if (this.finaleMode) return;
+          if(GameApp.workRoute==='administrative'&&(this.currentStationId===1||this.currentStationId===3)){
+            this.officeLaptop.rotation.x+=(this.officeCloseProgress-this.officeLaptop.rotation.x)*Math.min(1,delta*3);
+            return;
+          }
           if(this.currentStationId===3){this.updateLockerAction(delta);return;}
 
           var currentPos = this.playerAvatar.position;
@@ -3112,6 +3162,26 @@
           if (this.station2Group) this.station2Group.visible = (stationId === 2);
           if (this.station3Group) this.station3Group.visible = (stationId === 3);
           if (this.station4Group) this.station4Group.visible = (stationId === 4);
+          var office=GameApp.workRoute==='administrative'&&(stationId===1||stationId===3);
+          if(this.officeGroup)this.officeGroup.visible=office;
+          if(office){
+            this.station1Group.visible=false;this.station3Group.visible=false;
+            this.playerAvatar.visible=true;
+            this.playerHatParts.forEach(function(part){part.visible=false;});
+            this.playerAvatar.scale.setScalar(1.4);
+            this.playerAvatar.position.set(-1.8,0,.3);this.playerAvatar.rotation.set(0,Math.PI*.7,0);
+            this.playerTargetPos.copy(this.playerAvatar.position);
+            this.targetLookAt.set(0,1.6,-1.2);this.baseTargetRadius=8.8;this.targetYaw=.18;this.targetPitch=.22;
+            this.hemiLight.color.setHex(0xE0F2FE);this.sunLight.color.setHex(0xFFF7ED);this.sunLight.intensity=1.1;
+            this.scene.background.setHex(0x061523);this.ambientFog.color.setHex(0x061523);
+            document.getElementById('visualFatigueOverlay').className='visual-fatigue-overlay';
+            document.getElementById('touchWalkPill').classList.add('faded');
+            if(this.beaconMesh)this.beaconMesh.visible=false;if(this.targetMarkerMesh)this.targetMarkerMesh.visible=false;
+            this.officeLaptop.rotation.x=0;this.officeCloseProgress=0;this.officePhone.material.color.setHex(0x38BDF8);
+            this.officeTasks.forEach(function(task){task.material.color.setHex(0xF59E0B);});
+            this.setOfficeMessage(stationId===1?'08:00 · PLANIFICA':'17:00 · CIERRA TU JORNADA',stationId===1?'Tres pendientes. Un paso a la vez.':'Lo pendiente puede tener un plan.');
+            return;
+          }
 
           var fatigueOverlay = document.getElementById('visualFatigueOverlay');
           var walkHint = document.getElementById('touchWalkPill');
@@ -3364,6 +3434,7 @@
         },
 
         playFinale: function (passed, score) {
+          if(this.officeGroup)this.officeGroup.visible=false;
           this.finaleMode = true;
           this.finaleType = passed ? 'victory' : 'failure';
 
@@ -3559,7 +3630,7 @@
           }
 
           // La cámara sigue suavemente al trabajador en escena
-          if (this.playerAvatar && this.playerAvatar.visible && this.currentStationId !== 2 && this.currentStationId !== 3 && !this.finaleMode) {
+          if (this.playerAvatar && this.playerAvatar.visible && this.currentStationId !== 2 && this.currentStationId !== 3 && !(GameApp.workRoute==='administrative'&&this.currentStationId===1) && !this.finaleMode) {
             this.targetLookAt.x = this.playerAvatar.position.x * 0.35;
             this.targetLookAt.z = this.playerAvatar.position.z * 0.35;
           }
@@ -3710,6 +3781,7 @@
          4. CONTROLADOR NARRATIVO: LAS 4 ESTACIONES DE RECARGA
          ------------------------------------------------------------------ */
       var GameApp = {
+        workRoute: null,
         currentStation: 1,
         score: 0,
         vitalBattery: 15, // Nivel de batería vital: 0 a 100%
@@ -3843,6 +3915,7 @@
           window.addEventListener('pageshow',function(event){if(event.persisted&&CalmGuide.resumeAfterPage){CalmGuide.active=true;SoundEngine.init();}});
 
           this.dom.startBtn.addEventListener('click', function () {
+            if(!self.workRoute)return;
             SoundEngine.init();
             SoundEngine.playSuccess();
             if (self.autoAdvanceTimer) {
@@ -3853,6 +3926,21 @@
             self.clearCelebration();
             Santuario3DEngine.resetSceneState();
             self.loadStation(1);
+          });
+
+          var routeRules=document.querySelector('#welcomeScreen .rules-grid');
+          routeRules.textContent='Selecciona una ruta para ver las cuatro estaciones.';
+          document.querySelectorAll('input[name="workRoute"]').forEach(function(input){
+            input.addEventListener('change',function(){
+              self.workRoute=this.value;
+              var admin=self.workRoute==='administrative';
+              document.getElementById('routeDescription').textContent=admin?'Organiza tu jornada, practica una pausa y aprende a cerrar pendientes sin llevarte el trabajo a casa.':'Haz una pausa durante el turno, respira con calma, guarda tus elementos y prepara tu descanso.';
+              routeRules.innerHTML=(admin?[
+                ['1. Organiza el tiempo','Prioridades, concentración y pausas.'],['2. Respira sin afán','Tres ciclos guiados y tu experiencia escrita.'],['3. Cierra la jornada','Pendientes con plan, horario y computador cerrado.'],['4. Protege tu descanso','Notificaciones de trabajo y tiempo personal.']
+              ]:[['1. Sombra e hidratación','Camina a la caseta y bebe agua.'],['2. Respiración guiada','Haz una pausa y cuenta cómo te sentiste.'],['3. Desconexión del turno','Guarda tus elementos en el gabinete.'],['4. Descanso','Prepara la habitación y deja las pantallas.']]).map(function(rule){return '<div class="rule-item"><div class="rule-info"><h4>'+rule[0]+'</h4><p>'+rule[1]+'</p></div></div>';}).join('');
+              self.dom.startBtn.disabled=false;self.dom.startBtn.style.opacity='1';
+              document.querySelector('.celebration-seal span:last-child').textContent=admin?'Tiempo organizado':'Hidratación';
+            });
           });
 
           this.dom.soundToggleBtn.addEventListener('click', function () {
@@ -3934,7 +4022,16 @@
           this.stationActive = true;
           var appRoot = document.getElementById('rechargeApp');
           if (appRoot) appRoot.classList.remove('finale-mode');
-          var data = this.stationsData[stationNum - 1];
+          var data = Object.assign({},this.stationsData[stationNum - 1]);
+          if(this.workRoute==='administrative'){
+            data.location=['ORGANIZA TU TIEMPO','PAUSA Y RESPIRACIÓN','CIERRA TU JORNADA','TU TIEMPO PERSONAL'][stationNum-1];
+            data.feedback=[
+              'Priorizaste una entrega, reservaste un bloque de concentración y protegiste una pausa. Organizar el tiempo también implica acordar qué puede esperar.',
+              'Terminaste la pausa de respiración a tu ritmo.',
+              'Dejaste pendientes con siguiente paso y fecha, comunicaste tu disponibilidad y cerraste el computador. Desconectarte no exige terminarlo todo hoy.',
+              'Preparaste un espacio para descansar y dejaste las notificaciones de trabajo fuera de tu tiempo personal.'
+            ][stationNum-1];
+          }
 
           // Limpiar feedback inline previo
           if (this.dom.stationFeedbackInline) {
@@ -3953,6 +4050,12 @@
             'Guarda tus cosas y silencia el trabajo.',
             'Prepara la habitación para descansar.'
           ][stationNum - 1];
+          if(this.workRoute==='administrative')this.dom.stationDialogue.textContent=[
+            'Organiza tu jornada sin intentar hacerlo todo a la vez.',
+            'Haz una pausa. Respira sin afán.',
+            'El horario termina: deja un plan y cierra el trabajo.',
+            'Tu descanso también necesita un límite con el trabajo.'
+          ][stationNum-1];
           this.dom.stationPrompt.textContent = data.prompt || '';
           this.dom.stationPrompt.style.display = data.prompt ? 'block' : 'none';
 
@@ -3968,6 +4071,9 @@
           var self = this;
           var zone = this.dom.actionZone;
           zone.innerHTML = '';
+          if(this.workRoute==='administrative'&&(stationNum===1||stationNum===3)){
+            this.renderAdministrativeDecisions(stationNum,data);return;
+          }
 
           if (stationNum === 1) {
             // Estación 1: Mover al trabajador hacia la caseta con el dedo o botón
@@ -4375,6 +4481,67 @@
           }
         },
 
+        renderAdministrativeDecisions: function (stationNum,data) {
+          var self=this,zone=this.dom.actionZone,index=0;
+          var situations=stationNum===1?[
+            {question:'Son las 8:00. Tienes una entrega a las 11:00, correos y dos solicitudes nuevas. ¿Cómo empiezas?',options:[
+              'Respondo todo lo que llegue y dejo la entrega para cuando tenga un espacio.',
+              'Confirmo qué vence primero, separo un bloque para la entrega y acuerdo cuándo revisaré las otras solicitudes.'
+            ],correct:1,advice:'Si todo se atiende al mismo tiempo, la entrega puede quedarse sin espacio. Prioriza por plazo e impacto y confirma las expectativas.',title:'08:00 · PRIORIDAD DEFINIDA',detail:'Entrega de las 11:00 primero. Correos después.'},
+            {question:'En tu bloque de concentración te piden otro informe para hoy. ¿Qué haces?',options:[
+              'Explico lo que ya tengo comprometido y acuerdo con mi responsable qué se mueve o qué apoyo necesito.',
+              'Acepto sin preguntar y compenso trabajando esta noche.'
+            ],correct:0,advice:'Aceptar más trabajo sin revisar la capacidad puede extender tu jornada. Haz visible la carga y acuerda una prioridad realista.',title:'09:00 · BLOQUE PROTEGIDO',detail:'Una tarea a la vez. Nueva solicitud acordada.'},
+            {question:'Llevas un buen rato frente a la pantalla y llega la pausa que habías reservado. ¿Qué decides?',options:[
+              'La cancelo: solo pararé cuando no quede ningún correo.',
+              'Dejo anotado el siguiente paso, me aparto unos minutos de la pantalla y tomo agua antes de retomar.'
+            ],correct:1,advice:'Esperar a tener la bandeja vacía puede hacer que nunca pares. Dejar un siguiente paso facilita retomar después de la pausa.',title:'10:00 · PAUSA RESERVADA',detail:'Siguiente paso anotado. Momento de respirar.'}
+          ]:[
+            {question:'Tu jornada termina a las 17:00 y un informe sigue pendiente. ¿Cómo cierras?',options:[
+              'Anoto qué falta, el siguiente paso y cuándo lo retomaré. Si afecta una entrega, aviso y acuerdo el nuevo plazo.',
+              'Sigo hasta terminarlo todo, aunque cada día salga más tarde.'
+            ],correct:0,advice:'Cerrar con un plan es distinto de abandonar un pendiente. Hazlo visible, comunica el impacto y deja un momento concreto para retomarlo.',title:'16:50 · PENDIENTES CON PLAN',detail:'Informe: revisar datos mañana a las 08:00.'},
+            {question:'Te piden revisar un archivo esta noche y la persona no explica una urgencia. ¿Qué respondes?',options:[
+              'Lo revisaré esta noche para que no piensen que no estoy disponible.',
+              'Mi jornada termina a las 17:00. Lo reviso mañana a primera hora; si requiere atención urgente, confirmemos el motivo y el canal acordado.'
+            ],correct:1,advice:'Poner un límite claro permite coordinar. Comunica tu horario y distingue una solicitud habitual de una situación que deba tramitarse por el canal acordado.',title:'17:00 · LÍMITE COMUNICADO',detail:'Disponibilidad y canal de urgencias acordados.'},
+            {question:'Ya dejaste el plan y avisaste al equipo. ¿Qué haces para desconectarte de verdad?',options:[
+              'Dejo el computador abierto y miro el chat laboral durante la cena por si acaso.',
+              'Cierro la sesión, guardo el computador y silencio las notificaciones laborales según los acuerdos de mi equipo.'
+            ],correct:1,advice:'Revisar el chat por costumbre mantiene abierto el trabajo. Una vez coordinado el cierre, prepara tus dispositivos para respetar tu tiempo personal.',title:'JORNADA CERRADA',detail:'Pendientes organizados. Ahora, tiempo personal.'}
+          ];
+          function draw(){
+            zone.innerHTML='';
+            var situation=situations[index];
+            self.dom.stationPrompt.style.display='block';self.dom.stationPrompt.textContent=(index+1)+' de '+situations.length+' · '+situation.question;
+            var buttons=[];
+            var reply=document.createElement('p');reply.className='drawer-text';reply.setAttribute('role','status');reply.style.margin='8px 0';
+            situation.options.forEach(function(option,choice){
+              var button=document.createElement('button');button.className='touch-step-card';button.type='button';button.style.width='100%';button.style.marginBottom='7px';button.textContent=option;buttons.push(button);
+              button.addEventListener('click',function(){
+                if(choice!==situation.correct){reply.textContent=situation.advice+' Prueba otra decisión.';SoundEngine.playTone(260,'sine',.08,.06);return;}
+                buttons.forEach(function(b){b.disabled=true;});button.classList.add('completed');
+                reply.textContent=situation.detail+' '+(stationNum===1?'Acordar prioridades te ayuda a trabajar dentro de tu jornada.':'Dejar acuerdos claros te permite cerrar sin seguir disponible por costumbre.');
+                Santuario3DEngine.officeTasks[index].material.color.setHex(0x10B981);
+                Santuario3DEngine.setOfficeMessage(situation.title,situation.detail);
+                if(stationNum===3&&index===1)Santuario3DEngine.officePhone.material.color.setHex(0x0F172A);
+                if(stationNum===3&&index===2)Santuario3DEngine.officeCloseProgress=Math.PI/2;
+                SoundEngine.playSuccess();
+                var next=document.createElement('button');next.type='button';next.className='action-btn-primary';next.textContent=index===situations.length-1?'Continuar a la siguiente estación':'Siguiente decisión';zone.appendChild(next);
+                if(stationNum===3&&index===2){
+                  next.disabled=true;next.textContent='Cerrando el computador…';
+                  setTimeout(function(){if(next.isConnected){next.disabled=false;next.textContent='Continuar a la siguiente estación';}},1200);
+                }
+                next.addEventListener('click',function(){
+                  if(index<situations.length-1){index++;draw();return;}
+                  self.stationActive=false;self.score+=data.scoreAdd;self.vitalBattery=data.batteryTarget;self.updateBatteryMeter();ScormAPI.setScore(self.score);self.advanceStation();
+                },{once:true});
+              });zone.appendChild(button);
+            });zone.appendChild(reply);
+          }
+          draw();
+        },
+
         showInlineFeedback: function (text) {
           this.dom.stationCard.classList.add('station-complete');
           if (this.dom.stationFeedbackInline) {
@@ -4567,6 +4734,18 @@
               '  <p>Usar pantallas antes de dormir bloquea la melatonina, induciendo microsueños diurnos.</p>',
               '</div>'
             ].join('');
+          }
+
+          if(this.workRoute==='administrative'){
+            this.dom.finalHeaderTag.textContent='RUTA ADMINISTRATIVA · TIEMPO Y DESCONEXIÓN';
+            this.dom.finalTitle.textContent='Tu jornada tiene un cierre';
+            this.dom.finalDesc.textContent='Practicaste cómo priorizar, acordar la carga, hacer una pausa y cerrar el trabajo con un plan para mañana.';
+            this.dom.finalDiagnosisGrid.innerHTML=[
+              ['Organiza el día','Confirma la entrega prioritaria, reserva un bloque de concentración y acuerda qué puede esperar.'],
+              ['Protege tus pausas','Deja anotado el siguiente paso antes de parar. En la respiración, sigue un ritmo cómodo para ti.'],
+              ['Cierra pendientes con un plan','Anota qué falta, cuándo lo retomarás y a quién debes avisar. No necesitas terminarlo todo para cerrar.'],
+              ['Pon un límite al trabajo','Comunica tu horario y el canal acordado para urgencias. Cierra la sesión y silencia las notificaciones laborales durante tu descanso.']
+            ].map(function(item){return '<div class="diag-card success"><div class="diag-header"><strong>'+item[0]+'</strong></div><p>'+item[1]+'</p></div>';}).join('');
           }
 
           // Animación 3D del amanecer triunfal o amanecer pesado
