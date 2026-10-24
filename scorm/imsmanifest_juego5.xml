@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<manifest identifier="BOLIVAR-VOCES-U5-SCORM12" version="1.2"
+<manifest identifier="BOLIVAR-VOCES-EMOCIONES-U5-SCORM12" version="1.2"
  xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
  xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2">
   <metadata><schema>ADL SCORM</schema><schemaversion>1.2</schemaversion></metadata>
   <organizations default="ORG-U5"><organization identifier="ORG-U5">
-    <title>Voces de Cuadrilla · El Director de Obra</title>
+    <title>Voces de Cuadrilla · Cómo me siento en el trabajo</title>
     <item identifier="ITEM-U5" identifierref="SCO-U5" isvisible="true">
-      <title>Unidad 5 · Diez misiones de liderazgo protector</title>
-      <adlcp:masteryscore>80</adlcp:masteryscore>
+      <title>Unidad 5 · Diez situaciones para practicar el manejo de las emociones</title>
     </item>
   </organization></organizations>
-  <resources><resource identifier="SCO-U5" type="webcontent" adlcp:scormtype="sco" href="index.html"><file href="index.html"/></resource></resources>
+  <resources><resource identifier="SCO-U5" type="webcontent" adlcp:scormtype="sco" href="index.html"><file href="index.html"/><file href="assets/three-r128.min.js"/></resource></resources>
 </manifest>
