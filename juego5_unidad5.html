@@ -20,7 +20,7 @@
   --red: #FB7185;
   --text: #F8FAFC;
   --text-muted: #94A3B8;
-  --border: rgba(56, 189, 248, 0.25);
+  --border: rgba(56, 189, 248, 0.22);
   --card-bg: rgba(3, 16, 28, 0.72);
 }
 * { box-sizing: border-box; }
@@ -65,9 +65,9 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--cyan); outline-
   }
 }
 
-/* HEADER Y CONTADORES */
+/* HEADER COMPACTO */
 header {
-  padding: calc(7px + env(safe-area-inset-top)) 12px 8px;
+  padding: calc(7px + env(safe-area-inset-top)) 12px 7px;
   background: linear-gradient(135deg, #06283D, #0A364F);
   z-index: 20;
   border-bottom: 1px solid rgba(56, 189, 248, 0.22);
@@ -89,7 +89,6 @@ header {
   border-radius: 50%;
   flex-shrink: 0;
   font-size: 14px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
 }
 .brand-info { flex: 1; min-width: 0; }
 .brand-info small {
@@ -127,8 +126,8 @@ header {
 .meters {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 6px;
-  margin-top: 5px;
+  gap: 4px;
+  margin-top: 4px;
 }
 .meter label {
   display: flex;
@@ -141,9 +140,9 @@ header {
 .meter label span { color: var(--yellow); font-weight: 800; }
 .track {
   background: rgba(0, 20, 32, 0.7);
-  height: 5px;
+  height: 4px;
   border-radius: 999px;
-  margin-top: 3px;
+  margin-top: 2px;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
@@ -154,7 +153,7 @@ header {
   background: linear-gradient(90deg, #38BDF8, #FFB703);
 }
 
-/* ESCENA 3D Y OVERLAYS */
+/* ESCENA 3D Y CONTROLES LIMPIOS */
 #scene {
   flex: 1 1 0;
   min-height: 0;
@@ -184,43 +183,44 @@ canvas {
   background: rgba(1, 30, 45, 0.88);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  padding: 5px 10px;
+  padding: 4px 9px;
   border: 1px solid rgba(56, 189, 248, 0.35);
-  border-radius: 8px;
+  border-radius: 7px;
   font-size: 10px;
   font-weight: 800;
   letter-spacing: .4px;
   color: #E2E8F0;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 #score { color: var(--yellow); }
 
-/* BOCADILLO DE DIÁLOGO FLUIDO */
+/* BOCADILLO DE DIÁLOGO DISCRETO (NO TAPA LA ESCENA) */
 #bubble {
   position: absolute;
-  top: 42px;
-  left: 10px;
-  right: 10px;
-  max-width: 390px;
+  top: 40px;
+  left: 12px;
+  right: 12px;
+  max-width: 380px;
   margin: auto;
   background: rgba(255, 255, 255, 0.95);
   color: #0F172A;
-  border-radius: 14px;
-  padding: 9px 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  border-radius: 12px;
+  padding: 7px 11px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
   pointer-events: auto;
   z-index: 15;
   border: 1px solid rgba(56, 189, 248, 0.4);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  transition: transform .25s ease, opacity .25s ease;
+  backdrop-filter: blur(8px);
+  transition: opacity .25s ease, transform .25s ease;
+}
+#bubble.consequence-mode {
+  display: none !important; /* Durante la solución el foco 3D queda 100% visible sin tapar la escena */
 }
 #bubble:after {
   content: '';
   position: absolute;
-  bottom: -8px;
+  bottom: -7px;
   left: 48%;
-  border-width: 8px 8px 0;
+  border-width: 7px 7px 0;
   border-style: solid;
   border-color: rgba(255, 255, 255, 0.95) transparent transparent;
 }
@@ -229,10 +229,9 @@ canvas {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  margin-bottom: 3px;
 }
 #speaker {
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 850;
   letter-spacing: .4px;
   color: #0369A1;
@@ -242,20 +241,19 @@ canvas {
   border: 1px solid #94A3B8;
   background: #E2E8F0;
   color: #0F172A;
-  border-radius: 7px;
-  padding: 4px 9px;
-  font-size: 11px;
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 10px;
   font-weight: 750;
   display: flex;
   align-items: center;
-  gap: 5px;
-  transition: all .2s ease;
+  gap: 4px;
 }
 #readBtn[aria-pressed="true"] { background: #0284C7; color: #FFFFFF; border-color: #0284C7; }
 #speech {
-  font-size: 12.5px;
-  line-height: 1.4;
-  margin: 4px 0 6px;
+  font-size: 12px;
+  line-height: 1.35;
+  margin: 3px 0 5px;
   font-weight: 550;
   color: #1E293B;
 }
@@ -269,13 +267,13 @@ canvas {
   border: 1px solid #CBD5E1;
   color: #0F172A;
   background: #F1F5F9;
-  min-height: 30px;
-  border-radius: 6px;
-  padding: 3px 8px;
-  font-size: 10.5px;
+  min-height: 26px;
+  border-radius: 5px;
+  padding: 2px 7px;
+  font-size: 10px;
   font-weight: 700;
 }
-#phraseIndex { font-size: 10.5px; color: #64748B; font-weight: 600; }
+#phraseIndex { font-size: 10px; color: #64748B; font-weight: 600; }
 
 /* CONTROLES FLOTANTES EN 3D */
 #inspectBtn {
@@ -284,69 +282,34 @@ canvas {
   border: 1.5px solid var(--yellow);
   background: rgba(2, 48, 71, 0.92);
   color: #FFE6A4;
-  border-radius: 20px;
-  padding: 6px 12px;
-  font-size: 10.5px;
+  border-radius: 18px;
+  padding: 5px 11px;
+  font-size: 10px;
   font-weight: 800;
   transform: translate(-50%, -50%);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
-  gap: 5px;
-}
-#moveBtn {
-  position: absolute;
-  bottom: 38px;
-  right: 10px;
-  z-index: 14;
-  min-height: 38px;
-  padding: 7px 13px;
-  background: var(--yellow);
-  color: #011E2D;
-  border: 0;
-  border-radius: 10px;
-  font-size: 11.5px;
-  font-weight: 800;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.35);
-  display: flex;
-  align-items: center;
-  gap: 5px;
+  gap: 4px;
 }
 #talkBtn {
   position: absolute;
-  bottom: 38px;
+  bottom: 8px;
   left: 10px;
   z-index: 14;
-  min-height: 38px;
-  max-width: 55%;
-  padding: 7px 11px;
+  min-height: 32px;
+  padding: 5px 10px;
   border: 1px solid rgba(56, 189, 248, 0.45);
-  border-radius: 10px;
-  background: rgba(2, 48, 71, 0.92);
+  border-radius: 8px;
+  background: rgba(2, 48, 71, 0.9);
   color: #FFFFFF;
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 750;
   backdrop-filter: blur(8px);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 #sceneBeat {
-  position: absolute;
-  bottom: 6px;
-  left: 10px;
-  right: 10px;
-  background: rgba(1, 30, 45, 0.92);
-  color: #E2E8F0;
-  padding: 6px 10px;
-  border-radius: 8px;
-  font-size: 10.5px;
-  text-align: center;
-  pointer-events: none;
-  border: 1px solid rgba(56, 189, 248, 0.25);
-  z-index: 13;
-  backdrop-filter: blur(8px);
+  display: none; /* Se elimina la barra superpuesta para no sobrecargar el 3D */
 }
 
 /* TRANSICIÓN CINEMÁTICA ENTRE SITUACIONES */
@@ -354,9 +317,8 @@ canvas {
   position: absolute;
   inset: 0;
   z-index: 35;
-  background: radial-gradient(circle at 50% 40%, rgba(2, 48, 71, 0.92) 0%, rgba(1, 30, 45, 0.97) 100%);
+  background: radial-gradient(circle at 50% 40%, rgba(2, 48, 71, 0.94) 0%, rgba(1, 30, 45, 0.98) 100%);
   backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -372,7 +334,7 @@ canvas {
   pointer-events: auto;
 }
 .transition-badge {
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 800;
   letter-spacing: 1.2px;
   color: var(--yellow);
@@ -381,32 +343,32 @@ canvas {
   border: 1px solid rgba(255, 183, 3, 0.4);
   padding: 4px 12px;
   border-radius: 999px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 .transition-time {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--cyan);
   font-weight: 800;
   margin-bottom: 4px;
 }
 .transition-title {
-  font-size: clamp(18px, 5.5vw, 24px);
+  font-size: clamp(17px, 5vw, 22px);
   font-weight: 800;
   color: #FFFFFF;
   margin: 0 0 10px 0;
   line-height: 1.25;
-  max-width: 320px;
+  max-width: 310px;
 }
 .transition-desc {
-  font-size: 12.5px;
+  font-size: 12px;
   color: #CBD5E1;
-  max-width: 300px;
-  line-height: 1.45;
-  margin: 0 0 16px 0;
+  max-width: 290px;
+  line-height: 1.4;
+  margin: 0 0 14px 0;
 }
 .transition-track {
-  width: 170px;
-  height: 6px;
+  width: 160px;
+  height: 5px;
   background: rgba(255, 255, 255, 0.15);
   border-radius: 999px;
   overflow: hidden;
@@ -418,70 +380,35 @@ canvas {
   transition: width 1.2s ease-in-out;
 }
 
-/* PANEL INFERIOR DIDÁCTICO Y RESPONSIVE */
+/* PANEL INFERIOR: ENFOQUE DIRECTO Y LIMPIO */
 #panel {
   flex-shrink: 0;
-  max-height: 52%;
+  max-height: 54%;
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
-  background: linear-gradient(180deg, rgba(8, 41, 60, 0.96) 0%, rgba(2, 28, 42, 0.98) 100%);
+  padding: 10px 12px calc(12px + env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, rgba(6, 32, 48, 0.98) 0%, rgba(2, 22, 34, 0.99) 100%);
   border-top: 1.5px solid rgba(56, 189, 248, 0.3);
   scrollbar-width: thin;
   scrollbar-color: #4A7082 #062638;
-  transition: max-height .3s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
   z-index: 25;
 }
-#panel.in-consequence {
-  max-height: 56%;
-}
 
-/* BANNER DE GUÍA EMOCIONAL DIDÁCTICA */
-.emotional-guide-box {
-  background: rgba(2, 48, 71, 0.45);
-  border: 1px solid rgba(56, 189, 248, 0.25);
-  border-left: 3px solid var(--yellow);
-  border-radius: 10px;
-  padding: 8px 10px;
-  margin-bottom: 8px;
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-}
-.emotional-guide-icon {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-  color: var(--yellow);
-  margin-top: 1px;
-}
-.emotional-guide-content {
-  flex: 1;
-}
-.emotional-guide-kicker {
-  font-size: 10.5px;
-  font-weight: 850;
-  color: var(--yellow);
-  text-transform: uppercase;
-  letter-spacing: .5px;
-  margin-bottom: 2px;
-}
-.emotional-guide-desc {
-  font-size: 11.5px;
-  line-height: 1.35;
-  color: #E2E8F0;
-  margin: 0;
-}
-
-/* ENCABEZADOS DE MISIÓN */
+/* FASE 1: SELECCIÓN EMOCIONAL */
 #missionTitle {
   font-size: 13.5px;
   line-height: 1.35;
-  margin: 0 0 6px 0;
+  margin: 0 0 5px 0;
   color: #FFFFFF;
   font-weight: 800;
+}
+.emotional-guide-hint {
+  font-size: 11px;
+  color: #94A3B8;
+  margin: 0 0 7px 0;
+  line-height: 1.35;
 }
 #question {
   font-size: 12px;
@@ -491,52 +418,48 @@ canvas {
   font-weight: 700;
 }
 
-/* GRID DE 6 EMOCIONES ENRIQUECIDAS */
+/* GRID DE 6 EMOCIONES (LIMPIO Y SIN CAJAS EXCESIVAS) */
 .choices {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 7px;
 }
 .choice {
-  position: relative;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: flex-start;
-  background: rgba(4, 28, 44, 0.78);
-  border: 1.5px solid rgba(255, 255, 255, 0.12);
-  border-radius: 11px;
-  padding: 8px 9px;
+  background: rgba(4, 28, 44, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 7px 8px;
   text-align: left;
   cursor: pointer;
-  transition: all .2s cubic-bezier(0.16, 1, 0.3, 1);
-  backdrop-filter: blur(8px);
-  min-height: 78px;
-  gap: 3px;
+  transition: all .2s ease;
+  min-height: 74px;
+  gap: 2px;
 }
 .choice:hover, .choice:focus-visible {
   border-color: var(--yellow);
   background: rgba(14, 46, 68, 0.95);
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
 }
 .choice-header {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   width: 100%;
 }
 .choice-badge-circle {
-  width: 22px;
-  height: 22px;
-  border-radius: 6px;
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
   display: grid;
   place-items: center;
   flex-shrink: 0;
 }
 .choice-badge-circle svg {
-  width: 13px;
-  height: 13px;
+  width: 12px;
+  height: 12px;
   stroke: #FFFFFF;
   fill: none;
   stroke-width: 2.2;
@@ -545,263 +468,177 @@ canvas {
   font-size: 11.5px;
   font-weight: 800;
   color: #FFFFFF;
-  letter-spacing: .2px;
-  line-height: 1.25;
 }
 .choice-body-clue {
   font-size: 9.5px;
-  line-height: 1.3;
+  line-height: 1.25;
   color: #94A3B8;
-  margin-top: 1px;
 }
 .choice-purpose {
-  font-size: 9px;
+  font-size: 8.5px;
   font-weight: 750;
   color: var(--yellow);
-  background: rgba(255, 183, 3, 0.12);
-  padding: 1.5px 5px;
-  border-radius: 4px;
   margin-top: auto;
 }
 
 /* ========================================================
-   DEMOSTRACIÓN DE ACCIÓN: CÓMO PODEMOS ACTUAR
+   FASE 2: ENFOQUE DIRECTO: LA SITUACIÓN Y CÓMO MANEJARLA
+   (SIN CAJAS DENTRO DE CAJAS NI TABS COMPLICADOS)
    ======================================================== */
-#consequence {
+.focus-solution-flow {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
-.action-demo-header {
+.focus-situation-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding-bottom: 5px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 #resultBadge {
-  font-size: 10px;
+  font-size: 10.5px;
   font-weight: 850;
-  letter-spacing: .6px;
-  text-transform: uppercase;
-  padding: 3px 8px;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.1);
-}
-.action-demo-tag {
-  font-size: 10px;
-  font-weight: 800;
-  color: var(--cyan);
-  text-transform: uppercase;
   letter-spacing: .5px;
-}
-
-/* PESTAÑAS INTERACTIVAS DE DEMOSTRACIÓN */
-.demo-tabs-bar {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 4px;
-  background: rgba(0, 20, 32, 0.6);
-  padding: 3px;
-  border-radius: 9px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-.demo-tab-btn {
-  border: 0;
-  background: transparent;
-  color: #94A3B8;
-  font-size: 10px;
-  font-weight: 750;
-  padding: 6px 2px;
+  text-transform: uppercase;
+  padding: 3px 9px;
   border-radius: 6px;
-  transition: all .2s ease;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 4px;
-  white-space: nowrap;
+  gap: 5px;
+  border: 1px solid;
 }
-.demo-tab-btn.active {
-  background: var(--yellow);
-  color: #023047;
-  font-weight: 850;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+.focus-kicker-text {
+  font-size: 10.5px;
+  font-weight: 800;
+  color: var(--yellow);
+  letter-spacing: .5px;
+  text-transform: uppercase;
 }
 
-/* CONTENIDO DE LAS PESTAÑAS DE DEMOSTRACIÓN */
-.demo-panel-card {
-  background: rgba(2, 48, 71, 0.45);
-  border: 1px solid rgba(56, 189, 248, 0.22);
-  border-radius: 11px;
-  padding: 9px 11px;
+/* FILAS DE ACCIÓN INTEGRADAS (FLUJO NATURAL) */
+.action-item-row {
   display: flex;
-  flex-direction: column;
-  gap: 7px;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
-
-/* TAB 1: AUTORREGULACIÓN CORPORAL Y RESPIRACIÓN */
-.breathing-widget {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: rgba(1, 24, 38, 0.55);
-  border-radius: 9px;
-  padding: 7px 10px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-.breathing-circle-outer {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 2px dashed rgba(56, 189, 248, 0.65);
+.action-item-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  color: var(--cyan);
   display: grid;
   place-items: center;
   flex-shrink: 0;
+  margin-top: 2px;
 }
-.breathing-circle-inner {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: var(--yellow);
-  animation: breathAnim 6s ease-in-out infinite;
-}
-@keyframes breathAnim {
-  0%, 100% { transform: scale(0.65); opacity: 0.6; }
-  50% { transform: scale(1.35); opacity: 1; }
-}
-.breathing-text-col { flex: 1; min-width: 0; }
-.breathing-label {
-  font-size: 10.5px;
-  font-weight: 850;
+.action-item-icon svg { width: 15px; height: 15px; }
+.action-item-icon.yellow-icon {
+  background: rgba(255, 183, 3, 0.12);
+  border-color: rgba(255, 183, 3, 0.4);
   color: var(--yellow);
-  text-transform: uppercase;
+}
+.action-item-icon.green-icon {
+  background: rgba(52, 211, 153, 0.12);
+  border-color: rgba(52, 211, 153, 0.4);
+  color: var(--green);
+}
+
+.action-item-body {
+  flex: 1;
+  min-width: 0;
+}
+.action-item-label {
+  font-size: 10px;
+  font-weight: 850;
   letter-spacing: .5px;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 2px;
 }
-.breathing-detail {
-  font-size: 10.5px;
-  line-height: 1.35;
-  color: #E2E8F0;
-  margin-top: 1px;
-}
-.demo-body-text {
+.action-item-label.yellow-lbl { color: var(--yellow); }
+.action-item-label.green-lbl { color: var(--green); }
+
+.action-item-text {
   font-size: 11.5px;
-  line-height: 1.4;
+  line-height: 1.38;
   color: #F1F5F9;
   margin: 0;
 }
-
-/* TAB 2: GUION ASERTIVO (FÓRMULA SEGUROS BOLÍVAR) */
-.assertive-formula-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
+.assertive-speech-quote {
+  font-size: 12px;
+  line-height: 1.4;
+  color: #FFFFFF;
+  font-weight: 600;
+  margin: 3px 0 5px;
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  border-left: 2px solid var(--yellow);
 }
-.assertive-step-row {
-  background: rgba(1, 24, 38, 0.65);
-  border-radius: 7px;
-  padding: 5px 8px;
-  border-left: 3px solid;
-}
-.assertive-step-row.hecho { border-color: #38BDF8; }
-.assertive-step-row.emocion { border-color: var(--yellow); }
-.assertive-step-row.peticion { border-color: #34D399; }
-.assertive-step-label {
-  font-size: 9px;
-  font-weight: 850;
-  text-transform: uppercase;
-  letter-spacing: .5px;
-  margin-bottom: 2px;
-}
-.assertive-step-row.hecho .assertive-step-label { color: #38BDF8; }
-.assertive-step-row.emocion .assertive-step-label { color: var(--yellow); }
-.assertive-step-row.peticion .assertive-step-label { color: #34D399; }
-.assertive-step-text {
-  font-size: 11px;
-  line-height: 1.35;
-  color: #F8FAFC;
-  margin: 0;
-}
-.listen-script-btn {
-  display: flex;
+.listen-inline-btn {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 6px;
+  gap: 5px;
   background: rgba(56, 189, 248, 0.15);
   border: 1px solid rgba(56, 189, 248, 0.35);
   color: #38BDF8;
-  border-radius: 8px;
-  padding: 6px 11px;
-  font-size: 11px;
+  border-radius: 6px;
+  padding: 4px 9px;
+  font-size: 10.5px;
   font-weight: 750;
-  margin-top: 2px;
   transition: all .2s ease;
 }
-.listen-script-btn:hover {
+.listen-inline-btn:hover {
   background: rgba(56, 189, 248, 0.28);
   color: #FFFFFF;
 }
 
-/* TAB 3: RUTA Y PROTOCOLO DE APOYO */
-.support-route-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-.support-route-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 6px;
-  font-size: 11px;
-  line-height: 1.35;
-  color: #CBD5E1;
-  background: rgba(1, 24, 38, 0.5);
-  padding: 6px 8px;
-  border-radius: 6px;
-}
-.support-route-item svg {
-  width: 14px;
-  height: 14px;
-  color: #34D399;
-  flex-shrink: 0;
-  margin-top: 1px;
-}
-.support-route-item strong { color: #FFFFFF; }
-
-/* BOTONES DE ACCIÓN PRIMARIOS Y SECUNDARIOS */
-.primary, .secondary {
+/* BOTONES LIMPIOS */
+.primary {
   display: block;
   width: 100%;
-  border-radius: 11px;
+  border-radius: 10px;
   border: 0;
   padding: 11px;
   font-weight: 800;
   font-size: 13px;
   min-height: 44px;
-  transition: all .2s ease;
-}
-.primary {
   background: var(--yellow);
   color: var(--navy-dark);
+  transition: all .2s ease;
+  margin-top: 6px;
 }
 .primary:hover { background: var(--yellow-hover); }
-.secondary {
-  background: #12394B;
-  color: #FFFFFF;
-  border: 1px solid #5A7B8C;
-}
-.secondary:hover { background: #1B4C63; }
-.actionRow {
+
+.secondary-links-row {
   display: flex;
-  gap: 7px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
   margin-top: 4px;
 }
-.actionRow .secondary {
-  width: auto;
-  white-space: nowrap;
+.text-link-btn {
+  background: transparent;
+  border: 0;
+  color: #94A3B8;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 5px 2px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  transition: color .2s ease;
 }
+.text-link-btn:hover { color: #FFFFFF; }
 
-/* OVERLAYS (BIENVENIDA, INFORME, AYUDA, SALIDA) */
+/* OVERLAYS */
 .overlay {
   position: absolute;
   inset: 0;
@@ -811,12 +648,7 @@ canvas {
   padding: calc(18px + env(safe-area-inset-top)) 18px calc(18px + env(safe-area-inset-bottom));
   overscroll-behavior: contain;
 }
-.welcomeBrand {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-}
+.welcomeBrand { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 .welcomeBody {
   max-width: 380px;
   margin: auto;
@@ -936,8 +768,6 @@ canvas {
   font-size: 12px;
   line-height: 1.45;
 }
-
-/* DETALLES DE AYUDA */
 #help { z-index: 60; }
 #exitDone {
   z-index: 70;
@@ -953,7 +783,6 @@ canvas {
   place-items: center;
   border: 3px solid var(--yellow);
   border-radius: 50%;
-  font-size: 26px;
   color: var(--yellow);
   margin: 16px auto;
 }
@@ -961,7 +790,7 @@ canvas {
 </head>
 <body>
 <main id="app">
-  <!-- ENCABEZADO SUPERIOR -->
+  <!-- ENCABEZADO -->
   <header>
     <div class="brand">
       <span class="logo" aria-hidden="true">B</span>
@@ -983,52 +812,39 @@ canvas {
           <div class="fill" id="climateFill"></div>
         </div>
       </div>
-      <div class="meter" hidden>
-        <label>AVANCE DEL VACIADO <span id="pourValue">0 %</span></label>
-        <div class="track" role="progressbar" aria-label="Avance del vaciado" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="pourMeter">
-          <div class="fill" id="pourFill"></div>
-        </div>
-      </div>
     </div>
   </header>
 
-  <!-- ESCENA 3D Y CONTROLES VIRTUALES -->
+  <!-- ESCENA 3D (DESPEJADA Y SIN BOTÓN MANUAL DE ACERCARSE) -->
   <section id="scene" aria-label="Simulación 3D en piso de obra">
     <div id="sceneTop">
       <span class="tag" id="missionTag">SITUACIÓN 1 DE 10 · 6:00</span>
-      <span class="tag" id="score">0 / 100 PTS</span>
+      <span class="tag" id="score">0 PTS</span>
     </div>
 
-    <!-- BOCADILLO DE DIÁLOGO DINÁMICO -->
+    <!-- BOCADILLO DE DIÁLOGO DISCRETO -->
     <div id="bubble" hidden>
       <div class="bubbleHeader">
         <div id="speaker"></div>
         <button id="readBtn" aria-label="Escuchar esta frase" aria-pressed="false">
-          <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
           <span>Escuchar</span>
         </button>
       </div>
       <p id="speech"></p>
       <div id="phraseControls">
-        <button id="prevPhrase" aria-label="Frase anterior">‹ Anterior</button>
+        <button id="prevPhrase" aria-label="Frase anterior">‹</button>
         <span id="phraseIndex"></span>
-        <button id="nextPhrase">Siguiente ›</button>
+        <button id="nextPhrase">›</button>
       </div>
     </div>
 
-    <!-- EFECTOS Y CONTROLES FLOTANTES -->
-    <div id="sceneFlash"></div>
-    <div id="sceneNotice" hidden></div>
+    <!-- CONTROLES FLOTANTES DISCRETOS -->
     <button id="inspectBtn" type="button" aria-label="Observar la situación">
-      <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+      <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
       <span>Ver situación</span>
     </button>
-    <button id="moveBtn" type="button" aria-pressed="false">
-      <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
-      <span>Acercarme</span>
-    </button>
     <button id="talkBtn" type="button">Escuchar situación</button>
-    <div id="sceneBeat" aria-live="polite">Me enfrento a esta situación. ¿Cómo me siento?</div>
 
     <!-- TRANSICIÓN CINEMÁTICA ENTRE SITUACIONES -->
     <div id="transitionOverlay">
@@ -1042,112 +858,69 @@ canvas {
     </div>
   </section>
 
-  <!-- PANEL DIDÁCTICO INFERIOR -->
-  <section id="panel" aria-label="Guía emocional y demostración de acción">
+  <!-- PANEL DIDÁCTICO INFERIOR: ENFOQUE DIRECTO EN LA SITUACIÓN Y CÓMO MANEJARLA -->
+  <section id="panel" aria-label="Guía emocional y solución en obra">
     <button id="backReportBtn" class="primary" hidden>VOLVER A MI INFORME</button>
     <h2 id="missionTitle"></h2>
 
-    <!-- FASE 1: GUÍA DE EMOCIONES POR LA APP -->
+    <!-- FASE 1: SELECCIÓN EMOCIONAL GUIADA -->
     <div id="emotionalGuidanceArea">
-      <div class="emotional-guide-box">
-        <svg class="emotional-guide-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-        <div class="emotional-guide-content">
-          <div class="emotional-guide-kicker">Guía de Conexión Emocional</div>
-          <p class="emotional-guide-desc">Toda emoción es una señal de protección válida en obra. Conecta con las sensaciones de tu cuerpo y elige cómo te sientes:</p>
-        </div>
-      </div>
-      <p id="question">Ante esta situación, ¿cómo me siento?</p>
+      <p class="emotional-guide-hint">Reconoce las señales en tu cuerpo y elige qué emoción surge ante este caso:</p>
+      <p id="question">Ante esta situación, ¿cómo te sientes?</p>
       <div id="choices" class="choices"></div>
     </div>
 
-    <!-- FASE 2: DEMOSTRACIÓN DE ACCIÓN: CÓMO PODEMOS ACTUAR -->
-    <div id="consequence" hidden>
-      <div class="action-demo-header">
+    <!-- FASE 2: ENFOQUE DIRECTO: CÓMO MANEJAR LA SITUACIÓN (SIN CAJAS DENTRO DE CAJAS) -->
+    <div id="consequence" hidden class="focus-solution-flow">
+      <div class="focus-situation-bar">
         <span id="resultBadge"></span>
-        <span class="action-demo-tag">Cómo podemos actuar</span>
+        <span class="focus-kicker-text">Cómo manejarla en obra</span>
       </div>
 
-      <!-- PESTAÑAS DE DEMOSTRACIÓN -->
-      <div class="demo-tabs-bar">
-        <button type="button" class="demo-tab-btn active" id="tabBodyBtn" onclick="switchDemoTab('body')">
-          <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-          <span>1. Tu cuerpo</span>
-        </button>
-        <button type="button" class="demo-tab-btn" id="tabScriptBtn" onclick="switchDemoTab('script')">
-          <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" fill="none" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          <span>2. Qué decir</span>
-        </button>
-        <button type="button" class="demo-tab-btn" id="tabSupportBtn" onclick="switchDemoTab('support')">
-          <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" fill="none" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          <span>3. Red de apoyo</span>
-        </button>
-      </div>
-
-      <!-- CONTENIDO TAB 1: AUTORREGULACIÓN CORPORAL -->
-      <div class="demo-panel-card" id="demoPanelBody">
-        <div class="breathing-widget">
-          <div class="breathing-circle-outer">
-            <div class="breathing-circle-inner" id="breathingPill"></div>
-          </div>
-          <div class="breathing-text-col">
-            <div class="breathing-label" id="breathingActionLabel">Autorregulación Física</div>
-            <div class="breathing-detail" id="breathingActionDesc">Inhala despacio en 4s · Sostén 2s · Exhala en 4s soltando la tensión.</div>
-          </div>
+      <!-- 1. TU CUERPO (Acción física directa) -->
+      <div class="action-item-row">
+        <div class="action-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
         </div>
-        <p class="demo-body-text" id="resultText"></p>
-        <div style="font-size:11px;color:#94A3B8;" id="resultFull"></div>
-      </div>
-
-      <!-- CONTENIDO TAB 2: GUION ASERTIVO (QUÉ DECIR) -->
-      <div class="demo-panel-card" id="demoPanelScript" hidden>
-        <div class="assertive-formula-stack">
-          <div class="assertive-step-row hecho">
-            <div class="assertive-step-label">1. Hecho objetivo (sin juzgar)</div>
-            <p class="assertive-step-text" id="assertiveFactText"></p>
-          </div>
-          <div class="assertive-step-row emocion">
-            <div class="assertive-step-label">2. Emoción sentida (con serenidad)</div>
-            <p class="assertive-step-text" id="assertiveEmotionText"></p>
-          </div>
-          <div class="assertive-step-row peticion">
-            <div class="assertive-step-label">3. Petición concreta (solución o acuerdo)</div>
-            <p class="assertive-step-text" id="assertiveNeedText"></p>
-          </div>
+        <div class="action-item-body">
+          <div class="action-item-label">1. Tu cuerpo · Autorregulación</div>
+          <p class="action-item-text" id="resultText"></p>
         </div>
-        <button type="button" class="listen-script-btn" id="listenScriptBtn">
-          <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          <span>Escuchar cómo expresarlo en obra</span>
-        </button>
       </div>
 
-      <!-- CONTENIDO TAB 3: RED DE APOYO Y PROTOCOLOS -->
-      <div class="demo-panel-card" id="demoPanelSupport" hidden>
-        <div class="support-route-stack">
-          <div class="support-route-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-            <div><strong>En el frente de obra:</strong> <span id="supportSiteText">Pausa preventiva y coordinación directa con SST o jefe de cuadrilla.</span></div>
-          </div>
-          <div class="support-route-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            <div><strong>Comité de Convivencia Laboral:</strong> Ley 1010 de 2006 para prevención del acoso y trato digno.</div>
-          </div>
-          <div class="support-route-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            <div><strong>Seguros Bolívar ARL:</strong> Línea de Apoyo Psicosocial y Salud Mental (Res. 2764 de 2022).</div>
-          </div>
+      <!-- 2. QUÉ DECIR (Comunicación asertiva con botón de voz) -->
+      <div class="action-item-row">
+        <div class="action-item-icon yellow-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         </div>
-        <p style="font-size:10.5px;color:#94A3B8;margin:3px 0 0;" id="lesson"></p>
+        <div class="action-item-body">
+          <div class="action-item-label yellow-lbl">2. Qué decir en la obra (Asertividad)</div>
+          <p class="assertive-speech-quote" id="assertiveQuoteText"></p>
+          <button type="button" class="listen-inline-btn" id="listenScriptBtn">
+            <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <span>Escuchar cómo decirlo</span>
+          </button>
+        </div>
       </div>
 
-      <!-- BOTONES DE ACCIÓN DE DEMOSTRACIÓN -->
-      <details id="reasonDetails" style="display:none;"><summary>Detalles</summary></details>
-      <div id="watchTrack" style="display:none;"><div id="watchFill"></div></div>
-
-      <div class="actionRow">
-        <button id="replayBtn" class="secondary" title="Repetir demostración en 3D">Ver de nuevo</button>
-        <button id="continueBtn" class="primary">SIGUIENTE SITUACIÓN →</button>
+      <!-- 3. RUTA DE APOYO EN OBRA -->
+      <div class="action-item-row" style="border-bottom:0;padding-bottom:0;">
+        <div class="action-item-icon green-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="action-item-body">
+          <div class="action-item-label green-lbl">3. Red de apoyo y protocolo</div>
+          <p class="action-item-text" id="supportSiteText"></p>
+        </div>
       </div>
-      <button id="changeEmotionBtn" class="secondary" style="margin-top:4px;">Probar otra emoción ante este caso</button>
+
+      <!-- BOTÓN PRINCIPAL DE CONTINUIDAD -->
+      <button id="continueBtn" class="primary">SIGUIENTE SITUACIÓN →</button>
+      
+      <div class="secondary-links-row">
+        <button type="button" id="changeEmotionBtn" class="text-link-btn">Probar otra emoción ante este caso</button>
+        <button type="button" id="replayBtn" class="text-link-btn">Repetir animación 3D</button>
+      </div>
     </div>
   </section>
 
@@ -1166,10 +939,10 @@ canvas {
       </div>
       <div class="eyebrow">UNA SITUACIÓN · LO QUE SIENTO · CÓMO ACTUAR</div>
       <h2>Voces de Cuadrilla<br>Cómo me siento</h2>
-      <p class="welcomeLead">En la obra nos pasan situaciones difíciles todos los días. La aplicación te acompaña a identificar qué sientes en tu cuerpo y te demuestra cómo actuar con autorregulación y asertividad.</p>
+      <p class="welcomeLead">En la obra nos pasan situaciones difíciles todos los días. La aplicación se acerca automáticamente a cada situación, te acompaña a reconocer tus emociones y te demuestra de forma directa cómo actuar con autorregulación y asertividad.</p>
       <div class="welcomeStats">
         <span><strong>10</strong> situaciones reales</span>
-        <span><strong>6</strong> emociones guiadas</span>
+        <span><strong>6</strong> emociones</span>
         <span>Demostración <strong>3D</strong></span>
       </div>
     </div>
@@ -1193,8 +966,8 @@ canvas {
     <div id="reportStats" class="steps"></div>
     <div id="reportList"></div>
     <button class="primary" id="finishBtn" style="margin-top:14px;">TERMINAR Y GUARDAR SESIÓN</button>
-    <button class="secondary" id="retryBtn" style="margin-top:7px;">Repetir la jornada</button>
-    <button class="secondary" id="changeViewBtn" style="margin-top:7px;">Ver la cuadrilla en 3D</button>
+    <button class="secondary" id="retryBtn" style="margin-top:7px;background:#12394B;color:#fff;border:1px solid #5A7B8C;">Repetir la jornada</button>
+    <button class="secondary" id="changeViewBtn" style="margin-top:7px;background:#12394B;color:#fff;border:1px solid #5A7B8C;">Ver la cuadrilla en 3D</button>
     <details style="font-size:11px;color:#94A3B8;margin:14px 0;">
       <summary style="cursor:pointer;padding:6px 0;">Referencias normativas y alcance</summary>
       <p>Simulación educativa para el fortalecimiento de la inteligencia emocional y prevención del riesgo psicosocial (Resolución 2764 de 2022 y Ley 1010 de 2006). Todos los derechos reservados a Seguros Bolívar ARL.</p>
@@ -1205,12 +978,12 @@ canvas {
   <section class="overlay" id="help" hidden aria-label="Ayuda">
     <div class="eyebrow">GUÍA DE LA ACTIVIDAD</div>
     <h2 style="font-size:22px;margin:10px 0;">Cómo aprovechar esta experiencia</h2>
-    <p style="font-size:12.5px;line-height:1.5;"><strong>1. Escucha la situación:</strong> Cada escena representa un desafío psicosocial real en obra (órdenes contradictorias, presión de tiempo, desánimo familiar, maltrato verbal o fallas de equipo).</p>
+    <p style="font-size:12.5px;line-height:1.5;"><strong>1. Escucha la situación:</strong> Cada escena representa un desafío real en obra. La cámara se acerca automáticamente para apreciar los detalles del caso.</p>
     <p style="font-size:12.5px;line-height:1.5;"><strong>2. Reconoce tu señal corporal:</strong> No califiques tus emociones como 'buenas' o 'malas'. Toda emoción tiene un mensaje de alerta. Nota qué sientes en tu cuerpo.</p>
-    <p style="font-size:12.5px;line-height:1.5;"><strong>3. Aprende cómo actuar:</strong> La app te demuestra en 3 pasos cómo autorregularte físicamente, qué palabras usar con la fórmula de comunicación asertiva, y qué canales de apoyo activar en la empresa.</p>
+    <p style="font-size:12.5px;line-height:1.5;"><strong>3. Aprende cómo manejarla:</strong> La app te demuestra en 3 pasos directos cómo autorregularte físicamente, qué palabras usar con asertividad y qué canales de apoyo activar en la empresa.</p>
     <button class="primary" id="closeHelp" style="margin-top:14px;">VOLVER A LA EXPERIENCIA</button>
-    <button class="secondary" id="returnReport" hidden style="margin-top:7px;">Ver informe final</button>
-    <button class="secondary" id="homeBtn" style="margin-top:7px;">Guardar y salir</button>
+    <button class="secondary" id="returnReport" hidden style="margin-top:7px;background:#12394B;color:#fff;border:1px solid #5A7B8C;">Ver informe final</button>
+    <button class="secondary" id="homeBtn" style="margin-top:7px;background:#12394B;color:#fff;border:1px solid #5A7B8C;">Guardar y salir</button>
   </section>
 
   <!-- OVERLAY: SESIÓN TERMINADA -->
@@ -1219,7 +992,7 @@ canvas {
       <div class="introIcon"><svg viewBox="0 0 24 24" width="30" height="30" stroke="currentColor" fill="none" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
       <h2 style="font-size:24px;margin:6px 0;">Sesión terminada</h2>
       <p id="exitText" style="font-size:13px;color:#D4E6EE;margin:6px 0 16px;">Tu progreso fue guardado exitosamente.</p>
-      <a class="secondary" href="index.html" style="text-decoration:none;display:inline-block;padding:11px 20px;">Volver al portal principal</a>
+      <a class="secondary" href="index.html" style="text-decoration:none;display:inline-block;padding:11px 20px;background:#12394B;color:#fff;border:1px solid #5A7B8C;border-radius:10px;">Volver al portal principal</a>
     </div>
   </section>
 </main>
@@ -1232,7 +1005,7 @@ const $ = id => document.getElementById(id);
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 const STORAGE = 'bolivar-voces-emociones-u5-v3';
 
-// 6 EMOCIONES GUÍAS CON SEÑALES CORPORALES Y PROPÓSITO BIOLÓGICO
+// 6 EMOCIONES GUÍAS
 const EMOTIONS = [
   {
     id: "sadness",
@@ -1241,13 +1014,13 @@ const EMOTIONS = [
     color: "#5798dd",
     mood: "worried",
     action: "pause",
-    bodyClue: "Pesadez en el pecho, nudo o falta de energía.",
+    bodyClue: "Pesadez en el pecho o falta de energía.",
     purpose: "Avisa que necesitas pausa y compañía",
     title: "No tengo que cargar con esta tristeza a solas.",
-    advice: "Hago una pausa acompañado, expreso cómo me siento y pido apoyo antes de retomar una tarea que requiera concentración.",
-    words: "Me siento muy triste. ¿Podemos hablar un momento en privado? Necesito que alguien me escuche para poder enfocarme.",
+    advice: "Hago una pausa acompañado. Apoyo ambos pies, respiro suavemente y pido relevo temporal antes de retomar una tarea crítica.",
+    words: "Me siento muy triste hoy. ¿Podemos hablar un momento en privado? Necesito desahogarme para poder concentrarme bien.",
     practice: "El personaje se aparta de la tarea expuesta, se sienta en la zona de cuidado y conversa con un compañero de apoyo.",
-    bodyTip: "Toma asiento en un lugar seguro. Respira suavemente y permítete un momento de pausa sin exigirte de más."
+    bodyTip: "Toma asiento en un lugar seguro. Respira suavemente y permítete un momento de pausa sin presionarte."
   },
   {
     id: "anger",
@@ -1259,10 +1032,10 @@ const EMOTIONS = [
     bodyClue: "Mandíbula tensa, calor o impulso de discutir.",
     purpose: "Avisa que se vulneró un límite o acuerdo",
     title: "Puedo poner un límite claro y firme sin agredir.",
-    advice: "Me aparto de la discusión, aflojo las manos, respiro a un ritmo cómodo y digo qué necesito con respeto y firmeza.",
+    advice: "Me aparto de la discusión, aflojo las manos, respiro hondo en 4 segundos y expreso qué necesito con respeto y firmeza.",
     words: "Estoy sintiendo mucha rabia en este momento. Necesito dos minutos de pausa para respirar y luego acordamos la solución con respeto.",
     practice: "El personaje se aparta de la discusión, baja los brazos, afloja los puños, respira hondo y explica lo que necesita sin gritar.",
-    bodyTip: "Apoya los pies con firmeza, suelta los hombros y abre las palmas. Desactiva la urgencia de reaccionar impulsivamente."
+    bodyTip: "Pies firmes en el suelo, hombros relajados y palmas abiertas. Desactiva la urgencia de reaccionar impulsivamente."
   },
   {
     id: "fear",
@@ -1274,7 +1047,7 @@ const EMOTIONS = [
     bodyClue: "Pulso acelerado, nudo en estómago o alerta.",
     purpose: "Alerta de un peligro real que exige seguridad",
     title: "Puedo pedir seguridad y acompañamiento técnico.",
-    advice: "Me alejo de la zona de riesgo, aviso cómo me siento y pido revisar la condición o recibir acompañamiento de SST antes de continuar.",
+    advice: "Me alejo dos pasos del riesgo, hago la señal de detención segura y pido verificar las protecciones antes de continuar.",
     words: "Tengo mucho miedo de realizar esta labor así. Necesito que revisemos la seguridad del frente y que alguien me acompañe.",
     practice: "El personaje toma distancia del borde o peligro, levanta la mano para pedir apoyo y convoca al responsable de SST.",
     bodyTip: "Da dos pasos atrás de la línea de peligro. Haz contacto visual con tu cuadrilla y utiliza la señal de detención segura."
@@ -1289,10 +1062,10 @@ const EMOTIONS = [
     bodyClue: "Respiración corta, sobrecarga y mente acelerada.",
     purpose: "Avisa que debes bajar el ritmo y ordenar",
     title: "Puedo bajar el ritmo y avanzar paso a paso.",
-    advice: "Apoyo ambos pies con firmeza, relajo los hombros, respiro cómodamente y acuerdo una sola prioridad con el responsable.",
+    advice: "Apoyo ambos pies con firmeza, relajo los hombros, inhalo en 4s, sostengo 2s y acuerdo una sola prioridad a la vez con el responsable.",
     words: "Me siento muy ansioso con tantas órdenes a la vez. Necesito que acordemos qué va primero y cómo hacerlo con seguridad.",
     practice: "El personaje se detiene, apoya ambos pies, respira diafragmáticamente y solicita una sola instrucción clara y secuencial.",
-    bodyTip: "Anclaje sensorial: siente los talones contra el piso, inhala profundo en 4s, sostén 2s y exhala en 4s soltando el agobio."
+    bodyTip: "Anclaje sensorial: siente los talones contra el piso, suelta el aire lentamente y divide la tarea en pasos pequeños."
   },
   {
     id: "disgust",
@@ -1304,10 +1077,10 @@ const EMOTIONS = [
     bodyClue: "Rechazo visceral, tensión ética o incomodidad.",
     purpose: "Impulsa a defender la dignidad y el respeto",
     title: "Puedo comunicar lo que me incomoda y proteger mi dignidad.",
-    advice: "Tomo distancia y describo la conducta o condición que me incomoda sin descalificar a nadie. Pido una solución respetuosa.",
+    advice: "Tomo distancia, mantengo postura erguida y describo la conducta que no tolero sin descalificar. Pido una solución respetuosa.",
     words: "Esta forma de tratarnos me genera mucho desagrado e incomodidad. Solicito que nos dirijamos con respeto o acudiré a Convivencia.",
     practice: "El personaje toma distancia de la mala conducta, señala la condición y la comunica al responsable con postura firme y tranquila.",
-    bodyTip: "Postura erguida, mirada directa y serena, voz clara sin temblor. Fija el límite de respeto sin entrar en provocaciones."
+    bodyTip: "Postura erguida, mirada serena y voz clara sin temblor. Fija el límite de respeto profesional sin entrar en provocaciones."
   },
   {
     id: "joy",
@@ -1319,7 +1092,7 @@ const EMOTIONS = [
     bodyClue: "Cuerpo ligero, bienestar y ganas de celebrar.",
     purpose: "Afianza la confianza y recarga la energía",
     title: "Puedo compartir mi satisfacción y reforzar el cuidado mutuo.",
-    advice: "Reconozco lo que salió bien, agradezco una acción concreta de cuidado mutuo y mantengo la atención en el entorno.",
+    advice: "Agradezco a mis compañeros una acción concreta de cuidado mutuo, celebro el trabajo bien hecho y mantengo la atención en la losa.",
     words: "¡Qué buen trabajo en equipo logramos hoy! Gracias por el apoyo de todos; sigamos cuidándonos con esta misma energía.",
     practice: "El personaje comparte un gesto de felicitación y choque de manos con su equipo, manteniendo la atención en el frente.",
     bodyTip: "Sonríe, haz contacto visual con tus compañeros y verbaliza un agradecimiento específico por la coordinación lograda."
@@ -1336,7 +1109,7 @@ const EMOTION_SVGS = {
   joy: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>'
 };
 
-// 10 SITUACIONES REALES DE OBRA CON GUIONES CONTEXTUALIZADOS
+// 10 SITUACIONES REALES DE OBRA
 const M = [
   {
     time: "6:00",
@@ -1488,7 +1261,7 @@ const CONVERSATIONS = M.map((m, i) => [
 const INSPECTIONS = M.map(m => m.situation);
 const emotionFor = record => EMOTIONS[record.option];
 
-// SCORM 1.2 Y 2004 COMPLIANCE
+// SCORM 1.2 Y 2004
 const LMS = {
   api: null, edition: '', ready: false, ended: false, started: Date.now(), lastError: '',
   find(root) {
@@ -1619,33 +1392,32 @@ function save(complete = state.phase === 'final') {
   let ok = false;
   if (LMS.api) ok = LMS.snapshot(state, complete);
   else { try { localStorage.setItem(STORAGE, JSON.stringify(state)); ok = true; } catch (_) {} }
-  $('statusLine').textContent = ok ? (LMS.ready ? 'Progreso guardado en el LMS · SCORM ' + LMS.edition : 'Progreso guardado en este dispositivo') : 'No fue posible guardar. Conserva esta ventana abierta.';
+  $('statusLine').textContent = ok ? (LMS.ready ? 'Progreso guardado en LMS · SCORM ' + LMS.edition : 'Progreso guardado localmente') : 'No fue posible guardar. Conserva esta ventana abierta.';
   return ok;
 }
 
-// SISTEMA DE AUDIO Y SÍNTESIS DE VOZ
+// SISTEMA DE AUDIO Y VOZ
 const Audio = {
-  ctx: null, muted: false, active: null, serial: 0, voiceList: [], effectNodes: [],
+  ctx: null, muted: false, active: null, serial: 0, voiceList: [],
   init() {
     if (!this.ctx) {
       try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (_) {}
     }
     if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume().catch(() => {});
   },
-  chime(type = 'good') {
+  chime() {
     if (this.muted || document.hidden || !this.ctx) return;
     const c = this.ctx, t = c.currentTime;
     const osc = c.createOscillator(), g = c.createGain();
     osc.type = 'sine';
-    const freqs = type === 'good' ? [523, 659, 784] : [440, 554, 659];
-    osc.frequency.setValueAtTime(freqs[0], t);
-    osc.frequency.exponentialRampToValueAtTime(freqs[1], t + 0.08);
-    osc.frequency.exponentialRampToValueAtTime(freqs[2], t + 0.18);
+    osc.frequency.setValueAtTime(523, t);
+    osc.frequency.exponentialRampToValueAtTime(659, t + 0.08);
+    osc.frequency.exponentialRampToValueAtTime(784, t + 0.18);
     g.gain.setValueAtTime(0, t);
     g.gain.linearRampToValueAtTime(0.04, t + 0.04);
-    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.45);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.42);
     osc.connect(g); g.connect(c.destination);
-    osc.start(t); osc.stop(t + 0.46);
+    osc.start(t); osc.stop(t + 0.43);
   },
   sweep() {
     if (this.muted || document.hidden || !this.ctx) return;
@@ -1660,18 +1432,6 @@ const Audio = {
     o.connect(g); g.connect(c.destination);
     o.start(t); o.stop(t + 0.42);
   },
-  footstep(alternate) {
-    if (this.muted || document.hidden || !this.ctx || this.ctx.state !== 'running') return;
-    const ctx = this.ctx, time = ctx.currentTime;
-    const source = ctx.createBufferSource(), filter = ctx.createBiquadFilter(), gain = ctx.createGain();
-    const buffer = ctx.createBuffer(1, Math.floor(ctx.sampleRate * .12), ctx.sampleRate), data = buffer.getChannelData(0);
-    for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * Math.exp(-i / data.length * 7);
-    source.buffer = buffer; filter.type = 'lowpass'; filter.frequency.value = alternate ? 620 : 480;
-    gain.gain.setValueAtTime(.065, time); gain.gain.exponentialRampToValueAtTime(.0001, time + .12);
-    source.connect(filter); filter.connect(gain); gain.connect(ctx.destination);
-    source.start(); source.stop(time + .13);
-    source.onended = () => { source.disconnect(); filter.disconnect(); gain.disconnect(); };
-  },
   cancel() {
     this.serial++;
     if (this.active) { clearTimeout(this.active.timeout); this.active = null; }
@@ -1684,7 +1444,7 @@ const Audio = {
     const label = button.querySelector('span');
     if (label) label.textContent = active ? 'Detener' : 'Escuchar';
     button.setAttribute('aria-pressed', String(active));
-    button.setAttribute('aria-label', active ? 'Detener la voz' : 'Escuchar esta frase');
+    button.setAttribute('aria-label', active ? 'Detener voz' : 'Escuchar frase');
   },
   speak(text, name = speaker, onComplete = null) {
     this.cancel();
@@ -1696,7 +1456,7 @@ const Audio = {
     const available = preferred.concat(this.voiceList.filter(voice => !preferred.includes(voice)));
     u.voice = available[0] || null;
     u.lang = u.voice ? u.voice.lang : 'es-CO';
-    u.rate = 0.93;
+    u.rate = 0.94;
     u.pitch = 1.0;
     u.volume = 0.9;
     const finish = () => {
@@ -1728,12 +1488,11 @@ function conversationTurn(turn) {
   conversation.actor = actor; conversation.listener = listener;
   conversation.duration = Math.max(4.5, text.split(/\s+/).length / 2.4 + 1.1);
   setDialogue(CHARACTER_NAMES[actor], [text], true);
-  $('sceneBeat').textContent = 'Reconoce cómo te sientes ante esta situación.';
 }
 function startConversation() {
   if (!playing || state.phase !== 'decision') return;
   conversation = { mission: state.mission, turn: 0, elapsed: 0 };
-  $('talkBtn').textContent = 'Repetir situación';
+  $('talkBtn').textContent = 'Repetir';
   conversationTurn(0);
 }
 function updateConversation(dt) {
@@ -1783,7 +1542,7 @@ function showPhrase() {
   $('prevPhrase').hidden = single;
   $('nextPhrase').hidden = single;
   $('phraseIndex').hidden = single;
-  $('nextPhrase').textContent = conversation ? (conversation.turn === CONVERSATIONS[state.mission].length - 1 ? 'Repetir' : 'Siguiente') : (phrase === phrases.length - 1 ? 'Releer' : 'Siguiente');
+  $('nextPhrase').textContent = conversation ? (conversation.turn === CONVERSATIONS[state.mission].length - 1 ? 'Repetir' : '›') : (phrase === phrases.length - 1 ? '↺' : '›');
   if (voiceEnabled && playing) {
     Audio.speak(phrases[phrase] || '', speaker, () => {
       if (conversation || state.phase !== 'decision' || phrase >= phrases.length - 1) return;
@@ -1801,40 +1560,31 @@ function updateHUD() {
   $('score').textContent = s.score + ' PTS';
 }
 
-// CONTROL DE PESTAÑAS EN EL PANEL DE DEMOSTRACIÓN DE ACCIÓN
-window.switchDemoTab = function(tabName) {
-  $('tabBodyBtn').classList.toggle('active', tabName === 'body');
-  $('tabScriptBtn').classList.toggle('active', tabName === 'script');
-  $('tabSupportBtn').classList.toggle('active', tabName === 'support');
-  $('demoPanelBody').hidden = tabName !== 'body';
-  $('demoPanelScript').hidden = tabName !== 'script';
-  $('demoPanelSupport').hidden = tabName !== 'support';
-};
-
 function loadMission() {
   stopConversation(); Audio.cancel();
   const m = M[state.mission];
   $('report').hidden = true;
-  $('panel').classList.remove('final-view', 'in-consequence');
+  $('panel').classList.remove('final-view');
   $('panel').hidden = false;
   $('backReportBtn').hidden = true;
   $('consequence').hidden = true;
   $('emotionalGuidanceArea').hidden = false;
   $('choices').replaceChildren();
   $('missionTitle').textContent = m.situation;
-  $('question').textContent = 'Ante esta situación en obra, ¿cómo te sientes?';
+  $('question').textContent = 'Ante esta situación, ¿cómo te sientes?';
   $('missionTag').textContent = 'SITUACIÓN ' + (state.mission + 1) + ' DE 10 · ' + m.time;
-  $('sceneNotice').hidden = true;
   $('inspectBtn').hidden = false;
   $('inspectBtn').querySelector('span').textContent = 'Ver situación';
-  $('sceneBeat').textContent = 'Escucha la situación y conecta con las señales de tu cuerpo.';
+
+  // Mostrar el bocadillo de situación inicial y restaurar posición general de cámara
+  $('bubble').classList.remove('consequence-mode');
   W.setup(state.mission);
   $('talkBtn').hidden = false;
   $('talkBtn').textContent = 'Escuchar situación';
   setDialogue('Mi situación en obra', [m.situation], true);
   updateHUD();
 
-  // CONSTRUIR TARJETAS DE EMOCIÓN ENRIQUECIDAS
+  // TARJETAS DIRECTAS DE EMOCIÓN
   EMOTIONS.forEach((e, index) => {
     const btn = document.createElement('button');
     btn.className = 'choice';
@@ -1859,7 +1609,7 @@ function loadMission() {
 
 function choose(option) {
   if (!playing || state.phase !== 'decision' || LMS.ended) return;
-  Audio.chime('good');
+  Audio.chime();
   state.records[state.mission] = { option, emotion: EMOTIONS[option].id, style: 'protective' };
   state.phase = 'consequence';
   LMS.interaction(state.mission, state.records[state.mission], state);
@@ -1874,46 +1624,42 @@ function showConsequence() {
   Audio.cancel();
   const r = state.records[state.mission], e = emotionFor(r), m = M[state.mission];
 
+  // OCULTAR FASE DE SELECCIÓN Y MOSTRAR FASE DE SOLUCIÓN DIRECTA
   $('emotionalGuidanceArea').hidden = true;
   $('consequence').hidden = false;
   $('inspectBtn').hidden = true;
 
-  // BADGE Y COLORES
-  $('resultBadge').textContent = e.name.toUpperCase();
-  $('resultBadge').style.color = e.color;
+  // OCULTAR EL BOCADILLO GIGANTE EN 3D PARA NO TAPAR AL PERSONAJE NI LA ESCENA
+  $('bubble').classList.add('consequence-mode');
+
+  // BADGE DE LA EMOCIÓN
+  $('resultBadge').innerHTML = `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${e.color};"></span> ${e.name.toUpperCase()}`;
   $('resultBadge').style.borderColor = e.color;
+  $('resultBadge').style.color = '#FFFFFF';
+  $('resultBadge').style.background = 'rgba(255, 255, 255, 0.08)';
 
-  // TAB 1: AUTORREGULACIÓN CORPORAL
-  $('breathingActionLabel').textContent = e.action === 'breathe' ? 'Respiración Diafragmática' : e.action === 'pause' ? 'Pausa y Acompañamiento' : 'Postura Asertiva y Señal';
-  $('breathingActionDesc').textContent = e.bodyTip;
-  $('resultText').textContent = e.title + ' ' + e.advice;
-  $('resultFull').textContent = e.practice;
+  // 1. TU CUERPO (Acción física directa)
+  $('resultText').textContent = e.advice;
 
-  // TAB 2: GUION ASERTIVO (FÓRMULA SEGUROS BOLÍVAR)
-  $('assertiveFactText').textContent = '«' + m.fact + '»';
-  $('assertiveEmotionText').textContent = '«' + e.words + '»';
-  $('assertiveNeedText').textContent = '«Por eso ' + m.need + '»';
+  // 2. QUÉ DECIR (Guion asertivo directo para obra)
+  const fullAssertiveScript = e.words;
+  $('assertiveQuoteText').textContent = '«' + fullAssertiveScript + '»';
 
-  // BOTÓN DE VOZ DEL GUION ASERTIVO
-  const fullScript = m.fact + ' ' + e.words + ' Por eso ' + m.need;
+  // BOTÓN DE AUDIO DE LA FRASE ASERTIVA
   $('listenScriptBtn').onclick = () => {
     Audio.init();
-    Audio.speak('Aquí tienes cómo expresarlo con asertividad: ' + fullScript, 'TÚ · ' + e.name);
+    Audio.speak('Aquí tienes cómo expresarlo con asertividad: ' + fullAssertiveScript, 'TÚ · ' + e.name);
   };
 
-  // TAB 3: RED DE APOYO
+  // 3. RUTA DE APOYO DIRECTA
   $('supportSiteText').textContent = m.support;
-  $('lesson').textContent = 'Recomendación institucional: ' + m.follow;
 
-  $('panel').classList.add('in-consequence');
   $('continueBtn').disabled = false;
   $('continueBtn').textContent = state.mission === 9 ? 'VER MI INFORME FINAL →' : 'SIGUIENTE SITUACIÓN →';
 
-  // INICIAR PESTAÑA CORPORAL POR DEFECTO
-  window.switchDemoTab('body');
-
-  // ANIMACIÓN 3D DE DEMOSTRACIÓN
+  // ACERCAMIENTO AUTOMÁTICO EN 3D: Cámara se acerca suavemente al personaje
   W.beginConsequence('protective');
+  W.zoomInOnActor();
   W.actionBeat = -1;
   updateActionTimeline();
   updateHUD();
@@ -1922,20 +1668,10 @@ function showConsequence() {
 
 function updateActionTimeline() {
   if (state.phase !== 'consequence' || !W.effectStyle) return;
-  const e = emotionFor(state.records[state.mission]), m = M[state.mission];
+  const e = emotionFor(state.records[state.mission]);
   const beat = W.effectTime < W.commandDuration ? 0 : W.effectTime < W.commandDuration + W.reactionDuration ? 1 : 2;
   if (beat === W.actionBeat) return;
   W.actionBeat = beat;
-
-  $('sceneBeat').textContent = [
-    'Paso 1/3: Retirada segura a la zona de cuidado',
-    'Paso 2/3: Demostración de autorregulación corporal',
-    'Paso 3/3: Pauta de comunicación asertiva y apoyo'
-  ][beat];
-
-  if (beat === 0) setDialogue('TÚ · ' + e.name, [e.words], true);
-  else if (beat === 1) setDialogue('Cómo autorregularme', [e.advice], true);
-  else setDialogue('Mi acción asertiva', [m.follow], true);
 }
 
 // TRANSICIÓN CINEMÁTICA CON VUELO DE CÁMARA
@@ -1954,7 +1690,6 @@ function nextMission() {
   changingSector = true;
   playing = false;
   $('continueBtn').disabled = true;
-  $('moveBtn').disabled = true;
 
   const nextIdx = state.mission + 1;
   const nextM = M[nextIdx];
@@ -1970,24 +1705,21 @@ function nextMission() {
 
   setTimeout(() => { $('transitionFill').style.width = '100%'; }, 50);
 
-  // TRANSICIÓN DE CÁMARA CINEMÁTICA EN 3D
+  // VUELO DE CÁMARA AL SIGUIENTE SECTOR
   const fromPos = W.camera.position.clone();
   const fromLook = W.look.clone();
   state.mission++;
   state.phase = 'decision';
   save(false);
 
-  // CONFIGURAR NUEVO SECTOR Y CALCULAR POSICIÓN OBJETIVO
   W.setup(state.mission);
   const targetPos = W.targetPos.clone();
   const targetLook = W.targetLook.clone();
 
-  // GLIDE DE CÁMARA SUAVE
   W.startCameraTransition(fromPos, targetPos, fromLook, targetLook, 1.35, () => {
     overlay.classList.remove('active');
     changingSector = false;
     playing = $('help').hidden;
-    $('moveBtn').disabled = false;
     loadMission();
   });
 }
@@ -2001,7 +1733,6 @@ function showReport() {
   $('report').hidden = false;
   $('panel').hidden = true;
   $('bubble').hidden = true;
-  $('sceneNotice').hidden = true;
 
   $('endingTitle').textContent = 'Reconozco mis emociones y actúo con seguridad';
   $('finalScore').textContent = state.records.length + ' / 10';
@@ -2022,14 +1753,13 @@ function showReport() {
         <h3 style="margin:0;">${i + 1}. ${m.title} · <span style="color:#93C5FD;">${m.time}</span></h3>
         <span style="font-size:10px;font-weight:800;color:${emotion.color};background:rgba(255,255,255,0.08);padding:2px 7px;border-radius:4px;">${emotion.name.toUpperCase()}</span>
       </div>
-      <p><strong>Demostración de acción:</strong> ${emotion.advice}</p>
-      <p style="color:#A7F3D0;"><strong>Guion asertivo:</strong> ${m.follow}</p>
+      <p><strong>Cómo manejarla:</strong> ${emotion.advice}</p>
+      <p style="color:#A7F3D0;"><strong>Qué decir:</strong> «${emotion.words}»</p>
     `;
     $('reportList').append(article);
   });
 
   $('returnReport').hidden = false;
-  $('sceneBeat').textContent = 'Jornada completada con éxito. Revisa tus herramientas de autocuidado.';
   W.finalScene(0xFFB703, 100);
   save(true);
   $('report').scrollTop = 0;
@@ -2047,7 +1777,7 @@ function resetGame() {
   loadMission();
 }
 
-// MOTOR 3D CON THREE.JS R128 NATIVO
+// MOTOR 3D THREE.JS R128 NATIVO
 class World {
   constructor(container) {
     this.container = container;
@@ -2081,7 +1811,6 @@ class World {
     this.reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     this.assets();
-    this.createWalkHands();
     this.resize();
     this.bind();
     this.loop();
@@ -2215,10 +1944,6 @@ class World {
     }
 
     const tag = this.label(name); tag.position.y = 2.77; tag.scale.set(1.65, .31, 1); group.add(tag);
-    const phone = this.box(.19, .32, .05, 0, -.36, .14, 0x0f172a, forearms[1]);
-    const phoneScreen = this.box(.155, .24, .01, 0, -.35, .17, 0x38bdf8, forearms[1]);
-    phone.visible = phoneScreen.visible = false;
-
     const tintMeshes = [];
     group.traverse(node => {
       if (node.isMesh && [color, 0xe7ae7c, 0xd89b6e, 0xd49669].some(c => node.material === this.mat(c))) {
@@ -2228,7 +1953,7 @@ class World {
       }
     });
 
-    const actor = { tintMeshes, id, group, torse: torso, torso, head, eyes, pupils, brows, lids, face: { worried: 0, angry: 0, tired: 0, relieved: 0 }, mouth, mouthShape, smile, legs, knees, arms, forearms, tag, phone, phoneScreen, base: new THREE.Vector3(), mood: null };
+    const actor = { tintMeshes, id, group, torso, head, eyes, pupils, brows, lids, face: { worried: 0, angry: 0, tired: 0, relieved: 0 }, mouth, mouthShape, smile, legs, knees, arms, forearms, tag, base: new THREE.Vector3(), mood: null };
     this.actors[id] = actor;
     this.mood(actor, 'calm');
     return actor;
@@ -2331,7 +2056,6 @@ class World {
     this.box(2, 1.4, 1.2, 0, .8, 0, 0xffb703, this.pump);
     this.box(1, .8, .8, .3, 1.7, 0, 0x075985, this.pump);
 
-    // Manguera y spray
     this.hose = new THREE.Group(); this.pump.add(this.hose);
     const curve = new THREE.CatmullRomCurve3([new THREE.Vector3(-.6, 1, 0), new THREE.Vector3(-2, .4, 0), new THREE.Vector3(-3, .18, 2), new THREE.Vector3(-4, .18, 2.5)]);
     this.hose.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 22, .11, 8, false), this.mat(0x142638)));
@@ -2341,7 +2065,6 @@ class World {
       this.spray.add(p);
     }
 
-    // Barrera de aislamiento y props
     this.barrier = new THREE.Group(); this.scene.add(this.barrier);
     for (const x of [3.8, 7.8]) this.cylinder(.1, 1, x, .5, -.8, 0xf97316, this.barrier);
     this.beam([3.8, .85, -.8], [7.8, .85, -.8], .05, 0xffb703, this.barrier);
@@ -2358,7 +2081,6 @@ class World {
       this.tools.push(t);
     }
 
-    // Parales y caseta
     this.parals = new THREE.Group(); this.scene.add(this.parals);
     for (const x of [-2, 0, 2]) {
       this.beam([x, 0, -3.8], [x, 3.5, -3.8], .09, 0x64748b, this.parals);
@@ -2366,11 +2088,9 @@ class World {
     }
     this.caseta = new THREE.Group(); this.caseta.position.set(5, 0, 4); this.scene.add(this.caseta);
 
-    // Hazard ring
     this.hazard = new THREE.Mesh(new THREE.RingGeometry(.65, .78, 28), new THREE.MeshBasicMaterial({ color: 0xffb703, side: THREE.DoubleSide, transparent: true, opacity: .9 }));
     this.hazard.rotation.x = -Math.PI / 2; this.hazard.position.y = .04; this.scene.add(this.hazard);
 
-    // Pizarra de seguimiento final
     this.auditBoard = new THREE.Group(); this.auditBoard.position.set(0, 0, -4); this.scene.add(this.auditBoard);
     this.box(3, 1.1, .12, 0, 1.4, 0, 0x023047, this.auditBoard);
     const auditText = this.label('HECHOS · ACUERDOS · SEGUIMIENTO', '#ffdb70');
@@ -2382,7 +2102,6 @@ class World {
       this.auditCells.push(cell);
     }
 
-    // Crear actores articulados
     const actorDefs = [
       ['supervisor', 'TÚ · TRABAJADOR', 0xffb703, 0xf8fafc],
       ['pedro', 'PEDRO', 0xf97316],
@@ -2402,7 +2121,7 @@ class World {
     ];
     actorDefs.forEach(def => this.actor(...def));
 
-    // Zona de cuidado / pausa verde
+    // Zona verde de cuidado y pausa
     this.careZone = new THREE.Group(); this.scene.add(this.careZone);
     this.box(2.3, .02, 1.4, 0, .025, 0, 0x145849, this.careZone);
     this.box(1.8, .12, .5, 0, .4, 0, 0xb88240, this.careZone);
@@ -2411,13 +2130,6 @@ class World {
 
     this.drawing = this.box(.65, .02, .8, 0, 1, 0, 0xfaf0ce);
     this.drawing.visible = false;
-    this.fatigueTool = this.box(.1, .45, .1, -8.5, .55, -1.8, 0xb88240);
-    this.fatigueTool.visible = false;
-    this.lanyard = new THREE.Mesh(new THREE.CylinderGeometry(.018, .018, 1, 6), this.mat(0xef4444));
-    this.lanyard.visible = false; this.scene.add(this.lanyard);
-    this.edgeAnchor = this.box(.3, .14, .3, -7.5, .2, -2, 0x34d399);
-    this.edgeAnchor.visible = false;
-
     this.resetActors();
   }
 
@@ -2435,7 +2147,6 @@ class World {
       a.torso.scale.set(1, 1, 1);
       a.isTalking = false;
       a.torso.position.y = 1.12;
-      a.phone.visible = a.phoneScreen.visible = false;
       this.mood(a, 'calm');
     });
   }
@@ -2479,12 +2190,6 @@ class World {
     this.careZone.visible = !!sector.pause;
     if (sector.pause) this.careZone.position.set(sector.pause[0], 0, sector.pause[1]);
 
-    this.nearView = false;
-    this.walkTime = 0;
-    this.walk = null;
-    $('moveBtn').querySelector('span').textContent = 'Acercarme';
-    $('moveBtn').setAttribute('aria-pressed', 'false');
-    $('moveBtn').hidden = false;
     this.actors.supervisor.group.traverse(node => node.layers.set(1));
 
     this.hazard.visible = index !== 8 && index !== 9;
@@ -2509,51 +2214,36 @@ class World {
     this.camera.aspect = width / height;
     this.camera.fov = 68;
     const center = sector.center;
-    const distance = this.final ? 8.5 : (this.nearView ? 4.3 : 6.2);
+    // Distancia natural de lectura de la situación
+    const distance = this.final ? 8.5 : 5.4;
     this.targetPos.set(center[0], 1.72, center[2] + distance);
     this.targetLook.set(center[0], 1.42, center[2] - 1.2);
     Object.values(this.actors).forEach(a => a.tag.visible = false);
     this.camera.clearViewOffset();
-    if (!this.preview) this.camera.setViewOffset(width, height, 0, -height * .12, width, height);
+    if (!this.preview) this.camera.setViewOffset(width, height, 0, -height * .10, width, height);
     this.camera.updateProjectionMatrix();
   }
 
-  // TRANSICIÓN DE CÁMARA SUAVE
+  // ACERCAMIENTO AUTOMÁTICO EN 3D AL SELECCIONAR LA EMOCIÓN
+  zoomInOnActor() {
+    const sector = SECTORS[this.index];
+    const center = sector.center;
+    const focusActor = this.actors[M[this.index].focus];
+    const targetX = focusActor ? (focusActor.base.x * 0.45 + center[0] * 0.55) : center[0];
+    const targetZ = focusActor ? (focusActor.base.z * 0.35 + center[2] * 0.65) : center[2];
+    const fromPos = this.camera.position.clone();
+    const fromLook = this.look.clone();
+    const toPos = new THREE.Vector3(targetX, 1.62, targetZ + 3.75);
+    const toLook = new THREE.Vector3(targetX, 1.32, targetZ - 0.85);
+    this.startCameraTransition(fromPos, toPos, fromLook, toLook, 1.15);
+  }
+
   startCameraTransition(fromPos, toPos, fromLook, toLook, duration = 1.3, onComplete = null) {
     this.cameraTravel = {
       fromPos, toPos, fromLook, toLook,
       duration, elapsed: 0,
       onComplete
     };
-  }
-
-  createWalkHands() {
-    this.walkHands = new THREE.Group();
-    this.camera.add(this.walkHands);
-    this.scene.add(this.camera);
-    const sleeve = new THREE.MeshStandardMaterial({ color: 0xe5a400, roughness: .9 });
-    const glove = new THREE.MeshStandardMaterial({ color: 0x9a7050, roughness: 1 });
-    [-1, 1].forEach(side => {
-      const arm = new THREE.Group();
-      arm.position.set(side * .24, -.31, -.48); arm.rotation.z = -side * .2;
-      const cuff = new THREE.Mesh(new THREE.CylinderGeometry(.035, .048, .24, 8), sleeve);
-      cuff.rotation.x = -.5; cuff.position.y = -.12;
-      const hand = new THREE.Mesh(new THREE.SphereGeometry(.044, 10, 8), glove);
-      hand.scale.set(.8, 1.25, .9); hand.position.set(0, .015, -.06);
-      arm.add(cuff, hand); this.walkHands.add(arm);
-    });
-    this.walkHands.visible = false;
-  }
-
-  toggleWalk() {
-    if (this.preview || this.final || !playing || changingSector) return;
-    Audio.init();
-    this.nearView = !this.nearView;
-    $('moveBtn').querySelector('span').textContent = this.nearView ? 'Volver' : 'Acercarme';
-    $('moveBtn').setAttribute('aria-pressed', String(this.nearView));
-    this.updateShot();
-    const from = this.camera.position.clone(); from.y = 1.72;
-    this.walk = { from, elapsed: 0, duration: Math.max(1.4, from.distanceTo(this.targetPos) / 1.05), lastStep: -1 };
   }
 
   updateRiskMarker() {
@@ -2564,7 +2254,7 @@ class World {
     const w = this.container.clientWidth, h = this.container.clientHeight;
     $('inspectBtn').hidden = false;
     $('inspectBtn').style.left = clamp((point.x + 1) * w / 2, 75, w - 75) + 'px';
-    $('inspectBtn').style.top = clamp((-point.y + 1) * h / 2, 110, h - 55) + 'px';
+    $('inspectBtn').style.top = clamp((-point.y + 1) * h / 2, 90, h - 45) + 'px';
   }
 
   beginConsequence(style) {
@@ -2589,7 +2279,6 @@ class World {
     this.spot.intensity = 2.4;
     this.spot.color.setHex(color);
     this.auditBoard.visible = true;
-    $('moveBtn').hidden = true;
     this.actors.supervisor.group.position.set(0, 0, 1);
     this.actors.auditor.group.visible = false;
     this.actors.siso.group.visible = false;
@@ -2749,12 +2438,11 @@ class World {
       this.updateRiskMarker();
     }
 
-    // ACTUALIZACIÓN DE TRANSICIÓN DE CÁMARA SUAVE O CAMINATA
+    // TRANSICIÓN DE CÁMARA FLUIDA
     if (this.cameraTravel) {
       const travel = this.cameraTravel;
       travel.elapsed += dt;
       const p = clamp(travel.elapsed / travel.duration, 0, 1);
-      // Easing cúbico suave
       const ease = p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
       this.camera.position.lerpVectors(travel.fromPos, travel.toPos, ease);
       this.look.lerpVectors(travel.fromLook, travel.toLook, ease);
@@ -2766,35 +2454,9 @@ class World {
       }
     } else {
       const smoothing = this.reduced ? 1 : 1 - Math.exp(-dt * 2.2);
-      let sway = 0;
-      if (this.walk && playing && !this.reduced) {
-        const walk = this.walk; walk.elapsed += dt;
-        const progress = clamp(walk.elapsed / walk.duration, 0, 1);
-        const ease = progress * progress * (3 - 2 * progress), weight = Math.sin(progress * Math.PI);
-        const rhythm = walk.elapsed * Math.PI / .48;
-        this.camera.position.lerpVectors(walk.from, this.targetPos, ease);
-        this.camera.position.y += Math.abs(Math.sin(rhythm)) * .045 * weight;
-        this.camera.position.x += Math.sin(rhythm) * .025 * weight;
-        sway = Math.sin(rhythm) * .009 * weight;
-        const step = Math.floor(walk.elapsed / .48);
-        if (step !== walk.lastStep && weight > .18) { walk.lastStep = step; Audio.footstep(step % 2); }
-        if (progress >= 1) this.walk = null;
-      } else if (!this.walk || this.reduced) {
-        this.camera.position.lerp(this.targetPos, smoothing);
-        if (this.reduced) this.walk = null;
-      }
+      this.camera.position.lerp(this.targetPos, smoothing);
       this.look.lerp(this.targetLook, smoothing);
       this.camera.lookAt(this.look);
-      this.camera.rotateZ(sway);
-
-      if (this.walkHands) {
-        this.walkHands.visible = playing && !this.final && !this.preview;
-        this.walkHands.children.forEach((arm, index) => {
-          const swing = this.walk ? Math.sin(this.walk.elapsed * Math.PI / .48 + index * Math.PI) : 0;
-          arm.position.y += (-.31 + swing * .025 - arm.position.y) * Math.min(1, dt * 10);
-          arm.rotation.x += (swing * .09 - arm.rotation.x) * Math.min(1, dt * 10);
-        });
-      }
     }
 
     if (this.hazard.visible) this.hazard.material.opacity = this.reduced ? .8 : .6 + Math.sin(this.sceneTime * 3) * .2;
@@ -2802,7 +2464,7 @@ class World {
   }
 }
 
-// BINDINGS DE BOTONES Y CICLO DE SESIÓN
+// BINDINGS DE BOTONES
 $('prevPhrase').onclick = () => {
   if (conversation) { conversationTurn(Math.max(0, conversation.turn - 1)); return; }
   phrase = Math.max(0, phrase - 1); showPhrase();
@@ -2829,15 +2491,14 @@ $('soundBtn').onclick = () => {
 
 $('talkBtn').onclick = () => {
   stopConversation();
+  $('bubble').classList.remove('consequence-mode');
   setDialogue('Mi situación en obra', [M[state.mission].situation], true);
 };
-$('moveBtn').onclick = () => W.toggleWalk();
 $('backReportBtn').onclick = showReport;
 $('inspectBtn').onclick = () => {
   if (state.phase === 'decision') {
     stopConversation();
     setDialogue('Lo que ocurre en obra', [INSPECTIONS[state.mission]]);
-    $('sceneBeat').textContent = 'Reconoce las señales en tu cuerpo y elige cómo te sientes.';
   }
 };
 
@@ -2861,12 +2522,7 @@ $('changeEmotionBtn').onclick = () => {
 };
 $('replayBtn').onclick = () => {
   if (state.phase === 'consequence') {
-    const near = W.nearView;
     W.setup(state.mission);
-    W.nearView = near;
-    W.updateShot();
-    $('moveBtn').querySelector('span').textContent = near ? 'Volver' : 'Acercarme';
-    $('moveBtn').setAttribute('aria-pressed', String(near));
     showConsequence();
   }
 };
@@ -2882,8 +2538,6 @@ $('changeViewBtn').onclick = () => {
   $('report').hidden = true;
   $('panel').classList.add('final-view');
   $('panel').hidden = false;
-  $('sceneNotice').hidden = false;
-  $('sceneNotice').textContent = 'Jornada terminada. Pulsa ? para volver al informe.';
   $('backReportBtn').hidden = false;
 };
 $('returnReport').onclick = () => { $('help').hidden = true; playing = true; showReport(); };
@@ -2912,7 +2566,7 @@ try {
   LMS.init();
   restore();
   if (!window.THREE) throw new Error('No se pudo cargar el motor 3D. Revisa tu conexión y recarga la página.');
-  W = new World($('scene'));
+  window.W = W = new World($('scene'));
   W.setup(0);
   W.preview = true;
   mountScene($('welcomePreview'));
