@@ -2538,11 +2538,32 @@ function runResolution(m, e, quote) {
     $('castCaption').style.animation = 'none'; void $('castCaption').offsetWidth; $('castCaption').style.animation = '';
   };
   const say = (text, name, opts, next) => {
-    let done = false;
-    const go = () => { if (done) return; done = true; if (alive()) later(next, 450); };
-    Audio.speak(text, name, go, opts);
+    let completed = false;
     const words = text.split(/\s+/).length;
-    resTimers.push(setTimeout(go, words / 1.8 * 1000 + 2500));
+    // Tiempo mínimo para lectura humana cómoda: ~380ms por palabra + 2200ms (mínimo 5.5s)
+    const minReadDuration = Math.max(5500, words * 380 + 2200);
+    const startTime = performance.now();
+
+    const tryFinish = () => {
+      if (completed) return;
+      const elapsedMs = performance.now() - startTime;
+      const remainingMs = Math.max(0, minReadDuration - elapsedMs);
+
+      resTimers.push(setTimeout(() => {
+        if (completed || !alive()) return;
+        completed = true;
+        later(next, 1200);
+      }, remainingMs));
+    };
+
+    Audio.speak(text, name, () => {
+      tryFinish();
+    }, opts);
+
+    // Timeout de seguridad en caso de que la síntesis de voz no emita evento de fin
+    resTimers.push(setTimeout(() => {
+      tryFinish();
+    }, minReadDuration + 1000));
   };
   const supportId = W.actors.siso && W.actors.siso.group.visible ? 'siso' : 'supervisor';
   const supportName = supportId === 'siso' ? 'SST · Seguridad y Salud' : 'Supervisor de obra';
@@ -2567,24 +2588,28 @@ function runResolution(m, e, quote) {
     elapsed += step.dur;
   });
 
-  // 2) Al terminar el tiempo de respiración real, pasa al diálogo del trabajador
+  // Pausa serena de asimilación post-respiración antes de comenzar el diálogo
+  const postBreathPause = 1800;
   later(() => {
     $('cueRing').hidden = true;
     $('cueRing').className = '';
+  }, elapsed);
+
+  // 2) Diálogo asertivo del trabajador (con tiempo suficiente de lectura)
+  later(() => {
     setStep(1); W.speakerId = m.focus;
     caption(workerName, quote, false);
     say(quote, workerName, {}, () => {
-      // 3) El apoyo se acerca y responde con voz propia
+      // 3) El apoyo (SST o supervisor) se acerca y responde con tiempo para asimilar
       setStep(2); W.speakerId = supportId;
       caption(supportName, reply, true);
       say(reply, supportName, { pitch: 1.04, rate: 0.97 }, () => {
-        // 4) Resuelto: avanza
+        // 4) Resuelto: el texto de apoyo permanece visible y se activa el botón para avanzar
         setStep(3); W.speakerId = null;
-        $('castCaption').hidden = true;
         $('continueBtn').classList.add('ready');
       });
     });
-  }, elapsed);
+  }, elapsed + postBreathPause);
 }
 
 function updateActionTimeline() {
