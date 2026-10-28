@@ -3182,22 +3182,63 @@
             this.playerAvatar.visible=true;
             this.playerHatParts.forEach(function(part){part.visible=false;});
             this.playerAvatar.scale.setScalar(1.4);
-            this.playerAvatar.position.set(-1.8,0,.3);this.playerAvatar.rotation.set(0,Math.PI*.7,0);
-            this.playerTargetPos.copy(this.playerAvatar.position);
-            this.targetLookAt.set(0,1.6,-1.2);this.baseTargetRadius=8.8;this.targetYaw=.18;this.targetPitch=.22;
-            this.hemiLight.color.setHex(0xE0F2FE);this.sunLight.color.setHex(0xFFF7ED);this.sunLight.intensity=1.1;
-            this.scene.background.setHex(0x061523);this.ambientFog.color.setHex(0x061523);
             document.getElementById('visualFatigueOverlay').className='visual-fatigue-overlay';
             document.getElementById('touchWalkPill').classList.add('faded');
             if(this.beaconMesh)this.beaconMesh.visible=false;if(this.targetMarkerMesh)this.targetMarkerMesh.visible=false;
             this.officeLaptop.rotation.x=0;this.officeCloseProgress=0;this.officePhone.material.color.setHex(0x38BDF8);
             this.officeTasks.forEach(function(task){task.material.color.setHex(0xF59E0B);});
-            this.officeFurniture.visible=GameApp.currentStation!==2&&GameApp.currentStation!==7;
-            this.meetingFurniture.visible=GameApp.currentStation===2;
-            this.homeFurniture.visible=GameApp.currentStation===7;
-            this.homeNotification.material.color.setHex(0x38BDF8);
-            this.playerAvatar.position.set(GameApp.currentStation===7?-1.3:-1.8,0,.3);
-            this.setOfficeMessage(stationId===1?'08:00 · PLANIFICA':'17:00 · CIERRA TU JORNADA','Elige c?mo actuar en esta situaci?n.');
+            
+            // Cambio real de perspectiva y escenario 3D según el paso
+            if(GameApp.currentStation===1){
+              // Paso 1: Escritorio individual de trabajo matutino (Planificación y Concentración)
+              this.officeFurniture.visible=true;
+              this.meetingFurniture.visible=false;
+              this.homeFurniture.visible=false;
+              this.playerAvatar.position.set(-1.8,0,.3);
+              this.playerAvatar.rotation.set(0,Math.PI*.7,0);
+              this.targetLookAt.set(0,1.45,-1.1);
+              this.baseTargetRadius=7.2;
+              this.targetYaw=0.22;
+              this.targetPitch=0.32;
+              this.hemiLight.color.setHex(0xE0F2FE);
+              this.sunLight.color.setHex(0xFFF7ED);
+              this.sunLight.intensity=1.2;
+              this.scene.background.setHex(0x061523);
+              this.setOfficeMessage('08:00 · TU ESCRITORIO','Planifica tu bloque de concentración.');
+            } else if(GameApp.currentStation===2){
+              // Paso 2: Sala de juntas / reunión de equipo
+              this.officeFurniture.visible=false;
+              this.meetingFurniture.visible=true;
+              this.homeFurniture.visible=false;
+              this.playerAvatar.position.set(-1.4,0,.2);
+              this.playerAvatar.rotation.set(0,Math.PI*.35,0);
+              this.targetLookAt.set(0,1.15,-0.75);
+              this.baseTargetRadius=7.8;
+              this.targetYaw=-0.38;
+              this.targetPitch=0.28;
+              this.hemiLight.color.setHex(0xFDE68A);
+              this.sunLight.color.setHex(0xFACC15);
+              this.sunLight.intensity=1.0;
+              this.scene.background.setHex(0x0B1D2A);
+              this.setOfficeMessage('SALA DE REUNIÓN','Coordina acuerdos con propósito.');
+            } else if(GameApp.currentStation===4){
+              // Paso 4: Cierre de jornada en oficina al atardecer
+              this.officeFurniture.visible=true;
+              this.meetingFurniture.visible=false;
+              this.homeFurniture.visible=false;
+              this.playerAvatar.position.set(-1.7,0,.3);
+              this.playerAvatar.rotation.set(0,Math.PI*.65,0);
+              this.targetLookAt.set(0,1.35,-1.2);
+              this.baseTargetRadius=6.5;
+              this.targetYaw=0.15;
+              this.targetPitch=0.22;
+              this.hemiLight.color.setHex(0xF97316);
+              this.sunLight.color.setHex(0xEA580C);
+              this.sunLight.intensity=0.9;
+              this.scene.background.setHex(0x111827);
+              this.setOfficeMessage('17:00 · CIERRA TU JORNADA','Apaga el equipo y sal a tiempo.');
+            }
+            this.playerTargetPos.copy(this.playerAvatar.position);
             return;
           }
 
@@ -3799,9 +3840,9 @@
          4. CONTROLADOR NARRATIVO: LAS 4 ESTACIONES DE RECARGA
          ------------------------------------------------------------------ */
       var GameApp = {
-        stationCount: function(){return this.workRoute==='administrative'?8:4;},
-        isAdministrativeOffice: function(){return this.workRoute==='administrative'&&this.currentStation!==5&&this.currentStation!==8;},
-        administrativeTitles: ['PLANIFICA TU DÍA','REUNIONES CON PROPÓSITO','MENSAJES E INTERRUPCIONES','CARGA DE TRABAJO REALISTA','PAUSA Y RESPIRACIÓN','CIERRA TUS PENDIENTES','EN CASA: FUERA DE HORARIO','PREPARA TU DESCANSO'],
+        stationCount: function(){return this.workRoute==='administrative'?5:4;},
+        isAdministrativeOffice: function(){return this.workRoute==='administrative'&&this.currentStation!==4&&this.currentStation!==5;},
+        administrativeTitles: ['PLANIFICA Y MENSAJES','REUNIÓN Y ENCARGOS','PAUSA Y RESPIRACIÓN','CIERRA TUS PENDIENTES','PREPARA TU DESCANSO'],
         workRoute: null,
         currentStation: 1,
         score: 0,
@@ -4039,8 +4080,8 @@
           document.getElementById('breathingReflection').hidden = true;
           CalmGuide.cancel();
           this.currentStation = stationNum;
-          var sceneStation=this.workRoute==='administrative'?(stationNum===5?2:stationNum===8?4:stationNum):stationNum;
-          document.getElementById('voiceGuideBtn').style.display=(this.workRoute==='administrative'?stationNum===5:stationNum===2)?'':'none';
+          var sceneStation=this.workRoute==='administrative'?(stationNum===3?2:stationNum===5?4:stationNum):stationNum;
+          document.getElementById('voiceGuideBtn').style.display=(this.workRoute==='administrative'?stationNum===3:stationNum===2)?'':'none';
           this.stationActive = true;
           var appRoot = document.getElementById('rechargeApp');
           if (appRoot) appRoot.classList.remove('finale-mode');
@@ -4048,8 +4089,8 @@
           if(this.workRoute!=='administrative')data=Object.assign({},this.stationsData[stationNum-1]);
           else{
             data.location=this.administrativeTitles[stationNum-1];
-            data.scoreAdd=12.5;data.batteryTarget=Math.round(15+85*stationNum/8);
-            data.feedback=stationNum===8?'Preparaste tu espacio de descanso y dejaste las notificaciones laborales fuera de tu tiempo personal.':'Completaste esta parte de tu jornada. Avanza a tu ritmo.';
+            data.scoreAdd=20;data.batteryTarget=Math.round(15+85*stationNum/5);
+            data.feedback=stationNum===5?'Preparaste tu espacio de descanso y dejaste las notificaciones laborales fuera de tu tiempo personal.':'Completaste esta parte de tu jornada. Avanza a tu ritmo.';
           }
 
           // Limpiar feedback inline previo
@@ -4062,7 +4103,7 @@
           this.dom.stepChip.textContent = 'PASO ' + stationNum + ' DE '+this.stationCount();
           this.dom.locationLabel.textContent = data.location;
           this.dom.stationCard.classList.remove('station-complete');
-          this.dom.stationDialogue.style.display = (this.workRoute==='administrative'?stationNum===5:stationNum===2) ? 'none' : '';
+          this.dom.stationDialogue.style.display = (this.workRoute==='administrative'?stationNum===3:stationNum===2) ? 'none' : '';
           this.dom.stationDialogue.textContent = [
             'Lleva al trabajador a la caseta y bebe agua.',
             'Mantén el círculo durante los tres ciclos.',
@@ -4078,7 +4119,7 @@
 
           // Construir controles interactivos de la estación
           this.renderStationControls(sceneStation, data);
-          CalmGuide.station(this.workRoute==='administrative'?(stationNum===5?2:0):stationNum);
+          CalmGuide.station(this.workRoute==='administrative'?(stationNum===3?2:0):stationNum);
         },
 
         renderStationControls: function (stationNum, data) {
@@ -4497,55 +4538,28 @@
 
         renderAdministrativeDecisions: function (stationNum,data) {
           var self=this,zone=this.dom.actionZone,index=0;
-          var situations=stationNum===1?[
-            {question:'Son las 8:00. Tienes una entrega a las 11:00, correos y dos solicitudes nuevas. ¿Cómo empiezas?',options:[
-              'Respondo todo lo que llegue y dejo la entrega para cuando tenga un espacio.',
-              'Confirmo qué vence primero, separo un bloque para la entrega y acuerdo cuándo revisaré las otras solicitudes.'
-            ],correct:1,advice:'Si todo se atiende al mismo tiempo, la entrega puede quedarse sin espacio. Prioriza por plazo e impacto y confirma las expectativas.',title:'08:00 · PRIORIDAD DEFINIDA',detail:'Entrega de las 11:00 primero. Correos después.'},
-            {question:'En tu bloque de concentración te piden otro informe para hoy. ¿Qué haces?',options:[
-              'Explico lo que ya tengo comprometido y acuerdo con mi responsable qué se mueve o qué apoyo necesito.',
-              'Acepto sin preguntar y compenso trabajando esta noche.'
-            ],correct:0,advice:'Aceptar más trabajo sin revisar la capacidad puede extender tu jornada. Haz visible la carga y acuerda una prioridad realista.',title:'09:00 · BLOQUE PROTEGIDO',detail:'Una tarea a la vez. Nueva solicitud acordada.'},
-            {question:'Llevas un buen rato frente a la pantalla y llega la pausa que habías reservado. ¿Qué decides?',options:[
-              'La cancelo: solo pararé cuando no quede ningún correo.',
-              'Dejo anotado el siguiente paso, me aparto unos minutos de la pantalla y tomo agua antes de retomar.'
-            ],correct:1,advice:'Esperar a tener la bandeja vacía puede hacer que nunca pares. Dejar un siguiente paso facilita retomar después de la pausa.',title:'10:00 · PAUSA RESERVADA',detail:'Siguiente paso anotado. Momento de respirar.'}
-          ]:[
-            {question:'Tu jornada termina a las 17:00 y un informe sigue pendiente. ¿Cómo cierras?',options:[
-              'Anoto qué falta, el siguiente paso y cuándo lo retomaré. Si afecta una entrega, aviso y acuerdo el nuevo plazo.',
-              'Sigo hasta terminarlo todo, aunque cada día salga más tarde.'
-            ],correct:0,advice:'Cerrar con un plan es distinto de abandonar un pendiente. Hazlo visible, comunica el impacto y deja un momento concreto para retomarlo.',title:'16:50 · PENDIENTES CON PLAN',detail:'Informe: revisar datos mañana a las 08:00.'},
-            {question:'Te piden revisar un archivo esta noche y la persona no explica una urgencia. ¿Qué respondes?',options:[
-              'Lo revisaré esta noche para que no piensen que no estoy disponible.',
-              'Mi jornada termina a las 17:00. Lo reviso mañana a primera hora; si requiere atención urgente, confirmemos el motivo y el canal acordado.'
-            ],correct:1,advice:'Poner un límite claro permite coordinar. Comunica tu horario y distingue una solicitud habitual de una situación que deba tramitarse por el canal acordado.',title:'17:00 · LÍMITE COMUNICADO',detail:'Disponibilidad y canal de urgencias acordados.'},
-            {question:'Ya dejaste el plan y avisaste al equipo. ¿Qué haces para desconectarte de verdad?',options:[
-              'Dejo el computador abierto y miro el chat laboral durante la cena por si acaso.',
-              'Cierro la sesión, guardo el computador y silencio las notificaciones laborales según los acuerdos de mi equipo.'
-            ],correct:1,advice:'Revisar el chat por costumbre mantiene abierto el trabajo. Una vez coordinado el cierre, prepara tus dispositivos para respetar tu tiempo personal.',title:'JORNADA CERRADA',detail:'Pendientes organizados. Ahora, tiempo personal.'}
-          ];
           function decision(question,good,bad,advice,title,detail,correct){
             return {question:question,options:correct===0?[good,bad]:[bad,good],correct:correct,advice:advice,title:title,detail:detail};
           }
-          var additional={
+          var situationsMap={
+            1:[
+              decision('Son las 8:00. Tienes una entrega a las 11:00, correos y dos solicitudes nuevas. ¿Cómo empiezas?',
+                'Confirmo qué vence primero, separo un bloque para la entrega y acuerdo cuándo revisaré las otras solicitudes.',
+                'Respondo todo lo que llegue y dejo la entrega para cuando tenga un espacio.',
+                'Si todo se atiende al mismo tiempo, la entrega puede quedarse sin espacio. Prioriza por plazo e impacto y confirma las expectativas.',
+                '08:00 · PRIORIDAD DEFINIDA','Entrega de las 11:00 primero. Correos después.',0),
+              decision('Cada mensaje del chat te hace cambiar de tarea. ¿Qué harías?',
+                'Acuerdo momentos para revisar mensajes, reduzco avisos durante mi bloque de trabajo y mantengo el canal definido para lo urgente.',
+                'Contesto inmediatamente todos los mensajes mientras intento terminar el informe.',
+                'Estar disponible no exige interrumpir cada tarea. Acuerda cómo distinguir lo urgente de lo que puede esperar.',
+                'CONCENTRACIÓN PROTEGIDA','Chat por bloques; urgencias por el canal acordado.',0)
+            ],
             2:[
               decision('Te invitan a una reunión de una hora sin agenda y coincide con una entrega. ¿Qué haces?',
                 'Pregunto qué decisión se necesita y si mi presencia es indispensable. Propongo enviar el avance o participar solo en el punto que me corresponde.',
                 'Acepto la reunión completa y después recupero esa hora fuera de mi jornada.',
                 'Antes de llenar la agenda, aclara el propósito y tu aporte. Una reunión también ocupa tiempo de trabajo.',
                 'REUNIÓN CON OBJETIVO','Agenda y participación confirmadas.',0),
-              decision('La reunión se alarga y nadie define responsables. ¿Cómo intervienes?',
-                'Propongo cerrar con acuerdos, responsables y fechas, y dejar los temas nuevos para un espacio con propósito definido.',
-                'Espero sin decir nada, aunque se pierda el bloque reservado para mi entrega.',
-                'Un cierre concreto ayuda a que la reunión no se prolongue ni genere tareas ambiguas.',
-                'ACUERDOS VISIBLES','Responsable, siguiente paso y fecha.',1)
-            ],
-            3:[
-              decision('Cada mensaje del chat te hace cambiar de tarea. ¿Qué harías?',
-                'Acuerdo momentos para revisar mensajes, reduzco avisos durante mi bloque de trabajo y mantengo el canal definido para lo urgente.',
-                'Contesto inmediatamente todos los mensajes mientras intento terminar el informe.',
-                'Estar disponible no exige interrumpir cada tarea. Acuerda cómo distinguir lo urgente de lo que puede esperar.',
-                'CONCENTRACIÓN PROTEGIDA','Chat por bloques; urgencias por el canal acordado.',1),
               decision('Un compañero insiste en que revises algo “rapidito” y ya tienes una prioridad acordada. ¿Qué respondes?',
                 'Ahora estoy con la entrega acordada. Puedo revisarlo después de este bloque; si vence antes, confirmemos qué prioridad debemos cambiar.',
                 'Dejo mi tarea sin avisar y asumo que puedo recuperar el tiempo después.',
@@ -4553,31 +4567,19 @@
                 'INTERRUPCIÓN COORDINADA','Ayuda con un momento concreto, sin doble compromiso.',0)
             ],
             4:[
-              decision('Dos responsables te asignan entregas para la misma hora. No alcanzas a hacer ambas. ¿Cómo lo manejas?',
-                'Hago visible el tiempo disponible y los compromisos. Pido acordar el orden, el alcance o el apoyo necesario antes de confirmar.',
-                'Prometo ambas para evitar molestias y luego trabajo durante la noche.',
-                'Una carga que no cabe en la jornada necesita coordinación, no horas extra ocultas.',
-                'CARGA REVISADA','Prioridad, alcance y apoyo acordados.',0),
-              decision('El exceso de trabajo se repite cada semana y estás dejando de hacer pausas. ¿Qué decides?',
-                'Registro las tareas y el tiempo que requieren, y converso con mi responsable para ajustar la carga y proteger las pausas.',
-                'Sigo compensando con mi descanso y espero que el problema desaparezca.',
-                'Una dificultad recurrente necesita un ajuste de organización. No depende solo de que te esfuerces más.',
-                'AJUSTE DE CAPACIDAD','La carga se conversa con información concreta.',1)
-            ],
-            7:[
-              decision('Estás cenando y llega un mensaje laboral sin urgencia explicada. Tu jornada ya terminó. ¿Qué haces?',
-                'Respeto el acuerdo de desconexión y lo reviso al iniciar mi siguiente jornada. Las situaciones urgentes usan el canal previsto.',
-                'Abro el computador por costumbre, aunque no me hayan pedido atender una urgencia.',
-                'Recibir un mensaje no convierte automáticamente la tarea en urgente. Apóyate en los acuerdos del equipo.',
-                'TIEMPO PERSONAL PROTEGIDO','El mensaje habitual espera a la siguiente jornada.',1),
-              decision('Ya silenciaste el chat, pero sigues pensando que olvidarás el pendiente de mañana. ¿Qué harías?',
-                'Lo anoto brevemente con el siguiente paso y el momento de retomarlo; después vuelvo a mi actividad personal sin abrir los sistemas de trabajo.',
-                'Entro a revisar todos los correos para sentir que no dejo nada pendiente.',
-                'Una nota concreta puede ayudarte a dejar un recordatorio sin reabrir toda la jornada.',
-                'MAÑANA TIENE UN PLAN','Recordatorio listo. Ahora, tu tiempo personal.',0)
+              decision('Tu jornada termina a las 17:00 y un informe sigue pendiente. ¿Cómo cierras?',
+                'Anoto qué falta, el siguiente paso y cuándo lo retomaré. Si afecta una entrega, aviso y acuerdo el nuevo plazo.',
+                'Sigo hasta terminarlo todo, aunque cada día salga más tarde.',
+                'Cerrar con un plan es distinto de abandonar un pendiente. Hazlo visible, comunica el impacto y deja un momento concreto para retomarlo.',
+                '16:50 · PENDIENTES CON PLAN','Informe: revisar datos mañana a las 08:00.',0),
+              decision('Ya dejaste el plan y avisaste al equipo. ¿Qué haces para desconectarte de verdad?',
+                'Cierro la sesión, guardo el computador y silencio las notificaciones laborales según los acuerdos de mi equipo.',
+                'Dejo el computador abierto y miro el chat laboral durante la cena por si acaso.',
+                'Revisar el chat por costumbre mantiene abierto el trabajo. Una vez coordinado el cierre, prepara tus dispositivos para respetar tu tiempo personal.',
+                'JORNADA CERRADA','Pendientes organizados. Ahora, tiempo personal.',0)
             ]
           };
-          if(additional[stationNum])situations=additional[stationNum];
+          var situations=situationsMap[stationNum]||situationsMap[1];
           function draw(){
             zone.innerHTML='';
             var situation=situations[index];
@@ -4589,20 +4591,20 @@
               button.addEventListener('click',function(){
                 if(choice!==situation.correct){
                   reply.textContent=situation.advice+' Prueba otra decisión.';
-                  Santuario3DEngine.officeTasks[index].material.color.setHex(0xEF4444);
+                  if(Santuario3DEngine.officeTasks&&Santuario3DEngine.officeTasks[index])Santuario3DEngine.officeTasks[index].material.color.setHex(0xEF4444);
                   Santuario3DEngine.setOfficeMessage('REVISA TU DECISIÓN','El tiempo y el descanso también cuentan.');
                   SoundEngine.playTone(260,'sine',.08,.06);return;
                 }
                 buttons.forEach(function(b){b.disabled=true;});button.classList.add('completed');
                 reply.textContent=situation.detail;
-                Santuario3DEngine.officeTasks[index].material.color.setHex(0x10B981);
+                if(Santuario3DEngine.officeTasks&&Santuario3DEngine.officeTasks[index])Santuario3DEngine.officeTasks[index].material.color.setHex(0x10B981);
                 Santuario3DEngine.setOfficeMessage(situation.title,situation.detail);
-                if(stationNum===3||stationNum===7){Santuario3DEngine.officePhone.material.color.setHex(0x0F172A);Santuario3DEngine.homeNotification.material.color.setHex(0x0F172A);}
-                if(stationNum===6&&index===1)Santuario3DEngine.officePhone.material.color.setHex(0x0F172A);
-                if(stationNum===6&&index===2)Santuario3DEngine.officeCloseProgress=Math.PI/2;
+                if(stationNum===1&&index===1&&Santuario3DEngine.officePhone)Santuario3DEngine.officePhone.material.color.setHex(0x0F172A);
+                if(stationNum===4&&index===0&&Santuario3DEngine.officePhone)Santuario3DEngine.officePhone.material.color.setHex(0x0F172A);
+                if(stationNum===4&&index===1)Santuario3DEngine.officeCloseProgress=Math.PI/2;
                 SoundEngine.playSuccess();
                 var next=document.createElement('button');next.type='button';next.className='action-btn-primary';next.textContent=index===situations.length-1?'Continuar a la siguiente estación':'Siguiente decisión';zone.appendChild(next);
-                if(stationNum===6&&index===2){
+                if(stationNum===4&&index===1){
                   next.disabled=true;next.textContent='Cerrando el computador…';
                   setTimeout(function(){if(next.isConnected){next.disabled=false;next.textContent='Continuar a la siguiente estación';}},1200);
                 }
@@ -4813,7 +4815,7 @@
           if(this.workRoute==='administrative'){
             this.dom.finalHeaderTag.textContent='RUTA ADMINISTRATIVA · TIEMPO Y DESCONEXIÓN';
             this.dom.finalTitle.textContent='Tu jornada tiene un cierre';
-            this.dom.finalDesc.textContent='Recorriste ocho escenarios: planificación, reuniones, mensajes, carga de trabajo, respiración, cierre, desconexión en casa y descanso.';
+            this.dom.finalDesc.textContent='Recorriste cinco escenarios: planificación de tareas, acuerdos en reuniones, pausa respiratoria, cierre de jornada y preparación del descanso.';
             this.dom.finalDiagnosisGrid.innerHTML=[
               ['Organiza el día','Confirma la entrega prioritaria, reserva un bloque de concentración y acuerda qué puede esperar.'],
               ['Protege tus pausas','Deja anotado el siguiente paso antes de parar. En la respiración, sigue un ritmo cómodo para ti.'],
