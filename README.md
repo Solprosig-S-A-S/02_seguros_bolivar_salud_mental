@@ -52,14 +52,14 @@ Al publicar la rama `main` en **GitHub Pages**, los 5 módulos formativos quedan
 * **Formato:** Tablero de simulación financiera en 3D con visualización interactiva de flujo de caja y balances.
 * **Enfoque Psicosocial:** Reducción del estrés financiero extralaboral, prevención de créditos informales abusivos (gota a gota), planificación de presupuestos familiares y protección del patrimonio.
 * **Mecánica:** Clasificación de compromisos económicos en Necesidades Básicas, Deudas prioritarias, Ahorro para imprevistos y descarte de Gastos Hormiga con feedback inmediato sobre la estabilidad emocional del hogar.
-* **Paquetes SCORM:** `scorm/Juego_04_SolitarioQuincena_SCORM.zip` y `scorm/Juego_04_SolitarioQuincena_SCORM2004.zip`
+* **Paquete SCORM:** `scorm/Juego_04_SolitarioQuincena_SCORM.zip`
 
 ### 5. [Juego 05: Voces de Cuadrilla - Cómo me siento](file:///./juego5_unidad5.html)
 * **Archivo:** `juego5_unidad5.html`
 * **Formato:** Simulación 3D cinemática en frente de obra con interacción dual de personajes en tiempo real, síntesis de voz natural y subtítulos contextuales.
 * **Enfoque Psicosocial:** Alfabetización y reconocimiento emocional somático, técnicas de autorregulación corporal en caliente, formulación de guiones asertivos y activación de redes de apoyo en el frente de obra.
 * **Mecánica:** Presentación de 10 situaciones críticas de obra, selección de emoción con su marcador corporal y resolución vivencial en 4 pasos (Actúa y respira con guía somática 3D, Dilo con voz natural, Apoyo en terreno con caminata y respuesta de SST, y Avanza).
-* **Paquetes SCORM:** `scorm/Juego_05_VocesCuadrilla_SCORM.zip` y `scorm/Juego_05_VocesCuadrilla_SCORM2004.zip`
+* **Paquete SCORM:** `scorm/Juego_05_VocesCuadrilla_SCORM.zip`
 
 ---
 
@@ -79,9 +79,7 @@ Al publicar la rama `main` en **GitHub Pages**, los 5 módulos formativos quedan
     ├── Juego_02_ArquitectoTiempo_SCORM.zip
     ├── Juego_03_SantuarioRecarga_SCORM.zip
     ├── Juego_04_SolitarioQuincena_SCORM.zip
-    ├── Juego_04_SolitarioQuincena_SCORM2004.zip
-    ├── Juego_05_VocesCuadrilla_SCORM.zip
-    └── Juego_05_VocesCuadrilla_SCORM2004.zip
+    └── Juego_05_VocesCuadrilla_SCORM.zip
 ```
 
 ---

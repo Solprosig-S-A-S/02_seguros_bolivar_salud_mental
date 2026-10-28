@@ -15,8 +15,8 @@ Cada juego es un Objeto Virtual de Aprendizaje (OVA) autosuficiente, interactivo
 | **Unidad 1** | **Radio Obra: Canal Limpio** | `juego1.html` | `Juego_01_RadioObra_SCORM.zip` | Comunicación asertiva, claridad de rol, prevención del acoso laboral y primeros auxilios psicológicos (PAP). | 15 - 20 min | ≥ 80 / 100 pts |
 | **Unidad 2** | **El Arquitecto del Tiempo** | `juego2.html` | `Juego_02_ArquitectoTiempo_SCORM.zip` | Gestión de la carga mental, resolución de órdenes contradictorias y liderazgo preventivo en frentes de obra. | 15 - 20 min | ≥ 80 / 100 pts |
 | **Unidad 3** | **Santuario de Recarga** | `juego3.html` | `Juego_03_SantuarioRecarga_SCORM.zip` | Prevención de la fatiga psicofísica, micropausas fisiológicas, desconexión laboral e higiene del sueño reparador. | 15 - 20 min | ≥ 80 / 100 pts |
-| **Unidad 4** | **La Ruta de tu Quincena 3D** | `juego4_unidad4.html` | `Juego_04_SolitarioQuincena_SCORM.zip`<br>`Juego_04_SolitarioQuincena_SCORM2004.zip` | Educación financiera preventiva, control del sobreendeudamiento, presupuesto familiar y reducción del estrés financiero. | 15 - 20 min | ≥ 80 / 100 pts |
-| **Unidad 5** | **Voces de Cuadrilla: Cómo me siento** | `juego5_unidad5.html` | `Juego_05_VocesCuadrilla_SCORM.zip`<br>`Juego_05_VocesCuadrilla_SCORM2004.zip` | Alfabetización emocional, autorregulación somática en obra y resolución asertiva con soporte en tiempo real. | 20 - 25 min | ≥ 80 / 100 pts |
+| **Unidad 4** | **La Ruta de tu Quincena 3D** | `juego4_unidad4.html` | `Juego_04_SolitarioQuincena_SCORM.zip` | Educación financiera preventiva, control del sobreendeudamiento, presupuesto familiar y reducción del estrés financiero. | 15 - 20 min | ≥ 80 / 100 pts |
+| **Unidad 5** | **Voces de Cuadrilla: Cómo me siento** | `juego5_unidad5.html` | `Juego_05_VocesCuadrilla_SCORM.zip` | Alfabetización emocional, autorregulación somática en obra y resolución asertiva con soporte en tiempo real. | 20 - 25 min | ≥ 80 / 100 pts |
 
 ---
 

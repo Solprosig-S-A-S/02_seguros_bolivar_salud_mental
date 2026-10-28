@@ -83,8 +83,6 @@ Las simulaciones siguen un patrón arquitectónico desacoplado basado en **Micro
     ├── Juego_02_ArquitectoTiempo_SCORM.zip
     ├── Juego_03_SantuarioRecarga_SCORM.zip
     ├── Juego_04_SolitarioQuincena_SCORM.zip
-    ├── Juego_04_SolitarioQuincena_SCORM2004.zip
-    ├── Juego_05_VocesCuadrilla_SCORM.zip
-    └── Juego_05_VocesCuadrilla_SCORM2004.zip
+    └── Juego_05_VocesCuadrilla_SCORM.zip
 ```
 
