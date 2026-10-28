@@ -396,26 +396,85 @@ canvas {
   z-index: 25;
 }
 
-/* FASE 1: SELECCIÓN EMOCIONAL */
+/* FASE 1: SELECCIÓN EMOCIONAL CON CONTEXTO Y ESPACIO */
+.situation-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 5px;
+}
+.situation-frente-badge {
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: .4px;
+  color: #38BDF8;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: 6px;
+  padding: 3px 8px;
+  text-transform: uppercase;
+}
+.situation-worker-pill {
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--yellow);
+  background: rgba(255, 183, 3, 0.12);
+  border: 1px solid rgba(255, 183, 3, 0.35);
+  border-radius: 6px;
+  padding: 3px 8px;
+}
 #missionTitle {
   font-size: 13.5px;
   line-height: 1.35;
-  margin: 0 0 5px 0;
+  margin: 0 0 6px 0;
   color: #FFFFFF;
   font-weight: 800;
 }
-.emotional-guide-hint {
-  font-size: 11px;
-  color: #94A3B8;
-  margin: 0 0 7px 0;
+.situation-context-box {
+  background: rgba(2, 28, 44, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-left: 3.5px solid #38BDF8;
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-bottom: 7px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.situation-task-text {
+  font-size: 10.5px;
   line-height: 1.35;
+  color: #CBD5E1;
+  margin: 0;
+}
+.situation-task-text strong {
+  color: #38BDF8;
+  font-weight: 800;
+  font-size: 9.5px;
+  letter-spacing: .3px;
+  text-transform: uppercase;
+}
+.situation-trigger-text {
+  font-size: 11px;
+  line-height: 1.35;
+  color: #F8FAFC;
+  margin: 0;
+  font-weight: 500;
+}
+.situation-trigger-text strong {
+  color: #FDE047;
+  font-weight: 800;
+  font-size: 9.5px;
+  letter-spacing: .3px;
+  text-transform: uppercase;
 }
 #question {
-  font-size: 12px;
+  font-size: 11.5px;
   color: #FDE047;
-  margin: 0 0 8px 0;
+  margin: 0 0 7px 0;
   line-height: 1.35;
-  font-weight: 700;
+  font-weight: 750;
 }
 
 /* GRID DE 6 EMOCIONES (LIMPIO Y SIN CAJAS EXCESIVAS) */
@@ -536,6 +595,13 @@ canvas {
   letter-spacing: .7px;
   text-transform: uppercase;
   color: var(--yellow);
+}
+.resolution-situation-tag {
+  font-size: 9.5px;
+  color: #93C5FD;
+  line-height: 1.3;
+  margin: 0;
+  font-weight: 600;
 }
 .resolution-quote-text {
   font-size: 12px;
@@ -829,12 +895,19 @@ canvas {
   <!-- PANEL DIDÁCTICO INFERIOR: ENFOQUE DIRECTO EN LA SITUACIÓN Y CÓMO MANEJARLA -->
   <section id="panel" aria-label="Guía emocional y solución en obra">
     <button id="backReportBtn" class="primary" hidden>VOLVER A MI INFORME</button>
-    <h2 id="missionTitle"></h2>
 
-    <!-- FASE 1: SELECCIÓN EMOCIONAL GUIADA -->
+    <!-- FASE 1: SELECCIÓN EMOCIONAL GUIADA CON CONTEXTO REAL DE OBRA -->
     <div id="emotionalGuidanceArea">
-      <p class="emotional-guide-hint">Reconoce las señales en tu cuerpo y elige qué emoción surge ante este caso:</p>
-      <p id="question">Ante esta situación, ¿cómo te sientes?</p>
+      <div class="situation-header-row">
+        <span class="situation-frente-badge" id="situationFrenteBadge">Frente de Obra</span>
+        <span class="situation-worker-pill" id="situationWorkerPill">Rol Cuadrilla</span>
+      </div>
+      <h2 id="missionTitle"></h2>
+      <div class="situation-context-box" id="situationContextBox">
+        <p class="situation-task-text" id="situationTaskText"></p>
+        <p class="situation-trigger-text" id="situationTriggerText"></p>
+      </div>
+      <p id="question">Ante este momento en tu frente de trabajo, ¿qué emoción surge en ti?</p>
       <div id="choices" class="choices"></div>
     </div>
 
@@ -842,11 +915,12 @@ canvas {
     <div id="consequence" hidden class="focus-solution-flow">
       <div class="focus-situation-bar">
         <span id="resultBadge"></span>
-        <span class="focus-kicker-text">Resolución en obra</span>
+        <span class="focus-kicker-text" id="consequenceFrenteTitle">Resolución en obra</span>
       </div>
 
       <div class="resolution-card">
         <div class="resolution-speaker-tag" id="resolutionSpeaker">TÚ · PEDRO</div>
+        <p class="resolution-situation-tag" id="resolutionContextHint"></p>
         <p class="resolution-quote-text" id="assertiveQuoteText"></p>
         <div class="resolution-details-row">
           <p class="res-detail-item"><strong>Cuerpo:</strong> <span id="resultText"></span></p>
@@ -1049,126 +1123,246 @@ const EMOTION_SVGS = {
   joy: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>'
 };
 
-// 10 SITUACIONES REALES DE OBRA
+// 10 SITUACIONES REALES DE OBRA CON CONTEXTO COMPLETO Y ESPACIO DEDICADO
 const M = [
   {
     time: "6:00",
-    title: "Llego al turno lejos de mi familia",
-    situation: "Llevo varios días lejos de mi familia. Al llegar al frente de obra recuerdo a los míos y me cuesta concentrarme.",
+    frente: "Losa Piso 4 · Armado de formaletas en borde (12 m)",
+    role: "Pedro · Oficial de encofrado",
+    title: "Llego al turno con la cabeza en mi familia",
+    task: "Armado de formaletas metálicas y puntales en borde libre de losa antes del vaciado masivo.",
+    trigger: "Llevo 15 días en campamento lejos de casa y mi hijo amaneció con fiebre alta. La angustia me nubla el foco en una tarea crítica con riesgo de caída a distinto nivel.",
+    situation: "Llevo 15 días lejos de mi familia y mi hijo amaneció enfermo. La angustia me desconcentra al armar formaletas en el borde libre de la losa a 12 metros de altura.",
     focus: "pedro",
-    speaker: "TÚ · Trabajador/a",
+    speaker: "TÚ · Pedro",
     follow: "Pido una pausa acompañado y un momento para contactar a mi familia. Aviso si no me siento en condiciones de concentrarme en una tarea crítica.",
-    fact: "Llevo varios días de turno lejos de mi hogar y la nostalgia me está dificultando mantener el foco en la tarea de borde.",
-    need: "solicito una pausa breve de dos minutos para llamar a casa y que coordinemos un relevo preventivo mientras recupero la atención.",
-    support: "Supervisor inmediato de cuadrilla y Línea de Orientación Psicosocial Seguros Bolívar.",
+    fact: "Llevo varios días de turno lejos de mi hogar y la preocupación familiar me dificulta mantener la atención al borde de la placa.",
+    need: "solicito una pausa breve de dos minutos para llamar a casa y que coordinemos un relevo preventivo mientras recupero el foco.",
+    support: "Supervisor de cuadrilla y Línea de Orientación Psicosocial Seguros Bolívar.",
+    quotes: {
+      sadness: "Llevo varios días lejos de mi familia y la nostalgia me está desconcentrando en este borde de placa. Necesito dos minutos para llamar a casa y coordinar un relevo preventivo.",
+      anger: "Siento mucha impotencia por no poder estar con los míos. Voy a respirar dos minutos para no descargar esta frustración en la obra ni accidentarme en la placa.",
+      fear: "Con la cabeza lejos de aquí y a 12 metros de altura tengo miedo de dar un mal paso. Pido un relevo temporal para tranquilizarme y asegurar la línea de vida.",
+      anxiety: "Siento el pecho muy apretado por la salud de mi hijo. Necesito parar un momento, respirar hondo y enfocarme antes de tocar la formaleta de borde.",
+      disgust: "Me cuesta trabajar enfocado cuando en casa hay una urgencia sin resolver. Pido dos minutos con el supervisor para acordar el contacto con mi familia.",
+      joy: "Agradezco que el compañero de cuadrilla me note pensativo y me apoye. Coordinemos el relevo para no poner en riesgo la labor en altura."
+    },
     options: EMOTIONS.map(e => ({ style: 'protective', emotion: e.id, text: e.text }))
   },
   {
     time: "7:30",
-    title: "Recibo dos órdenes al mismo tiempo",
-    situation: "En la obra me piden arrancar una tarea, pero otro responsable dice que primero hay que revisar el frente. Los dos me están apurando.",
+    frente: "Patio de Cimentación · Vaciado con Bomba Telescópica",
+    role: "Pedro · Operario de Bombeo",
+    title: "Recibo dos órdenes opuestas con el mixer esperando",
+    task: "Fundición masiva de zapatas con camión mixer de 8 m³ y bomba telescópica de concreto.",
+    trigger: "El residente me apura para arrancar ya para no pagar sobrecostos por fraguado, pero SST me ordena detener todo porque faltan arriostramientos en la tubería.",
+    situation: "El camión mixer llegó a descargar. El residente me exige vaciar ya para no perder fraguado, pero SST me ordena parar porque faltan apoyos en la tubería.",
     focus: "pedro",
-    speaker: "TÚ · Trabajador/a",
-    follow: "Pido a los responsables una sola instrucción y confirmo qué verificación falta antes de empezar.",
-    fact: "El residente me pide arrancar el vaciado mientras SST me indica que faltan apoyos por verificar en el encofrado.",
+    speaker: "TÚ · Pedro",
+    follow: "Pido a los responsables una sola instrucción técnica y confirmo qué verificación falta antes de bombear.",
+    fact: "El residente pide vaciar de inmediato mientras SST indica que faltan apoyos de seguridad por verificar en la tubería presurizada.",
     need: "necesito que ambos responsables coordinen una sola instrucción técnica y validemos la seguridad antes de encender la bomba.",
     support: "Pausa técnica de verificación y protocolo de vaciado seguro coordinado por SST.",
+    quotes: {
+      anger: "El residente me exige vaciar ya y SST me ordena parar por seguridad. Les pido a los dos coordinar una sola orden técnica antes de encender la bomba; primero está la vida.",
+      fear: "No voy a encender la bomba presurizada si SST no ha liberado los apoyos de la tubería. Verifiquemos juntos la estabilidad antes de bombear.",
+      anxiety: "Tanta prisa cruzada nos puede costar un reventón de tubería. Detengo el equipo dos minutos mientras unifican el criterio de seguridad.",
+      sadness: "Me abruma quedar atrapado en medio de dos órdenes opuestas. Necesitamos una sola instrucción clara para fundir sin riesgos.",
+      disgust: "No es correcto presionar al operario para que viole normas de seguridad. Validemos la orden técnica con el director de obra.",
+      joy: "Qué bueno que SST detectó la falla antes del bombeo. Aseguremos los apoyos en cinco minutos y arrancamos con tranquilidad."
+    },
     options: EMOTIONS.map(e => ({ style: 'protective', emotion: e.id, text: e.text }))
   },
   {
     time: "9:00",
-    title: "Me corrigen con gritos frente al equipo",
-    situation: "Estoy aprendiendo una tarea. Me equivoco y un compañero me grita delante de todos: «¡Usted no sirve para esto!».",
+    frente: "Taller de Figuración de Acero · Banco de Corte",
+    role: "Ayudante · Habilitador de Acero",
+    title: "Me humillan con gritos tras un error en el corte",
+    task: "Figuración y corte de varillas de acero estructural de media pulgada con cizalla mecánica.",
+    trigger: "Estoy en mi segundo día de aprendizaje y corté un paquete de varillas con 5 cm de desfase. El oficial veterano arrojó el flexómetro y me gritó humillándome delante de todos.",
+    situation: "Estoy aprendiendo figuración. Me equivoqué en la medida de corte de varilla y el oficial me gritó delante de todos los compañeros: «¡Usted no sirve para esto!».",
     focus: "ayudante",
-    speaker: "TÚ · Trabajador/a",
+    speaker: "TÚ · Ayudante",
     follow: "Digo que puedo corregir el error y necesito una explicación sin insultos. Busco acompañamiento y uso el canal de convivencia si el maltrato continúa.",
-    fact: "Cometí una equivocación mientras aprendo el procedimiento de armado y recibí gritos e insultos en público.",
-    need: "necesito que me expliquen cómo corregir el error con respeto profesional y en privado; no acepto que me humillen frente al equipo.",
+    fact: "Cometí una equivocación de calibración mientras aprendo el procedimiento de corte y recibí gritos e insultos en público.",
+    need: "necesito que me expliquen cómo corregir el error con respeto profesional y en privado; no acepto humillaciones frente a la cuadrilla.",
     support: "Comité de Convivencia Laboral (Ley 1010 de 2006) y Supervisor de Obra.",
+    quotes: {
+      anger: "Cometí un error en la medida y lo voy a corregir ya. Pero le exijo respeto profesional: no le permito que me grite ni me humille delante de los compañeros.",
+      disgust: "Este trato vulnera mi dignidad y no aporta a la obra. Si no podemos hablar con respeto en privado, escalo el caso al Comité de Convivencia.",
+      sadness: "Me duele la equivocación porque quiero aprender bien, pero los insultos no me van a enseñar. Explíqueme la medida con calma y lo soluciono.",
+      fear: "Los gritos alteran a todo el taller y pueden provocar un corte grave con la cizalla. Bajemos el tono y revisemos el plano juntos.",
+      anxiety: "Respiro hondo y no me dejo intimidar por los gritos. Calibremos de nuevo el tope de corte para no desperdiciar más acero.",
+      joy: "Reconozco el error sin perder la calma. Corrijamos el lote y demostremos que con paciencia y método se aprende con calidad."
+    },
     options: EMOTIONS.map(e => ({ style: 'protective', emotion: e.id, text: e.text }))
   },
   {
     time: "10:30",
-    title: "Ocurre una falla cerca de mi puesto",
-    situation: "El equipo falla mientras trabajo y hay una fuga con presión. Escucho que viene el mixer y que debemos terminar de inmediato.",
+    frente: "Frente de Mortero · Mangueras Neumáticas (120 PSI)",
+    role: "Pedro · Maquinista de Proyección",
+    title: "Fuga violenta a presión y prisa por no parar",
+    task: "Proyección de mortero en muros de contención utilizando compresor industrial y mangueras de alta presión.",
+    trigger: "Se descalabró una abrazadera de acople rápido; la manguera silba con violencia y latiguea cerca del paso. Los compañeros gritan «¡no pare que se fragua la mezcla y nos cobran el material!»",
+    situation: "Una manguera neumática presenta fuga con alta presión. Viene el mixer y los compañeros me gritan que no apague el compresor para no perder la mezcla.",
     focus: "pedro",
-    speaker: "TÚ · Trabajador/a",
+    speaker: "TÚ · Pedro",
     follow: "Mantengo la tarea detenida, me alejo de la fuga y aviso al responsable. El equipo espera el aislamiento y la revisión de personal competente.",
-    fact: "Se presentó una fuga presurizada en la línea de la bomba y hay presión de tiempo por la llegada del mixer.",
+    fact: "Se presentó una fuga presurizada en la línea neumática y hay presión indebida de tiempo por no perder material.",
     need: "debemos detener la presión, delimitar el área y esperar a que personal mecánico competente repare y libere el equipo.",
     support: "Procedimiento de Bloqueo y Etiquetado de Energías Peligrosas (SST y Mantenimiento).",
+    quotes: {
+      fear: "¡Detengo la tarea ya! Un latigazo de manguera a 120 PSI es mortal. Ningún bulto de mortero vale más que la integridad de la cuadrilla.",
+      anger: "No voy a permitir que arriesguemos la vida por salvar una manguera. Cerramos la válvula de paso inmediatamente y despresurizamos la línea.",
+      anxiety: "El afán del tiempo no puede hacernos ignorar el peligro. Acordonemos el área mientras mantenimiento cambia el acople de seguridad.",
+      disgust: "Es inaceptable anteponer el costo del mortero a la seguridad física. Se bloquea la línea de energía según protocolo SST.",
+      sadness: "Me preocupa mucho que normalicemos fallas tan graves en el frente. Paremos dos minutos y reparemos el acople como corresponde.",
+      joy: "Reaccionamos a tiempo y no nos confiamos. Evitamos una tragedia grave; reparemos la fuga y retomamos con tranquilidad."
+    },
     options: EMOTIONS.map(e => ({ style: 'protective', emotion: e.id, text: e.text }))
   },
   {
     time: "11:30",
-    title: "Discuto por el paso de la cuadrilla",
-    situation: "Necesito mover unas piezas, pero otra cuadrilla bloqueó el corredor. Nos reclamamos y la discusión empieza a subir de tono.",
+    frente: "Corredor Central Nivel 2 · Cruce Logístico",
+    role: "Carpintero · Cuadrilla de Encofrado",
+    title: "Discusión y conato de riña por bloqueo del pasillo",
+    task: "Traslado de formaletas de madera para cierre de losa antes del mediodía.",
+    trigger: "Dejaron tableros apilados en el pasillo único; la cuadrilla eléctrica no puede pasar los carretes de acometida, patean la madera y empiezan insultos a punto de llegar a los golpes.",
+    situation: "Necesitamos pasar formaletas, pero otra cuadrilla bloqueó el pasillo central con carretes de cable. Nos reclamamos fuerte y la discusión empieza a salirse de control.",
     focus: "carpintero",
-    speaker: "TÚ · Trabajador/a",
+    speaker: "TÚ · Carpintero",
     follow: "Salgo del intercambio de gritos y pido que acordemos el orden de paso. El corredor debe quedar libre y verificado antes de circular.",
-    fact: "El corredor común quedó bloqueado con herramientas y formaletas, impidiendo el paso de ambas cuadrillas.",
+    fact: "El corredor común quedó bloqueado con materiales de ambos frentes, generando confrontación interpersonal acalorada.",
     need: "hagamos una pausa de dos minutos, despejemos los obstáculos y acordemos turnos de circulación segura para cada equipo.",
     support: "Coordinación de frentes entre Jefes de Cuadrilla y logística de acopio en losa.",
+    quotes: {
+      anger: "Doy un paso atrás y abro las manos. No vamos a convertir la obra en una pelea callejera. Despejemos el pasillo y pasemos por turnos.",
+      fear: "Una riña en una losa con desniveles puede terminar en una caída fatal. Paremos ya, respiremos hondo y coordinemos la logística.",
+      anxiety: "La tensión del mediodía nos está cegando. Dos minutos de pausa: apilemos a la derecha y los electricistas pasan por la izquierda.",
+      disgust: "Amenazarnos e insultarnos no despeja el corredor. Somos profesionales; hablemos con respeto o llamamos al jefe de frente.",
+      sadness: "Es lamentable que cuadrillas del mismo proyecto choquen así. Organicemos el espacio para que ambos equipos podamos almorzar en paz.",
+      joy: "Qué alivio que pudimos frenar la discusión a tiempo. Trabajando coordinados ganamos tiempo todos."
+    },
     options: EMOTIONS.map(e => ({ style: 'protective', emotion: e.id, text: e.text }))
   },
   {
     time: "13:30",
-    title: "Recibo un mensaje que me preocupa",
-    situation: "Antes de una tarea crítica recibo un mensaje sobre un problema económico en mi casa. No dejo de pensar en eso ni de mirar el teléfono.",
+    frente: "Maniobra de Izaje · Grúa Torre y Muelle de Carga",
+    role: "Roberto · Operador de Izaje / Aparejador",
+    title: "Noticia familiar crítica justo antes de operar la grúa",
+    task: "Traslado aéreo de formaleta metálica de 2 toneladas sobre la losa ocupada con personal.",
+    trigger: "Al tomar el radiomando de la grúa recibo notificación de orden de desalojo de mi vivienda por mora de arriendo. Se me corta el aire, siento taquicardia y me tiemblan las manos.",
+    situation: "Antes de izar una formaleta de 2 toneladas con la grúa, recibo un mensaje sobre un problema familiar muy grave. Siento taquicardia y no puedo fijar la vista.",
     focus: "roberto",
-    speaker: "TÚ · Trabajador/a",
+    speaker: "TÚ · Roberto",
     follow: "Pido hablar en privado y coordinar un relevo antes de asumir la tarea crítica. Solicito orientación por el canal de apoyo disponible en la empresa.",
     fact: "Acabo de recibir una notificación familiar urgente justo antes de realizar la maniobra crítica de izaje con la grúa.",
     need: "solicito conversar en privado con mi supervisor para pausar mi labor en la grúa y coordinar un operador de relevo seguro.",
     support: "Gestión Humana, Bienestar y Línea de Orientación Psicosocial Seguros Bolívar.",
+    quotes: {
+      fear: "Tengo una carga suspendida de 2 toneladas y acabo de recibir una noticia familiar crítica que me tiene temblando. Por seguridad, pido mi relevo inmediato.",
+      anxiety: "Siento el pecho desbordado y no puedo garantizar la precisión del izaje. Me aparto de los mandos y solicito apoyo temporal del relevo.",
+      sadness: "Esta situación económica me sobrepasa en este minuto. Hablo con el supervisor para desahogarme y no operar la grúa con la mente ida.",
+      anger: "Tengo mucha rabia con esta situación en mi casa, pero no puedo mezclarla con el gancho de la grúa. Entrego el mando a un compañero.",
+      disgust: "Reconozco que no estoy apto para una tarea de alto riesgo. Ejerzo mi derecho a detenerme y buscar acompañamiento en Bienestar.",
+      joy: "Valoro tener la madurez de frenar a tiempo. La seguridad de todos en la obra está por encima del orgullo personal."
+    },
     options: EMOTIONS.map(e => ({ style: 'protective', emotion: e.id, text: e.text }))
   },
   {
     time: "14:30",
-    title: "No escuchan mi propuesta",
-    situation: "Preparé una idea para ordenar las formaletas. Cuando intento explicarla, me interrumpen y siguen trabajando sin escucharme.",
+    frente: "Patio de Acopio · Descargue Manual de Cemento",
+    role: "Carlos · Ayudante de Cuadrilla",
+    title: "Descalifican mi idea para evitar lesiones en el descargue",
+    task: "Descargue manual de camión con 300 bultos de cemento de 50 kg hacia el depósito cubierto.",
+    trigger: "Propuse una rampa de rodillos para no desgarrarnos la columna en 20 metros de acarreo, pero el encargado se burló: «¡Aquí no venga a inventar maricadas, trabaje como los hombres!»",
+    situation: "Propuse una rampa para descargar cemento sin dañarnos la espalda. Cuando intenté explicarla, se burlaron de mí y me dijeron que no me crea ingeniero.",
     focus: "carlos",
-    speaker: "TÚ · Trabajador/a",
+    speaker: "TÚ · Carlos",
     follow: "Pido un turno para terminar de explicar mi propuesta y acuerdo una revisión con el responsable, sin descalificar a mis compañeros.",
-    fact: "Preparé un croquis para agilizar el acopio de formaletas pero me interrumpieron sin revisar la propuesta técnica.",
-    need: "solicito 3 minutos con el oficial para mostrar el dibujo y evaluar si podemos probarlo en un tramo piloto seguro.",
+    fact: "Preparé una propuesta ergonómica para reducir sobreesfuerzo osteomuscular pero fue descalificada sin análisis técnico.",
+    need: "solicito 3 minutos con el oficial para mostrar el croquis y evaluar si podemos probarlo en un tramo piloto seguro.",
     support: "Reunión de 5 minutos de inicio de jornada y buzón de mejora continua de SST.",
+    quotes: {
+      anger: "Propuse esta rampa para que ninguno termine con una hernia o el manguito rotador lesionado. Le pido tres minutos de respeto para evaluarla.",
+      disgust: "Burlarse de una iniciativa de salud no es profesional. Presento el croquis en la reunión técnica de SST para validarlo formalmente.",
+      sadness: "Me desmotiva que rechacen una idea de cuidado sin verla, pero no me callo. La ergonomía nos beneficia a todos en la cuadrilla.",
+      anxiety: "No me apresuro ni me enojo. Demuestro con hechos cómo la rampa ahorra 40 minutos de descargue y protege la columna del equipo.",
+      fear: "Cargar a pulso 300 bultos bajo el sol es una lesión segura. Insisto en revisar métodos mecánicos de descargue con SST.",
+      joy: "Confío en mi propuesta. Hablemos con el residente para hacer una prueba piloto con diez bultos y comparar resultados."
+    },
     options: EMOTIONS.map(e => ({ style: 'protective', emotion: e.id, text: e.text }))
   },
   {
     time: "15:30",
-    title: "Me exigen seguir cuando necesito parar",
-    situation: "Llevo varias horas trabajando y noto que necesito una pausa. Me piden subir al siguiente frente y me preocupa que piensen que no quiero trabajar.",
+    frente: "Fachada Exterior · Andamio Tubular a 20 Metros",
+    role: "Mario · Enlucidor de Fachada",
+    title: "Agotamiento severo bajo el sol y exigencia de continuar",
+    task: "Pañete y enlucido de fachada exterior sobre andamio tubular expuesto a 32°C de temperatura.",
+    trigger: "Llevo 6 horas continuas bajo sol canicular, siento temblor en las piernas y visión borrosa. El capataz me presiona: «¡Faltan dos paños para la interventoría, no se baje o lo reporto!»",
+    situation: "Llevo horas pañetando en el andamio bajo sol fuerte. Siento temblor en las piernas y mareo, pero me exigen seguir para entregar antes de que llegue la interventoría.",
     focus: "mario",
-    speaker: "TÚ · Trabajador/a",
+    speaker: "TÚ · Mario",
     follow: "Explico cómo me encuentro y pido una pausa y acompañamiento de SST para revisar mi condición antes de asumir una tarea expuesta.",
-    fact: "Llevo horas continuas de labor intensa bajo el sol y siento fatiga física y temblor antes de subir al andamio perimetral.",
-    need: "requiero una pausa de hidratación a la sombra y valoración de signos vitales por SST antes de asumir trabajo en altura.",
+    fact: "Presento síntomas físicos evidentes de golpe de calor y fatiga extrema en labor de altura perimetral.",
+    need: "requiero una pausa de hidratación a la sombra y valoración de signos vitales por SST antes de reanudar labor en altura.",
     support: "Protocolo de Prevención de Fatiga y Deshidratación (Res. 2764 de 2022 / SST).",
+    quotes: {
+      fear: "Tengo visión borrosa y temblor en las piernas. A 20 metros de altura esto es riesgo de desmayo y caída; bajo ya a hidratarme y reporto a SST.",
+      anger: "Mi vida y mi salud están por encima del afán de la interventoría. Desciendo del andamio de forma segura y tomo mi pausa de rehidratación.",
+      anxiety: "La presión por entregar no puede provocar un golpe de calor fatal. Hago una pausa controlada a la sombra y me tomo los signos vitales.",
+      disgust: "Amenazarme con reportes por cuidar mi salud no es ético. Aplico el protocolo de pausas activas e hidratación obligatoria.",
+      sadness: "Es duro que no valoren el agotamiento del cuerpo. Me protejo a mí mismo primero para poder volver a casa sano con mi familia.",
+      joy: "Haber escuchado a mi cuerpo a tiempo me salvó de un accidente grave en fachada. La salud es lo primero."
+    },
     options: EMOTIONS.map(e => ({ style: 'protective', emotion: e.id, text: e.text }))
   },
   {
     time: "17:00",
-    title: "Reconocen el esfuerzo de mi equipo",
-    situation: "Terminamos un tramo de la obra. Un compañero avisó un riesgo a tiempo y el responsable agradece el apoyo de toda la cuadrilla.",
+    frente: "Losa Nivel 5 · Culminación y Curado de Placa",
+    role: "Carlos · Oficial de Cuadrilla",
+    title: "Reconocimiento al equipo por cuidarse y terminar sin accidentes",
+    task: "Finalización del vaciado de placa, limpieza de equipos y aseguramiento perimetral.",
+    trigger: "En la mañana detuvimos la faena a tiempo por un puntal fisurado y corregimos el riesgo; ahora la interventoría aprueba la fundición sin un solo herido. El residente felicita a la cuadrilla.",
+    situation: "Terminamos el vaciado de la losa a tiempo. Un compañero avisó un riesgo de puntal en la mañana y el ingeniero reconoce públicamente el cuidado de la cuadrilla.",
     focus: "carlos",
-    speaker: "TÚ · Trabajador/a",
+    speaker: "TÚ · Carlos",
     follow: "Comparto cómo viví la jornada, reconozco una acción concreta de cuidado y cuento si algo todavía me preocupa antes del cierre.",
-    fact: "Concluimos el tramo de vaciado a tiempo gracias a que alertamos un riesgo a tiempo y nos coordinamos con respeto.",
+    fact: "Concluimos la fundición a tiempo gracias a la cultura preventiva y a que no nos callamos ante el peligro detectado.",
     need: "celebremos el compromiso mutuo, dejemos el área ordenada y mantengamos este estándar de autocuidado mañana.",
     support: "Cultura de Reconocimiento Positivo y Cuidado Colectivo de Cuadrilla.",
+    quotes: {
+      joy: "¡Felicitaciones a toda la cuadrilla! Hoy demostramos que cuidarnos mutuamente y avisar a tiempo no retrasa la obra, sino que garantiza que todos volvamos sanos a casa.",
+      sadness: "Tras días pesados y lejos del hogar, reconforta mucho que valoren nuestro cuidado mutuo. Sigamos con esta misma empatía mañana.",
+      anxiety: "Qué alivio terminar este vaciado crítico sin un solo lesionado. Mantengamos este estándar de comunicación abierta.",
+      fear: "El susto del puntal en la mañana nos enseñó que la prevención paga. Gracias al equipo por no ignorar el peligro.",
+      anger: "Tuvimos momentos de tensión durante el turno, pero supimos anteponer la seguridad y el compañerismo. Bien jugado, cuadrilla.",
+      disgust: "Corregimos lo que estaba mal calzado y cerramos con orgullo y dignidad técnica. Así es como se construye país con seguridad."
+    },
     options: EMOTIONS.map(e => ({ style: 'protective', emotion: e.id, text: e.text }))
   },
   {
     time: "17:20",
-    title: "Tengo que contar un error",
-    situation: "En la reunión de cierre debo explicar un error que cometí durante el turno. Mis compañeros están presentes y no sé cómo van a reaccionar.",
+    frente: "Campamento · Reunión de Cierre y Bitácora de Calidad",
+    role: "Carlos · Ferrallista de Estructura",
+    title: "Debo reportar un error propio antes del vaciado de mañana",
+    task: "Llenado de bitácora y programación del vaciado de columnas de mañana a primera hora.",
+    trigger: "Revisando mis notas descubro que en la columna C-4 omití dos estribos de confinamiento en el nudo inferior. La formaleta ya está cerrada; si callo nadie lo notará, pero la resistencia antisísmica quedará comprometida.",
+    situation: "En la reunión de cierre debo confesar que en la columna C-4 me faltaron dos estribos antes de cerrar la formaleta. Mis compañeros están presentes y decido ser transparente.",
     focus: "carlos",
-    speaker: "TÚ · Trabajador/a",
+    speaker: "TÚ · Carlos",
     follow: "Describo lo que pasó, pido una conversación respetuosa y acuerdo con el responsable cómo corregirlo y qué apoyo necesito.",
-    fact: "En la jornada cometí una falla en el traslape de la armadura que detecté antes de la entrega final de la losa.",
-    need: "asumo la responsabilidad con honestidad, pido una conversación respetuosa y presento un plan para subsanarlo de inmediato.",
+    fact: "Detecté una omisión técnica en el amarre de estribos antes de la fundición y decido reportarlo con honestidad y ética profesional.",
+    need: "asumo la responsabilidad con transparencia, solicito apoyo técnico para desencofrar temprano y corregir antes de que llegue el mixer.",
     support: "Reunión de cierre técnico, aprendizaje constructivo sin culpabilización y aseguramiento de calidad.",
+    quotes: {
+      fear: "Oficial, prefiero pasar la pena ahora que cargar con una falla estructural: en la columna C-4 omití dos estribos. Asumo el error y mañana a primera hora desmonto y corrijo antes de fundir.",
+      anxiety: "Reconocer un error da nervios, pero la ética y la vida de quienes habitarán este edificio están primero. Mañana a las 6:00 lo subsano con el equipo.",
+      sadness: "Me da tristeza haberme descuidado al final del día, pero pongo la cara con transparencia y respeto hacia la obra.",
+      anger: "Me da rabia la distracción, pero no me escondo. Reporto el hallazgo con claridad y acordamos el plan de acción inmediato.",
+      disgust: "Ocultar un fallo técnico sería deshonesto y peligroso. Lo comunico abiertamente y doy ejemplo de cultura de calidad.",
+      joy: "Siento paz de haber hablado con la verdad. Esta cuadrilla se construye sobre la honestidad técnica y el respaldo mutuo."
+    },
     options: EMOTIONS.map(e => ({ style: 'protective', emotion: e.id, text: e.text }))
   }
 ];
@@ -1533,8 +1727,12 @@ function loadMission() {
   $('consequence').hidden = true;
   $('emotionalGuidanceArea').hidden = false;
   $('choices').replaceChildren();
-  $('missionTitle').textContent = m.situation;
-  $('question').textContent = 'Ante esta situación, ¿cómo te sientes?';
+  $('missionTitle').textContent = m.title;
+  if ($('situationFrenteBadge')) $('situationFrenteBadge').textContent = m.frente ? m.frente : ('FRENTE · ' + m.time);
+  if ($('situationWorkerPill')) $('situationWorkerPill').textContent = m.role || (CHARACTER_NAMES[m.focus] || 'Tú');
+  if ($('situationTaskText')) $('situationTaskText').innerHTML = '<strong>Labor en obra:</strong> ' + (m.task || m.situation);
+  if ($('situationTriggerText')) $('situationTriggerText').innerHTML = '<strong>Momento crítico:</strong> ' + (m.trigger || m.fact);
+  $('question').textContent = 'Ante este momento en tu frente de trabajo, ¿qué emoción surge en ti?';
   $('missionTag').textContent = 'SITUACIÓN ' + (state.mission + 1) + ' DE 10 · ' + m.time;
   $('inspectBtn').hidden = false;
   $('inspectBtn').querySelector('span').textContent = 'Ver situación';
@@ -1544,7 +1742,7 @@ function loadMission() {
   W.setup(state.mission);
   $('talkBtn').hidden = false;
   $('talkBtn').textContent = 'Escuchar situación';
-  setDialogue('Mi situación en obra', [m.situation], true);
+  setDialogue('Mi situación en obra', [m.trigger || m.situation], true);
   updateHUD();
 
   // TARJETAS DIRECTAS DE EMOCIÓN
@@ -1603,12 +1801,18 @@ function showConsequence() {
 
   // TEXTOS DE RESOLUCIÓN EN OBRA
   $('resultText').textContent = e.advice;
-  const fullAssertiveScript = e.words;
+  const fullAssertiveScript = (m.quotes && m.quotes[e.id]) || e.words;
   $('assertiveQuoteText').textContent = '«' + fullAssertiveScript + '»';
   $('supportSiteText').textContent = m.support;
   if ($('resolutionSpeaker')) {
-    const spk = CHARACTER_NAMES[m.focus] || 'Tú · Trabajador';
+    const spk = m.role || (CHARACTER_NAMES[m.focus] || 'Tú · Trabajador');
     $('resolutionSpeaker').textContent = spk.toUpperCase();
+  }
+  if ($('resolutionContextHint')) {
+    $('resolutionContextHint').textContent = m.frente ? (m.frente + ' · ' + m.title) : m.title;
+  }
+  if ($('consequenceFrenteTitle')) {
+    $('consequenceFrenteTitle').textContent = m.time + ' · RESOLUCIÓN EN OBRA';
   }
 
   // BOTÓN DIRECTO: SIGUIENTE SITUACIÓN
@@ -1628,7 +1832,7 @@ function showConsequence() {
   voiceEnabled = true;
   Audio.muted = false;
   $('soundBtn').setAttribute('aria-pressed', 'false');
-  Audio.speak(fullAssertiveScript, CHARACTER_NAMES[m.focus] || 'Tú · Pedro');
+  Audio.speak(fullAssertiveScript, m.role || CHARACTER_NAMES[m.focus] || 'Tú · Pedro');
 }
 
 function updateActionTimeline() {
@@ -1663,7 +1867,7 @@ function nextMission() {
   const overlay = $('transitionOverlay');
   $('transitionTime').textContent = nextM.time;
   $('transitionTitle').textContent = nextM.title;
-  $('transitionDesc').textContent = 'Viajando a la situación ' + (nextIdx + 1) + ' de 10...';
+  $('transitionDesc').textContent = nextM.frente ? ('Frente: ' + nextM.frente) : ('Viajando a la situación ' + (nextIdx + 1) + ' de 10...');
   $('transitionFill').style.width = '0%';
   overlay.classList.add('active');
   Audio.sweep();
@@ -1713,13 +1917,16 @@ function showReport() {
     const emotion = emotionFor(r);
     const article = document.createElement('article');
     article.className = 'reportItem';
+    const script = (m.quotes && m.quotes[r.emotion]) || emotion.words;
     article.innerHTML = `
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
         <h3 style="margin:0;">${i + 1}. ${m.title} · <span style="color:#93C5FD;">${m.time}</span></h3>
         <span style="font-size:10px;font-weight:800;color:${emotion.color};background:rgba(255,255,255,0.08);padding:2px 7px;border-radius:4px;">${emotion.name.toUpperCase()}</span>
       </div>
-      <p><strong>Cómo manejarla:</strong> ${emotion.advice}</p>
-      <p style="color:#A7F3D0;"><strong>Qué decir:</strong> «${emotion.words}»</p>
+      ${m.frente ? `<div style="font-size:9.5px;color:#38BDF8;font-weight:750;margin-bottom:3px;">${m.frente}</div>` : ''}
+      <p><strong>Labor:</strong> ${m.task || m.situation}</p>
+      <p><strong>Cómo actuar:</strong> ${emotion.advice}</p>
+      <p style="color:#A7F3D0;"><strong>Resolución asertiva:</strong> «${script}»</p>
     `;
     $('reportList').append(article);
   });
