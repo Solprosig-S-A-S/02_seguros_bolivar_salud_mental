@@ -1005,7 +1005,7 @@ const $ = id => document.getElementById(id);
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 const STORAGE = 'bolivar-voces-emociones-u5-v3';
 
-// 6 EMOCIONES GUÍAS
+// 6 EMOCIONES GUÍAS (Acciones somáticas y conductuales personalizadas)
 const EMOTIONS = [
   {
     id: "sadness",
@@ -1019,7 +1019,7 @@ const EMOTIONS = [
     title: "No tengo que cargar con esta tristeza a solas.",
     advice: "Hago una pausa acompañado. Apoyo ambos pies, respiro suavemente y pido relevo temporal antes de retomar una tarea crítica.",
     words: "Me siento muy triste hoy. ¿Podemos hablar un momento en privado? Necesito desahogarme para poder concentrarme bien.",
-    practice: "El personaje se aparta de la tarea expuesta, se sienta en la zona de cuidado y conversa con un compañero de apoyo.",
+    practice: "El personaje hace una pausa acompañada, se sienta de inmediato en la banca de descanso y recibe el apoyo cercano de su cuadrilla.",
     bodyTip: "Toma asiento en un lugar seguro. Respira suavemente y permítete un momento de pausa sin presionarte."
   },
   {
@@ -1032,9 +1032,9 @@ const EMOTIONS = [
     bodyClue: "Mandíbula tensa, calor o impulso de discutir.",
     purpose: "Avisa que se vulneró un límite o acuerdo",
     title: "Puedo poner un límite claro y firme sin agredir.",
-    advice: "Me aparto de la discusión, aflojo las manos, respiro hondo en 4 segundos y expreso qué necesito con respeto y firmeza.",
-    words: "Estoy sintiendo mucha rabia en este momento. Necesito dos minutos de pausa para respirar y luego acordamos la solución con respeto.",
-    practice: "El personaje se aparta de la discusión, baja los brazos, afloja los puños, respira hondo y explica lo que necesita sin gritar.",
+    advice: "Doy un paso atrás de la tensión, aflojo los puños, abro las palmas en señal de calma y respiro hondo para dialogar con respeto.",
+    words: "Estoy sintiendo mucha rabia en este momento. Tomo un minuto de respiración para calmarme y luego acordamos la solución con respeto.",
+    practice: "El personaje da un paso atrás, planta pies firmes, afloja los puños, abre las palmas al frente en señal de desescalada y respira hondo.",
     bodyTip: "Pies firmes en el suelo, hombros relajados y palmas abiertas. Desactiva la urgencia de reaccionar impulsivamente."
   },
   {
@@ -1047,9 +1047,9 @@ const EMOTIONS = [
     bodyClue: "Pulso acelerado, nudo en estómago o alerta.",
     purpose: "Alerta de un peligro real que exige seguridad",
     title: "Puedo pedir seguridad y acompañamiento técnico.",
-    advice: "Me alejo dos pasos del riesgo, hago la señal de detención segura y pido verificar las protecciones antes de continuar.",
-    words: "Tengo mucho miedo de realizar esta labor así. Necesito que revisemos la seguridad del frente y que alguien me acompañe.",
-    practice: "El personaje toma distancia del borde o peligro, levanta la mano para pedir apoyo y convoca al responsable de SST.",
+    advice: "Me alejo dos pasos del peligro, realizo la señal universal de detención segura y convoco de inmediato al responsable de SST.",
+    words: "Tengo mucho miedo de realizar esta labor así. Detengo la tarea y pido que revisemos la seguridad del frente juntos.",
+    practice: "El personaje retrocede dos pasos del borde o riesgo, levanta el brazo en señal universal de STOP y solicita verificación de SST.",
     bodyTip: "Da dos pasos atrás de la línea de peligro. Haz contacto visual con tu cuadrilla y utiliza la señal de detención segura."
   },
   {
@@ -1062,9 +1062,9 @@ const EMOTIONS = [
     bodyClue: "Respiración corta, sobrecarga y mente acelerada.",
     purpose: "Avisa que debes bajar el ritmo y ordenar",
     title: "Puedo bajar el ritmo y avanzar paso a paso.",
-    advice: "Apoyo ambos pies con firmeza, relajo los hombros, inhalo en 4s, sostengo 2s y acuerdo una sola prioridad a la vez con el responsable.",
-    words: "Me siento muy ansioso con tantas órdenes a la vez. Necesito que acordemos qué va primero y cómo hacerlo con seguridad.",
-    practice: "El personaje se detiene, apoya ambos pies, respira diafragmáticamente y solicita una sola instrucción clara y secuencial.",
+    advice: "Apoyo ambos pies con firmeza, coloco manos en el pecho, realizo respiración diafragmática y acuerdo una sola prioridad a la vez.",
+    words: "Me siento con mucha sobrecarga en este momento. Necesito que definamos cuál es la primera prioridad para avanzar paso a paso.",
+    practice: "El personaje apoya ambos pies, coloca manos sobre el torso, realiza respiración diafragmática 4-2-4 y prioriza una sola instrucción.",
     bodyTip: "Anclaje sensorial: siente los talones contra el piso, suelta el aire lentamente y divide la tarea en pasos pequeños."
   },
   {
@@ -1077,9 +1077,9 @@ const EMOTIONS = [
     bodyClue: "Rechazo visceral, tensión ética o incomodidad.",
     purpose: "Impulsa a defender la dignidad y el respeto",
     title: "Puedo comunicar lo que me incomoda y proteger mi dignidad.",
-    advice: "Tomo distancia, mantengo postura erguida y describo la conducta que no tolero sin descalificar. Pido una solución respetuosa.",
-    words: "Esta forma de tratarnos me genera mucho desagrado e incomodidad. Solicito que nos dirijamos con respeto o acudiré a Convivencia.",
-    practice: "El personaje toma distancia de la mala conducta, señala la condición y la comunica al responsable con postura firme y tranquila.",
+    advice: "Mantengo una postura erguida y digna, marco un límite claro con la palma al frente y acudo al canal institucional de convivencia.",
+    words: "Esta conducta no es respetuosa ni aceptable en el trabajo. Solicito que nos comuniquemos con dignidad o acudiré a Convivencia.",
+    practice: "El personaje erige la postura con dignidad, marca un límite claro con la mano al frente y canaliza el reporte respetuoso.",
     bodyTip: "Postura erguida, mirada serena y voz clara sin temblor. Fija el límite de respeto profesional sin entrar en provocaciones."
   },
   {
@@ -1092,8 +1092,8 @@ const EMOTIONS = [
     bodyClue: "Cuerpo ligero, bienestar y ganas de celebrar.",
     purpose: "Afianza la confianza y recarga la energía",
     title: "Puedo compartir mi satisfacción y reforzar el cuidado mutuo.",
-    advice: "Agradezco a mis compañeros una acción concreta de cuidado mutuo, celebro el trabajo bien hecho y mantengo la atención en la losa.",
-    words: "¡Qué buen trabajo en equipo logramos hoy! Gracias por el apoyo de todos; sigamos cuidándonos con esta misma energía.",
+    advice: "Celebro el trabajo bien hecho con mi equipo, agradezco la coordinación mutua y mantengo el enfoque preventivo en la obra.",
+    words: "¡Excelente coordinación en equipo hoy! Sigamos cuidándonos mutuamente con esta misma energía y atención.",
     practice: "El personaje comparte un gesto de felicitación y choque de manos con su equipo, manteniendo la atención en el frente.",
     bodyTip: "Sonríe, haz contacto visual con tus compañeros y verbaliza un agradecimiento específico por la coordinación lograda."
   }
@@ -2187,8 +2187,7 @@ class World {
 
     const sector = SECTORS[index];
     sector.layout.forEach(l => this.place(...l));
-    this.careZone.visible = !!sector.pause;
-    if (sector.pause) this.careZone.position.set(sector.pause[0], 0, sector.pause[1]);
+    this.careZone.visible = false;
 
     this.actors.supervisor.group.traverse(node => node.layers.set(1));
 
@@ -2224,18 +2223,18 @@ class World {
     this.camera.updateProjectionMatrix();
   }
 
-  // ACERCAMIENTO AUTOMÁTICO EN 3D AL SELECCIONAR LA EMOCIÓN
+  // ACERCAMIENTO AUTOMÁTICO EN 3D AL SELECCIONAR LA EMOCIÓN (Enfoque directo e inmediato)
   zoomInOnActor() {
     const sector = SECTORS[this.index];
     const center = sector.center;
     const focusActor = this.actors[M[this.index].focus];
-    const targetX = focusActor ? (focusActor.base.x * 0.45 + center[0] * 0.55) : center[0];
-    const targetZ = focusActor ? (focusActor.base.z * 0.35 + center[2] * 0.65) : center[2];
+    const targetX = focusActor ? focusActor.base.x : center[0];
+    const targetZ = focusActor ? focusActor.base.z : center[2];
     const fromPos = this.camera.position.clone();
     const fromLook = this.look.clone();
-    const toPos = new THREE.Vector3(targetX, 1.62, targetZ + 3.75);
-    const toLook = new THREE.Vector3(targetX, 1.32, targetZ - 0.85);
-    this.startCameraTransition(fromPos, toPos, fromLook, toLook, 1.15);
+    const toPos = new THREE.Vector3(targetX, 1.55, targetZ + 3.4);
+    const toLook = new THREE.Vector3(targetX, 1.25, targetZ);
+    this.startCameraTransition(fromPos, toPos, fromLook, toLook, 0.8);
   }
 
   startCameraTransition(fromPos, toPos, fromLook, toLook, duration = 1.3, onComplete = null) {
@@ -2261,14 +2260,22 @@ class World {
     this.effectStyle = style;
     this.effectTime = 0;
     const e = emotionFor(state.records[this.index]);
-    this.commandDuration = 3;
-    this.reactionDuration = e.action === 'breathe' ? 9 : 7;
+    this.commandDuration = 0.65;
+    this.reactionDuration = 7;
     const actor = this.actors[M[this.index].focus];
     actor.tintMeshes.forEach(mesh => mesh.material.color.set(e.color).convertSRGBToLinear());
     this.mood(actor, e.mood);
     this.hazard.material.color.set(e.color);
     this.spray.visible = false;
     this.barrier.visible = this.index === 3;
+
+    // Solo se muestra y ubica la banca si la emoción es Tristeza (pausa acompañada)
+    if (e.id === 'sadness') {
+      this.careZone.visible = true;
+      this.careZone.position.set(actor.base.x, 0, actor.base.z - 0.28);
+    } else {
+      this.careZone.visible = false;
+    }
   }
 
   finalScene(color, score) {
@@ -2350,53 +2357,131 @@ class World {
       Object.values(this.actors).forEach((actor, i) => { if (actor.group.visible && !this.reduced) this.clap(actor, t, i); });
       return;
     }
-    if (!has) return;
+    if (!has || !focus || !e) return;
 
-    // RETIRADA SEGURA A LA ZONA DE CUIDADO
-    const zone = SECTORS[this.index].pause;
-    const p = this.reduced ? 1 : clamp(this.effectTime / this.commandDuration, 0, 1), ease = p * p * (3 - 2 * p);
-    focus.group.position.lerpVectors(focus.base, new THREE.Vector3(zone[0], 0, zone[1]), ease);
-    focus.group.rotation.y = 0;
+    // Transición rápida y fluida de adopción de postura (0.65s en vez de 3s)
+    const p = this.reduced ? 1 : clamp(this.effectTime / this.commandDuration, 0, 1);
+    const ease = p * p * (3 - 2 * p);
 
-    if (p < 1) {
-      const swing = Math.sin(t * 7) * .35;
-      focus.legs[0].rotation.x = swing; focus.legs[1].rotation.x = -swing;
-    }
+    const support = this.actors.siso?.group.visible ? this.actors.siso : Object.values(this.actors).find(a => a.group.visible && a !== focus && a.id !== 'supervisor');
 
-    // COMPAÑERO DE APOYO O SST SE ACERCA CON RESPETO
-    const support = this.actors.siso.group.visible ? this.actors.siso : Object.values(this.actors).find(a => a.group.visible && a !== focus && a.id !== 'supervisor');
-    if (support && beat >= 1) {
-      const arrive = this.reduced ? 1 : clamp((this.effectTime - this.commandDuration) / 2, 0, 1);
-      support.group.position.lerpVectors(support.base, new THREE.Vector3(zone[0] + 1.8, 0, zone[1] - .7), arrive);
-      support.group.rotation.y = -.5;
-      support.arms[0].rotation.x = -.4;
-      this.mood(support, 'calm');
-    }
-
-    // DEMOSTRACIÓN DE AUTORREGULACIÓN
-    if (beat >= 1) {
-      if (e.action === 'pause') {
+    // DEMOSTRACIÓN CORPORAL PERSONALIZADA SEGÚN LA EMOCIÓN
+    if (e.id === 'sadness') {
+      // 1. TRISTEZA: Pausa acompañada. Se sienta de inmediato en la banca de descanso sin demoras
+      focus.group.position.set(focus.base.x, 0, focus.base.z - 0.28 * ease);
+      focus.group.rotation.y = 0;
+      if (p >= 0.6) {
         this.sit(focus);
-        focus.head.rotation.x = beat === 1 ? .17 : .05;
-        focus.forearms[0].rotation.x = -.65;
+        focus.head.rotation.x = 0.14;
+        focus.forearms[0].rotation.x = -0.55;
+        focus.forearms[1].rotation.x = -0.55;
+      } else {
+        const swing = Math.sin(t * 9) * 0.22;
+        focus.legs[0].rotation.x = swing; focus.legs[1].rotation.x = -swing;
       }
-      if (e.action === 'breathe' && beat === 1) {
-        const breath = this.reduced ? .5 : (1 - Math.cos((this.effectTime - this.commandDuration) / 8 * Math.PI * 2)) / 2;
-        focus.torso.scale.set(1 + breath * .08, 1 + breath * .05, 1 + breath * .08);
-        focus.arms[0].rotation.x = -.6; focus.forearms[0].rotation.x = -1;
-        focus.arms[1].rotation.x = -.35; focus.forearms[1].rotation.x = -.65;
+      if (support) {
+        support.group.position.set(focus.base.x + 1.15, 0, focus.base.z - 0.28);
+        support.group.rotation.y = -0.6;
+        support.arms[0].rotation.x = -0.5;
+        support.forearms[0].rotation.x = -0.7;
+        this.mood(support, 'calm');
       }
-      if (e.action === 'signal' && beat === 1) {
-        focus.arms[1].rotation.z = e.id === 'fear' ? -2.2 : -.8;
-        focus.forearms[1].rotation.x = -.5;
+    } else if (e.id === 'anger') {
+      // 2. RABIA / ENOJO: NO se sienta. Da un paso atrás, planta pies firmes, afloja puños y abre palmas al frente
+      const stepBackZ = focus.base.z + 0.65 * ease;
+      focus.group.position.set(focus.base.x, 0, stepBackZ);
+      focus.group.rotation.y = 0;
+      if (p < 1) {
+        focus.legs[0].rotation.x = Math.sin(t * 7) * 0.2; focus.legs[1].rotation.x = -Math.sin(t * 7) * 0.2;
+      } else {
+        focus.legs[0].rotation.set(0, 0, 0.08);
+        focus.legs[1].rotation.set(0, 0, -0.08);
       }
-      if (e.action === 'recognize' && beat === 1) {
-        this.clap(focus, this.reduced ? .3 : t, 0);
+      const breath = this.reduced ? 0.3 : (1 - Math.cos((this.effectTime - this.commandDuration) / 4 * Math.PI * 2)) / 2;
+      focus.torso.scale.set(1 + breath * 0.07, 1 + breath * 0.05, 1 + breath * 0.07);
+      focus.arms[0].rotation.set(-0.35, 0, 0.2);
+      focus.arms[1].rotation.set(-0.35, 0, -0.2);
+      focus.forearms[0].rotation.set(-0.65, 0, 0.15);
+      focus.forearms[1].rotation.set(-0.65, 0, -0.15);
+      focus.head.rotation.x = 0.02;
+      if (support) {
+        support.arms.forEach(arm => arm.rotation.set(0, 0, 0));
+        this.mood(support, 'calm');
+      }
+    } else if (e.id === 'fear') {
+      // 3. MIEDO: NO se sienta. Da dos pasos atrás y levanta el brazo en señal universal de DETENCIÓN DE SEGURIDAD
+      const stepBackZ = focus.base.z + 1.2 * ease;
+      focus.group.position.set(focus.base.x, 0, stepBackZ);
+      focus.group.rotation.y = 0;
+      if (p < 1) {
+        focus.legs[0].rotation.x = Math.sin(t * 8) * 0.25; focus.legs[1].rotation.x = -Math.sin(t * 8) * 0.25;
+      } else {
+        focus.legs[0].rotation.set(0, 0, 0.07);
+        focus.legs[1].rotation.set(0, 0, -0.07);
+      }
+      focus.arms[1].rotation.set(-0.35, 0, -2.15);
+      focus.forearms[1].rotation.set(-0.45, 0, 0);
+      focus.arms[0].rotation.set(-0.3, 0, 0.15);
+      focus.forearms[0].rotation.set(-0.6, 0, 0);
+      focus.head.rotation.y = this.reduced ? 0 : Math.sin(t * 2.2) * 0.28;
+      if (support) {
+        support.group.position.set(focus.base.x - 1.2, 0, focus.base.z + 0.9);
+        support.group.rotation.y = 0.7;
+        support.arms[1].rotation.set(-0.5, 0, 0);
+        this.mood(support, 'calm');
+      }
+    } else if (e.id === 'anxiety') {
+      // 4. ANSIEDAD: NO se sienta. Pies firmes, manos sobre abdomen/pecho, respiración diafragmática rítmica (4-2-4)
+      focus.group.position.set(focus.base.x, 0, focus.base.z);
+      focus.group.rotation.y = 0;
+      focus.legs[0].rotation.set(0, 0, 0.06);
+      focus.legs[1].rotation.set(0, 0, -0.06);
+      focus.arms[0].rotation.set(-0.55, 0, 0.22);
+      focus.arms[1].rotation.set(-0.55, 0, -0.22);
+      focus.forearms[0].rotation.set(-1.1, 0, 0.32);
+      focus.forearms[1].rotation.set(-1.1, 0, -0.32);
+      const breathCycle = this.reduced ? 0.35 : (1 - Math.cos((this.effectTime - this.commandDuration) / 3.5 * Math.PI * 2)) / 2;
+      focus.torso.scale.set(1 + breathCycle * 0.08, 1 + breathCycle * 0.05, 1 + breathCycle * 0.08);
+      focus.head.rotation.x = -0.04;
+      if (beat === 2) {
+        focus.arms[1].rotation.set(-0.7, 0, -0.2);
+        focus.forearms[1].rotation.set(-0.85, 0, 0);
+      }
+      if (support) this.mood(support, 'calm');
+    } else if (e.id === 'disgust') {
+      // 5. DESAGRADO / INDIGNACIÓN ÉTICA: NO se sienta. Torso erguido, postura digna, palma vertical al frente como límite claro
+      focus.group.position.set(focus.base.x, 0, focus.base.z);
+      focus.group.rotation.y = 0;
+      focus.torso.scale.set(1, 1.04, 1);
+      focus.arms[1].rotation.set(-0.8, 0, -0.15);
+      focus.forearms[1].rotation.set(-0.85, 0, 0);
+      focus.arms[0].rotation.set(-0.15, 0, 0.1);
+      focus.head.rotation.y = -0.12;
+      focus.head.rotation.x = -0.03;
+      this.mood(focus, 'serious');
+      if (support) this.mood(support, 'calm');
+    } else if (e.id === 'joy') {
+      // 6. ALEGRÍA: NO se sienta. Postura enérgica, pulgares arriba y choque de palmas con compañero de cuadrilla
+      focus.group.position.set(focus.base.x, 0, focus.base.z);
+      focus.group.rotation.y = 0;
+      focus.arms[0].rotation.set(-0.55, 0, 0.95);
+      focus.arms[1].rotation.set(-0.55, 0, -0.95);
+      focus.forearms[0].rotation.set(-0.75, 0, 0.2);
+      focus.forearms[1].rotation.set(-0.75, 0, -0.2);
+      focus.head.rotation.x = -0.08;
+      this.mood(focus, 'relieved');
+      if (support) {
+        support.group.position.set(focus.base.x + 1.2, 0, focus.base.z);
+        support.group.rotation.y = -0.8;
+        this.clap(support, t, 0);
+        this.mood(support, 'relieved');
       }
     }
+
     if (beat === 2) {
-      this.mood(focus, e.id === 'joy' ? 'relieved' : 'serious');
-      focus.arms[1].rotation.x = -.55; focus.forearms[1].rotation.x = -.65;
+      if (e.id === 'joy') this.mood(focus, 'relieved');
+      else if (e.id === 'sadness') this.mood(focus, 'calm');
+      else this.mood(focus, 'serious');
       this.hazard.visible = false;
     }
   }
@@ -2433,7 +2518,7 @@ class World {
         this.effectTime = Math.max(this.effectTime, next);
       }
       this.animateActors(dt);
-      this.separateActors();
+      if (!this.effectStyle) this.separateActors();
       if (playing) updateActionTimeline();
       this.updateRiskMarker();
     }
