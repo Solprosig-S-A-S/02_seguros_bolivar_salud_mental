@@ -924,6 +924,7 @@ canvas {
         <p class="resolution-quote-text" id="assertiveQuoteText"></p>
         <div class="resolution-details-row">
           <p class="res-detail-item"><strong>Cuerpo:</strong> <span id="resultText"></span></p>
+          <p class="res-detail-item"><strong>Cómo superarla:</strong> <span id="overcomeText"></span></p>
           <p class="res-detail-item support-detail"><strong>Apoyo:</strong> <span id="supportSiteText"></span></p>
         </div>
       </div>
@@ -2185,6 +2186,15 @@ function showConsequence() {
   const situationAdvice = custom.bodyAdvice || e.advice;
   const fullAssertiveScript = custom.quote || (m.quotes && m.quotes[e.id]) || e.words;
   $('resultText').textContent = situationAdvice;
+  const OVERCOME = {
+    sadness: '1) Reconoce la tristeza sin juzgarte. 2) Respira lento: inhala 4, exhala 6, cinco veces. 3) Cuéntale a alguien de confianza cómo te sientes. 4) Retoma la tarea solo cuando el pecho esté más liviano; si sigue pesado, pide relevo.',
+    anger: '1) Aléjate un paso de lo que te provoca. 2) Suelta puños y hombros; respira inhalando 4 y exhalando 6. 3) Cuenta hasta diez antes de hablar. 4) Di qué te molestó y qué necesitas, sin gritar ni culpar. 5) Acuerden una solución concreta.',
+    fear: '1) Detente: el miedo te avisa de un riesgo real. 2) Aléjate del peligro y respira profundo. 3) Nombra qué es lo que te asusta. 4) Pide que SST o el responsable verifique. 5) Continúa solo cuando la condición sea segura.',
+    anxiety: '1) Apoya los pies y siente el piso. 2) Respira: inhala 4, sostén 2, exhala 4, varias veces. 3) Divide la tarea en pasos pequeños. 4) Pide una sola prioridad a la vez. 5) Haz el primer paso y avanza con calma.',
+    disgust: '1) Identifica qué te resulta inaceptable. 2) Respira y mantén postura firme y voz serena. 3) Marca el límite con respeto, sin insultar. 4) Si continúa, repórtalo al canal de convivencia o a tu supervisor.',
+    joy: '1) Disfruta y reconoce lo logrado. 2) Agradece de forma concreta a quien ayudó. 3) Comparte lo aprendido con la cuadrilla. 4) Mantén la atención: celebrar no significa bajar el cuidado.'
+  };
+  if ($('overcomeText')) $('overcomeText').textContent = custom.overcome || OVERCOME[e.id] || '';
   $('assertiveQuoteText').textContent = '«' + fullAssertiveScript + '»';
   $('supportSiteText').textContent = m.support;
   if ($('resolutionSpeaker')) {
@@ -2192,7 +2202,8 @@ function showConsequence() {
     $('resolutionSpeaker').textContent = spk.toUpperCase();
   }
   if ($('resolutionContextHint')) {
-    $('resolutionContextHint').textContent = m.frente ? (m.frente + ' · ' + m.title) : m.title;
+    $('resolutionContextHint').textContent = '';
+    $('resolutionContextHint').hidden = true;
   }
   if ($('consequenceFrenteTitle')) {
     $('consequenceFrenteTitle').textContent = m.time + ' · RESOLUCIÓN EN OBRA';
