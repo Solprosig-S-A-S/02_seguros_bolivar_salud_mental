@@ -1193,12 +1193,12 @@
 
     @media (max-width: 600px) {
       .character-speech-bubble {
-        top: 54px !important;
+        top: calc(max(90px, env(safe-area-inset-top, 0px) + 82px)) !important;
         left: 50% !important;
         transform: translateX(-50%) !important;
         width: calc(100% - 20px) !important;
         max-width: 360px !important;
-        padding: 5px 9px !important;
+        padding: 6px 10px !important;
         border-radius: 10px !important;
         box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25) !important;
         z-index: 28 !important;
