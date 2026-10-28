@@ -611,13 +611,27 @@ canvas {
 #castCaption.support b { color: #34D399; }
 @keyframes capIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
 #cueRing {
-  position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 16;
-  display: flex; align-items: center; gap: 9px; padding: 8px 16px 8px 10px; border-radius: 999px;
-  background: rgba(2, 24, 38, 0.86); border: 1.5px solid var(--yellow); pointer-events: none; white-space: nowrap;
+  position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 18;
+  display: flex; align-items: center; gap: 9px; padding: 7px 16px 7px 11px; border-radius: 999px;
+  background: rgba(2, 24, 38, 0.92); border: 2px solid var(--yellow); pointer-events: none; white-space: nowrap;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(10px);
+  transition: all 0.4s ease;
 }
-#cueRing i { width: 22px; height: 22px; border-radius: 50%; border: 3px solid var(--yellow); animation: ringBreath 3.2s ease-in-out infinite; }
-#cueRing span { font-size: 14px; font-weight: 800; color: #FFFFFF; }
-@keyframes ringBreath { 0%,100% { transform: scale(.7); opacity: .6; } 50% { transform: scale(1.25); opacity: 1; } }
+#cueRing i {
+  width: 22px; height: 22px; border-radius: 50%; border: 3px solid var(--yellow);
+  display: inline-block; flex-shrink: 0;
+  transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.4s ease;
+}
+#cueRing.inhale { border-color: #38BDF8; box-shadow: 0 0 20px rgba(56, 189, 248, 0.6); }
+#cueRing.inhale i { border-color: #38BDF8; transform: scale(1.45); }
+#cueRing.hold { border-color: #FDE047; box-shadow: 0 0 20px rgba(253, 224, 71, 0.6); }
+#cueRing.hold i { border-color: #FDE047; transform: scale(1.45); }
+#cueRing.exhale { border-color: #2DD4BF; box-shadow: 0 0 20px rgba(45, 212, 191, 0.6); }
+#cueRing.exhale i { border-color: #2DD4BF; transform: scale(0.75); }
+#cueRing.done { border-color: #4ADE80; box-shadow: 0 0 20px rgba(74, 222, 128, 0.6); }
+#cueRing.done i { border-color: #4ADE80; transform: scale(1); }
+#cueRing span { font-size: 13.5px; font-weight: 800; color: #FFFFFF; }
 
 /* TARJETA COMPACTA DE RESOLUCIÓN DIRECTA */
 .resolution-card {
@@ -2119,6 +2133,21 @@ const Audio = {
     o.connect(g); g.connect(c.destination);
     o.start(t); o.stop(t + 0.42);
   },
+  breatheTone(freq = 220, duration = 0.22) {
+    if (this.muted || document.hidden || !this.ctx) return;
+    try {
+      if (this.ctx.state === 'suspended') this.ctx.resume().catch(() => {});
+      const c = this.ctx, t = c.currentTime;
+      const osc = c.createOscillator(), g = c.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, t);
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(0.02, t + 0.04);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + duration);
+      osc.connect(g); g.connect(c.destination);
+      osc.start(t); osc.stop(t + duration + 0.05);
+    } catch (_) {}
+  },
   cancel() {
     this.serial++;
     if (this.active) { clearTimeout(this.active.timeout); this.active = null; }
@@ -2407,14 +2436,76 @@ function showConsequence() {
   runResolution(m, e, fullAssertiveScript);
 }
 
-// SECUENCIA VISUAL DE RESOLUCIÓN: 1) actúa/respira  2) lo dice con su voz  3) el apoyo llega y responde  4) avanza
-const RES_CUES = {
-  sadness: ['Aléjate del trabajo', 'Siéntate y respira', 'Inhala 4 · Exhala 6'],
-  anger: ['Da un paso atrás', 'Suelta puños y hombros', 'Inhala 4 · Exhala 6'],
-  fear: ['Detente: señal de alto', 'Aléjate del peligro', 'Respira hondo'],
-  anxiety: ['Apoya los pies', 'Manos al pecho', 'Inhala 4 · Sostén 2 · Exhala 4'],
-  disgust: ['Postura firme', 'Palma al frente: límite', 'Voz clara y serena'],
-  joy: ['Sonríe', 'Choca la mano', 'Agradece al equipo']
+// SECUENCIA VISUAL DE RESOLUCIÓN CON TIEMPOS DE RESPIRACIÓN REALES
+const BREATHING_ROUTINES = {
+  anxiety: [
+    { text: 'Pies firmes en el suelo · Manos al abdomen', dur: 2500, state: 'prep' },
+    { text: 'Inhala por la nariz... (1/4)', dur: 1000, state: 'inhale', freq: 240 },
+    { text: 'Inhala por la nariz... (2/4)', dur: 1000, state: 'inhale', freq: 260 },
+    { text: 'Inhala por la nariz... (3/4)', dur: 1000, state: 'inhale', freq: 280 },
+    { text: 'Inhala por la nariz... (4/4)', dur: 1000, state: 'inhale', freq: 300 },
+    { text: 'Sostén el aire... (1/2)', dur: 1000, state: 'hold', freq: 320 },
+    { text: 'Sostén el aire... (2/2)', dur: 1000, state: 'hold', freq: 320 },
+    { text: 'Exhala despacio por la boca... (1/4)', dur: 1000, state: 'exhale', freq: 260 },
+    { text: 'Exhala despacio... (2/4)', dur: 1000, state: 'exhale', freq: 240 },
+    { text: 'Exhala despacio... (3/4)', dur: 1000, state: 'exhale', freq: 220 },
+    { text: 'Exhala todo el aire... (4/4)', dur: 1000, state: 'exhale', freq: 196 },
+    { text: 'Ritmo cardíaco estabilizado', dur: 1500, state: 'done' }
+  ],
+  sadness: [
+    { text: 'Pausa en obra: siéntate y relaja hombros', dur: 2500, state: 'prep' },
+    { text: 'Inhala suavemente... (1/4)', dur: 1000, state: 'inhale', freq: 240 },
+    { text: 'Inhala suavemente... (2/4)', dur: 1000, state: 'inhale', freq: 260 },
+    { text: 'Inhala suavemente... (3/4)', dur: 1000, state: 'inhale', freq: 280 },
+    { text: 'Inhala suavemente... (4/4)', dur: 1000, state: 'inhale', freq: 300 },
+    { text: 'Exhala lento por la boca... (1/6)', dur: 1000, state: 'exhale', freq: 280 },
+    { text: 'Exhala lento... (2/6)', dur: 1000, state: 'exhale', freq: 260 },
+    { text: 'Exhala lento... (3/6)', dur: 1000, state: 'exhale', freq: 240 },
+    { text: 'Exhala lento... (4/6)', dur: 1000, state: 'exhale', freq: 220 },
+    { text: 'Exhala lento... (5/6)', dur: 1000, state: 'exhale', freq: 200 },
+    { text: 'Exhala todo el aire... (6/6)', dur: 1000, state: 'exhale', freq: 180 },
+    { text: 'Cuerpo relajado y mente despejada', dur: 1500, state: 'done' }
+  ],
+  anger: [
+    { text: 'Da un paso atrás · Suelta puños y hombros', dur: 2500, state: 'prep' },
+    { text: 'Inhala hondo... (1/4)', dur: 1000, state: 'inhale', freq: 240 },
+    { text: 'Inhala hondo... (2/4)', dur: 1000, state: 'inhale', freq: 260 },
+    { text: 'Inhala hondo... (3/4)', dur: 1000, state: 'inhale', freq: 280 },
+    { text: 'Inhala hondo... (4/4)', dur: 1000, state: 'inhale', freq: 300 },
+    { text: 'Exhala y suelta la tensión... (1/6)', dur: 1000, state: 'exhale', freq: 280 },
+    { text: 'Exhala y suelta tensión... (2/6)', dur: 1000, state: 'exhale', freq: 260 },
+    { text: 'Exhala y suelta tensión... (3/6)', dur: 1000, state: 'exhale', freq: 240 },
+    { text: 'Exhala y suelta tensión... (4/6)', dur: 1000, state: 'exhale', freq: 220 },
+    { text: 'Exhala y suelta tensión... (5/6)', dur: 1000, state: 'exhale', freq: 200 },
+    { text: 'Exhala y vacía el pecho... (6/6)', dur: 1000, state: 'exhale', freq: 180 },
+    { text: 'Calma recuperada para dialogar', dur: 1500, state: 'done' }
+  ],
+  fear: [
+    { text: 'Detente: señal de alto · Aléjate del peligro', dur: 2500, state: 'prep' },
+    { text: 'Inhala recuperando el control... (1/4)', dur: 1000, state: 'inhale', freq: 240 },
+    { text: 'Inhala recuperando el control... (2/4)', dur: 1000, state: 'inhale', freq: 260 },
+    { text: 'Inhala recuperando el control... (3/4)', dur: 1000, state: 'inhale', freq: 280 },
+    { text: 'Inhala recuperando el control... (4/4)', dur: 1000, state: 'inhale', freq: 300 },
+    { text: 'Exhala despacio y fija la atención... (1/4)', dur: 1000, state: 'exhale', freq: 260 },
+    { text: 'Exhala despacio... (2/4)', dur: 1000, state: 'exhale', freq: 240 },
+    { text: 'Exhala despacio... (3/4)', dur: 1000, state: 'exhale', freq: 220 },
+    { text: 'Exhala y estabiliza tu pulso... (4/4)', dur: 1000, state: 'exhale', freq: 196 },
+    { text: 'Peligro frenado con seguridad', dur: 1500, state: 'done' }
+  ],
+  disgust: [
+    { text: 'Postura firme · Hombros alineados', dur: 2000, state: 'prep' },
+    { text: 'Inhala con calma... (1/3)', dur: 1000, state: 'inhale', freq: 240 },
+    { text: 'Inhala con calma... (2/3)', dur: 1000, state: 'inhale', freq: 270 },
+    { text: 'Inhala con calma... (3/3)', dur: 1000, state: 'inhale', freq: 300 },
+    { text: 'Exhala con firmeza... (1/3)', dur: 1000, state: 'exhale', freq: 260 },
+    { text: 'Exhala con firmeza... (2/3)', dur: 1000, state: 'exhale', freq: 230 },
+    { text: 'Exhala con firmeza... (3/3)', dur: 1000, state: 'exhale', freq: 200 },
+    { text: 'Límite claro con respeto', dur: 1500, state: 'done' }
+  ],
+  joy: [
+    { text: 'Sonríe y choca la mano con la cuadrilla', dur: 2500, state: 'prep' },
+    { text: 'Respira y reconoce el cuidado mutuo', dur: 2500, state: 'done' }
+  ]
 };
 const RES_SUPPORT_REPLY = {
   sadness: 'Gracias por decírmelo. Tómate el tiempo que necesites, yo cubro el frente. Hablemos con calma.',
@@ -2427,7 +2518,7 @@ const RES_SUPPORT_REPLY = {
 let resRun = 0, resTimers = [];
 function clearResolution() {
   resRun++; resTimers.forEach(clearTimeout); resTimers = [];
-  if ($('cueRing')) $('cueRing').hidden = true;
+  if ($('cueRing')) { $('cueRing').hidden = true; $('cueRing').className = ''; }
   if ($('castCaption')) $('castCaption').hidden = true;
   if (W) { W.speakerId = null; W.resBeat = -1; }
 }
@@ -2459,15 +2550,27 @@ function runResolution(m, e, quote) {
   const reply = RES_SUPPORT_REPLY[e.id] + ' Recuerda que cuentas con ' + channel + '.';
   const workerName = (m.role || CHARACTER_NAMES[m.focus] || 'Trabajador');
 
-  // 1) Actúa y respira: guía visual paso a paso mientras el personaje muestra la acción en 3D
+  // 1) Actúa y respira: secuencia con tiempos reales de respiración guiada
   setStep(0);
   W.speakerId = null;
-  const cues = RES_CUES[e.id] || RES_CUES.anxiety;
+  const routine = BREATHING_ROUTINES[e.id] || BREATHING_ROUTINES.anxiety;
   $('cueRing').hidden = false;
-  cues.forEach((cue, i) => later(() => { $('cueText').textContent = cue; }, i * 1700));
-  // 2) Lo dice con su voz masculina
+  $('cueRing').className = '';
+
+  let elapsed = 0;
+  routine.forEach(step => {
+    later(() => {
+      $('cueText').textContent = step.text;
+      $('cueRing').className = step.state || '';
+      if (step.freq) Audio.breatheTone(step.freq, 0.25);
+    }, elapsed);
+    elapsed += step.dur;
+  });
+
+  // 2) Al terminar el tiempo de respiración real, pasa al diálogo del trabajador
   later(() => {
     $('cueRing').hidden = true;
+    $('cueRing').className = '';
     setStep(1); W.speakerId = m.focus;
     caption(workerName, quote, false);
     say(quote, workerName, {}, () => {
@@ -2481,7 +2584,7 @@ function runResolution(m, e, quote) {
         $('continueBtn').classList.add('ready');
       });
     });
-  }, cues.length * 1700);
+  }, elapsed);
 }
 
 function updateActionTimeline() {
@@ -3086,7 +3189,7 @@ class World {
     this.speakerId = null; this.resBeat = -1;
     const e = emotionFor(state.records[this.index]);
     this.commandDuration = 0.65;
-    this.reactionDuration = 7;
+    this.reactionDuration = 18;
     const actor = this.actors[M[this.index].focus];
     actor.tintMeshes.forEach(mesh => mesh.material.color.set(e.color).convertSRGBToLinear());
     this.mood(actor, e.mood);
