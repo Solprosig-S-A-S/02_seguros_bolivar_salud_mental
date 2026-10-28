@@ -579,6 +579,46 @@ canvas {
   text-transform: uppercase;
 }
 
+/* SECUENCIA VISUAL DE RESOLUCIÓN */
+.res-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+.res-chip {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  padding: 6px 2px; border-radius: 9px;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  color: #94A3B8; font-size: 9.5px; font-weight: 800; letter-spacing: .3px; text-transform: uppercase;
+  transition: all .35s ease;
+}
+.res-chip svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.res-chip.active { background: rgba(255,183,3,0.18); border-color: var(--yellow); color: var(--yellow); transform: translateY(-2px); box-shadow: 0 4px 14px rgba(255,183,3,0.25); }
+.res-chip.done { background: rgba(52,211,153,0.14); border-color: rgba(52,211,153,0.5); color: #34D399; }
+.res-support-badge {
+  display: flex; align-items: center; gap: 8px; padding: 7px 9px; border-radius: 9px;
+  background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.35);
+}
+.res-support-badge svg { width: 20px; height: 20px; flex-shrink: 0; fill: none; stroke: #34D399; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.res-support-badge small { display: block; font-size: 8.5px; font-weight: 850; letter-spacing: .6px; text-transform: uppercase; color: #34D399; }
+.res-support-badge span { font-size: 11px; line-height: 1.3; color: #E2E8F0; font-weight: 600; }
+#continueBtn.ready { animation: readyPulse 1.4s ease-in-out infinite; }
+@keyframes readyPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(255,183,3,.5); } 50% { box-shadow: 0 0 0 8px rgba(255,183,3,0); } }
+#castCaption {
+  position: absolute; left: 10px; right: 10px; top: 40px; z-index: 16; margin: auto; max-width: 400px;
+  background: rgba(2, 24, 38, 0.82); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.18); border-radius: 12px; padding: 8px 12px;
+  display: flex; flex-direction: column; gap: 2px; pointer-events: none; animation: capIn .3s ease;
+}
+#castCaption b { font-size: 9.5px; letter-spacing: .6px; text-transform: uppercase; color: var(--yellow); }
+#castCaption span { font-size: 13px; line-height: 1.35; color: #FFFFFF; font-weight: 600; }
+#castCaption.support b { color: #34D399; }
+@keyframes capIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+#cueRing {
+  position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 16;
+  display: flex; align-items: center; gap: 9px; padding: 8px 16px 8px 10px; border-radius: 999px;
+  background: rgba(2, 24, 38, 0.86); border: 1.5px solid var(--yellow); pointer-events: none; white-space: nowrap;
+}
+#cueRing i { width: 22px; height: 22px; border-radius: 50%; border: 3px solid var(--yellow); animation: ringBreath 3.2s ease-in-out infinite; }
+#cueRing span { font-size: 14px; font-weight: 800; color: #FFFFFF; }
+@keyframes ringBreath { 0%,100% { transform: scale(.7); opacity: .6; } 50% { transform: scale(1.25); opacity: 1; } }
+
 /* TARJETA COMPACTA DE RESOLUCIÓN DIRECTA */
 .resolution-card {
   background: rgba(14, 46, 68, 0.7);
@@ -880,6 +920,10 @@ canvas {
     </button>
     <button id="talkBtn" type="button" hidden></button>
 
+    <!-- SECUENCIA VISUAL DE RESOLUCIÓN: guía de respiración/acción y subtítulo de quien habla -->
+    <div id="cueRing" hidden aria-live="polite"><i></i><span id="cueText"></span></div>
+    <div id="castCaption" hidden aria-live="polite"><b id="castName"></b><span id="castText"></span></div>
+
     <!-- TRANSICIÓN CINEMÁTICA ENTRE SITUACIONES -->
     <div id="transitionOverlay">
       <span class="transition-badge">Avanzando en la jornada</span>
@@ -920,12 +964,21 @@ canvas {
 
       <div class="resolution-card">
         <div class="resolution-speaker-tag" id="resolutionSpeaker">TÚ · PEDRO</div>
-        <p class="resolution-situation-tag" id="resolutionContextHint"></p>
-        <p class="resolution-quote-text" id="assertiveQuoteText"></p>
-        <div class="resolution-details-row">
-          <p class="res-detail-item"><strong>Cuerpo:</strong> <span id="resultText"></span></p>
-          <p class="res-detail-item"><strong>Cómo superarla:</strong> <span id="overcomeText"></span></p>
-          <p class="res-detail-item support-detail"><strong>Apoyo:</strong> <span id="supportSiteText"></span></p>
+        <div class="res-steps" id="resSteps" aria-label="Pasos de la resolución">
+          <div class="res-chip"><svg viewBox="0 0 24 24"><path d="M9.6 4.6A2 2 0 1 1 11 8H2M12.6 19.4A2 2 0 1 0 14 16H2M17.7 7.7A2.5 2.5 0 1 1 19.5 12H2"/></svg><span id="resStep0">Respira</span></div>
+          <div class="res-chip"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>Dilo</span></div>
+          <div class="res-chip"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>Apoyo</span></div>
+          <div class="res-chip"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span>Avanza</span></div>
+        </div>
+        <div class="res-support-badge">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <div><small>Apoyo real</small><span id="supportSiteText"></span></div>
+        </div>
+        <div hidden>
+          <p id="resolutionContextHint"></p>
+          <p id="assertiveQuoteText"></p>
+          <span id="resultText"></span>
+          <span id="overcomeText"></span>
         </div>
       </div>
 
@@ -1962,7 +2015,7 @@ const Audio = {
     button.setAttribute('aria-pressed', String(active));
     button.setAttribute('aria-label', active ? 'Detener voz' : 'Escuchar frase');
   },
-  speak(text, name = speaker, onComplete = null) {
+  speak(text, name = speaker, onComplete = null, opts = {}) {
     this.cancel();
     if (this.muted || !voiceEnabled || document.hidden || !text || !('speechSynthesis' in window)) return;
     const serial = this.serial, u = new SpeechSynthesisUtterance(text);
@@ -1997,6 +2050,8 @@ const Audio = {
     // Todos los trabajadores de cuadrilla son hombres: voz masculina grave, sobria y natural (pitch 0.82)
     u.pitch = maleVoices.length ? 0.90 : 0.82;
     u.rate = 0.93;
+    if (opts.pitch) u.pitch = opts.pitch;
+    if (opts.rate) u.rate = opts.rate;
     u.volume = 1.0;
     const finish = () => {
       if (serial !== this.serial) return;
@@ -2100,7 +2155,8 @@ function updateHUD() {
 }
 
 function loadMission() {
-  stopConversation(); Audio.cancel();
+  stopConversation(); Audio.cancel(); clearResolution();
+  $('continueBtn').classList.remove('ready');
   const m = M[state.mission];
   $('report').hidden = true;
   $('panel').classList.remove('final-view');
@@ -2195,8 +2251,10 @@ function showConsequence() {
     joy: '1) Disfruta y reconoce lo logrado. 2) Agradece de forma concreta a quien ayudó. 3) Comparte lo aprendido con la cuadrilla. 4) Mantén la atención: celebrar no significa bajar el cuidado.'
   };
   if ($('overcomeText')) $('overcomeText').textContent = custom.overcome || OVERCOME[e.id] || '';
+  $('supportSiteText').textContent = m.support.replace(/\s*\([^)]*\)/g, '');
+  const stepLabels = { sadness: 'Respira', anger: 'Respira', fear: 'Detente', anxiety: 'Respira', disgust: 'Firme', joy: 'Celebra' };
+  if ($('resStep0')) $('resStep0').textContent = stepLabels[e.id] || 'Respira';
   $('assertiveQuoteText').textContent = '«' + fullAssertiveScript + '»';
-  $('supportSiteText').textContent = m.support;
   if ($('resolutionSpeaker')) {
     const spk = m.role || (CHARACTER_NAMES[m.focus] || 'Tú · Trabajador');
     $('resolutionSpeaker').textContent = spk.toUpperCase();
@@ -2226,7 +2284,84 @@ function showConsequence() {
   voiceEnabled = true;
   Audio.muted = false;
   $('soundBtn').setAttribute('aria-pressed', 'false');
-  Audio.speak(fullAssertiveScript, m.role || CHARACTER_NAMES[m.focus] || 'Tú · Pedro');
+  runResolution(m, e, fullAssertiveScript);
+}
+
+// SECUENCIA VISUAL DE RESOLUCIÓN: 1) actúa/respira  2) lo dice con su voz  3) el apoyo llega y responde  4) avanza
+const RES_CUES = {
+  sadness: ['Aléjate del trabajo', 'Siéntate y respira', 'Inhala 4 · Exhala 6'],
+  anger: ['Da un paso atrás', 'Suelta puños y hombros', 'Inhala 4 · Exhala 6'],
+  fear: ['Detente: señal de alto', 'Aléjate del peligro', 'Respira hondo'],
+  anxiety: ['Apoya los pies', 'Manos al pecho', 'Inhala 4 · Sostén 2 · Exhala 4'],
+  disgust: ['Postura firme', 'Palma al frente: límite', 'Voz clara y serena'],
+  joy: ['Sonríe', 'Choca la mano', 'Agradece al equipo']
+};
+const RES_SUPPORT_REPLY = {
+  sadness: 'Gracias por decírmelo. Tómate el tiempo que necesites, yo cubro el frente. Hablemos con calma.',
+  anger: 'Te escucho. Hiciste bien en frenar. Vamos a resolverlo juntos, con respeto y sin prisa.',
+  fear: 'Hiciste bien en parar. Yo reviso el riesgo ahora mismo y nadie sigue hasta que esté seguro.',
+  anxiety: 'Vamos paso a paso. Primero una sola prioridad, yo te ayudo a ordenar lo demás.',
+  disgust: 'Tienes razón en poner el límite. Lo tramitamos por el canal correcto para que no se repita.',
+  joy: 'Muy bien, cuadrilla. Eso es cuidarnos entre todos. Sigamos así.'
+};
+let resRun = 0, resTimers = [];
+function clearResolution() {
+  resRun++; resTimers.forEach(clearTimeout); resTimers = [];
+  if ($('cueRing')) $('cueRing').hidden = true;
+  if ($('castCaption')) $('castCaption').hidden = true;
+  if (W) { W.speakerId = null; W.resBeat = -1; }
+}
+function runResolution(m, e, quote) {
+  clearResolution();
+  const run = resRun, mission = state.mission;
+  const alive = () => run === resRun && state.mission === mission && state.phase === 'consequence';
+  const later = (fn, ms) => resTimers.push(setTimeout(() => { if (alive()) fn(); }, ms));
+  const setStep = n => {
+    W.resBeat = n;
+    document.querySelectorAll('#resSteps .res-chip').forEach((c, i) => { c.classList.toggle('active', i === n); c.classList.toggle('done', i < n); });
+  };
+  const caption = (name, text, support) => {
+    $('castName').textContent = name; $('castText').textContent = '«' + text + '»';
+    $('castCaption').classList.toggle('support', !!support); $('castCaption').hidden = false;
+    // reiniciar animación de entrada
+    $('castCaption').style.animation = 'none'; void $('castCaption').offsetWidth; $('castCaption').style.animation = '';
+  };
+  const say = (text, name, opts, next) => {
+    let done = false;
+    const go = () => { if (done) return; done = true; if (alive()) later(next, 450); };
+    Audio.speak(text, name, go, opts);
+    const words = text.split(/\s+/).length;
+    resTimers.push(setTimeout(go, words / 1.8 * 1000 + 2500));
+  };
+  const supportId = W.actors.siso && W.actors.siso.group.visible ? 'siso' : 'supervisor';
+  const supportName = supportId === 'siso' ? 'SST · Seguridad y Salud' : 'Supervisor de obra';
+  const channel = m.support.replace(/\s*\([^)]*\)/g, '').replace(/\.$/, '');
+  const reply = RES_SUPPORT_REPLY[e.id] + ' Recuerda que cuentas con ' + channel + '.';
+  const workerName = (m.role || CHARACTER_NAMES[m.focus] || 'Trabajador');
+
+  // 1) Actúa y respira: guía visual paso a paso mientras el personaje muestra la acción en 3D
+  setStep(0);
+  W.speakerId = null;
+  const cues = RES_CUES[e.id] || RES_CUES.anxiety;
+  $('cueRing').hidden = false;
+  cues.forEach((cue, i) => later(() => { $('cueText').textContent = cue; }, i * 1700));
+  // 2) Lo dice con su voz masculina
+  later(() => {
+    $('cueRing').hidden = true;
+    setStep(1); W.speakerId = m.focus;
+    caption(workerName, quote, false);
+    say(quote, workerName, {}, () => {
+      // 3) El apoyo se acerca y responde con voz propia
+      setStep(2); W.speakerId = supportId;
+      caption(supportName, reply, true);
+      say(reply, supportName, { pitch: 1.04, rate: 0.97 }, () => {
+        // 4) Resuelto: avanza
+        setStep(3); W.speakerId = null;
+        $('castCaption').hidden = true;
+        $('continueBtn').classList.add('ready');
+      });
+    });
+  }, cues.length * 1700);
 }
 
 function updateActionTimeline() {
@@ -2241,7 +2376,8 @@ function updateActionTimeline() {
 let changingSector = false;
 function nextMission() {
   if (state.phase !== 'consequence' || changingSector) return;
-  Audio.cancel();
+  Audio.cancel(); clearResolution();
+  $('continueBtn').classList.remove('ready');
 
   if (state.mission === 9) {
     state.phase = 'final';
@@ -2827,6 +2963,7 @@ class World {
   beginConsequence(style) {
     this.effectStyle = style;
     this.effectTime = 0;
+    this.speakerId = null; this.resBeat = -1;
     const e = emotionFor(state.records[this.index]);
     this.commandDuration = 0.65;
     this.reactionDuration = 7;
@@ -2915,7 +3052,7 @@ class World {
       actor.legs.forEach(leg => leg.rotation.set(0, 0, 0));
       actor.knees.forEach(knee => { knee.rotation.set(0, 0, 0); knee.scale.set(1, 1, 1); });
       actor.group.position.y = 0; actor.group.rotation.z = 0; actor.torso.scale.set(1, 1, 1);
-      const talking = !!Audio.active?.started && (actor === focus || actor.id === conversation?.actor);
+      const talking = !!Audio.active?.started && ((this.speakerId ? actor.id === this.speakerId : actor === focus) || actor.id === conversation?.actor);
       this.updateExpression(actor, this.reduced ? 10 : dt, t);
       this.updateMouth(actor, talking, t);
       actor.torso.position.y = 1.12 + (this.reduced ? 0 : Math.sin(t * 1.8 + i) * .005);
@@ -2931,7 +3068,7 @@ class World {
     const p = this.reduced ? 1 : clamp(this.effectTime / this.commandDuration, 0, 1);
     const ease = p * p * (3 - 2 * p);
 
-    const support = this.actors.siso?.group.visible ? this.actors.siso : Object.values(this.actors).find(a => a.group.visible && a !== focus && a.id !== 'supervisor');
+    const support = this.actors.siso?.group.visible ? this.actors.siso : this.actors.supervisor;
 
     // DEMOSTRACIÓN CORPORAL PERSONALIZADA SEGÚN LA EMOCIÓN
     if (e.id === 'sadness') {
@@ -3045,6 +3182,23 @@ class World {
         this.mood(support, 'relieved');
       }
     }
+
+    // El apoyo (SST o supervisor) camina hacia el personaje y le responde con gesto de acompañamiento
+    if (support && this.resBeat >= 2 && e.id !== 'sadness' && e.id !== 'joy') {
+      const tx = focus.base.x + 1.2, tz = focus.base.z + 0.05, k = Math.min(1, dt * 2.4);
+      const sp = support.group.position;
+      sp.x += (tx - sp.x) * k; sp.z += (tz - sp.z) * k;
+      support.group.rotation.y = -0.75;
+      if (Math.hypot(tx - sp.x, tz - sp.z) > 0.08) {
+        const swing = Math.sin(t * 9) * 0.25;
+        support.legs[0].rotation.x = swing; support.legs[1].rotation.x = -swing;
+      } else {
+        support.arms[0].rotation.set(-0.6 + Math.sin(t * 4) * 0.12, 0, 0.2);
+        support.forearms[0].rotation.set(-0.7, 0, 0);
+      }
+      this.mood(support, 'calm');
+    }
+    if (this.resBeat === 3) this.mood(focus, e.id === 'joy' ? 'relieved' : 'calm');
 
     if (beat === 2) {
       if (e.id === 'joy') this.mood(focus, 'relieved');
