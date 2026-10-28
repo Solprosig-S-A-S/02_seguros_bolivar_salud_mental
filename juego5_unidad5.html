@@ -486,7 +486,7 @@ canvas {
    (SIN CAJAS DENTRO DE CAJAS NI TABS COMPLICADOS)
    ======================================================== */
 /* ========================================================
-   FASE 2: ENFOQUE DIRECTO: PASO POR PASO (COMPACTO Y GUIADO)
+   FASE 2: RESOLUCIÓN DIRECTA Y AUTOMÁTICA EN OBRA
    ======================================================== */
 .focus-solution-flow {
   display: flex;
@@ -498,8 +498,7 @@ canvas {
   align-items: center;
   justify-content: space-between;
   gap: 6px;
-  padding-bottom: 4px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 2px;
 }
 #resultBadge {
   font-size: 10px;
@@ -513,163 +512,60 @@ canvas {
   gap: 5px;
   border: 1px solid;
 }
-.step-indicator-bar {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-.step-dot {
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #94A3B8;
-  font-size: 9.5px;
-  font-weight: 750;
-  padding: 3px 8px;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all .2s ease;
-  white-space: nowrap;
-}
-.step-dot:hover {
-  background: rgba(255, 255, 255, 0.14);
-  color: #FFFFFF;
-}
-.step-dot.active {
-  background: var(--yellow);
-  border-color: var(--yellow);
-  color: #071A27;
-  font-weight: 850;
-}
-
-/* PASO ACTUAL CON ALTURA COMPACTA (PASO A PASO) */
-.step-slide-content {
-  min-height: 56px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-.step-slide-content[hidden] {
-  display: none !important;
-}
-
-.action-item-row.compact {
-  display: flex;
-  align-items: flex-start;
-  gap: 9px;
-  padding: 2px 0;
-  border: 0;
-}
-.action-item-icon {
-  width: 28px;
-  height: 28px;
-  border-radius: 7px;
-  background: rgba(56, 189, 248, 0.12);
-  border: 1px solid rgba(56, 189, 248, 0.3);
-  color: var(--cyan);
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  margin-top: 1px;
-}
-.action-item-icon svg { width: 15px; height: 15px; }
-.action-item-icon.yellow-icon {
-  background: rgba(255, 183, 3, 0.12);
-  border-color: rgba(255, 183, 3, 0.4);
-  color: var(--yellow);
-}
-.action-item-icon.green-icon {
-  background: rgba(52, 211, 153, 0.12);
-  border-color: rgba(52, 211, 153, 0.4);
-  color: var(--green);
-}
-
-.action-item-body {
-  flex: 1;
-  min-width: 0;
-}
-.action-item-label {
+.focus-kicker-text {
   font-size: 10px;
-  font-weight: 850;
+  font-weight: 800;
+  color: var(--yellow);
   letter-spacing: .5px;
   text-transform: uppercase;
-  color: var(--cyan);
-  margin-bottom: 2px;
 }
-.action-item-label.yellow-lbl { color: var(--yellow); }
-.action-item-label.green-lbl { color: var(--green); }
 
-.action-item-text {
-  font-size: 11.5px;
-  line-height: 1.35;
-  color: #F1F5F9;
-  margin: 0;
+/* TARJETA COMPACTA DE RESOLUCIÓN DIRECTA */
+.resolution-card {
+  background: rgba(14, 46, 68, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
-.assertive-speech-quote {
-  font-size: 11.5px;
+.resolution-speaker-tag {
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: .7px;
+  text-transform: uppercase;
+  color: var(--yellow);
+}
+.resolution-quote-text {
+  font-size: 12px;
   line-height: 1.35;
   color: #FFFFFF;
   font-weight: 600;
-  margin: 2px 0 4px;
-  padding: 3px 8px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 6px;
-  border-left: 2px solid var(--yellow);
+  margin: 0;
 }
-.listen-inline-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  background: rgba(56, 189, 248, 0.15);
-  border: 1px solid rgba(56, 189, 248, 0.35);
-  color: #38BDF8;
-  border-radius: 6px;
-  padding: 3px 8px;
-  font-size: 10px;
-  font-weight: 750;
-  cursor: pointer;
-  transition: all .2s ease;
-}
-.listen-inline-btn:hover {
-  background: rgba(56, 189, 248, 0.28);
-  color: #FFFFFF;
-}
-
-/* NAVEGACIÓN PASO A PASO */
-.step-nav-row {
+.resolution-details-row {
   display: flex;
-  align-items: center;
-  gap: 7px;
-  margin-top: 2px;
+  flex-direction: column;
+  gap: 3px;
+  padding-top: 5px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
-.step-nav-prev {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #E2E8F0;
-  border-radius: 9px;
-  height: 40px;
-  padding: 0 12px;
-  font-size: 11.5px;
-  font-weight: 750;
-  cursor: pointer;
-  transition: all .16s ease;
-  flex-shrink: 0;
+.res-detail-item {
+  font-size: 10.5px;
+  line-height: 1.32;
+  color: #CBD5E1;
+  margin: 0;
 }
-.step-nav-prev:hover {
-  background: rgba(255, 255, 255, 0.16);
-  color: #FFFFFF;
+.res-detail-item strong {
+  color: #38BDF8;
+  font-size: 9.5px;
+  letter-spacing: .3px;
+  text-transform: uppercase;
+  font-weight: 800;
 }
-.step-nav-prev[hidden] {
-  display: none !important;
-}
-.step-nav-next {
-  flex: 1;
-  height: 40px;
-  font-size: 12.5px;
-  margin: 0 !important;
+.res-detail-item.support-detail strong {
+  color: #34D399;
 }
 
 /* BOTONES LIMPIOS */
@@ -916,7 +812,7 @@ canvas {
       <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
       <span>Ver situación</span>
     </button>
-    <button id="talkBtn" type="button">Escuchar situación</button>
+    <button id="talkBtn" type="button" hidden></button>
 
     <!-- TRANSICIÓN CINEMÁTICA ENTRE SITUACIONES -->
     <div id="transitionOverlay">
@@ -942,72 +838,28 @@ canvas {
       <div id="choices" class="choices"></div>
     </div>
 
-    <!-- FASE 2: ENFOQUE DIRECTO: PASO A PASO (COMPACTO Y GUIADO) -->
+    <!-- FASE 2: RESOLUCIÓN DIRECTA Y AUTOMÁTICA EN OBRA -->
     <div id="consequence" hidden class="focus-solution-flow">
       <div class="focus-situation-bar">
         <span id="resultBadge"></span>
-        <div class="step-indicator-bar" id="stepIndicatorBar">
-          <button type="button" class="step-dot active" data-step="0" aria-label="Paso 1: Tu cuerpo">1. Tu cuerpo</button>
-          <button type="button" class="step-dot" data-step="1" aria-label="Paso 2: Qué decir">2. Qué decir</button>
-          <button type="button" class="step-dot" data-step="2" aria-label="Paso 3: Red de apoyo">3. Red de apoyo</button>
+        <span class="focus-kicker-text">Resolución en obra</span>
+      </div>
+
+      <div class="resolution-card">
+        <div class="resolution-speaker-tag" id="resolutionSpeaker">TÚ · PEDRO</div>
+        <p class="resolution-quote-text" id="assertiveQuoteText"></p>
+        <div class="resolution-details-row">
+          <p class="res-detail-item"><strong>Cuerpo:</strong> <span id="resultText"></span></p>
+          <p class="res-detail-item support-detail"><strong>Apoyo:</strong> <span id="supportSiteText"></span></p>
         </div>
       </div>
 
-      <!-- PASO 1: TU CUERPO (Acción física directa) -->
-      <div class="step-slide-content" id="stepSlide0">
-        <div class="action-item-row compact">
-          <div class="action-item-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-          </div>
-          <div class="action-item-body">
-            <div class="action-item-label">Paso 1/3 · Tu cuerpo (Autorregulación)</div>
-            <p class="action-item-text" id="resultText"></p>
-          </div>
-        </div>
-      </div>
-
-      <!-- PASO 2: QUÉ DECIR (Comunicación asertiva con botón de voz) -->
-      <div class="step-slide-content" id="stepSlide1" hidden>
-        <div class="action-item-row compact">
-          <div class="action-item-icon yellow-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          </div>
-          <div class="action-item-body">
-            <div class="action-item-label yellow-lbl">Paso 2/3 · Qué decir en la obra (Asertividad)</div>
-            <p class="assertive-speech-quote" id="assertiveQuoteText"></p>
-            <button type="button" class="listen-inline-btn" id="listenScriptBtn">
-              <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-              <span>Escuchar cómo decirlo</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- PASO 3: RUTA DE APOYO EN OBRA -->
-      <div class="step-slide-content" id="stepSlide2" hidden>
-        <div class="action-item-row compact">
-          <div class="action-item-icon green-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          </div>
-          <div class="action-item-body">
-            <div class="action-item-label green-lbl">Paso 3/3 · Red de apoyo y protocolo</div>
-            <p class="action-item-text" id="supportSiteText"></p>
-          </div>
-        </div>
-      </div>
-
-      <!-- BOTONES DE NAVEGACIÓN PASO POR PASO -->
-      <div class="step-nav-row">
-        <button type="button" id="stepPrevBtn" class="step-nav-prev" hidden>
-          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-          <span>Anterior</span>
-        </button>
-        <button id="continueBtn" class="primary step-nav-next">SIGUIENTE: QUÉ DECIR →</button>
-      </div>
+      <!-- BOTÓN PRINCIPAL DE CONTINUIDAD -->
+      <button id="continueBtn" class="primary">SIGUIENTE SITUACIÓN →</button>
       
       <div class="secondary-links-row">
         <button type="button" id="changeEmotionBtn" class="text-link-btn">Probar otra emoción ante este caso</button>
-        <button type="button" id="replayBtn" class="text-link-btn">Repetir animación 3D</button>
+        <button type="button" id="replayBtn" class="text-link-btn">Repetir resolución y audio</button>
       </div>
     </div>
   </section>
@@ -1538,15 +1390,38 @@ const Audio = {
     this.cancel();
     if (this.muted || !voiceEnabled || document.hidden || !text || !('speechSynthesis' in window)) return;
     const serial = this.serial, u = new SpeechSynthesisUtterance(text);
-    const voices = speechSynthesis.getVoices().filter(voice => /^es\b/i.test(voice.lang));
-    this.voiceList = voices.length ? voices : this.voiceList;
-    const preferred = this.voiceList.filter(voice => /^es-(CO|MX)/i.test(voice.lang));
-    const available = preferred.concat(this.voiceList.filter(voice => !preferred.includes(voice)));
-    u.voice = available[0] || null;
-    u.lang = u.voice ? u.voice.lang : 'es-CO';
-    u.rate = 0.94;
-    u.pitch = 1.0;
-    u.volume = 0.9;
+    
+    // Cachear voces en español
+    if (!this.voiceList.length) {
+      this.voiceList = speechSynthesis.getVoices().filter(v => /^es\b/i.test(v.lang));
+    }
+
+    // Filtrar voces masculinas en español para todos los hombres de la obra
+    const masculine = /\b(male|masculino|hombre|jorge|alvaro|alonso|raul|pablo|diego|enrique|antonio|juan|andres|gonzalo|tomas|carlos|miguel|manuel|rodrigo|emilio|federico|gerardo|humberto|julio|leon|luis|marcelo|mario|roberto|sergio|santiago|nicolas|ricardo|martin|david|francisco|ignacio|pedro)\b/i;
+    const feminine = /\b(female|femenino|mujer|sabina|helena|monica|paulina|laura|lucia|maria|carmen|rosa|elena|victoria|hilda|soledad|zira)\b/i;
+
+    const maleVoices = this.voiceList.filter(v => {
+      const tag = (v.name + ' ' + (v.gender || '')).normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      return masculine.test(tag) && !feminine.test(tag);
+    });
+
+    const nonFeminine = this.voiceList.filter(v => {
+      const tag = (v.name + ' ' + (v.gender || '')).normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      return !feminine.test(tag);
+    });
+
+    const maleVoice = maleVoices.find(v => /^es-(CO|MX)/i.test(v.lang)) ||
+                      maleVoices[0] ||
+                      nonFeminine.find(v => /^es-(CO|MX)/i.test(v.lang)) ||
+                      nonFeminine[0] ||
+                      this.voiceList[0] || null;
+
+    u.voice = maleVoice;
+    u.lang = maleVoice ? maleVoice.lang : 'es-CO';
+    // Todos los trabajadores de cuadrilla son hombres: voz masculina grave, sobria y natural (pitch 0.82)
+    u.pitch = maleVoices.length ? 0.90 : 0.82;
+    u.rate = 0.93;
+    u.volume = 1.0;
     const finish = () => {
       if (serial !== this.serial) return;
       clearTimeout(this.active?.timeout); this.active = null; this.speechUI(false);
@@ -1706,54 +1581,18 @@ function choose(option) {
   showConsequence();
 }
 
-let currentStep = 0;
-
-function setConsequenceStep(step) {
-  currentStep = Math.max(0, Math.min(2, step));
-  
-  for (let i = 0; i < 3; i++) {
-    const slide = $('stepSlide' + i);
-    if (slide) slide.hidden = (i !== currentStep);
-    const dot = document.querySelector(`.step-dot[data-step="${i}"]`);
-    if (dot) dot.classList.toggle('active', i === currentStep);
-  }
-
-  const prevBtn = $('stepPrevBtn');
-  if (prevBtn) prevBtn.hidden = (currentStep === 0);
-
-  const contBtn = $('continueBtn');
-  if (contBtn) {
-    contBtn.disabled = false;
-    if (currentStep === 0) {
-      contBtn.textContent = 'SIGUIENTE: QUÉ DECIR →';
-    } else if (currentStep === 1) {
-      contBtn.textContent = 'SIGUIENTE: RED DE APOYO →';
-    } else {
-      contBtn.textContent = state.mission === 9 ? 'VER MI INFORME FINAL →' : 'SIGUIENTE SITUACIÓN →';
-    }
-  }
-}
-
-function handleContinueClick() {
-  if (currentStep < 2) {
-    setConsequenceStep(currentStep + 1);
-  } else {
-    nextMission();
-  }
-}
-
 function showConsequence() {
   stopConversation();
-  $('talkBtn').hidden = true;
   Audio.cancel();
   const r = state.records[state.mission], e = emotionFor(r), m = M[state.mission];
 
-  // OCULTAR FASE DE SELECCIÓN Y MOSTRAR FASE DE SOLUCIÓN DIRECTA
+  // OCULTAR FASE DE SELECCIÓN Y MOSTRAR DIRECTAMENTE LA RESOLUCIÓN
   $('emotionalGuidanceArea').hidden = true;
   $('consequence').hidden = false;
   $('inspectBtn').hidden = true;
+  if ($('talkBtn')) $('talkBtn').hidden = true;
 
-  // OCULTAR EL BOCADILLO GIGANTE EN 3D PARA NO TAPAR AL PERSONAJE NI LA ESCENA
+  // OCULTAR EL BOCADILLO GIGANTE EN 3D
   $('bubble').classList.add('consequence-mode');
 
   // BADGE DE LA EMOCIÓN
@@ -1762,24 +1601,19 @@ function showConsequence() {
   $('resultBadge').style.color = '#FFFFFF';
   $('resultBadge').style.background = 'rgba(255, 255, 255, 0.08)';
 
-  // 1. TU CUERPO (Acción física directa)
+  // TEXTOS DE RESOLUCIÓN EN OBRA
   $('resultText').textContent = e.advice;
-
-  // 2. QUÉ DECIR (Guion asertivo directo para obra)
   const fullAssertiveScript = e.words;
   $('assertiveQuoteText').textContent = '«' + fullAssertiveScript + '»';
-
-  // BOTÓN DE AUDIO DE LA FRASE ASERTIVA
-  $('listenScriptBtn').onclick = () => {
-    Audio.init();
-    Audio.speak('Aquí tienes cómo expresarlo con asertividad: ' + fullAssertiveScript, 'TÚ · ' + e.name);
-  };
-
-  // 3. RUTA DE APOYO DIRECTA
   $('supportSiteText').textContent = m.support;
+  if ($('resolutionSpeaker')) {
+    const spk = CHARACTER_NAMES[m.focus] || 'Tú · Trabajador';
+    $('resolutionSpeaker').textContent = spk.toUpperCase();
+  }
 
-  // MOSTRAR PASO 1 POR DEFECTO
-  setConsequenceStep(0);
+  // BOTÓN DIRECTO: SIGUIENTE SITUACIÓN
+  $('continueBtn').disabled = false;
+  $('continueBtn').textContent = state.mission === 9 ? 'VER MI INFORME FINAL →' : 'SIGUIENTE SITUACIÓN →';
 
   // ACERCAMIENTO AUTOMÁTICO EN 3D: Cámara se acerca suavemente al personaje
   W.beginConsequence('protective');
@@ -1788,6 +1622,13 @@ function showConsequence() {
   updateActionTimeline();
   updateHUD();
   $('panel').scrollTop = 0;
+
+  // DISPARAR VOZ MASCULINA AUTOMÁTICAMENTE (TODO PASA AUTOMÁTICAMENTE, RESUELVE LA SITUACIÓN)
+  Audio.init();
+  voiceEnabled = true;
+  Audio.muted = false;
+  $('soundBtn').setAttribute('aria-pressed', 'false');
+  Audio.speak(fullAssertiveScript, CHARACTER_NAMES[m.focus] || 'Tú · Pedro');
 }
 
 function updateActionTimeline() {
@@ -2698,7 +2539,7 @@ $('soundBtn').onclick = () => {
   if (!Audio.muted && playing && !$('bubble').hidden) Audio.speak($('speech').textContent, speaker);
 };
 
-$('talkBtn').onclick = () => {
+if ($('talkBtn')) $('talkBtn').onclick = () => {
   stopConversation();
   $('bubble').classList.remove('consequence-mode');
   setDialogue('Mi situación en obra', [M[state.mission].situation], true);
@@ -2721,14 +2562,7 @@ $('startBtn').onclick = () => {
   state.phase === 'final' ? showReport() : loadMission();
 };
 $('restartWelcome').onclick = () => { if (ready3D) resetGame(); };
-$('continueBtn').onclick = handleContinueClick;
-if ($('stepPrevBtn')) $('stepPrevBtn').onclick = () => { if (currentStep > 0) setConsequenceStep(currentStep - 1); };
-document.querySelectorAll('.step-dot').forEach(btn => {
-  btn.onclick = () => {
-    const s = parseInt(btn.dataset.step, 10);
-    setConsequenceStep(s);
-  };
-});
+$('continueBtn').onclick = nextMission;
 $('changeEmotionBtn').onclick = () => {
   if (state.phase !== 'consequence' || LMS.ended) return;
   state.records.length = state.mission;
