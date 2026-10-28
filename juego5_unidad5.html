@@ -1123,6 +1123,7 @@ const EMOTION_SVGS = {
   joy: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>'
 };
 
+// 10 SITUACIONES REALES DE OBRA CON CONTEXTO COMPLETO Y ESPACIO DEDICADO
 // 10 SITUACIONES REALES DE OBRA CON CONTEXTO COMPLETO Y RESPUESTAS 100% PERSONALIZADAS
 const M = [
   {
@@ -2125,6 +2126,7 @@ function loadMission() {
   setDialogue('Mi situación en obra', [m.trigger || m.situation], true);
   updateHUD();
 
+  // TARJETAS DIRECTAS DE EMOCIÓN
   // TARJETAS DE EMOCIÓN PERSONALIZADAS A ESTA SITUACIÓN EN OBRA
   EMOTIONS.forEach((e, index) => {
     const custom = (m.responses && m.responses[e.id]) || {};
@@ -2133,12 +2135,15 @@ function loadMission() {
     const btn = document.createElement('button');
     btn.className = 'choice';
     btn.dataset.emotion = e.id;
+    btn.setAttribute('aria-label', e.name + ': ' + e.bodyClue);
     btn.setAttribute('aria-label', e.name + ': ' + feelingText);
     btn.innerHTML = `
       <div class="choice-header">
         <span class="choice-badge-circle" style="background:${e.color}">${EMOTION_SVGS[e.id]}</span>
         <span class="choice-title">${e.name}</span>
       </div>
+      <div class="choice-body-clue">${e.bodyClue}</div>
+      <div class="choice-purpose">${e.purpose}</div>
       <div class="choice-body-clue">${feelingText}</div>
       <div class="choice-purpose">${actionText}</div>
     `;
