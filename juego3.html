@@ -1974,6 +1974,10 @@
           } catch (e) {}
         },
 
+        playLockerLatch: function () {
+          this.playLockerLock();
+        },
+
         playLightSwitch: function () {
           if (this.muted) return;
           this.init();
@@ -4650,13 +4654,13 @@
                   } else if (st.id === 'laptop') {
                     Santuario3DEngine.officeCloseProgress = Math.PI / 2;
                     Santuario3DEngine.setOfficeMessage('JORNADA CERRADA', 'Computador cerrado. Tiempo personal.');
-                    SoundEngine.playLockerLatch();
+                    try { SoundEngine.playLockerLock(); } catch (e) {}
                     setTimeout(function () {
                       st.done = true;
                       adminBusy = false;
                       card.classList.add('completed');
                       refreshAdminButtons();
-                      SoundEngine.playSuccess();
+                      try { SoundEngine.playSuccess(); } catch (e) {}
 
                       self.stationActive = false;
                       self.score += data.scoreAdd;
@@ -4665,7 +4669,7 @@
                       ScormAPI.setScore(self.score);
                       self.showInlineFeedback('Jornada cerrada. El trabajo queda en la oficina; este tiempo es para ti.');
                       setTimeout(function () {
-                        if (self.currentStation === 3) self.showFeedback(data.feedback);
+                        self.showFeedback(data.feedback);
                       }, 1800);
                     }, 800);
                   }
