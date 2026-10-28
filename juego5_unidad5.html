@@ -1123,7 +1123,7 @@ const EMOTION_SVGS = {
   joy: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>'
 };
 
-// 10 SITUACIONES REALES DE OBRA CON CONTEXTO COMPLETO Y ESPACIO DEDICADO
+// 10 SITUACIONES REALES DE OBRA CON CONTEXTO COMPLETO Y RESPUESTAS 100% PERSONALIZADAS
 const M = [
   {
     time: "6:00",
@@ -1139,6 +1139,44 @@ const M = [
     fact: "Llevo varios días de turno lejos de mi hogar y la preocupación familiar me dificulta mantener la atención al borde de la placa.",
     need: "solicito una pausa breve de dos minutos para llamar a casa y que coordinemos un relevo preventivo mientras recupero el foco.",
     support: "Supervisor de cuadrilla y Línea de Orientación Psicosocial Seguros Bolívar.",
+    responses: {
+      sadness: {
+        feeling: "Nostalgia y pesadez por la salud de mi hijo lejos de casa.",
+        action: "Pausa acompañada y relevo antes de tocar el borde.",
+        bodyAdvice: "Me aparto de la línea de borde de placa, tomo asiento en la banca de cuidado, respiro suavemente y pido un relevo de dos minutos.",
+        quote: "Llevo varios días lejos de mi familia y la nostalgia me está desconcentrando en este borde de placa. Necesito dos minutos para llamar a casa y coordinar un relevo preventivo."
+      },
+      anger: {
+        feeling: "Impotencia por estar en campamento sin poder ayudar en casa.",
+        action: "Respirar hondo para no descargar la molestia en la placa.",
+        bodyAdvice: "Doy dos pasos atrás del vacío, aflojo las manos, abro las palmas y respiro en cuatro tiempos para no arriesgarme en el borde.",
+        quote: "Siento mucha impotencia por no poder estar con los míos. Voy a respirar dos minutos para no descargar esta frustración en la obra ni accidentarme en la placa."
+      },
+      fear: {
+        feeling: "Temor a dar un mal paso a 12 metros de altura por estar distraído.",
+        action: "Asegurar línea de vida y pedir relevo temporal de frente.",
+        bodyAdvice: "Aseguro el doble gancho de mi arnés a la línea de vida, hago señal de pausa preventiva y solicito relevo inmediato.",
+        quote: "Con la cabeza lejos de aquí y a 12 metros de altura tengo miedo de dar un mal paso. Pido un relevo temporal para tranquilizarme y asegurar la línea de vida."
+      },
+      anxiety: {
+        feeling: "Pecho apretado y mente acelerada por la incertidumbre familiar.",
+        action: "Respiración diafragmática para calmar el ritmo antes de armar.",
+        bodyAdvice: "Apoyo ambos pies firmes sobre la losa, coloco manos en el pecho y realizo respiraciones lentas para recobrar la atención.",
+        quote: "Siento el pecho muy apretado por la salud de mi hijo. Necesito parar un momento, respirar hondo y enfocarme antes de tocar la formaleta de borde."
+      },
+      disgust: {
+        feeling: "Incomodidad de estar expuesto en borde con una urgencia en casa.",
+        action: "Solicitar espacio privado con el supervisor para llamar.",
+        bodyAdvice: "Postura erguida, me aparto de la formaleta de borde y acudo al supervisor para acordar el contacto con mi familia.",
+        quote: "Me cuesta trabajar enfocado cuando en casa hay una urgencia sin resolver. Pido dos minutos con el supervisor para acordar el contacto con mi familia."
+      },
+      joy: {
+        feeling: "Alivio y gratitud de que mi cuadrilla note mi baja y me respalde.",
+        action: "Aceptar el cuidado mutuo y coordinar el relevo seguro.",
+        bodyAdvice: "Hago contacto visual con mi compañero, recibo el relevo con gratitud y me retiro del área expuesta sin culpa.",
+        quote: "Agradezco que el compañero de cuadrilla me note pensativo y me apoye. Coordinemos el relevo para no poner en riesgo la labor en altura."
+      }
+    },
     quotes: {
       sadness: "Llevo varios días lejos de mi familia y la nostalgia me está desconcentrando en este borde de placa. Necesito dos minutos para llamar a casa y coordinar un relevo preventivo.",
       anger: "Siento mucha impotencia por no poder estar con los míos. Voy a respirar dos minutos para no descargar esta frustración en la obra ni accidentarme en la placa.",
@@ -1163,6 +1201,44 @@ const M = [
     fact: "El residente pide vaciar de inmediato mientras SST indica que faltan apoyos de seguridad por verificar en la tubería presurizada.",
     need: "necesito que ambos responsables coordinen una sola instrucción técnica y validemos la seguridad antes de encender la bomba.",
     support: "Pausa técnica de verificación y protocolo de vaciado seguro coordinado por SST.",
+    responses: {
+      anger: {
+        feeling: "Molestia por quedar en medio de la disputa del residente y SST.",
+        action: "Frenar la bomba y exigir una sola orden técnica unificada.",
+        bodyAdvice: "Doy un paso atrás del panel de la bomba, abro las palmas con firmeza y convoco al residente y a SST a conciliar.",
+        quote: "El residente me exige vaciar ya y SST me ordena parar por seguridad. Les pido a los dos coordinar una sola orden técnica antes de encender la bomba; primero está la vida."
+      },
+      fear: {
+        feeling: "Temor a que la tubería presurizada reviente por falta de apoyos.",
+        action: "No encender el equipo hasta la liberación formal de SST.",
+        bodyAdvice: "Me coloco a distancia segura de la línea de tubería, hago señal de STOP y espero la firma de liberación de apoyos.",
+        quote: "No voy a encender la bomba presurizada si SST no ha liberado los apoyos de la tubería. Verifiquemos juntos la estabilidad antes de bombear."
+      },
+      anxiety: {
+        feeling: "Pulso acelerado ante el pito del mixer y el afán del vaciado.",
+        action: "Respirar y no dejarse arrastrar por la prisa ajena.",
+        bodyAdvice: "Apoyo pies firmes, suelto el pulsador de arranque y pido dos minutos para unificar el plan de vaciado.",
+        quote: "Tanta prisa cruzada nos puede costar un reventón de tubería. Detengo el equipo dos minutos mientras unifican el criterio de seguridad."
+      },
+      sadness: {
+        feeling: "Desgaste de que siempre descarguen la tensión sobre el operario.",
+        action: "Expresar con serenidad que la labor requiere claridad previa.",
+        bodyAdvice: "Pausa breve en zona protegida, respiro hondo y comunico que el equipo requiere orden unificada para arrancar.",
+        quote: "Me abruma quedar atrapado en medio de dos órdenes opuestas. Necesitamos una sola instrucción clara para fundir sin riesgos."
+      },
+      disgust: {
+        feeling: "Rechazo a que me presionen a violar normas de seguridad.",
+        action: "Hacer respetar el protocolo técnico de bombeo seguro.",
+        bodyAdvice: "Postura firme y erguida, manos a la vista y ratificación del protocolo técnico ante el encargado de obra.",
+        quote: "No es correcto presionar al operario para que viole normas de seguridad. Validemos la orden técnica con el director de obra."
+      },
+      joy: {
+        feeling: "Tranquilidad de que SST detectó la falla antes del bombeo.",
+        action: "Respaldar la verificación y fundir con apoyos seguros.",
+        bodyAdvice: "Sonrío con alivio, colaboro en asegurar los puntales faltantes y preparo el bombeo bajo condiciones seguras.",
+        quote: "Qué bueno que SST detectó la falla antes del bombeo. Aseguremos los apoyos en cinco minutos y arrancamos con tranquilidad."
+      }
+    },
     quotes: {
       anger: "El residente me exige vaciar ya y SST me ordena parar por seguridad. Les pido a los dos coordinar una sola orden técnica antes de encender la bomba; primero está la vida.",
       fear: "No voy a encender la bomba presurizada si SST no ha liberado los apoyos de la tubería. Verifiquemos juntos la estabilidad antes de bombear.",
@@ -1187,6 +1263,44 @@ const M = [
     fact: "Cometí una equivocación de calibración mientras aprendo el procedimiento de corte y recibí gritos e insultos en público.",
     need: "necesito que me expliquen cómo corregir el error con respeto profesional y en privado; no acepto humillaciones frente a la cuadrilla.",
     support: "Comité de Convivencia Laboral (Ley 1010 de 2006) y Supervisor de Obra.",
+    responses: {
+      anger: {
+        feeling: "Calor e indignación por el grito y la humillación pública.",
+        action: "Poner límite con firmeza profesional sin insultar.",
+        bodyAdvice: "Apago la cizalla, mantengo mirada serena, aflojo los puños y pido respeto profesional delante de la cuadrilla.",
+        quote: "Cometí un error en la medida y lo voy a corregir ya. Pero le exijo respeto profesional: no le permito que me grite ni me humille delante de los compañeros."
+      },
+      disgust: {
+        feeling: "Rechazo visceral ante el maltrato y la vulneración de dignidad.",
+        action: "Dejar claro que el maltrato no se tolera y acudir a Convivencia.",
+        bodyAdvice: "Postura erguida, palma al frente y advertencia respetuosa sobre el conducto regular del Comité de Convivencia.",
+        quote: "Este trato vulnera mi dignidad y no aporta a la obra. Si no podemos hablar con respeto en privado, escalo el caso al Comité de Convivencia."
+      },
+      sadness: {
+        feeling: "Desánimo y vergüenza de que me traten como un estorbo.",
+        action: "Reconocer el fallo técnico sin aceptar la agresión verbal.",
+        bodyAdvice: "Respiro con calma, tomo asiento brevemente para serenarme y solicito retroalimentación técnica sin gritos.",
+        quote: "Me duele la equivocación porque quiero aprender bien, pero los insultos no me van a enseñar. Explíqueme la medida con calma y lo soluciono."
+      },
+      fear: {
+        feeling: "Tensión de que los gritos en el taller provoquen un accidente.",
+        action: "Desescalar la situación para manipular la cizalla con calma.",
+        bodyAdvice: "Doy un paso atrás del banco de corte, mantengo manos visibles y propongo revisar el plano en privado.",
+        quote: "Los gritos alteran a todo el taller y pueden provocar un corte grave con la cizalla. Bajemos el tono y revisemos el plano juntos."
+      },
+      anxiety: {
+        feeling: "Bloqueo mental y temor a perder el empleo por equivocarse.",
+        action: "Anclaje somático para recalibrar el tope de medida con calma.",
+        bodyAdvice: "Suelto el flexómetro, apoyo pies firmes, exhalo profundamente y retomo la verificación milimétrica del acero.",
+        quote: "Respiro hondo y no me dejo intimidar por los gritos. Calibremos de nuevo el tope de corte para no desperdiciar más acero."
+      },
+      joy: {
+        feeling: "Confianza en que los errores son parte del aprendizaje en obra.",
+        action: "Mantener buena actitud y corregir las piezas con precisión.",
+        bodyAdvice: "Mantengo la calma con dignidad, sonrío al desafío técnico y recalibro la máquina demostrando profesionalismo.",
+        quote: "Reconozco el error sin perder la calma. Corrijamos el lote y demostremos que con paciencia y método se aprende con calidad."
+      }
+    },
     quotes: {
       anger: "Cometí un error en la medida y lo voy a corregir ya. Pero le exijo respeto profesional: no le permito que me grite ni me humille delante de los compañeros.",
       disgust: "Este trato vulnera mi dignidad y no aporta a la obra. Si no podemos hablar con respeto en privado, escalo el caso al Comité de Convivencia.",
@@ -1211,6 +1325,44 @@ const M = [
     fact: "Se presentó una fuga presurizada en la línea neumática y hay presión indebida de tiempo por no perder material.",
     need: "debemos detener la presión, delimitar el área y esperar a que personal mecánico competente repare y libere el equipo.",
     support: "Procedimiento de Bloqueo y Etiquetado de Energías Peligrosas (SST y Mantenimiento).",
+    responses: {
+      fear: {
+        feeling: "Alerta máxima ante el riesgo mortal de latigazo de manguera.",
+        action: "Detener la labor y acordonar el área presurizada de inmediato.",
+        bodyAdvice: "Retrocedo de la trayectoria de la manguera, alzo el brazo en señal universal de STOP y acciono la parada de emergencia.",
+        quote: "¡Detengo la tarea ya! Un latigazo de manguera a 120 PSI es mortal. Ningún bulto de mortero vale más que la integridad de la cuadrilla."
+      },
+      anger: {
+        feeling: "Furia de que los compañeros prioricen el mortero sobre la vida.",
+        action: "Cerrar la válvula de aire y frenar la imprudencia colectiva.",
+        bodyAdvice: "Paso firme hacia la llave de paso, despresurizo con decisión y mantengo el límite de seguridad sin dudar.",
+        quote: "No voy a permitir que arriesguemos la vida por salvar una manguera. Cerramos la válvula de paso inmediatamente y despresurizamos la línea."
+      },
+      anxiety: {
+        feeling: "Nerviosismo ante el silbido violento y la presión de tiempo.",
+        action: "Calmar a la cuadrilla y llamar a mantenimiento mecánico.",
+        bodyAdvice: "Respiración controlada, señalización del área peligrosa y solicitud inmediata de personal calificado de soporte.",
+        quote: "El afán del tiempo no puede hacernos ignorar el peligro. Acordonemos el área mientras mantenimiento cambia el acople de seguridad."
+      },
+      disgust: {
+        feeling: "Indignación de normalizar fallas críticas por evitar costos.",
+        action: "Exigir el protocolo de bloqueo y etiquetado de energías.",
+        bodyAdvice: "Me mantengo firme y erguido, aplico el protocolo de candado y tarjeta y defiendo la cultura de prevención técnica.",
+        quote: "Es inaceptable anteponer el costo del mortero a la seguridad física. Se bloquea la línea de energía según protocolo SST."
+      },
+      sadness: {
+        feeling: "Preocupación de que la cuadrilla no valore su propia integridad.",
+        action: "Sensibilizar al equipo sobre el riesgo real de la presión.",
+        bodyAdvice: "Pausa con los compañeros, contacto visual sereno y reflexión de que un accidente afecta a todas las familias.",
+        quote: "Me preocupa mucho que normalicemos fallas tan graves en el frente. Paremos dos minutos y reparemos el acople como corresponde."
+      },
+      joy: {
+        feeling: "Alivio y satisfacción de haber parado a tiempo sin víctimas.",
+        action: "Celebrar la reacción preventiva y reparar el acople con calma.",
+        bodyAdvice: "Felicitación al equipo por atender la señal de alto y verificación compartida del nuevo acople seguro.",
+        quote: "Reaccionamos a tiempo y no nos confiamos. Evitamos una tragedia grave; reparemos la fuga y retomamos con tranquilidad."
+      }
+    },
     quotes: {
       fear: "¡Detengo la tarea ya! Un latigazo de manguera a 120 PSI es mortal. Ningún bulto de mortero vale más que la integridad de la cuadrilla.",
       anger: "No voy a permitir que arriesguemos la vida por salvar una manguera. Cerramos la válvula de paso inmediatamente y despresurizamos la línea.",
@@ -1235,6 +1387,44 @@ const M = [
     fact: "El corredor común quedó bloqueado con materiales de ambos frentes, generando confrontación interpersonal acalorada.",
     need: "hagamos una pausa de dos minutos, despejemos los obstáculos y acordemos turnos de circulación segura para cada equipo.",
     support: "Coordinación de frentes entre Jefes de Cuadrilla y logística de acopio en losa.",
+    responses: {
+      anger: {
+        feeling: "Tensión muscular y ganas de responder a los empujones y gritos.",
+        action: "Dar un paso atrás, abrir palmas y desactivar la confrontación.",
+        bodyAdvice: "Doy un paso atrás de la discusión, abro las palmas al frente a la altura del pecho y respiro hondo para no pelear.",
+        quote: "Doy un paso atrás y abro las manos. No vamos a convertir la obra en una pelea callejera. Despejemos el pasillo y pasemos por turnos."
+      },
+      fear: {
+        feeling: "Miedo a que una riña en la losa termine en una caída al vacío.",
+        action: "Frenar la discusión y advertir el peligro de caída o golpes.",
+        bodyAdvice: "Me aparto de la zona de barandas o huecos, hago señal de calma y llamo a la prudencia a ambas cuadrillas.",
+        quote: "Una riña en una losa con desniveles puede terminar en una caída fatal. Paremos ya, respiremos hondo y coordinemos la logística."
+      },
+      anxiety: {
+        feeling: "Agitación por el afán de almorzar y el caos en el pasillo.",
+        action: "Proponer una solución rápida dividiendo el espacio en dos carriles.",
+        bodyAdvice: "Respiración calmada, señalo con las manos el lado derecho para formaletas y el izquierdo para cables.",
+        quote: "La tensión del mediodía nos está cegando. Dos minutos de pausa: apilemos a la derecha y los electricistas pasan por la izquierda."
+      },
+      disgust: {
+        feeling: "Vergüenza de que trabajadores profesionales se traten a patadas.",
+        action: "Poner límite al lenguaje soez y exigir respeto mutuo.",
+        bodyAdvice: "Mirada firme, voz clara y llamado al respeto mutuo entre oficios sin recurrir a insultos ni amenazas.",
+        quote: "Amenazarnos e insultarnos no despeja el corredor. Somos profesionales; hablemos con respeto o llamamos al jefe de frente."
+      },
+      sadness: {
+        feeling: "Tristeza de ver división y hostilidad entre compañeros de obra.",
+        action: "Apelar a la empatía y al trabajo colaborativo en la losa.",
+        bodyAdvice: "Tomo un momento de silencio, miro a los compañeros a los ojos y propongo cooperar para salir al descanso en paz.",
+        quote: "Es lamentable que cuadrillas del mismo proyecto choquen así. Organicemos el espacio para que ambos equipos podamos almorzar en paz."
+      },
+      joy: {
+        feeling: "Alivio de que la sensatez venció al impulso violento.",
+        action: "Agradecer la disposición de despejar y ayudarse entre cuadrillas.",
+        bodyAdvice: "Choco manos con el oficial eléctrico, ayudo a mover un carrete y celebro haber superado el roce como equipo.",
+        quote: "Qué alivio que pudimos frenar la discusión a tiempo. Trabajando coordinados ganamos tiempo todos."
+      }
+    },
     quotes: {
       anger: "Doy un paso atrás y abro las manos. No vamos a convertir la obra en una pelea callejera. Despejemos el pasillo y pasemos por turnos.",
       fear: "Una riña en una losa con desniveles puede terminar en una caída fatal. Paremos ya, respiremos hondo y coordinemos la logística.",
@@ -1259,6 +1449,44 @@ const M = [
     fact: "Acabo de recibir una notificación familiar urgente justo antes de realizar la maniobra crítica de izaje con la grúa.",
     need: "solicito conversar en privado con mi supervisor para pausar mi labor en la grúa y coordinar un operador de relevo seguro.",
     support: "Gestión Humana, Bienestar y Línea de Orientación Psicosocial Seguros Bolívar.",
+    responses: {
+      fear: {
+        feeling: "Pánico de fallar en la maniobra de 2 toneladas por la angustia.",
+        action: "Entregar los mandos y pedir relevo inmediato por seguridad.",
+        bodyAdvice: "Suelto las palancas del radiomando, apoyo pies firmes en el suelo, coloco el seguro y solicito relevo a SST.",
+        quote: "Tengo una carga suspendida de 2 toneladas y acabo de recibir una noticia familiar crítica que me tiene temblando. Por seguridad, pido mi relevo inmediato."
+      },
+      anxiety: {
+        feeling: "Taquicardia y manos temblorosas por la amenaza de desalojo.",
+        action: "Detener la maniobra y respirar en privado para estabilizarme.",
+        bodyAdvice: "Bloqueo el control de la grúa, me aparto del área de izaje y aplico respiración 4-4-4 para bajar las pulsaciones.",
+        quote: "Siento el pecho desbordado y no puedo garantizar la precisión del izaje. Me aparto de los mandos y solicito apoyo temporal del relevo."
+      },
+      sadness: {
+        feeling: "Dolor y desesperanza por la crisis de vivienda de mi hogar.",
+        action: "Acudir a Bienestar y desahogarme con el supervisor a tiempo.",
+        bodyAdvice: "Tomo asiento en el campamento, recibo un vaso de agua y converso con Bienestar para canalizar la asesoría social.",
+        quote: "Esta situación económica me sobrepasa en este minuto. Hablo con el supervisor para desahogarme y no operar la grúa con la mente ida."
+      },
+      anger: {
+        feeling: "Rabia contra la injusticia del desalojo en plena jornada.",
+        action: "No permitir que la ira altere la precisión del izaje aéreo.",
+        bodyAdvice: "Aflojo las manos, abro las palmas, respiro profundo y delego la carga pesada para no operar con furia contenida.",
+        quote: "Tengo mucha rabia con esta situación en mi casa, pero no puedo mezclarla con el gancho de la grúa. Entrego el mando a un compañero."
+      },
+      disgust: {
+        feeling: "Incomodidad de sentirme vulnerable ante una tarea de alto riesgo.",
+        action: "Reconocer mi límite humano y ejercer el derecho de parada.",
+        bodyAdvice: "Postura digna, comunico con franqueza que la condición psicológica no es apta para izaje crítico y tramito soporte.",
+        quote: "Reconozco que no estoy apto para una tarea de alto riesgo. Ejerzo mi derecho a detenerme y buscar acompañamiento en Bienestar."
+      },
+      joy: {
+        feeling: "Paz de priorizar la vida colectiva sobre el orgullo de operario.",
+        action: "Valorar que la empresa respalde el relevo sin represalias.",
+        bodyAdvice: "Respiro aliviado al ver que el compañero asume el gancho y agradezco la comprensión de la cuadrilla.",
+        quote: "Valoro tener la madurez de frenar a tiempo. La seguridad de todos en la obra está por encima del orgullo personal."
+      }
+    },
     quotes: {
       fear: "Tengo una carga suspendida de 2 toneladas y acabo de recibir una noticia familiar crítica que me tiene temblando. Por seguridad, pido mi relevo inmediato.",
       anxiety: "Siento el pecho desbordado y no puedo garantizar la precisión del izaje. Me aparto de los mandos y solicito apoyo temporal del relevo.",
@@ -1283,6 +1511,44 @@ const M = [
     fact: "Preparé una propuesta ergonómica para reducir sobreesfuerzo osteomuscular pero fue descalificada sin análisis técnico.",
     need: "solicito 3 minutos con el oficial para mostrar el croquis y evaluar si podemos probarlo en un tramo piloto seguro.",
     support: "Reunión de 5 minutos de inicio de jornada y buzón de mejora continua de SST.",
+    responses: {
+      anger: {
+        feeling: "Indignación de que llamen «maricada» al cuidado de la espalda.",
+        action: "Defender la propuesta con datos técnicos de salud y rendimiento.",
+        bodyAdvice: "Me paro erguido, suelto el bulto en el piso, mantengo contacto visual respetuoso y pido tres minutos de atención.",
+        quote: "Propuse esta rampa para que ninguno termine con una hernia o el manguito rotador lesionado. Le pido tres minutos de respeto para evaluarla."
+      },
+      disgust: {
+        feeling: "Asco y rechazo al machismo que desprecia la salud del trabajador.",
+        action: "Elevar la iniciativa al comité de SST sin entrar en burlas.",
+        bodyAdvice: "Postura firme, no respondo al insulto y radico el croquis de rodillos en el buzón de mejora y reunión técnica.",
+        quote: "Burlarse de una iniciativa de salud no es profesional. Presento el croquis en la reunión técnica de SST para validarlo formalmente."
+      },
+      sadness: {
+        feeling: "Decepción de que los propios compañeros rechacen aliviarse la carga.",
+        action: "Persistir con paciencia demostrando el beneficio mutuo.",
+        bodyAdvice: "Respiro con serenidad, no me aíslo y busco aliados en la cuadrilla que también sufran de dolores lumbares.",
+        quote: "Me desmotiva que rechacen una idea de cuidado sin verla, pero no me callo. La ergonomía nos beneficia a todos en la cuadrilla."
+      },
+      anxiety: {
+        feeling: "Miedo al ridículo o a quedar marcado como el que no rinde.",
+        action: "Argumentar con tranquilidad que la rampa ahorra 40 minutos.",
+        bodyAdvice: "Relajo los hombros, apoyo los pies y explico los tiempos y movimientos con sencillez y respeto.",
+        quote: "No me apresuro ni me enojo. Demuestro con hechos cómo la rampa ahorra 40 minutos de descargue y protege la columna del equipo."
+      },
+      fear: {
+        feeling: "Temor a sufrir una hernia discal cargando 300 bultos a pulso.",
+        action: "Insistir en mecanismos de ayuda mecánica para el cargue pesado.",
+        bodyAdvice: "Adopto postura de levantamiento ergonómico con rodillas flexionadas e insisto en el protocolo de cargas de SST.",
+        quote: "Cargar a pulso 300 bultos bajo el sol es una lesión segura. Insisto en revisar métodos mecánicos de descargue con SST."
+      },
+      joy: {
+        feeling: "Seguridad y entusiasmo en que la innovación mejorará la cuadrilla.",
+        action: "Invitar al oficial a ensayar con 10 bultos para comparar.",
+        bodyAdvice: "Sonrisa abierta, tomo un rodillo para mostrar el rodamiento fácil y contagio entusiasmo constructivo al grupo.",
+        quote: "Confío en mi propuesta. Hablemos con el residente para hacer una prueba piloto con diez bultos y comparar resultados."
+      }
+    },
     quotes: {
       anger: "Propuse esta rampa para que ninguno termine con una hernia o el manguito rotador lesionado. Le pido tres minutos de respeto para evaluarla.",
       disgust: "Burlarse de una iniciativa de salud no es profesional. Presento el croquis en la reunión técnica de SST para validarlo formalmente.",
@@ -1307,6 +1573,44 @@ const M = [
     fact: "Presento síntomas físicos evidentes de golpe de calor y fatiga extrema en labor de altura perimetral.",
     need: "requiero una pausa de hidratación a la sombra y valoración de signos vitales por SST antes de reanudar labor en altura.",
     support: "Protocolo de Prevención de Fatiga y Deshidratación (Res. 2764 de 2022 / SST).",
+    responses: {
+      fear: {
+        feeling: "Pánico de desmayarme y precipitarme al vacío a 20 metros.",
+        action: "Bajar inmediatamente del andamio y reportar golpe de calor.",
+        bodyAdvice: "Me agarro con ambas manos a la baranda interior, desciendo peldaño a peldaño con calma y me coloco bajo sombra.",
+        quote: "Tengo visión borrosa y temblor en las piernas. A 20 metros de altura esto es riesgo de desmayo y caída; bajo ya a hidratarme y reporto a SST."
+      },
+      anger: {
+        feeling: "Rabia de que el capataz amenace con reportarme por estar mareado.",
+        action: "Anteponer el derecho a la vida al afán de la interventoría.",
+        bodyAdvice: "Desciendo firme, aflojo el barboquejo, busco agua fresca y ratifico que ningún trabajo justifica un síncope.",
+        quote: "Mi vida y mi salud están por encima del afán de la interventoría. Desciendo del andamio de forma segura y tomo mi pausa de rehidratación."
+      },
+      anxiety: {
+        feeling: "Angustia de perder el trabajo si bajo antes de terminar el paño.",
+        action: "Calmarme y entender que la ley respalda la protección física.",
+        bodyAdvice: "Me siento a la sombra, bebo agua a sorbos pequeños y pido al paramédico de obra toma de signos vitales.",
+        quote: "La presión por entregar no puede provocar un golpe de calor fatal. Hago una pausa controlada a la sombra y me tomo los signos vitales."
+      },
+      disgust: {
+        feeling: "Indignación de que consideren «flojera» la deshidratación severa.",
+        action: "Exigir el cumplimiento de la resolución de pausas e hidratación.",
+        bodyAdvice: "Me hidrato dignamente y recuerdo con respeto al capataz la Resolución 2764 de factores de riesgo psicosocial y físico.",
+        quote: "Amenazarme con reportes por cuidar mi salud no es ético. Aplico el protocolo de pausas activas e hidratación obligatoria."
+      },
+      sadness: {
+        feeling: "Tristeza al ver que la prisa ciega el valor humano de la cuadrilla.",
+        action: "Recordar que la meta más importante es regresar vivo a casa.",
+        bodyAdvice: "Pausa reflexiva, respiro profundo con las manos en el pecho y me permito reponer sales minerales sin prisa.",
+        quote: "Es duro que no valoren el agotamiento del cuerpo. Me protejo a mí mismo primero para poder volver a casa sano con mi familia."
+      },
+      joy: {
+        feeling: "Gratitud por haber escuchado las señales del cuerpo a tiempo.",
+        action: "Valorar la vida y prevenir un rescate en altura en fachada.",
+        bodyAdvice: "Sonrío aliviado al sentir el aire fresco, recupero el pulso y agradezco a SST la atención oportuna en la enfermería.",
+        quote: "Haber escuchado a mi cuerpo a tiempo me salvó de un accidente grave en fachada. La salud es lo primero."
+      }
+    },
     quotes: {
       fear: "Tengo visión borrosa y temblor en las piernas. A 20 metros de altura esto es riesgo de desmayo y caída; bajo ya a hidratarme y reporto a SST.",
       anger: "Mi vida y mi salud están por encima del afán de la interventoría. Desciendo del andamio de forma segura y tomo mi pausa de rehidratación.",
@@ -1331,6 +1635,44 @@ const M = [
     fact: "Concluimos la fundición a tiempo gracias a la cultura preventiva y a que no nos callamos ante el peligro detectado.",
     need: "celebremos el compromiso mutuo, dejemos el área ordenada y mantengamos este estándar de autocuidado mañana.",
     support: "Cultura de Reconocimiento Positivo y Cuidado Colectivo de Cuadrilla.",
+    responses: {
+      joy: {
+        feeling: "Alegría y orgullo de culminar la placa sin un solo lesionado.",
+        action: "Celebrar con el equipo y reforzar el hábito del cuidado mutuo.",
+        bodyAdvice: "Choco manos con mis compañeros, comparto sonrisas abiertas y reconozco en público a quien alertó del riesgo en la mañana.",
+        quote: "¡Felicitaciones a toda la cuadrilla! Hoy demostramos que cuidarnos mutuamente y avisar a tiempo no retrasa la obra, sino que garantiza que todos volvamos sanos a casa."
+      },
+      sadness: {
+        feeling: "Nostalgia y emoción al ver que tanto sacrificio valió la pena.",
+        action: "Agradecer la empatía y la protección entre compañeros lejanos.",
+        bodyAdvice: "Respiro con gratitud, saludo fraternal a los veteranos y recuerdo que este esfuerzo es por el bienestar de nuestras familias.",
+        quote: "Tras días pesados y lejos del hogar, reconforta mucho que valoren nuestro cuidado mutuo. Sigamos con esta misma empatía mañana."
+      },
+      anxiety: {
+        feeling: "Descompresión y alivio tras horas de máxima tensión técnica.",
+        action: "Soltar el estrés del vaciado y dejar el frente impecable.",
+        bodyAdvice: "Suelto los hombros con una exhalación profunda, recojo la herramienta con serenidad y disfruto el fin de turno.",
+        quote: "Qué alivio terminar este vaciado crítico sin un solo lesionado. Mantengamos este estándar de comunicación abierta."
+      },
+      fear: {
+        feeling: "Respeto por lo cerca que estuvimos de una falla en la mañana.",
+        action: "Asimilar la lección aprendida para no bajar la guardia nunca.",
+        bodyAdvice: "Verifico el orden del frente, comento con el compañero lo aprendido y reafirmo la importancia de revisar puntales.",
+        quote: "El susto del puntal en la mañana nos enseñó que la prevención paga. Gracias al equipo por no ignorar el peligro."
+      },
+      anger: {
+        feeling: "Satisfacción de que superamos los roces del turno sin rencores.",
+        action: "Cerrar la jornada en paz reconociendo el aporte de cada oficio.",
+        bodyAdvice: "Abrazo sincero o palmada de respeto a quienes discutieron en la mañana, sellando el compañerismo de la obra.",
+        quote: "Tuvimos momentos de tensión durante el turno, pero supimos anteponer la seguridad y el compañerismo. Bien jugado, cuadrilla."
+      },
+      disgust: {
+        feeling: "Dignidad y orgullo del trabajo bien terminado y seguro.",
+        action: "Demostrar que la calidad se logra con respeto y método.",
+        bodyAdvice: "Me quito el casco con satisfacción, contemplo la losa perfectamente pulida y celebro la honestidad profesional.",
+        quote: "Corregimos lo que estaba mal calzado y cerramos con orgullo y dignidad técnica. Así es como se construye país con seguridad."
+      }
+    },
     quotes: {
       joy: "¡Felicitaciones a toda la cuadrilla! Hoy demostramos que cuidarnos mutuamente y avisar a tiempo no retrasa la obra, sino que garantiza que todos volvamos sanos a casa.",
       sadness: "Tras días pesados y lejos del hogar, reconforta mucho que valoren nuestro cuidado mutuo. Sigamos con esta misma empatía mañana.",
@@ -1355,6 +1697,44 @@ const M = [
     fact: "Detecté una omisión técnica en el amarre de estribos antes de la fundición y decido reportarlo con honestidad y ética profesional.",
     need: "asumo la responsabilidad con transparencia, solicito apoyo técnico para desencofrar temprano y corregir antes de que llegue el mixer.",
     support: "Reunión de cierre técnico, aprendizaje constructivo sin culpabilización y aseguramiento de calidad.",
+    responses: {
+      fear: {
+        feeling: "Temor a la reacción del grupo, pero mayor miedo a una falla sísmica.",
+        action: "Levantar la mano con valentía y presentar la corrección técnica.",
+        bodyAdvice: "Miro de frente al oficial, respiro hondo, muestro el croquis del eje C-4 y solicito desencofrar temprano para corregir.",
+        quote: "Oficial, prefiero pasar la pena ahora que cargar con una falla estructural: en la columna C-4 omití dos estribos. Asumo el error y mañana a primera hora desmonto y corrijo antes de fundir."
+      },
+      anxiety: {
+        feeling: "Nervios y nudo en la garganta antes de admitir la equivocación.",
+        action: "Superar la vergüenza y priorizar la ética sobre la apariencia.",
+        bodyAdvice: "Apoyo ambos pies firmes, tomo aire y digo la verdad sin rodeos ni justificaciones vacías.",
+        quote: "Reconocer un error da nervios, pero la ética y la vida de quienes habitarán este edificio están primero. Mañana a las 6:00 lo subsano con el equipo."
+      },
+      sadness: {
+        feeling: "Pesar por haberme descuidado al final de una jornada tan dura.",
+        action: "Asumir con humildad el aprendizaje sin castigarme de más.",
+        bodyAdvice: "Postura humilde y serena, acepto la observación del maestro y me comprometo a liderar la rectificación en la mañana.",
+        quote: "Me da tristeza haberme descuidado al final del día, pero pongo la cara con transparencia y respeto hacia la obra."
+      },
+      anger: {
+        feeling: "Rabia conmigo mismo por la distracción, pero sin ocultarlo.",
+        action: "Transformar la molestia en determinación para dejarlo perfecto.",
+        bodyAdvice: "Aflojo las manos, canalizo la energía hacia la solución y coordino el alistamiento del acero de refuerzo necesario.",
+        quote: "Me da rabia la distracción, pero no me escondo. Reporto el hallazgo con claridad y acordamos el plan de acción inmediato."
+      },
+      disgust: {
+        feeling: "Rechazo absoluto a la cultura del engaño y de tapar chambonadas.",
+        action: "Dar testimonio de integridad profesional ante los aprendices.",
+        bodyAdvice: "Cabeza en alto con honestidad, defiendo la transparencia como valor sagrado de la cuadrilla de construcción.",
+        quote: "Ocultar un fallo técnico sería deshonesto y peligroso. Lo comunico abiertamente y doy ejemplo de cultura de calidad."
+      },
+      joy: {
+        feeling: "Paz de conciencia y tranquilidad por haber hecho lo correcto.",
+        action: "Sentir el respaldo de un equipo donde no se castiga la verdad.",
+        bodyAdvice: "Sonrío con serenidad, siento el peso que se va del pecho y firmo la bitácora con la tranquilidad de quien cuida vidas.",
+        quote: "Siento paz de haber hablado con la verdad. Esta cuadrilla se construye sobre la honestidad técnica y el respaldo mutuo."
+      }
+    },
     quotes: {
       fear: "Oficial, prefiero pasar la pena ahora que cargar con una falla estructural: en la columna C-4 omití dos estribos. Asumo el error y mañana a primera hora desmonto y corrijo antes de fundir.",
       anxiety: "Reconocer un error da nervios, pero la ética y la vida de quienes habitarán este edificio están primero. Mañana a las 6:00 lo subsano con el equipo.",
@@ -1745,19 +2125,22 @@ function loadMission() {
   setDialogue('Mi situación en obra', [m.trigger || m.situation], true);
   updateHUD();
 
-  // TARJETAS DIRECTAS DE EMOCIÓN
+  // TARJETAS DE EMOCIÓN PERSONALIZADAS A ESTA SITUACIÓN EN OBRA
   EMOTIONS.forEach((e, index) => {
+    const custom = (m.responses && m.responses[e.id]) || {};
+    const feelingText = custom.feeling || e.bodyClue;
+    const actionText = custom.action || e.purpose;
     const btn = document.createElement('button');
     btn.className = 'choice';
     btn.dataset.emotion = e.id;
-    btn.setAttribute('aria-label', e.name + ': ' + e.bodyClue);
+    btn.setAttribute('aria-label', e.name + ': ' + feelingText);
     btn.innerHTML = `
       <div class="choice-header">
         <span class="choice-badge-circle" style="background:${e.color}">${EMOTION_SVGS[e.id]}</span>
         <span class="choice-title">${e.name}</span>
       </div>
-      <div class="choice-body-clue">${e.bodyClue}</div>
-      <div class="choice-purpose">${e.purpose}</div>
+      <div class="choice-body-clue">${feelingText}</div>
+      <div class="choice-purpose">${actionText}</div>
     `;
     btn.onclick = () => choose(index);
     $('choices').append(btn);
@@ -1799,9 +2182,11 @@ function showConsequence() {
   $('resultBadge').style.color = '#FFFFFF';
   $('resultBadge').style.background = 'rgba(255, 255, 255, 0.08)';
 
-  // TEXTOS DE RESOLUCIÓN EN OBRA
-  $('resultText').textContent = e.advice;
-  const fullAssertiveScript = (m.quotes && m.quotes[e.id]) || e.words;
+  // TEXTOS DE RESOLUCIÓN PERSONALIZADA EN OBRA
+  const custom = (m.responses && m.responses[e.id]) || {};
+  const situationAdvice = custom.bodyAdvice || e.advice;
+  const fullAssertiveScript = custom.quote || (m.quotes && m.quotes[e.id]) || e.words;
+  $('resultText').textContent = situationAdvice;
   $('assertiveQuoteText').textContent = '«' + fullAssertiveScript + '»';
   $('supportSiteText').textContent = m.support;
   if ($('resolutionSpeaker')) {
@@ -1917,7 +2302,9 @@ function showReport() {
     const emotion = emotionFor(r);
     const article = document.createElement('article');
     article.className = 'reportItem';
-    const script = (m.quotes && m.quotes[r.emotion]) || emotion.words;
+    const custom = (m.responses && m.responses[r.emotion]) || {};
+    const script = custom.quote || (m.quotes && m.quotes[r.emotion]) || emotion.words;
+    const advice = custom.bodyAdvice || emotion.advice;
     article.innerHTML = `
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
         <h3 style="margin:0;">${i + 1}. ${m.title} · <span style="color:#93C5FD;">${m.time}</span></h3>
@@ -1925,7 +2312,7 @@ function showReport() {
       </div>
       ${m.frente ? `<div style="font-size:9.5px;color:#38BDF8;font-weight:750;margin-bottom:3px;">${m.frente}</div>` : ''}
       <p><strong>Labor:</strong> ${m.task || m.situation}</p>
-      <p><strong>Cómo actuar:</strong> ${emotion.advice}</p>
+      <p><strong>Cómo actuar:</strong> ${advice}</p>
       <p style="color:#A7F3D0;"><strong>Resolución asertiva:</strong> «${script}»</p>
     `;
     $('reportList').append(article);
