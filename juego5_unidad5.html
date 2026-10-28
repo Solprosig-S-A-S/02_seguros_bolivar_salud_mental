@@ -860,6 +860,124 @@ canvas {
   color: var(--yellow);
   margin: 16px auto;
 }
+
+/* ====================================================================
+   OPTIMIZACIÓN RESPONSIVA MÓVIL: VISTA 3D DESPEJADA Y HERO VISUAL
+   ==================================================================== */
+@media (max-width: 600px) {
+  #scene {
+    flex: 1 1 0 !important;
+    min-height: 48vh !important;
+  }
+  /* Despejar la escena 3D en móvil: ocultar botón que tapa caras y el globo redundante */
+  #bubble.situation-overview,
+  #inspectBtn {
+    display: none !important;
+  }
+  #bubble {
+    top: 36px !important;
+    left: 8px !important;
+    right: 8px !important;
+    padding: 5px 8px !important;
+    border-radius: 9px !important;
+    font-size: 11px !important;
+  }
+  #speech {
+    font-size: 11px !important;
+    line-height: 1.25 !important;
+    margin: 2px 0 4px !important;
+  }
+  #talkBtn {
+    bottom: 6px !important;
+    left: 8px !important;
+    padding: 3px 8px !important;
+    min-height: 26px !important;
+    font-size: 9.5px !important;
+  }
+  #panel {
+    max-height: 48vh !important;
+    padding: 6px 10px calc(8px + env(safe-area-inset-bottom)) !important;
+  }
+  .situation-header-row {
+    margin-bottom: 2px !important;
+  }
+  .situation-frente-badge,
+  .situation-worker-pill {
+    font-size: 8.5px !important;
+    padding: 2px 6px !important;
+  }
+  #missionTitle {
+    font-size: 12.5px !important;
+    line-height: 1.25 !important;
+    margin: 0 0 4px 0 !important;
+  }
+  .situation-context-box {
+    padding: 4px 7px !important;
+    margin-bottom: 4px !important;
+    gap: 2px !important;
+    border-left-width: 2.5px !important;
+  }
+  .situation-task-text {
+    font-size: 9.5px !important;
+    line-height: 1.22 !important;
+  }
+  .situation-task-text strong {
+    font-size: 8.5px !important;
+  }
+  .situation-trigger-text {
+    font-size: 10px !important;
+    line-height: 1.22 !important;
+  }
+  .situation-trigger-text strong {
+    font-size: 8.5px !important;
+  }
+  #question {
+    font-size: 10.5px !important;
+    margin: 0 0 5px 0 !important;
+    line-height: 1.2 !important;
+  }
+  .choices {
+    gap: 4px !important;
+  }
+  .choice {
+    padding: 4px 6px !important;
+    min-height: 36px !important;
+    border-radius: 7px !important;
+    gap: 1px !important;
+  }
+  .choice-header {
+    gap: 4px !important;
+  }
+  .choice-badge-circle {
+    width: 16px !important;
+    height: 16px !important;
+    border-radius: 4px !important;
+  }
+  .choice-badge-circle svg {
+    width: 10px !important;
+    height: 10px !important;
+  }
+  .choice-title {
+    font-size: 10.5px !important;
+  }
+  .choice-body-clue {
+    font-size: 8.5px !important;
+    line-height: 1.15 !important;
+  }
+  .choice-purpose {
+    display: none !important;
+  }
+  .resolution-card {
+    padding: 6px 8px !important;
+  }
+  .res-steps {
+    gap: 3px !important;
+  }
+  .res-chip {
+    padding: 3px 6px !important;
+    font-size: 9.5px !important;
+  }
+}
 </style>
 </head>
 <body>
@@ -2177,6 +2295,7 @@ function loadMission() {
 
   // Mostrar el bocadillo de situación inicial y restaurar posición general de cámara
   $('bubble').classList.remove('consequence-mode');
+  $('bubble').classList.add('situation-overview');
   W.setup(state.mission);
   $('talkBtn').hidden = false;
   $('talkBtn').textContent = 'Escuchar situación';
@@ -2229,6 +2348,7 @@ function showConsequence() {
   if ($('talkBtn')) $('talkBtn').hidden = true;
 
   // OCULTAR EL BOCADILLO GIGANTE EN 3D
+  $('bubble').classList.remove('situation-overview');
   $('bubble').classList.add('consequence-mode');
 
   // BADGE DE LA EMOCIÓN

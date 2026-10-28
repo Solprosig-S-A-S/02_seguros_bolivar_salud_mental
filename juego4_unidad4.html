@@ -2643,6 +2643,114 @@
       }
     }
 
+    /* ====================================================================
+       OPTIMIZACIÓN RESPONSIVA MÓVIL: VISTA 3D HERO Y CONTROLES COMPACTOS
+       ==================================================================== */
+    @media(max-width:600px) {
+      #app {
+        --panel-space: 205px !important;
+      }
+
+      #scene {
+        top: 112px !important;
+        bottom: var(--panel-space) !important;
+      }
+
+      .world-controls,
+      .result-mode .world-controls,
+      .top-actions {
+        top: 76px !important;
+      }
+
+      .world-button,
+      .budget-btn {
+        height: 30px !important;
+        min-height: 30px !important;
+        font-size: 10px !important;
+        padding: 3px 8px !important;
+      }
+
+      .scene-dialogue {
+        top: 6px !important;
+        left: 8px !important;
+        right: 8px !important;
+        max-width: 320px !important;
+        padding: 5px 9px !important;
+        border-radius: 8px !important;
+        font-size: 11px !important;
+        line-height: 1.25 !important;
+        background: rgba(255, 255, 255, 0.94) !important;
+      }
+
+      .scene-dialogue strong {
+        font-size: 9px !important;
+        margin-bottom: 2px !important;
+      }
+
+      .scene-dialogue span {
+        font-size: 11px !important;
+      }
+
+      .world-hint,
+      .result-mode .world-hint {
+        bottom: calc(var(--panel-space) + 5px) !important;
+        font-size: 9px !important;
+        padding: 2px 6px !important;
+      }
+
+      .guide-panel {
+        bottom: 8px !important;
+        max-height: 44% !important;
+        border-radius: 10px !important;
+      }
+
+      .guide-top {
+        padding: 4px 8px !important;
+      }
+
+      .guide-chapter,
+      .guide-progress {
+        font-size: 9px !important;
+      }
+
+      .guide-scroll {
+        padding: 5px 8px 6px !important;
+      }
+
+      .guide-panel h2 {
+        font-size: 12px !important;
+        line-height: 1.22 !important;
+        margin: 2px 0 4px !important;
+      }
+
+      #hintBtn {
+        font-size: 9.5px !important;
+        margin-bottom: 4px !important;
+      }
+
+      .guide-options {
+        gap: 3px !important;
+      }
+
+      .answer-option {
+        min-height: 32px !important;
+        padding: 4px 7px !important;
+        font-size: 10.8px !important;
+        line-height: 1.22 !important;
+        gap: 6px !important;
+        border-radius: 7px !important;
+      }
+
+      .answer-letter {
+        width: 19px !important;
+        height: 19px !important;
+        min-width: 19px !important;
+        font-size: 10px !important;
+        font-weight: 800 !important;
+        border-radius: 4px !important;
+      }
+    }
+
     /* Misma estructura visual de portada y estaciones que juego3.html. */
     :root {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif

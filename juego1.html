@@ -1190,6 +1190,89 @@
     .teaching-single-text { font-size: 14px; line-height: 1.4; }
     .adventure-app.is-travelling .floating-response-deck,
     .adventure-app.is-travelling .character-speech-bubble { visibility: hidden; }
+
+    @media (max-width: 600px) {
+      .character-speech-bubble {
+        top: 54px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        width: calc(100% - 20px) !important;
+        max-width: 360px !important;
+        padding: 5px 9px !important;
+        border-radius: 10px !important;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25) !important;
+        z-index: 28 !important;
+      }
+      .character-speech-bubble::after {
+        display: none !important;
+      }
+      .bubble-speaker-header {
+        margin-bottom: 2px !important;
+      }
+      .bubble-speaker-name {
+        font-size: 9.5px !important;
+      }
+      .bubble-dialogue-text {
+        font-size: 11.5px !important;
+        line-height: 1.25 !important;
+      }
+      .dialogue-page-btn {
+        min-width: 26px !important;
+        min-height: 26px !important;
+        padding: 2px 6px !important;
+        font-size: 10px !important;
+      }
+      .replay-voice-btn {
+        min-height: 24px !important;
+        padding: 2px 6px !important;
+        font-size: 10px !important;
+      }
+      .floating-response-deck {
+        bottom: max(6px, env(safe-area-inset-bottom)) !important;
+        gap: 3px !important;
+        width: calc(100% - 16px) !important;
+      }
+      .floating-question-banner {
+        padding: 5px 8px !important;
+        border-radius: 9px !important;
+      }
+      .question-step-badge {
+        font-size: 9px !important;
+        padding: 2px 5px !important;
+      }
+      .question-prompt-text {
+        font-size: 11.8px !important;
+        line-height: 1.22 !important;
+        margin-top: 2px !important;
+      }
+      #responseBubblesList {
+        gap: 3px !important;
+      }
+      .text-response-bubble {
+        min-height: 32px !important;
+        padding: 5px 8px !important;
+        border-radius: 8px !important;
+        gap: 6px !important;
+      }
+      .bubble-letter-icon {
+        width: 20px !important;
+        height: 20px !important;
+        min-width: 20px !important;
+        font-size: 10.5px !important;
+        font-weight: 800 !important;
+        border-radius: 5px !important;
+      }
+      .bubble-message-text {
+        font-size: 11px !important;
+        line-height: 1.22 !important;
+      }
+      .decision-continue-btn {
+        min-height: 36px !important;
+        font-size: 12px !important;
+        margin-top: 4px !important;
+        padding: 6px 10px !important;
+      }
+    }
     @media (max-height: 640px) and (max-width: 599px) {
       .bubble-message-text { font-size: 13px; line-height: 1.25; }
       .text-response-bubble { padding: 6px 8px; }
