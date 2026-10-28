@@ -39,13 +39,18 @@ Bienvenido a la experiencia interactiva en 3D de **Seguros Bolívar ARL**. A tra
 ---
 
 ### 🌙 Unidad 3: Santuario de Recarga (`juego3.html`)
-* **Objetivo:** Comprender la importancia de las pausas fisiológicas, la hidratación y la desconexión laboral efectiva para evitar accidentes graves por fatiga.
-* **Cómo Jugar:**
-  1. Recorra las 4 estaciones del ciclo diario:
-     * **Estación 1 (Sombra e Hidratación):** Camine hacia la caseta protegida para refrescarse y disipar la visión borrosa causada por el calor.
-     * **Estación 2 (Bioseñalizador de Respiración):** Mantenga presionado el botón al compás del círculo que se expande y contrae (inhalar en 4, sostener en 7, exhalar en 8) para regular el pulso cardíaco.
-     * **Estación 3 (Casillero de Desconexión):** Al terminar la jornada, marque el checklist para guardar botas, casco y silenciar los grupos de mensajería laboral.
-     * **Estación 4 (Habitación de Descanso Nocturno):** Apague la pantalla del celular y prepare un ambiente propicio para el sueño profundo reparador.
+* **Objetivo:** Comprender la importancia de las pausas fisiológicas, la hidratación y la desconexión laboral efectiva para evitar accidentes graves por fatiga o sobrecarga mental.
+* **Rutas Disponibles (4 Estaciones Táctiles e Interactivas en 3D):**
+  * **Ruta Operativa (Frente de Obra):**
+    1. *Estación 1 (Sombra e Hidratación):* Camine hacia la caseta protegida para refrescarse y disipar el desenfoque visual causado por el estrés térmico.
+    2. *Estación 2 (Biopulso 4-7-8):* Mantenga presionado el círculo interactivo durante 3 ciclos de respiración diafragmática (inhalar 4s, sostener 7s, exhalar 8s) con anillos 3D y audio guiado.
+    3. *Estación 3 (Casillero de Desconexión):* Al terminar la jornada, marque el checklist para guardar botas, casco, silenciar celular laboral y cerrar el candado.
+    4. *Estación 4 (Habitación de Descanso):* Apague la pantalla del celular (luz azul), cierre cortinas y apague la lámpara para el sueño Delta reparador.
+  * **Ruta Administrativa (Oficina y Gestión):**
+    1. *Estación 1 (Fatiga Visual y Pausa Activa):* Frente al escritorio con fatiga de pantalla y alertas de estrés, realice la pausa activa e hidratación para restaurar la agudeza visual al 100%.
+    2. *Estación 2 (Biopulso 4-7-8):* Regule el estrés y reduzca el cortisol completando los 3 ciclos diafragmáticos guiados por voz y anillos 3D.
+    3. *Estación 3 (Desconexión en Oficina - Ley 2460):* A las 17:00, organice pendientes de mañana, silencie chats laborales y cierre físicamente el computador portátil en 3D.
+    4. *Estación 4 (Habitación y Descanso Nocturno):* Ritual de higiene del sueño libre de pantallas para proteger el descanso y la recuperación mental.
 
 ---
 

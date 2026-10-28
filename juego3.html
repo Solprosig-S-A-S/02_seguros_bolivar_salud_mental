@@ -3175,71 +3175,158 @@
           if (this.station2Group) this.station2Group.visible = (stationId === 2);
           if (this.station3Group) this.station3Group.visible = (stationId === 3);
           if (this.station4Group) this.station4Group.visible = (stationId === 4);
-          var office=GameApp.isAdministrativeOffice();
-          if(this.officeGroup)this.officeGroup.visible=office;
-          if(office){
-            this.station1Group.visible=false;this.station2Group.visible=false;this.station3Group.visible=false;this.station4Group.visible=false;
-            this.playerAvatar.visible=true;
-            this.playerHatParts.forEach(function(part){part.visible=false;});
-            this.playerAvatar.scale.setScalar(1.4);
-            document.getElementById('visualFatigueOverlay').className='visual-fatigue-overlay';
-            document.getElementById('touchWalkPill').classList.add('faded');
-            if(this.beaconMesh)this.beaconMesh.visible=false;if(this.targetMarkerMesh)this.targetMarkerMesh.visible=false;
-            this.officeLaptop.rotation.x=0;this.officeCloseProgress=0;this.officePhone.material.color.setHex(0x38BDF8);
-            this.officeTasks.forEach(function(task){task.material.color.setHex(0xF59E0B);});
-            
-            // Cambio real de perspectiva y escenario 3D según el paso
-            if(GameApp.currentStation===1){
-              // Paso 1: Escritorio individual de trabajo matutino (Planificación y Concentración)
-              this.officeFurniture.visible=true;
-              this.meetingFurniture.visible=false;
-              this.homeFurniture.visible=false;
-              this.playerAvatar.position.set(-1.8,0,.3);
-              this.playerAvatar.rotation.set(0,Math.PI*.7,0);
-              this.targetLookAt.set(0,1.45,-1.1);
-              this.baseTargetRadius=7.2;
-              this.targetYaw=0.22;
-              this.targetPitch=0.32;
-              this.hemiLight.color.setHex(0xE0F2FE);
-              this.sunLight.color.setHex(0xFFF7ED);
-              this.sunLight.intensity=1.2;
+          if (GameApp.workRoute === 'administrative') {
+            this.currentStationId = stationId;
+            var fatigueOverlay = document.getElementById('visualFatigueOverlay');
+            var walkHint = document.getElementById('touchWalkPill');
+            if (walkHint) walkHint.classList.add('faded');
+            if (this.beaconMesh) this.beaconMesh.visible = false;
+            if (this.targetMarkerMesh) this.targetMarkerMesh.visible = false;
+
+            if (stationId === 1) {
+              // Estación 1 Administrativa: Pantalla saturada, fatiga visual y estrés
+              if (this.officeGroup) this.officeGroup.visible = true;
+              if (this.officeFurniture) this.officeFurniture.visible = true;
+              if (this.meetingFurniture) this.meetingFurniture.visible = false;
+              if (this.homeFurniture) this.homeFurniture.visible = false;
+              if (this.station1Group) this.station1Group.visible = false;
+              if (this.station2Group) this.station2Group.visible = false;
+              if (this.station3Group) this.station3Group.visible = false;
+              if (this.station4Group) this.station4Group.visible = false;
+
+              if (this.playerAvatar) {
+                this.playerAvatar.visible = true;
+                this.playerHatParts.forEach(function (part) { part.visible = false; });
+                this.playerAvatar.scale.setScalar(1.4);
+                this.playerAvatar.position.set(-1.8, 0, 0.3);
+                this.playerAvatar.rotation.set(0, Math.PI * 0.7, 0);
+                this.playerTargetPos.copy(this.playerAvatar.position);
+              }
+
+              // Efecto visual real de fatiga y estrés (desenfoque de pantalla y alerta)
+              if (fatigueOverlay) fatigueOverlay.className = 'visual-fatigue-overlay active';
+
+              if (this.officePhone) this.officePhone.material.color.setHex(0xEF4444);
+              if (this.officeTasks) {
+                this.officeTasks.forEach(function (task) { task.material.color.setHex(0xEF4444); });
+              }
+              if (this.officeLaptop) {
+                this.officeLaptop.rotation.x = 0;
+                this.officeCloseProgress = 0;
+              }
+              this.targetLookAt.set(0, 1.45, -1.1);
+              this.baseTargetRadius = 7.2;
+              this.targetYaw = 0.22;
+              this.targetPitch = 0.32;
+              if (this.hemiLight) this.hemiLight.color.setHex(0xE0F2FE);
+              if (this.sunLight) {
+                this.sunLight.color.setHex(0xFFF7ED);
+                this.sunLight.intensity = 1.2;
+              }
               this.scene.background.setHex(0x061523);
-              this.setOfficeMessage('08:00 · TU ESCRITORIO','Planifica tu bloque de concentración.');
-            } else if(GameApp.currentStation===2){
-              // Paso 2: Sala de juntas / reunión de equipo
-              this.officeFurniture.visible=false;
-              this.meetingFurniture.visible=true;
-              this.homeFurniture.visible=false;
-              this.playerAvatar.position.set(-1.4,0,.2);
-              this.playerAvatar.rotation.set(0,Math.PI*.35,0);
-              this.targetLookAt.set(0,1.15,-0.75);
-              this.baseTargetRadius=7.8;
-              this.targetYaw=-0.38;
-              this.targetPitch=0.28;
-              this.hemiLight.color.setHex(0xFDE68A);
-              this.sunLight.color.setHex(0xFACC15);
-              this.sunLight.intensity=1.0;
+              this.setOfficeMessage('FATIGA Y ESTRÉS', 'Pantalla saturada · Haz una pausa');
+              return;
+            } else if (stationId === 2) {
+              // Estación 2: Biopulso respiratorio 4-7-8 guiado
+              if (this.officeGroup) this.officeGroup.visible = false;
+              if (this.station1Group) this.station1Group.visible = false;
+              if (this.station2Group) this.station2Group.visible = true;
+              if (this.station3Group) this.station3Group.visible = false;
+              if (this.station4Group) this.station4Group.visible = false;
+
+              if (fatigueOverlay) fatigueOverlay.className = 'visual-fatigue-overlay';
+              if (this.playerAvatar) this.playerAvatar.visible = false;
+
+              this.targetLookAt.set(0, -0.65, 0);
+              this.baseTargetRadius = 6.6;
+              this.targetYaw = 0.0;
+              this.targetPitch = 0.10;
+
+              if (this.hemiLight) this.hemiLight.color.setHex(0x0E7490);
+              if (this.sunLight) {
+                this.sunLight.color.setHex(0x38BDF8);
+                this.sunLight.intensity = 0.8;
+              }
               this.scene.background.setHex(0x0B1D2A);
-              this.setOfficeMessage('SALA DE REUNIÓN','Coordina acuerdos con propósito.');
-            } else if(GameApp.currentStation===4){
-              // Paso 4: Cierre de jornada en oficina al atardecer
-              this.officeFurniture.visible=true;
-              this.meetingFurniture.visible=false;
-              this.homeFurniture.visible=false;
-              this.playerAvatar.position.set(-1.7,0,.3);
-              this.playerAvatar.rotation.set(0,Math.PI*.65,0);
-              this.targetLookAt.set(0,1.35,-1.2);
-              this.baseTargetRadius=6.5;
-              this.targetYaw=0.15;
-              this.targetPitch=0.22;
-              this.hemiLight.color.setHex(0xF97316);
-              this.sunLight.color.setHex(0xEA580C);
-              this.sunLight.intensity=0.9;
+              return;
+            } else if (stationId === 3) {
+              // Estación 3 Administrativa: Desconexión al atardecer (17:00)
+              if (this.officeGroup) this.officeGroup.visible = true;
+              if (this.officeFurniture) this.officeFurniture.visible = true;
+              if (this.meetingFurniture) this.meetingFurniture.visible = false;
+              if (this.homeFurniture) this.homeFurniture.visible = false;
+              if (this.station1Group) this.station1Group.visible = false;
+              if (this.station2Group) this.station2Group.visible = false;
+              if (this.station3Group) this.station3Group.visible = false;
+              if (this.station4Group) this.station4Group.visible = false;
+
+              if (this.playerAvatar) {
+                this.playerAvatar.visible = true;
+                this.playerHatParts.forEach(function (part) { part.visible = false; });
+                this.playerAvatar.scale.setScalar(1.4);
+                this.playerAvatar.position.set(-1.7, 0, 0.3);
+                this.playerAvatar.rotation.set(0, Math.PI * 0.65, 0);
+                this.playerTargetPos.copy(this.playerAvatar.position);
+              }
+
+              if (fatigueOverlay) fatigueOverlay.className = 'visual-fatigue-overlay';
+              if (this.officePhone) this.officePhone.material.color.setHex(0x38BDF8);
+              if (this.officeTasks) {
+                this.officeTasks.forEach(function (task) { task.material.color.setHex(0xF59E0B); });
+              }
+              if (this.officeLaptop) {
+                this.officeLaptop.rotation.x = 0;
+                this.officeCloseProgress = 0;
+              }
+              this.targetLookAt.set(0, 1.35, -1.2);
+              this.baseTargetRadius = 6.5;
+              this.targetYaw = 0.15;
+              this.targetPitch = 0.22;
+
+              if (this.hemiLight) this.hemiLight.color.setHex(0xF97316);
+              if (this.sunLight) {
+                this.sunLight.color.setHex(0xEA580C);
+                this.sunLight.intensity = 0.9;
+              }
               this.scene.background.setHex(0x111827);
-              this.setOfficeMessage('17:00 · CIERRA TU JORNADA','Apaga el equipo y sal a tiempo.');
+              this.setOfficeMessage('17:00 · CIERRA TU JORNADA', 'Pendientes · Silenciar · Cerrar laptop');
+              return;
+            } else if (stationId === 4) {
+              // Estación 4: Habitación nocturna (higiene del sueño)
+              if (this.officeGroup) this.officeGroup.visible = false;
+              if (this.station1Group) this.station1Group.visible = false;
+              if (this.station2Group) this.station2Group.visible = false;
+              if (this.station3Group) this.station3Group.visible = false;
+              if (this.station4Group) this.station4Group.visible = true;
+
+              if (fatigueOverlay) fatigueOverlay.className = 'visual-fatigue-overlay';
+
+              if (this.phoneScreenMesh) this.phoneScreenMesh.material.color.setHex(0x38BDF8);
+              if (this.curtainLeftMesh) this.curtainLeftMesh.position.x = -4.1;
+              if (this.curtainRightMesh) this.curtainRightMesh.position.x = -1.5;
+              if (this.bedsideLampLight) this.bedsideLampLight.intensity = 1.8;
+
+              this.targetLookAt.set(0, 1.0, -1.0);
+              this.baseTargetRadius = 9.2;
+              this.targetYaw = -0.65;
+              this.targetPitch = 0.32;
+
+              if (this.hemiLight) this.hemiLight.color.setHex(0x1E1B4B);
+              if (this.sunLight) {
+                this.sunLight.color.setHex(0x1E3A8A);
+                this.sunLight.intensity = 0.35;
+              }
+              if (this.ambientFog) this.ambientFog.color.setHex(0x020617);
+              this.scene.background.setHex(0x020617);
+
+              if (this.playerAvatar) {
+                this.playerAvatar.visible = true;
+                this.playerAvatar.position.set(0, 0, 1.5);
+                this.playerAvatar.rotation.set(0, Math.PI, 0);
+                this.playerTargetPos.set(0, 0, 1.5);
+              }
+              return;
             }
-            this.playerTargetPos.copy(this.playerAvatar.position);
-            return;
           }
 
           var fatigueOverlay = document.getElementById('visualFatigueOverlay');
@@ -3554,6 +3641,9 @@
           if (this.finaleGroup) this.finaleGroup.visible = false;
           if (this.lockerDoorPivot) this.lockerDoorPivot.rotation.y = -1.45;
           if (this.padlockMesh) this.padlockMesh.visible = false;
+          if (this.officeLaptop) { this.officeLaptop.rotation.x = 0; this.officeCloseProgress = 0; }
+          if (this.officePhone) this.officePhone.material.color.setHex(0x38BDF8);
+          if (this.officeTasks) this.officeTasks.forEach(function (t) { t.material.color.setHex(0xF59E0B); });
           if (this.phoneScreenMesh) this.phoneScreenMesh.material.color.setHex(0x38BDF8);
           if (this.curtainLeftMesh) this.curtainLeftMesh.position.x = -4.1;
           if (this.curtainRightMesh) this.curtainRightMesh.position.x = -1.5;
@@ -3840,9 +3930,10 @@
          4. CONTROLADOR NARRATIVO: LAS 4 ESTACIONES DE RECARGA
          ------------------------------------------------------------------ */
       var GameApp = {
-        stationCount: function(){return this.workRoute==='administrative'?5:4;},
-        isAdministrativeOffice: function(){return this.workRoute==='administrative'&&this.currentStation!==4&&this.currentStation!==5;},
-        administrativeTitles: ['PLANIFICA Y MENSAJES','REUNIÓN Y ENCARGOS','PAUSA Y RESPIRACIÓN','CIERRA TUS PENDIENTES','PREPARA TU DESCANSO'],
+        stationCount: function () { return 4; },
+        isAdministrativeOffice: function () {
+          return this.workRoute === 'administrative' && (this.currentStation === 1 || this.currentStation === 3);
+        },
         workRoute: null,
         currentStation: 1,
         score: 0,
@@ -3896,6 +3987,53 @@
                       '</div>',
             prompt: '',
             feedback: 'Habitación lista. Dormir en completa oscuridad y sin pantallas permite alcanzar el sueño profundo (fases Delta y REM), asegurando reflejos al 100% para tu siguiente turno.',
+            scoreAdd: 25,
+            batteryTarget: 100
+          }
+        ],
+
+        administrativeStationsData: [
+          {
+            id: 1,
+            location: 'FATIGA VISUAL Y PAUSA ACTIVA',
+            dialogue: '<div class="didactic-main-text">' +
+                      '<strong>Sobrecarga y fatiga visual:</strong> Horas de pantalla y mensajes continuos saturan tu visión. Haz una pausa activa e hidrátate para despejar el enfoque.' +
+                      '</div>',
+            prompt: '',
+            feedback: '¡Excelente decisión! La pausa activa y la hidratación disipan la fatiga visual de la pantalla, relajan los hombros y devuelven la claridad mental.',
+            scoreAdd: 25,
+            batteryTarget: 40
+          },
+          {
+            id: 2,
+            location: 'BIOPULSO 4-7-8 (REGULACIÓN DE ESTRÉS)',
+            dialogue: '<div class="didactic-main-text">' +
+                      '<strong>Regulación del estrés:</strong> El ritmo acelerado de correos y entregas activa el cortisol. Usa el biopulso 4-7-8 para recuperar el equilibrio.' +
+                      '</div>',
+            prompt: '',
+            feedback: 'Excelente regulación diafragmática. Respirar 4-7-8 activa el sistema parasimpático y calma la reactividad mental del trabajo administrativo.',
+            scoreAdd: 25,
+            batteryTarget: 65
+          },
+          {
+            id: 3,
+            location: 'DESCONEXIÓN EN OFICINA (LEY 2460)',
+            dialogue: '<div class="didactic-main-text">' +
+                      '<strong>Cierre de jornada (17:00):</strong> Organiza tus pendientes de mañana, silencia el chat laboral y cierra el computador para desconectarte de verdad.' +
+                      '</div>',
+            prompt: '',
+            feedback: 'Perfecto. La desconexión laboral efectiva (Ley 2460 de 2025) protege tu bienestar: cerrar el computador y silenciar chats te permite descansar sin rumiar tareas.',
+            scoreAdd: 25,
+            batteryTarget: 85
+          },
+          {
+            id: 4,
+            location: 'HABITACIÓN Y DESCANSO NOCTURNO',
+            dialogue: '<div class="didactic-main-text">' +
+                      '<strong>Higiene del sueño:</strong> Toca cada elemento para desconectar la luz azul, cerrar cortinas y apagar la lámpara.' +
+                      '</div>',
+            prompt: '',
+            feedback: 'Habitación lista. Un entorno oscuro y libre de pantallas activa la melatonina y permite un sueño reparador para despertar con energía.',
             scoreAdd: 25,
             batteryTarget: 100
           }
@@ -3996,12 +4134,15 @@
             input.addEventListener('change',function(){
               self.workRoute=this.value;
               var admin=self.workRoute==='administrative';
-              document.getElementById('routeDescription').textContent=admin?'Organiza tu jornada, practica una pausa y aprende a cerrar pendientes sin llevarte el trabajo a casa.':'Haz una pausa durante el turno, respira con calma, guarda tus elementos y prepara tu descanso.';
+              document.getElementById('routeDescription').textContent=admin?'Organiza tu jornada, alivia la fatiga visual, practica la pausa respiratoria y desconéctate a tiempo.':'Haz una pausa durante el turno, respira con calma, guarda tus elementos y prepara tu descanso.';
               routeRules.innerHTML=(admin?[
-                ['1. Organiza el tiempo','Prioridades, concentración y pausas.'],['2. Respira sin afán','Tres ciclos guiados y tu experiencia escrita.'],['3. Cierra la jornada','Pendientes con plan, horario y computador cerrado.'],['4. Protege tu descanso','Notificaciones de trabajo y tiempo personal.']
+                ['1. Pausa y fatiga visual','Alivia la saturación de pantalla e hidrátate.'],
+                ['2. Biopulso 4-7-8','Regula el estrés con 3 ciclos de respiración.'],
+                ['3. Desconexión en oficina','Prioriza pendientes, silencia chats y cierra el laptop.'],
+                ['4. Higiene del sueño','Prepara la habitación y descansa sin pantallas.']
               ]:[['1. Sombra e hidratación','Camina a la caseta y bebe agua.'],['2. Respiración guiada','Haz una pausa y cuenta cómo te sentiste.'],['3. Desconexión del turno','Guarda tus elementos en el gabinete.'],['4. Descanso','Prepara la habitación y deja las pantallas.']]).map(function(rule){return '<div class="rule-item"><div class="rule-info"><h4>'+rule[0]+'</h4><p>'+rule[1]+'</p></div></div>';}).join('');
               self.dom.startBtn.disabled=false;self.dom.startBtn.style.opacity='1';
-              document.querySelector('.celebration-seal span:last-child').textContent=admin?'Tiempo organizado':'Hidratación';
+              document.querySelector('.celebration-seal span:last-child').textContent=admin?'Pausa activa':'Hidratación';
             });
           });
 
@@ -4080,18 +4221,14 @@
           document.getElementById('breathingReflection').hidden = true;
           CalmGuide.cancel();
           this.currentStation = stationNum;
-          var sceneStation=this.workRoute==='administrative'?(stationNum===3?2:stationNum===5?4:stationNum):stationNum;
-          document.getElementById('voiceGuideBtn').style.display=(this.workRoute==='administrative'?stationNum===3:stationNum===2)?'':'none';
+          var sceneStation = stationNum;
+          document.getElementById('voiceGuideBtn').style.display = (stationNum === 2) ? '' : 'none';
           this.stationActive = true;
           var appRoot = document.getElementById('rechargeApp');
           if (appRoot) appRoot.classList.remove('finale-mode');
-          var data = Object.assign({},this.stationsData[(sceneStation===2?2:sceneStation===4?4:1)-1]);
-          if(this.workRoute!=='administrative')data=Object.assign({},this.stationsData[stationNum-1]);
-          else{
-            data.location=this.administrativeTitles[stationNum-1];
-            data.scoreAdd=20;data.batteryTarget=Math.round(15+85*stationNum/5);
-            data.feedback=stationNum===5?'Preparaste tu espacio de descanso y dejaste las notificaciones laborales fuera de tu tiempo personal.':'Completaste esta parte de tu jornada. Avanza a tu ritmo.';
-          }
+
+          var dataList = (this.workRoute === 'administrative' ? this.administrativeStationsData : this.stationsData);
+          var data = Object.assign({}, dataList[stationNum - 1]);
 
           // Limpiar feedback inline previo
           if (this.dom.stationFeedbackInline) {
@@ -4099,18 +4236,12 @@
             this.dom.stationFeedbackInline.textContent = '';
           }
 
-          this.dom.stationTag.textContent = 'PASO ' + stationNum + ' DE '+this.stationCount();
-          this.dom.stepChip.textContent = 'PASO ' + stationNum + ' DE '+this.stationCount();
+          this.dom.stationTag.textContent = 'PASO ' + stationNum + ' DE ' + this.stationCount();
+          this.dom.stepChip.textContent = 'PASO ' + stationNum + ' DE ' + this.stationCount();
           this.dom.locationLabel.textContent = data.location;
           this.dom.stationCard.classList.remove('station-complete');
-          this.dom.stationDialogue.style.display = (this.workRoute==='administrative'?stationNum===3:stationNum===2) ? 'none' : '';
-          this.dom.stationDialogue.textContent = [
-            'Lleva al trabajador a la caseta y bebe agua.',
-            'Mantén el círculo durante los tres ciclos.',
-            'Guarda tus cosas y silencia el trabajo.',
-            'Prepara la habitación para descansar.'
-          ][stationNum - 1];
-          if(this.workRoute==='administrative')this.dom.stationDialogue.textContent=this.administrativeTitles[stationNum-1];
+          this.dom.stationDialogue.style.display = (stationNum === 2) ? 'none' : '';
+          this.dom.stationDialogue.innerHTML = data.dialogue;
           this.dom.stationPrompt.textContent = data.prompt || '';
           this.dom.stationPrompt.style.display = data.prompt ? 'block' : 'none';
 
@@ -4119,25 +4250,64 @@
 
           // Construir controles interactivos de la estación
           this.renderStationControls(sceneStation, data);
-          CalmGuide.station(this.workRoute==='administrative'?(stationNum===3?2:0):stationNum);
+          CalmGuide.station(stationNum);
         },
 
         renderStationControls: function (stationNum, data) {
           var self = this;
           var zone = this.dom.actionZone;
           zone.innerHTML = '';
-          if(this.isAdministrativeOffice()){
-            this.renderAdministrativeDecisions(this.currentStation,data);return;
-          }
 
           if (stationNum === 1) {
-            // Estación 1: Mover al trabajador hacia la caseta con el dedo o botón
-            var btn = document.createElement('button');
-            btn.className = 'action-btn-primary';
-            btn.innerHTML = [
-              '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>',
-              '<span>Ir a la caseta y beber</span>'
-            ].join('');
+            if (this.workRoute === 'administrative') {
+              // Estación 1 Administrativa: Pausa activa e hidratación frente a fatiga visual
+              var btn = document.createElement('button');
+              btn.className = 'action-btn-primary';
+              btn.innerHTML = [
+                '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>',
+                '<span>Tomar agua y hacer pausa activa</span>'
+              ].join('');
+
+              btn.addEventListener('click', function () {
+                if (!self.stationActive) return;
+                self.stationActive = false;
+                btn.style.pointerEvents = 'none';
+
+                // Disipar la fatiga visual de la pantalla
+                var fo = document.getElementById('visualFatigueOverlay');
+                if (fo) fo.className = 'visual-fatigue-overlay';
+
+                // En 3D: calmar teléfono y notas post-it
+                if (Santuario3DEngine.officePhone) Santuario3DEngine.officePhone.material.color.setHex(0x38BDF8);
+                if (Santuario3DEngine.officeTasks) {
+                  Santuario3DEngine.officeTasks.forEach(function (task) { task.material.color.setHex(0x10B981); });
+                }
+                Santuario3DEngine.setOfficeMessage('PAUSA COMPLETADA', 'Agudeza visual restablecida al 100%');
+
+                SoundEngine.playTone(520, 'sine', 0.15, 0.2);
+                setTimeout(function () { SoundEngine.playSuccess(); }, 150);
+
+                self.score += data.scoreAdd;
+                self.vitalBattery = data.batteryTarget;
+                self.updateBatteryMeter();
+                ScormAPI.setScore(self.score);
+
+                self.showInlineFeedback('¡Pausa activa completada! El enfoque visual se ha restablecido al 100%.');
+
+                setTimeout(function () {
+                  self.showFeedback(data.feedback);
+                }, 1800);
+              });
+
+              zone.appendChild(btn);
+            } else {
+              // Estación 1 Operativa: Mover al trabajador hacia la caseta con el dedo o botón
+              var btn = document.createElement('button');
+              btn.className = 'action-btn-primary';
+              btn.innerHTML = [
+                '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>',
+                '<span>Ir a la caseta y beber</span>'
+              ].join('');
 
             var completeStation1 = function () {
               if (!self.stationActive) return;
@@ -4417,64 +4587,154 @@
             zone.appendChild(container);
           }
           else if (stationNum === 3) {
-            // Estación 3: Checklist interactivo de Desconexión Laboral (Ley 2460/2025)
-            var grid = document.createElement('div');
-            grid.className = 'touch-checklist-grid';
+            if (this.workRoute === 'administrative') {
+              // Estación 3 Administrativa: Desconexión laboral en oficina (Ley 2460/2025)
+              var grid = document.createElement('div');
+              grid.className = 'touch-checklist-grid';
 
-            var steps = [
-              { id: 'helmet', text: '1. Guardar Casco', done: false },
-              { id: 'boots', text: '2. Guardar Botas', done: false },
-              { id: 'phone', text: '3. Silenciar y Guardar Celular', done: false },
-              { id: 'locker', text: '4. Cerrar Candado', done: false }
-            ];
+              var adminSteps = [
+                { id: 'plan', text: '1. Agendar pendientes de mañana', done: false },
+                { id: 'mute', text: '2. Silenciar celular y chats laborales', done: false },
+                { id: 'laptop', text: '3. Cerrar computador portátil', done: false }
+              ];
 
-            var lockerBusy=false;
-            var lockerButtons=[];
-            function refreshLockerButtons(){
-              lockerButtons.forEach(function(button,index){
-                button.disabled=lockerBusy||steps[index].done||(index>0&&!steps[index-1].done);
-              });
-            }
-            steps.forEach(function (st) {
-              var card = document.createElement('button');
-              card.type = 'button';
-              card.className = 'touch-step-card';
-              card.innerHTML = [
-                '<div class="step-check-dot"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><polyline points="20 6 9 17 4 12"></polyline></svg></div>',
-                '<span class="step-text-title">' + st.text + '</span>'
-              ].join('');
+              var adminBusy = false;
+              var adminButtons = [];
+              function refreshAdminButtons() {
+                adminButtons.forEach(function (button, index) {
+                  button.disabled = adminBusy || adminSteps[index].done || (index > 0 && !adminSteps[index - 1].done);
+                });
+              }
 
-              card.addEventListener('click', function () {
-                if (!self.stationActive || st.done || lockerBusy || card.disabled) return;
-                lockerBusy=true;refreshLockerButtons();
-                card.setAttribute('aria-busy','true');
-                card.querySelector('.step-text-title').textContent={helmet:'Guardando el casco…',boots:'Guardando las botas…',phone:'Silenciando y guardando…',locker:'Cerrando el gabinete…'}[st.id];
-                Santuario3DEngine.animateLockerStep(st.id,function(){
-                  st.done=true;lockerBusy=false;
-                  card.removeAttribute('aria-busy');
-                  card.classList.add('completed');
-                  card.querySelector('.step-text-title').textContent=st.text;
-                  refreshLockerButtons();
-                  SoundEngine.playSuccess();
-                  if (steps.every(function (s) { return s.done; })) {
-                    self.stationActive = false;
-                    self.score += data.scoreAdd;
-                    self.vitalBattery = data.batteryTarget;
-                    self.updateBatteryMeter();
-                    ScormAPI.setScore(self.score);
-                    self.showInlineFeedback('Tus cosas quedaron guardadas. El turno terminó; este tiempo es para ti.');
+              adminSteps.forEach(function (st) {
+                var card = document.createElement('button');
+                card.type = 'button';
+                card.className = 'touch-step-card';
+                card.innerHTML = [
+                  '<div class="step-check-dot"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><polyline points="20 6 9 17 4 12"></polyline></svg></div>',
+                  '<span class="step-text-title">' + st.text + '</span>'
+                ].join('');
+
+                card.addEventListener('click', function () {
+                  if (!self.stationActive || st.done || adminBusy || card.disabled) return;
+                  adminBusy = true;
+                  refreshAdminButtons();
+
+                  if (st.id === 'plan') {
+                    if (Santuario3DEngine.officeTasks) {
+                      Santuario3DEngine.officeTasks.forEach(function (task) { task.material.color.setHex(0x10B981); });
+                    }
+                    Santuario3DEngine.setOfficeMessage('PLAN CONFIRMADO', 'Pendientes organizados para mañana.');
+                    SoundEngine.playTone(480, 'sine', 0.12, 0.18);
                     setTimeout(function () {
-                      if(self.currentStation===3)self.showFeedback(data.feedback);
-                    }, 1800);
+                      st.done = true;
+                      adminBusy = false;
+                      card.classList.add('completed');
+                      refreshAdminButtons();
+                      SoundEngine.playSuccess();
+                    }, 400);
+                  } else if (st.id === 'mute') {
+                    if (Santuario3DEngine.officePhone) {
+                      Santuario3DEngine.officePhone.material.color.setHex(0x0F172A);
+                    }
+                    Santuario3DEngine.setOfficeMessage('EN SILENCIO', 'Notificaciones laborales pausadas.');
+                    SoundEngine.playTone(360, 'sine', 0.12, 0.18);
+                    setTimeout(function () {
+                      st.done = true;
+                      adminBusy = false;
+                      card.classList.add('completed');
+                      refreshAdminButtons();
+                      SoundEngine.playSuccess();
+                    }, 400);
+                  } else if (st.id === 'laptop') {
+                    Santuario3DEngine.officeCloseProgress = Math.PI / 2;
+                    Santuario3DEngine.setOfficeMessage('JORNADA CERRADA', 'Computador cerrado. Tiempo personal.');
+                    SoundEngine.playLockerLatch();
+                    setTimeout(function () {
+                      st.done = true;
+                      adminBusy = false;
+                      card.classList.add('completed');
+                      refreshAdminButtons();
+                      SoundEngine.playSuccess();
+
+                      self.stationActive = false;
+                      self.score += data.scoreAdd;
+                      self.vitalBattery = data.batteryTarget;
+                      self.updateBatteryMeter();
+                      ScormAPI.setScore(self.score);
+                      self.showInlineFeedback('Jornada cerrada. El trabajo queda en la oficina; este tiempo es para ti.');
+                      setTimeout(function () {
+                        if (self.currentStation === 3) self.showFeedback(data.feedback);
+                      }, 1800);
+                    }, 800);
                   }
                 });
-              });
 
-              lockerButtons.push(card);
-              grid.appendChild(card);
-            });
-            refreshLockerButtons();
-            zone.appendChild(grid);
+                adminButtons.push(card);
+                grid.appendChild(card);
+              });
+              refreshAdminButtons();
+              zone.appendChild(grid);
+            } else {
+              // Estación 3 Operativa: Checklist interactivo de Desconexión Laboral (Ley 2460/2025)
+              var grid = document.createElement('div');
+              grid.className = 'touch-checklist-grid';
+
+              var steps = [
+                { id: 'helmet', text: '1. Guardar Casco', done: false },
+                { id: 'boots', text: '2. Guardar Botas', done: false },
+                { id: 'phone', text: '3. Silenciar y Guardar Celular', done: false },
+                { id: 'locker', text: '4. Cerrar Candado', done: false }
+              ];
+
+              var lockerBusy = false;
+              var lockerButtons = [];
+              function refreshLockerButtons() {
+                lockerButtons.forEach(function (button, index) {
+                  button.disabled = lockerBusy || steps[index].done || (index > 0 && !steps[index - 1].done);
+                });
+              }
+              steps.forEach(function (st) {
+                var card = document.createElement('button');
+                card.type = 'button';
+                card.className = 'touch-step-card';
+                card.innerHTML = [
+                  '<div class="step-check-dot"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><polyline points="20 6 9 17 4 12"></polyline></svg></div>',
+                  '<span class="step-text-title">' + st.text + '</span>'
+                ].join('');
+
+                card.addEventListener('click', function () {
+                  if (!self.stationActive || st.done || lockerBusy || card.disabled) return;
+                  lockerBusy = true; refreshLockerButtons();
+                  card.setAttribute('aria-busy', 'true');
+                  card.querySelector('.step-text-title').textContent = { helmet: 'Guardando el casco…', boots: 'Guardando las botas…', phone: 'Silenciando y guardando…', locker: 'Cerrando el gabinete…' }[st.id];
+                  Santuario3DEngine.animateLockerStep(st.id, function () {
+                    st.done = true; lockerBusy = false;
+                    card.removeAttribute('aria-busy');
+                    card.classList.add('completed');
+                    card.querySelector('.step-text-title').textContent = st.text;
+                    refreshLockerButtons();
+                    SoundEngine.playSuccess();
+                    if (steps.every(function (s) { return s.done; })) {
+                      self.stationActive = false;
+                      self.score += data.scoreAdd;
+                      self.vitalBattery = data.batteryTarget;
+                      self.updateBatteryMeter();
+                      ScormAPI.setScore(self.score);
+                      self.showInlineFeedback('Tus cosas quedaron guardadas. El turno terminó; este tiempo es para ti.');
+                      setTimeout(function () {
+                        if (self.currentStation === 3) self.showFeedback(data.feedback);
+                      }, 1800);
+                    }
+                  });
+                });
+
+                lockerButtons.push(card);
+                grid.appendChild(card);
+              });
+              refreshLockerButtons();
+              zone.appendChild(grid);
+            }
           }
           else if (stationNum === 4) {
             // Estación 4: Ritual de Higiene del Sueño en la Habitación 3D
@@ -4536,88 +4796,6 @@
           }
         },
 
-        renderAdministrativeDecisions: function (stationNum,data) {
-          var self=this,zone=this.dom.actionZone,index=0;
-          function decision(question,good,bad,advice,title,detail,correct){
-            return {question:question,options:correct===0?[good,bad]:[bad,good],correct:correct,advice:advice,title:title,detail:detail};
-          }
-          var situationsMap={
-            1:[
-              decision('Son las 8:00. Tienes una entrega a las 11:00, correos y dos solicitudes nuevas. ¿Cómo empiezas?',
-                'Confirmo qué vence primero, separo un bloque para la entrega y acuerdo cuándo revisaré las otras solicitudes.',
-                'Respondo todo lo que llegue y dejo la entrega para cuando tenga un espacio.',
-                'Si todo se atiende al mismo tiempo, la entrega puede quedarse sin espacio. Prioriza por plazo e impacto y confirma las expectativas.',
-                '08:00 · PRIORIDAD DEFINIDA','Entrega de las 11:00 primero. Correos después.',0),
-              decision('Cada mensaje del chat te hace cambiar de tarea. ¿Qué harías?',
-                'Acuerdo momentos para revisar mensajes, reduzco avisos durante mi bloque de trabajo y mantengo el canal definido para lo urgente.',
-                'Contesto inmediatamente todos los mensajes mientras intento terminar el informe.',
-                'Estar disponible no exige interrumpir cada tarea. Acuerda cómo distinguir lo urgente de lo que puede esperar.',
-                'CONCENTRACIÓN PROTEGIDA','Chat por bloques; urgencias por el canal acordado.',0)
-            ],
-            2:[
-              decision('Te invitan a una reunión de una hora sin agenda y coincide con una entrega. ¿Qué haces?',
-                'Pregunto qué decisión se necesita y si mi presencia es indispensable. Propongo enviar el avance o participar solo en el punto que me corresponde.',
-                'Acepto la reunión completa y después recupero esa hora fuera de mi jornada.',
-                'Antes de llenar la agenda, aclara el propósito y tu aporte. Una reunión también ocupa tiempo de trabajo.',
-                'REUNIÓN CON OBJETIVO','Agenda y participación confirmadas.',0),
-              decision('Un compañero insiste en que revises algo “rapidito” y ya tienes una prioridad acordada. ¿Qué respondes?',
-                'Ahora estoy con la entrega acordada. Puedo revisarlo después de este bloque; si vence antes, confirmemos qué prioridad debemos cambiar.',
-                'Dejo mi tarea sin avisar y asumo que puedo recuperar el tiempo después.',
-                'Expresar cuándo puedes ayudar evita prometer dos entregas al mismo tiempo.',
-                'INTERRUPCIÓN COORDINADA','Ayuda con un momento concreto, sin doble compromiso.',0)
-            ],
-            4:[
-              decision('Tu jornada termina a las 17:00 y un informe sigue pendiente. ¿Cómo cierras?',
-                'Anoto qué falta, el siguiente paso y cuándo lo retomaré. Si afecta una entrega, aviso y acuerdo el nuevo plazo.',
-                'Sigo hasta terminarlo todo, aunque cada día salga más tarde.',
-                'Cerrar con un plan es distinto de abandonar un pendiente. Hazlo visible, comunica el impacto y deja un momento concreto para retomarlo.',
-                '16:50 · PENDIENTES CON PLAN','Informe: revisar datos mañana a las 08:00.',0),
-              decision('Ya dejaste el plan y avisaste al equipo. ¿Qué haces para desconectarte de verdad?',
-                'Cierro la sesión, guardo el computador y silencio las notificaciones laborales según los acuerdos de mi equipo.',
-                'Dejo el computador abierto y miro el chat laboral durante la cena por si acaso.',
-                'Revisar el chat por costumbre mantiene abierto el trabajo. Una vez coordinado el cierre, prepara tus dispositivos para respetar tu tiempo personal.',
-                'JORNADA CERRADA','Pendientes organizados. Ahora, tiempo personal.',0)
-            ]
-          };
-          var situations=situationsMap[stationNum]||situationsMap[1];
-          function draw(){
-            zone.innerHTML='';
-            var situation=situations[index];
-            self.dom.stationPrompt.style.display='block';self.dom.stationPrompt.textContent=(index+1)+' de '+situations.length+' · '+situation.question;
-            var buttons=[];
-            var reply=document.createElement('p');reply.className='drawer-text';reply.setAttribute('role','status');reply.style.margin='8px 0';
-            situation.options.forEach(function(option,choice){
-              var button=document.createElement('button');button.className='touch-step-card';button.type='button';button.style.width='100%';button.style.marginBottom='7px';button.textContent=option;buttons.push(button);
-              button.addEventListener('click',function(){
-                if(choice!==situation.correct){
-                  reply.textContent=situation.advice+' Prueba otra decisión.';
-                  if(Santuario3DEngine.officeTasks&&Santuario3DEngine.officeTasks[index])Santuario3DEngine.officeTasks[index].material.color.setHex(0xEF4444);
-                  Santuario3DEngine.setOfficeMessage('REVISA TU DECISIÓN','El tiempo y el descanso también cuentan.');
-                  SoundEngine.playTone(260,'sine',.08,.06);return;
-                }
-                buttons.forEach(function(b){b.disabled=true;});button.classList.add('completed');
-                reply.textContent=situation.detail;
-                if(Santuario3DEngine.officeTasks&&Santuario3DEngine.officeTasks[index])Santuario3DEngine.officeTasks[index].material.color.setHex(0x10B981);
-                Santuario3DEngine.setOfficeMessage(situation.title,situation.detail);
-                if(stationNum===1&&index===1&&Santuario3DEngine.officePhone)Santuario3DEngine.officePhone.material.color.setHex(0x0F172A);
-                if(stationNum===4&&index===0&&Santuario3DEngine.officePhone)Santuario3DEngine.officePhone.material.color.setHex(0x0F172A);
-                if(stationNum===4&&index===1)Santuario3DEngine.officeCloseProgress=Math.PI/2;
-                SoundEngine.playSuccess();
-                var next=document.createElement('button');next.type='button';next.className='action-btn-primary';next.textContent=index===situations.length-1?'Continuar a la siguiente estación':'Siguiente decisión';zone.appendChild(next);
-                if(stationNum===4&&index===1){
-                  next.disabled=true;next.textContent='Cerrando el computador…';
-                  setTimeout(function(){if(next.isConnected){next.disabled=false;next.textContent='Continuar a la siguiente estación';}},1200);
-                }
-                next.addEventListener('click',function(){
-                  if(index<situations.length-1){index++;draw();return;}
-                  self.stationActive=false;self.score+=data.scoreAdd;self.vitalBattery=data.batteryTarget;self.updateBatteryMeter();ScormAPI.setScore(self.score);self.advanceStation();
-                },{once:true});
-              });zone.appendChild(button);
-            });zone.appendChild(reply);
-          }
-          draw();
-        },
-
         showInlineFeedback: function (text) {
           this.dom.stationCard.classList.add('station-complete');
           if (this.dom.stationFeedbackInline) {
@@ -4664,7 +4842,7 @@
           this.breathingReflectionOpen = false;
           document.getElementById('breathingReflection').hidden = true;
           this.dom.feedbackDrawer.classList.remove('breathing-reflection');
-          document.getElementById('drawerBadgeText').textContent = this.workRoute==='administrative'?'ESTACIÓN COMPLETADA (+12,5 PTS)':'RECUPERACIÓN EFECTIVA (+25 PTS)';
+          document.getElementById('drawerBadgeText').textContent = 'RECUPERACIÓN EFECTIVA (+25 PTS)';
           if (this.dom.stationFeedbackInline) {
             this.dom.stationFeedbackInline.className = 'station-feedback-inline';
             this.dom.stationFeedbackInline.textContent = '';
@@ -4815,12 +4993,12 @@
           if(this.workRoute==='administrative'){
             this.dom.finalHeaderTag.textContent='RUTA ADMINISTRATIVA · TIEMPO Y DESCONEXIÓN';
             this.dom.finalTitle.textContent='Tu jornada tiene un cierre';
-            this.dom.finalDesc.textContent='Recorriste cinco escenarios: planificación de tareas, acuerdos en reuniones, pausa respiratoria, cierre de jornada y preparación del descanso.';
+            this.dom.finalDesc.textContent='Recorriste cuatro escenarios: fatiga visual y pausa activa, biopulso respiratorio, cierre de jornada en oficina y preparación del descanso.';
             this.dom.finalDiagnosisGrid.innerHTML=[
-              ['Organiza el día','Confirma la entrega prioritaria, reserva un bloque de concentración y acuerda qué puede esperar.'],
-              ['Protege tus pausas','Deja anotado el siguiente paso antes de parar. En la respiración, sigue un ritmo cómodo para ti.'],
-              ['Cierra pendientes con un plan','Anota qué falta, cuándo lo retomarás y a quién debes avisar. No necesitas terminarlo todo para cerrar.'],
-              ['Pon un límite al trabajo','Comunica tu horario y el canal acordado para urgencias. Cierra la sesión y silencia las notificaciones laborales durante tu descanso.']
+              ['Pausa activa y fatiga visual','Hacer pausas de hidratación y distancia de pantalla restaura la agudeza visual y previene cefaleas.'],
+              ['Biopulso 4-7-8','Tres ciclos diafragmáticos regulan el sistema nervioso parasimpático y disipan el cortisol ante la sobrecarga.'],
+              ['Cierre de jornada (Ley 2460)','Agendar pendientes, silenciar notificaciones y cerrar el laptop protege tu descanso legal y mental.'],
+              ['Higiene del sueño','Dormir en oscuridad total y sin pantallas estimula la melatonina para un descanso verdaderamente reparador.']
             ].map(function(item){return '<div class="diag-card success"><div class="diag-header"><strong>'+item[0]+'</strong></div><p>'+item[1]+'</p></div>';}).join('');
           }
 
